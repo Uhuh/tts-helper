@@ -1,0 +1,25 @@
+:root {
+	--purple: #5D0075;
+	--dark-purple: #211742;
+	--bright-purple: #7b61ff;
+	--gray: #ffffff1c;
+	--off-white: #ffffffb7;
+	--off-white-bg: #ffffff21;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+  font-family: 'Inter', sans-serif;
+  color: var(--off-white);
+  background-color: var(--dark-purple);
+}
+
+a {
+  text-decoration: none;
+}
