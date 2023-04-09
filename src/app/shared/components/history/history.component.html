@@ -1,0 +1,7 @@
+<div class="wrapper">
+  <div class="empty" *ngIf="!items.length">No history! Get to chatting.</div>
+  <app-history-item
+    *ngFor="let item of items"
+    [audit]="item"
+  ></app-history-item>
+</div>

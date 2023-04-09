@@ -1,0 +1,14 @@
+button {
+  color: var(--off-white);
+  background-color: var(--purple);
+  padding: 12px 24px;
+  border-radius: 6px;
+  border-style: unset;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}

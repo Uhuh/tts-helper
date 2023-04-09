@@ -1,0 +1,22 @@
+.mdc-text-field--no-label:not(.mdc-text-field--outlined):not(
+    .mdc-text-field--textarea
+  )
+  .mat-mdc-form-field-infix {
+  padding: 10px 0;
+  min-height: unset;
+}
+
+.mat-mdc-select-placeholder {
+  color: var(--off-white-bg);
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  border-radius: 6px;
+  background-color: var(--off-white-bg);
+}
+
+mat-option,
+.mdc-menu-surface.mat-mdc-select-panel {
+  background-color: var(--off-white-bg);
+  min-height: 20px;
+}

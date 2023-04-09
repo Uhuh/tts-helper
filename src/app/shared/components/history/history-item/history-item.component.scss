@@ -1,0 +1,42 @@
+:host {
+  border-radius: 6px;
+  padding: 10px;
+  border: 2px solid var(--bright-purple);
+  background-color: var(--dark-purple);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .info {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  hr {
+    width: 100%;
+    border-color: var(--off-white-bg);
+  }
+
+  .time {
+    margin-left: auto;
+  }
+
+  .text {
+    color: var(--off-white);
+    margin: 10px 0;
+  }
+
+  .username {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    img {
+      height: 26px;
+    }
+  }
+}

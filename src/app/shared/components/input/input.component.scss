@@ -1,0 +1,15 @@
+input {
+  padding: 12px;
+  border-radius: 6px;
+  min-width: 250px;
+
+  outline: unset;
+  color: var(--off-white);
+  background-color: var(--off-white-bg);
+  border-color: var(--off-white-bg);
+  border-style: unset;
+
+  &::placeholder {
+    color: var(--off-white-bg);
+  }
+}

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { invoke } from '@tauri-apps/api/tauri';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuditItem } from 'src/app/shared/components/history/history-item/history-item.interface';
 
 @Component({
   selector: 'app-home',
@@ -7,15 +10,45 @@ import { invoke } from '@tauri-apps/api/tauri';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-  greet(event: SubmitEvent, text: string): void {
-    event.preventDefault();
+  ttsControl = new FormControl<string>('');
+  toggleControl = new FormControl<boolean>(true);
+  history: AuditItem[] = [];
 
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+  constructor(private readonly snackbar: MatSnackBar) {}
+
+  speak(event: SubmitEvent): void {
+    const { value } = this.ttsControl;
+    this.ttsControl.setValue('');
+
+    this.history.push({
+      createdAt: new Date(),
+      source: 'youtube',
+      text: value ?? '[No TTS text found]',
+      username: 'Panku',
+    });
+
     invoke('play_tts', {
       request: {
         url: 'https://api.streamelements.com/kappa/v2/speech',
-        params: [['voice', 'Brian'], ['text', text]]
-      }
-    }).catch(console.error);
+        params: [
+          ['voice', 'Brian'],
+          ['text', value],
+        ],
+      },
+    }).catch((e) => {
+      console.error(`Error invoking play_tts: ${e}`);
+
+      this.snackbar.open(
+        'Oops! We encountered an error while playing that.',
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        }
+      );
+    });
+  }
+
+  get isDisabled() {
+    return this.ttsControl.value === '';
   }
 }
