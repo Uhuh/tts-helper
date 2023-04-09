@@ -3574,6 +3574,8 @@ dependencies = [
  "tauri-build",
  "thiserror",
  "tower",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]

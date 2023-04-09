@@ -27,6 +27,10 @@ crossbeam = "0.8"
 tower = { version = "0.4", features = ["buffer", "limit", "util"] }
 futures = "0.3"
 
+# Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!

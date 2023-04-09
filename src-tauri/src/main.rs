@@ -10,6 +10,7 @@ use audio_player::AudioPlayer;
 mod api_result;
 use api_result::ApiResult;
 use tauri::State;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Registry};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -24,6 +25,15 @@ async fn play_tts(_url: String, audio_player: State<'_, AudioPlayer>) -> ApiResu
 }
 
 fn main() -> anyhow::Result<()> {
+    Registry::default()
+        .with(if cfg!(debug_assertions) {
+            EnvFilter::new("info,tts_helper=trace")
+        } else {
+            EnvFilter::new("info")
+        })
+        .with(tracing_subscriber::fmt::layer().compact())
+        .try_init()?;
+
     let audio_player = AudioPlayer::new_default()?;
 
     tauri::Builder::default()
