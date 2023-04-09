@@ -1,13 +1,15 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::io::Cursor;
+mod audio_player;
+mod services;
 
-use reqwest::Client;
-use rodio::{OutputStream, Sink, Decoder};
+use anyhow::Context;
+use audio_player::AudioPlayer;
 
 mod api_result;
 use api_result::ApiResult;
+use tauri::State;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -16,27 +18,19 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-async fn play_tts(url: String) -> ApiResult<()> {
-    let client = Client::new();
-    let source = client
-        .get(url)
-        .send()
-        .await?
-        .bytes()
-        .await?;
-
-    let (_stream, stream_handle) = OutputStream::try_default()?;
-    let sink = Sink::try_new(&stream_handle)?;
-    let source = Decoder::new(Cursor::new(source))?;
-    sink.append(source);
-    sink.sleep_until_end();
-
+async fn play_tts(_url: String, audio_player: State<'_, AudioPlayer>) -> ApiResult<()> {
+    audio_player.play_tts("your mom".into()).await?;
     Ok(())
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
+    let audio_player = AudioPlayer::new_default()?;
+
     tauri::Builder::default()
+        .manage(audio_player)
         .invoke_handler(tauri::generate_handler![greet, play_tts])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .context("error while running tauri application")?;
+
+    Ok(())
 }
