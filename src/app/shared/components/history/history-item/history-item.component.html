@@ -1,0 +1,8 @@
+<div class="wrapper">
+  <div class="info">
+    <span class="username">{{ audit.username }} <img [src]="svg" /></span>
+    <span class="time">{{ audit.createdAt | date : 'medium' }}</span>
+  </div>
+  <hr />
+  <span class="text">{{ audit.text }}</span>
+</div>
