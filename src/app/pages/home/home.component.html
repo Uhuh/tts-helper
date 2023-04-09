@@ -1,0 +1,12 @@
+<h1>Welcome to Tauri + Angular!</h1>
+
+<div class="row">
+  <form (submit)="greet($event, tts.value)">
+    <input #tts id="greet-input" placeholder="Enter something to say." />
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<mat-slide-toggle>
+  Hello
+</mat-slide-toggle>
