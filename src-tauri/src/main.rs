@@ -1,15 +1,14 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod audio_player;
+mod api_result;
+mod models;
 mod services;
 
 use anyhow::Context;
-use audio_player::AudioPlayer;
+use services::AudioPlayer;
 
-mod api_result;
-use api_result::ApiResult;
-use services::AudioRequest;
+use crate::{api_result::ApiResult, models::AudioRequest};
 use tauri::State;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Registry};
 
