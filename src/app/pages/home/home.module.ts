@@ -6,25 +6,23 @@ import { InputModule } from '../../shared/components/input/input.module';
 import { ButtonModule } from '../../shared/components/button/button.module';
 import { SelectModule } from '../../shared/components/select/select.module';
 import { ToggleModule } from '../../shared/components/toggle/toggle.module';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { HistoryModule } from 'src/app/shared/components/history/history.module';
 
 @NgModule({
   declarations: [HomeComponent],
   imports: [
     CommonModule,
     InputModule,
-    MatInputModule,
-    MatSelectModule,
-    MatSlideToggleModule,
     MatFormFieldModule,
+    FormsModule,
+    MatSnackBarModule,
+    HistoryModule,
     ButtonModule,
     SelectModule,
     ToggleModule,
-    ReactiveFormsModule,
     RouterModule.forChild([
       {
         path: '',
@@ -35,4 +33,4 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   ],
   exports: [HomeComponent],
 })
-export class HomeModule { }
+export class HomeModule {}
