@@ -1,11 +1,3 @@
 <div class="container">
-  <h1>Welcome to Tauri + Angular!</h1>
-
-  <div class="row">
-    <form (submit)="greet($event, greetInput.value)">
-      <input #greetInput id="greet-input" placeholder="Enter a name..." />
-      <button type="submit">Greet</button>
-    </form>
-  </div>
-  <p>{{ greetingMessage }}</p>
+  <router-outlet></router-outlet>
 </div>
