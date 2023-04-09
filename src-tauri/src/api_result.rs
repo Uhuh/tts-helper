@@ -1,4 +1,4 @@
-use serde::{Serialize };
+use serde::Serialize;
 use std::error::Error;
 
 #[derive(Clone, Debug, Serialize)]
