@@ -1,8 +1,8 @@
 use reqwest::Url;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// A request to play some audio.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AudioRequest {
     /// The URL.
     pub url: Url,

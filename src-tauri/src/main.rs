@@ -5,13 +5,11 @@ mod api_result;
 mod models;
 mod services;
 
-use std::sync::{
-    atomic::{AtomicUsize, Ordering},
-    Arc, Mutex,
-};
+use std::sync::Arc;
 
 use anyhow::Context;
-use services::AudioPlayer;
+use models::PlayingAudio;
+use services::{AudioPlayer, NowPlaying};
 use tracing::trace;
 
 use crate::{api_result::ApiResult, models::AudioRequest};
@@ -42,25 +40,9 @@ async fn play_tts(
     Ok(())
 }
 
-#[derive(Debug, Default)]
-struct NowPlaying {
-    requests: Mutex<Vec<(usize, AudioRequest)>>,
-    next_id: AtomicUsize,
-}
-
-impl NowPlaying {
-    /// Adds a new request to the queue.
-    pub fn add(&self, request: AudioRequest) -> usize {
-        let id = self.next_id.fetch_add(1, Ordering::Relaxed);
-        self.requests.lock().unwrap().push((id, request));
-        id
-    }
-
-    /// Removes a request from the queue.
-    pub fn remove(&self, id: usize) {
-        let mut requests = self.requests.lock().unwrap();
-        requests.retain(|(i, _)| *i != id);
-    }
+#[tauri::command]
+fn get_now_playing(now_playing: State<'_, Arc<NowPlaying>>) -> ApiResult<Vec<PlayingAudio>> {
+    Ok(now_playing.get_playing())
 }
 
 fn main() -> anyhow::Result<()> {
@@ -78,7 +60,7 @@ fn main() -> anyhow::Result<()> {
     tauri::Builder::default()
         .manage(audio_player)
         .manage(Arc::new(NowPlaying::default()))
-        .invoke_handler(tauri::generate_handler![greet, play_tts])
+        .invoke_handler(tauri::generate_handler![greet, play_tts, get_now_playing])
         .run(tauri::generate_context!())
         .context("error while running tauri application")?;
 
