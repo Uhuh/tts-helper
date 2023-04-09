@@ -12,6 +12,7 @@ use rodio::{
 };
 use thiserror::Error;
 use tower::{BoxError, Service};
+use tracing::{error, info, instrument, trace};
 
 /// Service for playing audio.
 pub struct AudioQueueService {
@@ -57,6 +58,7 @@ fn create_sink() -> Result<(OutputStream, OutputStreamHandle, Arc<Sink>), Create
     Ok((stream, stream_handle, Arc::new(sink)))
 }
 
+#[instrument(skip_all)]
 fn play_audio(
     event_rx: Receiver<AudioEvent>,
     sink_tx: Sender<Result<Arc<Sink>, CreateAudioDeviceError>>,
@@ -76,25 +78,25 @@ fn play_audio(
     for event in event_rx {
         match event {
             AudioEvent::Play(data) => {
-                println!("received audio");
+                trace!("received audio");
 
                 // Decode the source data
                 let source = match Decoder::new(Cursor::new(data)) {
                     Ok(decoder) => decoder,
                     Err(error) => {
-                        println!("failed to decode audio: {error}");
+                        error!(?error, "failed to decode audio: {error}");
                         continue;
                     }
                 };
 
                 // Enqueue the audio
-                println!("enqueuing audio");
+                trace!("enqueuing audio");
                 sink.append(source);
             }
         }
     }
 
-    println!("stopping audio");
+    info!("stopping audio playback");
     sink.stop();
 }
 
