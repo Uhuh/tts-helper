@@ -1,3 +1,39 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming 
+@use '@angular/material' as mat;
+@use './theming/palette';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$tts-helper-primary: mat.define-palette(palette.$md-dark-purple);
+$tts-helper-accent: mat.define-palette(palette.$md-light-purple, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$tts-helper-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$tts-helper-theme: mat.define-dark-theme((
+  color: (
+    primary: $tts-helper-primary,
+    accent: $tts-helper-accent,
+    warn: $tts-helper-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($tts-helper-theme);
+
 :root {
 	--purple: #5D0075;
 	--dark-purple: #211742;
@@ -15,11 +51,14 @@ html, body {
   height: 100%;
   width: 100%;
 
-  font-family: 'Inter', sans-serif;
-  color: var(--off-white);
+  font-family: 'Inter', sans-serif !important;
+  color: white !important;
   background-color: var(--dark-purple);
 }
 
 a {
   text-decoration: none;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
