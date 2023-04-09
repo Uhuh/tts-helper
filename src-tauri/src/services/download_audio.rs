@@ -8,6 +8,7 @@ use std::{
 use bytes::Bytes;
 use futures::{future::BoxFuture, FutureExt};
 use reqwest::Client;
+use serde::{Deserialize};
 use tauri::async_runtime::Mutex;
 use tower::{BoxError, Layer, Service};
 
@@ -63,14 +64,16 @@ where
 }
 
 /// A request to play some audio.
+#[derive(Deserialize)]
 pub struct AudioRequest {
-    pub message: String,
+    pub url: String,
+    pub params: Vec<(String, String)>,
 }
 
 async fn fetch_audio(req: AudioRequest, client: Client) -> Result<Bytes, BoxError> {
     let response = client
-        .get("https://api.streamelements.com/kappa/v2/speech")
-        .query(&[("voice", "Brian"), ("text", &req.message)])
+        .get(req.url)
+        .query(&req.params)
         .send()
         .await?;
     let bytes = response.bytes().await?;

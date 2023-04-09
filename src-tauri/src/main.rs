@@ -9,6 +9,7 @@ use audio_player::AudioPlayer;
 
 mod api_result;
 use api_result::ApiResult;
+use services::AudioRequest;
 use tauri::State;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Registry};
 
@@ -19,8 +20,8 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-async fn play_tts(_url: String, audio_player: State<'_, AudioPlayer>) -> ApiResult<()> {
-    audio_player.play_tts("your mom".into()).await?;
+async fn play_tts(request: AudioRequest, audio_player: State<'_, AudioPlayer>) -> ApiResult<()> {
+    audio_player.play_tts(request).await?;
     Ok(())
 }
 

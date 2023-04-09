@@ -28,10 +28,10 @@ impl AudioPlayer {
     }
 
     /// Plays the audio at the given URL.
-    pub async fn play_tts(&self, message: String) -> Result<(), FormattedError> {
+    pub async fn play_tts(&self, request: AudioRequest) -> Result<(), FormattedError> {
         let mut service = self.service.lock().await;
         service.ready().await?;
-        let fut = service.call(AudioRequest { message });
+        let fut = service.call(request);
         drop(service);
 
         fut.await?;
