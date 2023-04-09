@@ -23,10 +23,6 @@ bytes = "1"
 thiserror = "1"
 crossbeam = "0.8"
 
-# Futures
-tower = { version = "0.4", features = ["buffer", "limit", "util"] }
-futures = "0.3"
-
 # Tracing
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }

@@ -1,5 +1,5 @@
-mod audio_service;
-mod download_audio;
+mod now_playing;
+mod player;
 
-pub use audio_service::*;
-pub use download_audio::*;
+pub use now_playing::*;
+pub use player::*;
