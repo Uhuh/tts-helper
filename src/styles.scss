@@ -92,3 +92,55 @@ a {
     font-size: 16px;
   }
 }
+
+.links {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 5px;
+  transition: all 0.1s;
+
+  .link {
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    border: 2px solid var(--bright-purple);
+    background-color: var(--off-white-bg);
+    color: var(--white);
+
+    transition: all 0.2s;
+    &:hover {
+      border: 2px solid var(--purple);
+      color: var(--off-white);
+    }
+  }
+
+  a:hover {
+    transition: all 0.1s;
+    color: var(--);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--off-white-bg);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--off-white-bg);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--off-white-bg);
+}
+
+.mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgba(black, 0.4);
+}

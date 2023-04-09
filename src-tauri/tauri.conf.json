@@ -40,9 +40,11 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "tts-helper",
+        "title": "TTS Helper",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "minHeight": 400,
+        "minWidth": 300
       }
     ]
   }

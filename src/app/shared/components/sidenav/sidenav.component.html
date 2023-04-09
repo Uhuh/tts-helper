@@ -1,0 +1,28 @@
+<div class="wrapper">
+  <div>
+    <a href="https://rolebot.gg" class="icon" target="_blank">
+      <img class="icon" src="assets/speaker.svg" />
+    </a>
+    <div class="links">
+      <a
+        class="link support"
+        href="https://discord.com/invite/9BYN266sC4"
+        target="_blank"
+      >
+        Support
+      </a>
+      <hr />
+      <ng-container>
+        <a
+          *ngFor="let link of links"
+          class="link"
+          routerLinkActive="active"
+          [routerLink]="[link.url]"
+          queryParamsHandling="merge"
+        >
+          {{ link.name }}
+        </a>
+      </ng-container>
+    </div>
+  </div>
+</div>
