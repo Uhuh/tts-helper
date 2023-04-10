@@ -1,7 +1,12 @@
+:host {
+  width: 100%;
+}
+
 input {
   padding: 12px;
   border-radius: 6px;
   min-width: 250px;
+  width: 100%;
 
   outline: unset;
   color: var(--off-white);

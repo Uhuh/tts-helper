@@ -105,12 +105,12 @@ a {
     padding: 10px;
     border-radius: 4px;
     border: 2px solid var(--bright-purple);
-    background-color: var(--off-white-bg);
-    color: var(--white);
+    color: white;
 
     transition: all 0.2s;
     &:hover {
-      border: 2px solid var(--purple);
+      border: 2px solid var(--dark-purple);
+      background-color: var(--bright-purple);
       color: var(--off-white);
     }
   }
@@ -119,6 +119,10 @@ a {
     transition: all 0.1s;
     color: var(--);
   }
+}
+
+.full-width {
+  width: 100%;
 }
 
 ::-webkit-scrollbar {
