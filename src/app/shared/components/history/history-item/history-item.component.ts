@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { AuditItem } from './history-item.interface';
+import { invoke } from '@tauri-apps/api';
 
 @Component({
   selector: 'app-history-item',
@@ -11,5 +12,14 @@ export class HistoryItemComponent {
 
   get svg() {
     return `assets/${this.audit.source.toLowerCase()}.svg`;
+  }
+
+  skip() {
+    invoke('set_audio_state', {
+      state: {
+        id: this.audit.id,
+        skip: true,
+      }
+    }).then(() => this.audit.skipped = true);
   }
 }

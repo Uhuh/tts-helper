@@ -8,8 +8,8 @@ mod services;
 use std::sync::Arc;
 
 use anyhow::Context;
-use models::PlayingAudio;
-use services::{AudioPlayer, NowPlaying};
+use models::{PlayingAudio, SetAudioState};
+use services::{AudioPlayer, Controller, NowPlaying};
 use tracing::trace;
 
 use crate::{api_result::ApiResult, models::AudioRequest};
@@ -27,8 +27,9 @@ async fn play_tts(
     request: AudioRequest,
     audio_player: State<'_, AudioPlayer>,
     now_playing: State<'_, Arc<NowPlaying>>,
-) -> ApiResult<()> {
-    let id = now_playing.add(request.clone());
+) -> ApiResult<u32> {
+    let controller = Controller::default();
+    let id = now_playing.add(request.clone(), controller.clone());
     let on_done = {
         let now_playing = now_playing.inner().clone();
         move || {
@@ -36,13 +37,19 @@ async fn play_tts(
             now_playing.remove(id)
         }
     };
-    audio_player.play_tts(request, on_done).await?;
-    Ok(())
+    audio_player.play_tts(request, on_done, controller).await?;
+    Ok(id)
 }
 
 #[tauri::command]
 fn get_now_playing(now_playing: State<'_, Arc<NowPlaying>>) -> ApiResult<Vec<PlayingAudio>> {
     Ok(now_playing.get_playing())
+}
+
+#[tauri::command]
+fn set_audio_state(state: SetAudioState, now_playing: State<'_, Arc<NowPlaying>>) {
+    trace!(?state, "setting audio state");
+    now_playing.merge_state(state);
 }
 
 fn main() -> anyhow::Result<()> {
@@ -60,7 +67,12 @@ fn main() -> anyhow::Result<()> {
     tauri::Builder::default()
         .manage(audio_player)
         .manage(Arc::new(NowPlaying::default()))
-        .invoke_handler(tauri::generate_handler![greet, play_tts, get_now_playing])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            play_tts,
+            get_now_playing,
+            set_audio_state,
+        ])
         .run(tauri::generate_context!())
         .context("error while running tauri application")?;
 

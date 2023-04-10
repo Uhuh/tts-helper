@@ -7,7 +7,9 @@ use rodio::{Decoder, OutputStream, PlayError, Source, StreamError};
 use thiserror::Error;
 use tracing::{error, info, instrument, trace};
 
-use crate::{api_result::ApiResult, models::AudioRequest};
+use crate::{api_result::ApiResult, models::AudioRequest, services::Controllable};
+
+use super::Controller;
 
 /// The audio player.
 #[derive(Clone, Debug)]
@@ -28,7 +30,12 @@ impl AudioPlayer {
     }
 
     /// Plays the audio at the given URL.
-    pub async fn play_tts<D>(&self, request: AudioRequest, on_done: D) -> ApiResult<()>
+    pub async fn play_tts<D>(
+        &self,
+        request: AudioRequest,
+        on_done: D,
+        controller: Controller,
+    ) -> ApiResult<()>
     where
         D: FnOnce() + Send + 'static,
     {
@@ -44,9 +51,11 @@ impl AudioPlayer {
             .await?;
 
         // Play audio
-        let _ = self
-            .event_tx
-            .send(AudioEvent::Play(data, Box::new(on_done)));
+        let _ = self.event_tx.send(AudioEvent::Play {
+            data,
+            on_done: Box::new(on_done),
+            controller,
+        });
 
         Ok(())
     }
@@ -77,7 +86,11 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
     loop {
         // Check for new events
         match event_rx.recv_timeout(Duration::from_millis(100)) {
-            Ok(AudioEvent::Play(data, on_done)) => {
+            Ok(AudioEvent::Play {
+                data,
+                on_done,
+                controller,
+            }) => {
                 trace!("received audio");
 
                 // Decode the source data
@@ -89,9 +102,12 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
                     }
                 };
 
+                // Wrap the source in a controllable source
+                let source = Controllable::new(source.convert_samples(), controller);
+
                 // Enqueue the audio
                 trace!("enqueuing audio");
-                let done_rx = queue_tx.append_with_signal(source.convert_samples());
+                let done_rx = queue_tx.append_with_signal(source);
                 playing.push((done_rx, on_done));
             }
             Err(RecvTimeoutError::Disconnected) => break,
@@ -117,7 +133,11 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
 
 /// An event that controls the audio playback thread.
 enum AudioEvent {
-    Play(Bytes, Box<dyn FnOnce() + Send + 'static>),
+    Play {
+        data: Bytes,
+        on_done: Box<dyn FnOnce() + Send + 'static>,
+        controller: Controller,
+    },
 }
 
 /// An error that can occur when creating an audio device.

@@ -20,13 +20,6 @@ export class HomeComponent {
     const { value } = this.ttsControl;
     this.ttsControl.setValue('');
 
-    this.history.push({
-      createdAt: new Date(),
-      source: 'youtube',
-      text: value ?? '[No TTS text found]',
-      username: 'Panku',
-    });
-
     invoke('play_tts', {
       request: {
         url: 'https://api.streamelements.com/kappa/v2/speech',
@@ -35,6 +28,19 @@ export class HomeComponent {
           ['text', value],
         ],
       },
+    }).then(id => {
+      if (typeof id != 'number') {
+        throw new Error(`Unexpected response type: ${typeof id}`);
+      }
+
+      this.history.push({
+        id,
+        createdAt: new Date(),
+        source: 'youtube',
+        text: value ?? '[No TTS text found]',
+        username: 'Panku',
+        skipped: false,
+      });
     }).catch((e) => {
       console.error(`Error invoking play_tts: ${e}`);
 
