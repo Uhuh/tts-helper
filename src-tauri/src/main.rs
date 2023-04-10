@@ -13,7 +13,7 @@ use services::{AudioPlayer, Controller, NowPlaying};
 use tracing::trace;
 
 use crate::{api_result::ApiResult, models::AudioRequest};
-use tauri::State;
+use tauri::{AppHandle, Manager, State};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Registry};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -27,6 +27,7 @@ async fn play_tts(
     request: AudioRequest,
     audio_player: State<'_, AudioPlayer>,
     now_playing: State<'_, Arc<NowPlaying>>,
+    app: AppHandle,
 ) -> ApiResult<u32> {
     let controller = Controller::default();
     let id = now_playing.add(request.clone(), controller.clone());
@@ -34,6 +35,7 @@ async fn play_tts(
         let now_playing = now_playing.inner().clone();
         move || {
             trace!(id, "done playing");
+            drop(app.emit_all("audio-done", id));
             now_playing.remove(id)
         }
     };

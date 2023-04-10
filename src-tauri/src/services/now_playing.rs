@@ -36,6 +36,7 @@ impl NowPlaying {
             .lock()
             .unwrap()
             .iter()
+            .filter(|(_, controller)| !controller.is_skipped())
             .map(|(audio, _)| audio)
             .cloned()
             .collect()
