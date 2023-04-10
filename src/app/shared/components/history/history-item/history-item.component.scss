@@ -9,6 +9,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  max-width: 600px;
+  white-space: pre-wrap;
 
   .info {
     display: flex;
@@ -28,6 +30,8 @@
   .text {
     color: var(--off-white);
     margin: 10px 0;
+    word-wrap: break-word;
+    word-break: break-word;
   }
 
   .username {

@@ -1,11 +1,28 @@
-import { Component, Input } from '@angular/core';
-import { AuditItem } from './history-item/history-item.interface';
+import { Component, OnDestroy } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
+import { HistoryService } from '../../services/history.service';
+import { AuditItem } from '../../state/history/history-item.interface';
 
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
 })
-export class HistoryComponent {
-  @Input() items: AuditItem[] = [];
+export class HistoryComponent implements OnDestroy {
+  private readonly destroyed$ = new Subject<void>();
+  items: AuditItem[] = [];
+
+  constructor(private readonly historyService: HistoryService) {
+    this.historyService.auditItems$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((items) => {
+        console.log(items);
+        this.items = items;
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
 }

@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HistoryModule } from 'src/app/shared/components/history/history.module';
+import { HistoryService } from 'src/app/shared/services/history.service';
 
 @NgModule({
   declarations: [HomeComponent],
@@ -32,5 +33,6 @@ import { HistoryModule } from 'src/app/shared/components/history/history.module'
     RouterModule,
   ],
   exports: [HomeComponent],
+  providers: [HistoryService],
 })
 export class HomeModule {}

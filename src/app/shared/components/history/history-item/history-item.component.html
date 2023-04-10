@@ -4,7 +4,13 @@
     <span class="time">{{ audit.createdAt | date : 'medium' }}</span>
   </div>
   <hr />
-  <span class="text" *ngIf="audit.skipped">(Skipped)</span>
   <span class="text">{{ audit.text }}</span>
-  <button (click)="skip()">Skip</button>
+  <app-button
+    class="full-width"
+    [ngClass]="{ disabled: skipped || finished }"
+    [disabled]="skipped || finished"
+    (click)="skip()"
+  >
+    {{ action }}
+  </app-button>
 </div>

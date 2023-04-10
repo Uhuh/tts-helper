@@ -6,6 +6,9 @@ button {
   border-style: unset;
   transition: 0.2s;
   cursor: pointer;
+  display: flex;
+  width: 100%;
+  justify-content: center;
 }
 
 .disabled {

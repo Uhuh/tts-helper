@@ -1,12 +1,10 @@
 <h1>Welcome to Tauri + Angular!</h1>
 
 <div class="row">
-  <form class="form" (submit)="speak($event)">
+  <form class="form" (submit)="speak()">
     <app-input [control]="ttsControl" placeholder="Enter something to say." />
     <app-button type="submit" [disabled]="isDisabled">Send</app-button>
   </form>
 </div>
 
-<app-toggle [control]="toggleControl"></app-toggle>
-<app-history [items]="history"></app-history>
-<app-select></app-select>
+<app-history></app-history>
