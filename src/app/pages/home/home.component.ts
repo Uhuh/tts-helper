@@ -41,8 +41,6 @@ export class HomeComponent {
           throw new Error(`Unexpected response type: ${typeof id}`);
         }
 
-        console.log('item id', id);
-
         this.historyService.addHistory({
           id,
           createdAt: new Date(),

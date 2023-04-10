@@ -19,8 +19,6 @@ export const historyReducer = createReducer(
     const items = [...state.auditItems.map((a) => ({ ...a }))];
     items[index].state = auditState;
 
-    console.log(items);
-
     return {
       ...state,
       auditItems: items,
