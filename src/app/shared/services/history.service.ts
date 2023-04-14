@@ -14,7 +14,6 @@ export class HistoryService {
 
   constructor(private readonly store: Store) {
     listen('audio-done', (item) => {
-      console.log(item);
       this.store.dispatch(
         updateHistoryStatus({
           id: item.payload as number,

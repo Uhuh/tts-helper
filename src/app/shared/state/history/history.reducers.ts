@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { HistoryState } from './history.model';
 import { addHistory, updateHistoryStatus } from './history.actions';
+import { AuditState } from './history-item.interface';
 
 const initialState: HistoryState = {
   auditItems: [],
@@ -11,7 +12,7 @@ export const historyReducer = createReducer(
   on(updateHistoryStatus, (state, { id, auditState }) => {
     const item = state.auditItems.find((a) => a.id === id);
 
-    if (!item) {
+    if (!item || item.state === AuditState.skipped) {
       return state;
     }
 
