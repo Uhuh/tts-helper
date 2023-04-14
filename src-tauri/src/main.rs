@@ -9,7 +9,7 @@ use std::sync::Arc;
 
 use anyhow::Context;
 use models::{PlayingAudio, SetAudioState};
-use services::{AudioPlayer, Controller, NowPlaying};
+use services::{run_auth_server, AudioPlayer, Controller, NowPlaying};
 use tracing::trace;
 
 use crate::{api_result::ApiResult, models::AudioRequest};
@@ -69,6 +69,13 @@ fn main() -> anyhow::Result<()> {
     tauri::Builder::default()
         .manage(audio_player)
         .manage(Arc::new(NowPlaying::default()))
+        .setup(|app| {
+            // Run auth server
+            let handle = app.handle();
+            std::thread::spawn(move || run_auth_server(handle));
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             greet,
             play_tts,
