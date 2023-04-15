@@ -25,8 +25,8 @@
   </span>
 </div>
 <div class="action-row">
-  <a target="_blank" [href]="loginUrl" class="twitch-auth">
-    <app-button> {{ isTokenValid ? "Reauth Twitch" : "Connect Twitch"}} </app-button>
+  <a target="_blank" [href]="loginUrl" class="twitch-auth" *ngIf="!isTokenValid">
+    <app-button> Connect Twitch </app-button>
   </a>
   <app-button
     *ngIf="isTokenValid"
