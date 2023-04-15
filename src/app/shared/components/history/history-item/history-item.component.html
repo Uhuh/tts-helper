@@ -5,12 +5,20 @@
   </div>
   <hr />
   <span class="text">{{ audit.text }}</span>
-  <app-button
-    class="full-width"
-    [ngClass]="{ disabled: skipped || finished }"
-    [disabled]="skipped || finished"
-    (click)="skip()"
-  >
-    {{ action }}
-  </app-button>
+  <div class="action-row">
+    <app-button
+      class="requeue"
+      (click)="requeue()"
+    >
+      Requeue
+    </app-button>
+    <app-button
+      class="action"
+      [ngClass]="{ disabled: skipped || finished }"
+      [disabled]="skipped || finished"
+      (click)="skip()"
+    >
+      {{ action }}
+    </app-button>
+  </div>
 </div>

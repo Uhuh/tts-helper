@@ -1,8 +1,5 @@
 import { Component, Input, OnDestroy } from '@angular/core';
-import {
-  AuditItem,
-  AuditState,
-} from '../../../state/history/history-item.interface';
+import { AuditItem, AuditState, } from '../../../state/history/history-item.interface';
 import { invoke } from '@tauri-apps/api';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from 'src/app/shared/services/history.service';
@@ -16,8 +13,6 @@ import { Subject } from 'rxjs';
 export class HistoryItemComponent implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
   @Input() audit!: AuditItem;
-
-  readonly AuditState = AuditState;
 
   constructor(
     private readonly historyService: HistoryService,
@@ -50,6 +45,32 @@ export class HistoryItemComponent implements OnDestroy {
 
   get skipped() {
     return this.audit.state === AuditState.skipped;
+  }
+  
+  requeue() {
+    this.historyService.updateHistory(this.audit.id, AuditState.playing);
+    
+    invoke('play_tts', {
+      request: {
+        id: this.audit.id,
+        url: 'https://api.streamelements.com/kappa/v2/speech',
+        params: [
+          ['voice', 'Brian'],
+          ['text', this.audit.text],
+        ],
+      },
+    })
+      .catch((e) => {
+        console.error(`Error invoking play_tts: ${e}`);
+
+        this.snackbar.open(
+          'Oops! We encountered an error while playing that.',
+          'Dismiss',
+          {
+            panelClass: 'notification-error',
+          }
+        );
+      });
   }
 
   skip() {

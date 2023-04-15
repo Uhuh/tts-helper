@@ -9,7 +9,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  max-width: 600px;
   white-space: pre-wrap;
 
   .info {
@@ -41,6 +40,19 @@
 
     img {
       height: 26px;
+    }
+  }
+  
+  .action-row {
+    display: flex;
+    gap: 10px;
+    
+    .requeue {
+      flex: 2;
+    }
+    
+    .action {
+      flex: 2;
     }
   }
 }
