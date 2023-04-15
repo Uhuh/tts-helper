@@ -6,6 +6,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { NavModule } from './shared/components/nav/nav.module';
 import { StoreModule } from '@ngrx/store';
 import { historyReducer } from './shared/state/history/history.reducers';
+import { TwitchService } from "./shared/services/twitch.service";
+import { LOCAL_STORAGE } from "./shared/tokens/localStorage.token";
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,7 +18,11 @@ import { historyReducer } from './shared/state/history/history.reducers';
     BrowserAnimationsModule,
     NavModule,
   ],
-  providers: [],
+  providers: [TwitchService,
+    {
+      provide: LOCAL_STORAGE,
+      useValue: window.localStorage
+    }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
