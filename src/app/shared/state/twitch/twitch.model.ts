@@ -1,7 +1,7 @@
-﻿
+﻿import { TwitchChannelInfo } from "./twitch.interface";
+
 export interface TwitchState {
-  token: string;
-  username: string;
-  channelId: string;
-  
+  token: string | null;
+  isTokenValid: boolean;
+  channelInfo: TwitchChannelInfo;
 }
