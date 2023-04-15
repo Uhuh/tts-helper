@@ -10,10 +10,9 @@
 
   .content {
     display: flex;
-    margin: 0 20px;
   }
 
-  .app-name {
+  .app-logo {
     margin: 0;
   }
 
@@ -28,13 +27,16 @@
 }
 
 mat-toolbar {
-  background-color: var(--dark-purple) !important;
+  background-color: var(--sidebar) !important;
 }
 
-mat-sidenav,
+mat-sidenav {
+  background-color: var(--sidebar);
+}
+
 mat-sidenav-content,
 mat-sidenav-container {
-  background-color: var(--dark-purple);
+  background-color: var(--background);
 }
 
 mat-sidenav-container {
@@ -43,7 +45,7 @@ mat-sidenav-container {
 
 mat-sidenav-content {
   width: 100%;
-  max-width: 1200px;
+  max-width: 640px;
 }
 
 mat-sidenav {

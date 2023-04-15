@@ -50,7 +50,7 @@ export class HomeComponent {
           createdAt: new Date(),
           source: 'tts-helper',
           text: value ?? '[No TTS text found]',
-          username: '[TTS-HELPER]',
+          username: '',
           state: AuditState.playing,
         });
       })

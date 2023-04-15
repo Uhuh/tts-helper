@@ -3,12 +3,12 @@
 }
 
 button {
-  background-color: var(--off-white-bg);
-  color: var(--off-white);
+  background-color: var(--sidebar);
+  border: 1px solid var(--text);
+  color: var(--text);
   font-weight: 700;
   padding: 12px 24px;
   border-radius: 6px;
-  border-style: unset;
   transition: 0.2s;
   cursor: pointer;
   display: flex;
@@ -17,7 +17,7 @@ button {
   
   &:hover {
     color: white;
-    background-color: var(--bright-purple);
+    background-color: var(--text-inactive);
   }
 }
 
@@ -25,6 +25,6 @@ button {
   cursor: not-allowed;
   filter: brightness(0.6);
   &:hover {
-    background-color: var(--off-white-bg);
+    background-color: var(--text-inactive);
   }
 }

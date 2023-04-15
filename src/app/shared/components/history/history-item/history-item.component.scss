@@ -1,8 +1,7 @@
 :host {
   border-radius: 6px;
   padding: 15px;
-  border: 2px solid var(--bright-purple);
-  background-color: var(--dark-purple);
+  border: 2px solid var(--sidebar);
 }
 
 .wrapper {
@@ -19,7 +18,7 @@
 
   hr {
     width: 100%;
-    border-color: var(--off-white-bg);
+    border-color: var(--text-inactive);
   }
 
   .time {
@@ -27,7 +26,7 @@
   }
 
   .text {
-    color: var(--off-white);
+    color: var(--text);
     margin: 10px 0;
     word-wrap: break-word;
     word-break: break-word;

@@ -1,28 +1,29 @@
 <div class="wrapper">
-  <div>
-    <a href="https://example.com" class="icon" target="_blank">
-      <img class="icon" src="assets/tts-helper.svg" />
-    </a>
-    <div class="links">
-      <a
-        class="link"
-        href="https://discord.com/invite/9BYN266sC4"
-        target="_blank"
-      >
-        Support
+  <a [routerLink]="['home']">
+    <img class="icon" src="assets/tts-helper.svg"/>
+  </a>
+  <div class="nav-groups">
+    <div class="nav-group">
+      <span class="nav-header">My Connections</span>
+      <a class="nav-link" [routerLink]="['twitch']">
+        <img src="assets/twitch.svg">
+        <span>Twitch</span>
       </a>
-      <hr />
-      <ng-container>
-        <a
-          *ngFor="let link of links"
-          class="link"
-          routerLinkActive="active"
-          [routerLink]="[link.url]"
-          queryParamsHandling="merge"
-        >
-          {{ link.name }}
-        </a>
-      </ng-container>
+      <a class="nav-link" [routerLink]="['youtube']">
+        <img src="assets/youtube.svg">
+        <span>Youtube</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-header">Text to Speech</span>
+      <a class="nav-link" [routerLink]="['queue']">
+        <img src="assets/clock.svg">
+        <span>Queue</span>
+      </a>
+      <a class="nav-link" [routerLink]="['history']">
+        <img src="assets/history.svg">
+        <span>History</span>
+      </a>
     </div>
   </div>
 </div>

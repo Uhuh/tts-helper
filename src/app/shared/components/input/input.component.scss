@@ -9,12 +9,16 @@ input {
   width: 100%;
 
   outline: unset;
-  color: var(--off-white);
-  background-color: var(--off-white-bg);
-  border-color: var(--off-white-bg);
+  color: var(--text);
+  background-color: var(--sidebar);
+  border-color: var(--text);
   border-style: unset;
 
   &::placeholder {
-    color: var(--off-white-bg);
+    color: var(--text-inactive);
   }
+}
+
+input[type=number] {
+  
 }

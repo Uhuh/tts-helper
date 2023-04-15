@@ -7,16 +7,16 @@
 }
 
 .mat-mdc-select-placeholder {
-  color: var(--off-white-bg);
+  color: var(--text-inactive);
 }
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
   border-radius: 6px;
-  background-color: var(--off-white-bg);
+  background-color: var(--text-inactive);
 }
 
 mat-option,
 .mdc-menu-surface.mat-mdc-select-panel {
-  background-color: var(--off-white-bg);
+  background-color: var(--text-inactive);
   min-height: 20px;
 }

@@ -41,15 +41,22 @@ $tts-helper-theme: mat.define-dark-theme(
 @include mat.all-component-themes($tts-helper-theme);
 
 :root {
-  --purple: #5d0075;
+  --background: #201E25;
+  --sidebar: #2B2930;
+
+  --blue: #0075FF;
+  --purple: #5918E1;
+  --yellow: #F9BD24;
+  --green: #24F92D;
+  
+  --text: #FFFFFF;
+  --text-inactive: #FFFFFF60;
+  --header: #FFFFFF80;
+  
   --dark-purple: #211742;
   --bright-purple: #7b61ff;
-  --gray: #ffffff1c;
-  --off-white: #ffffffb7;
-  --off-white-bg: #ffffff21;
   --red: #b40000;
   --off-red-bg: rgba(180, 0, 0, 0.37);
-  --green: #008c00;
   --off-green-bg: rgba(0, 140, 0, 0.37);
 }
 
@@ -64,7 +71,7 @@ body {
 
   font-family: 'Inter', sans-serif;
   color: white;
-  background-color: var(--dark-purple);
+  background-color: var(--background);
 }
 
 a {
@@ -92,11 +99,11 @@ a {
   height: 200px;
   font-size: 18px;
 
-  border: 2px dotted var(--bright-purple);
+  border: 2px dotted var(--text-inactive);
   border-radius: 6px;
 
   .message {
-    color: var(--off-white);
+    color: var(--text);
     font-size: 16px;
   }
 }
@@ -112,14 +119,14 @@ a {
     text-align: center;
     padding: 10px;
     border-radius: 4px;
-    border: 2px solid var(--off-white-bg);
+    border: 2px solid var(--text-inactive);
     color: white;
 
     transition: all 0.2s;
     &:hover {
       border: 2px solid var(--dark-purple);
       background-color: var(--bright-purple);
-      color: var(--off-white);
+      color: var(--text);
     }
   }
 
@@ -130,7 +137,7 @@ a {
 }
 
 .header {
-  border-bottom: 2px solid var(--bright-purple);
+  border-bottom: 2px solid var(--sidebar);
   margin-bottom: 10px;
 }
 
@@ -144,8 +151,18 @@ a {
   p {
     margin: 0;
     font-size: 14px;
-    color: var(--off-white);
+    color: var(--text-inactive);
   }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  
+  border-bottom: 2px solid var(--text-inactive);
 }
 
 .full-width {
@@ -159,17 +176,17 @@ a {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--off-white-bg);
+  background: var(--text-inactive);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--off-white-bg);
+  background: var(--text-inactive);
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--off-white-bg);
+  background: var(--text-inactive);
 }
 
 .mat-drawer-backdrop.mat-drawer-shown {
@@ -177,5 +194,5 @@ a {
 }
 
 a {
-  color: var(--off-white);
+  color: var(--text);
 }

@@ -12,22 +12,18 @@
 
 .action-row {
   display: flex;
-  gap: 10px;
+  justify-content: end;
 
   .twitch-auth {
-    flex: 2;
   }
   
   .twitch-signout {
-    flex: 1;
-
-    background-color: var(--off-red-bg);
   }
 }
 
 .twitch-authed {
-  border-radius: 6px;
-  padding: 6px 12px;
+  border-radius: 4px;
+  padding: 8px 16px;
   
   p {
     margin: 0;
@@ -48,6 +44,6 @@
   gap: 5px;
   padding: 15px;
   border-radius: 6px;
-  background-color: var(--off-white-bg);
-  border: 2px solid var(--bright-purple);
+  background-color: var(--sidebar);
+  border: 2px solid var(--red);
 }
