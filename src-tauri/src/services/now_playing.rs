@@ -16,7 +16,11 @@ pub struct NowPlaying {
 impl NowPlaying {
     /// Adds a new request to the queue.
     pub fn add(&self, request: AudioRequest, controller: Controller) -> u32 {
-        let id = self.next_id.fetch_add(1, Ordering::Relaxed);
+        let id = match request.id {
+            Some(i) => i,
+            None => self.next_id.fetch_add(1, Ordering::Relaxed)
+        };
+        
         self.playing
             .lock()
             .unwrap()
