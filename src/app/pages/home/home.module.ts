@@ -9,7 +9,6 @@ import { ToggleModule } from '../../shared/components/toggle/toggle.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HistoryModule } from 'src/app/shared/components/history/history.module';
 import { HistoryService } from 'src/app/shared/services/history.service';
 
 @NgModule({
@@ -20,7 +19,6 @@ import { HistoryService } from 'src/app/shared/services/history.service';
     MatFormFieldModule,
     FormsModule,
     MatSnackBarModule,
-    HistoryModule,
     ButtonModule,
     SelectModule,
     ToggleModule,

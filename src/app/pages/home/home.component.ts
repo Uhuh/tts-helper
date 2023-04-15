@@ -15,7 +15,7 @@ import { HistoryService } from 'src/app/shared/services/history.service';
 })
 export class HomeComponent {
   ttsControl = new FormControl<string>('');
-  toggleControl = new FormControl<boolean>(true);
+  disableHistory = new FormControl<boolean>(false);
   history: AuditItem[] = [];
 
   constructor(
@@ -39,6 +39,10 @@ export class HomeComponent {
       .then((id) => {
         if (typeof id != 'number') {
           throw new Error(`Unexpected response type: ${typeof id}`);
+        }
+        
+        if (this.disableHistory.value) {
+          return console.info('History logging for local TTS is disabled.');
         }
 
         this.historyService.addHistory({

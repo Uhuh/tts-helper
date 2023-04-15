@@ -1,14 +1,17 @@
-<h1>Welcome to Tauri + Angular!</h1>
-
-<div class="row">
+<div class="header">
+  <h1>Welcome home!</h1>
+  <p>Customize some of the basics such as command prefix, command name and more.</p>
+</div>
+<div>
+  <div class="sub-header">
+    <label>Play TTS locally.</label>
+    <p>These show up in the history tab.</p>
+  </div>
   <form class="form" (submit)="speak()">
     <app-input [control]="ttsControl" placeholder="Enter something to say." />
-    <app-button type="submit" [disabled]="isDisabled">Send</app-button>
+    <div class="action-row">
+      <app-button type="submit" [disabled]="isDisabled">Send</app-button>
+      <app-toggle [control]="disableHistory">Disable local history</app-toggle>
+    </div>
   </form>
 </div>
-
-<app-button>
-  <a href="https://id.twitch.tv/oauth2/authorize?client_id=fprxp4ve0scf8xg6y48nwcq1iogxuq&redirect_uri=http://localhost:1420/auth&response_type=token&scope=channel%3Amanage%3Apolls+channel%3Aread%3Apolls">Login</a>
-</app-button>
-
-<app-history></app-history>
