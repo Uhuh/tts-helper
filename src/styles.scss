@@ -65,6 +65,10 @@ body {
 
 a {
   text-decoration: none;
+
+  & > app-button > button:hover {
+    background-color: var(--bright-purple);
+  }
 }
 
 * {
@@ -118,6 +122,25 @@ a {
   a:hover {
     transition: all 0.1s;
     color: var(--);
+  }
+}
+
+.header {
+  border-bottom: 2px solid var(--bright-purple);
+  margin-bottom: 10px;
+}
+
+.sub-header {
+  margin-bottom: 10px;
+  
+  label {
+    font-size: 20px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--off-white);
   }
 }
 
