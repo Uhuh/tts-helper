@@ -36,6 +36,7 @@ async fn listen(app: AppHandle) -> anyhow::Result<()> {
     Ok(())
 }
 
+// @TODO - Handle error params to get out of "Authenticating..." states.
 async fn auth_get() -> Html<&'static str> {
     const BODY: &'static str = &r#"
         <!DOCTYPE html>
@@ -43,6 +44,28 @@ async fn auth_get() -> Html<&'static str> {
             <head>
                 <title>Authenticating</title>
             </head>
+            <style>
+                html, body {
+                    margin: 0;
+                    padding: 0;
+
+                    font-size: 24px;
+                  
+                    display: flex;
+                    height: 100%;
+                    width: 100%;
+                    color: white;
+                    font-family: 'Inter', sans-serif;
+                    background-color: #211742;
+                }
+
+                .auth {
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            </style>
             <body>
                 <script>
                     if (window.location.hash) {
@@ -51,7 +74,7 @@ async fn auth_get() -> Html<&'static str> {
                             method: "POST",
                             body: token,
                         }).then(() => {
-                            document.getElementById("status").innerText = "Authenticated!";
+                            document.getElementById("status").innerText = "Authenticated for TTS Helper! (You can close this window now)";
                         }).catch((err) => {
                             console.error(err);
                             document.getElementById("status").innerText = "Failed to authenticate. Check the console for more details.";
@@ -61,7 +84,9 @@ async fn auth_get() -> Html<&'static str> {
                         document.getElementById("status").innerText = "Failed to authenticate. Check the console for more details.";
                     }
                 </script>
-                <p id="status">Authenticating...</p>
+                <div class="auth">
+                    <p id="status">Authenticating...</p>
+                </div>
             </body>
         </html>
     "#;
