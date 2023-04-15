@@ -8,21 +8,30 @@ import { StoreModule } from '@ngrx/store';
 import { historyReducer } from './shared/state/history/history.reducers';
 import { TwitchService } from "./shared/services/twitch.service";
 import { LOCAL_STORAGE } from "./shared/tokens/localStorage.token";
+import { twitchReducer } from "./shared/state/twitch/twitch.reducers";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { TwitchApi } from "./shared/api/twitch.api";
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    StoreModule.forRoot({ historyState: historyReducer }),
+    HttpClientModule,
+    StoreModule.forRoot({ historyState: historyReducer, twitchState: twitchReducer }),
     BrowserAnimationsModule,
+    MatSnackBarModule,
     NavModule,
   ],
-  providers: [TwitchService,
+  providers: [
+    TwitchService,
+    TwitchApi,
     {
       provide: LOCAL_STORAGE,
       useValue: window.localStorage
-    }],
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
