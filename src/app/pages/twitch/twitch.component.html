@@ -1,0 +1,24 @@
+<div class="header">
+  <h1>
+    Twitch customization
+  </h1>
+  <p>Manage how users interact with your TTS via Twitch chat.</p>
+</div>
+<div class="warning">
+  <span>
+    By clicking <code>Connect Twitch</code> you'll be directed to your browser
+    to authorize the application.
+  </span>
+  <span>After authorizing your URL will contain a sensitive code.</span>
+  <span>
+    This code is so we can confirm with Twitch you authorized with us, and then
+    allow chat to interact with us!
+  </span>
+  <span>
+    We recommend you do this off stream or not in public view until you close
+    the tab.
+  </span>
+</div>
+<a target="_blank" [href]="loginUrl">
+  <app-button> Connect Twitch </app-button>
+</a>
