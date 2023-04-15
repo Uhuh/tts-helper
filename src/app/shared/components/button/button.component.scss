@@ -1,6 +1,7 @@
 button {
+  background-color: var(--off-white-bg);
   color: var(--off-white);
-  background-color: var(--purple);
+  font-weight: 700;
   padding: 12px 24px;
   border-radius: 6px;
   border-style: unset;
@@ -9,9 +10,16 @@ button {
   display: flex;
   width: 100%;
   justify-content: center;
+  
+  &:hover {
+    background-color: var(--bright-purple);
+  }
 }
 
 .disabled {
   cursor: not-allowed;
-  filter: grayscale(0.5);
+  filter: brightness(0.6);
+  &:hover {
+    background-color: var(--off-white-bg);
+  }
 }
