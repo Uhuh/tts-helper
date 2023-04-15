@@ -1,3 +1,7 @@
+:host {
+  border-radius: 6px;
+}
+
 button {
   background-color: var(--off-white-bg);
   color: var(--off-white);
@@ -12,6 +16,7 @@ button {
   justify-content: center;
   
   &:hover {
+    color: white;
     background-color: var(--bright-purple);
   }
 }
