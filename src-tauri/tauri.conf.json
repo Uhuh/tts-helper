@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "tts-helper",
+    "productName": "TTS Helper",
     "version": "0.0.0"
   },
   "tauri": {
@@ -43,8 +43,8 @@
         "title": "TTS Helper",
         "width": 800,
         "height": 600,
-        "minHeight": 400,
-        "minWidth": 300
+        "minHeight": 450,
+        "minWidth": 450
       }
     ]
   }
