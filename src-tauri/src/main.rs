@@ -16,12 +16,6 @@ use crate::{api_result::ApiResult, models::AudioRequest};
 use tauri::{AppHandle, Manager, State};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Registry};
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
 #[tauri::command]
 async fn play_tts(
     request: AudioRequest,
@@ -77,7 +71,6 @@ fn main() -> anyhow::Result<()> {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            greet,
             play_tts,
             get_now_playing,
             set_audio_state,
