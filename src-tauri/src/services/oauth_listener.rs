@@ -69,7 +69,7 @@ async fn auth_get() -> Html<&'static str> {
             <body>
                 <script>
                     if (window.location.hash) {
-                        const token = window.location.hash.split("=")[1];
+                        const token = window.location.hash.split('&')[0].split("=")[1];
                         fetch(window.location.href, {
                             method: "POST",
                             body: token,
