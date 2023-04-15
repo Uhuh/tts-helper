@@ -1,3 +1,9 @@
+:host {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .switch {
   position: relative;
   display: inline-block;
