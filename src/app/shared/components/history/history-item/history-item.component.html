@@ -9,6 +9,8 @@
     <app-button
       class="requeue"
       (click)="requeue()"
+      [ngClass]="{ disabled: playing }"
+      [disabled]="playing"
     >
       Requeue
     </app-button>
