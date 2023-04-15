@@ -14,7 +14,7 @@ export class SidenavComponent {
   links: SideNavLink[] = [
     {
       name: 'Home',
-      url: '',
+      url: 'home',
     },
     {
       name: 'History',
