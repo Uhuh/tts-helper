@@ -39,6 +39,10 @@ export class HistoryItemComponent implements OnDestroy {
     }
   }
 
+  get playing() {
+    return this.audit.state === AuditState.playing;
+  }
+  
   get finished() {
     return this.audit.state === AuditState.finished;
   }
