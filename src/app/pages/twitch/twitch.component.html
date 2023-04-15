@@ -2,7 +2,12 @@
   <h1>
     Twitch customization
   </h1>
-  <p>Manage how users interact with your TTS via Twitch chat.</p>
+  <div class="header-info">
+    <p>Manage how users interact with your TTS via Twitch chat.</p>
+    <div class="twitch-authed" [ngClass]="{valid: isTokenValid}">
+      <p>Connection</p>
+    </div>
+  </div>
 </div>
 <div class="warning">
   <span>
@@ -19,6 +24,15 @@
     the tab.
   </span>
 </div>
-<a target="_blank" [href]="loginUrl">
-  <app-button> Connect Twitch </app-button>
-</a>
+<div class="action-row">
+  <a target="_blank" [href]="loginUrl" class="twitch-auth">
+    <app-button> {{ isTokenValid ? "Reauth Twitch" : "Connect Twitch"}} </app-button>
+  </a>
+  <app-button
+    *ngIf="isTokenValid"
+    class="twitch-signout"
+    (click)="signOut()"
+  >
+    Signout
+  </app-button>
+</div>

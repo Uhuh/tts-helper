@@ -4,11 +4,50 @@
   gap: 10px;
 }
 
+.header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.action-row {
+  display: flex;
+  gap: 10px;
+
+  .twitch-auth {
+    flex: 2;
+  }
+  
+  .twitch-signout {
+    flex: 1;
+
+    background-color: var(--off-red-bg);
+  }
+}
+
+.twitch-authed {
+  border-radius: 6px;
+  padding: 6px 12px;
+  
+  p {
+    margin: 0;
+  }
+  
+  border: 2px solid var(--red);
+  background-color: var(--off-red-bg);
+}
+
+.valid {
+  border: 2px solid var(--green);
+  background-color: var(--off-green-bg);
+}
+
 .warning {
   display: flex;
   flex-direction: column;
   gap: 5px;
   padding: 15px;
   border-radius: 6px;
+  background-color: var(--off-white-bg);
   border: 2px solid var(--bright-purple);
 }
