@@ -56,7 +56,7 @@ async fn auth_get() -> Html<&'static str> {
                     width: 100%;
                     color: white;
                     font-family: 'Inter', sans-serif;
-                    background-color: #211742;
+                    background-color: #201E25;
                 }
 
                 .auth {
