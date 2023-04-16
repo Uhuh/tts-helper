@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TwitchPubSub } from "./shared/services/twitch-pubsub";
+import { TwitchPubSub } from './shared/services/twitch-pubsub';
 
 @Component({
   selector: 'app-root',

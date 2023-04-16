@@ -8,9 +8,8 @@ describe('TwitchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TwitchComponent ]
-    })
-    .compileComponents();
+      declarations: [TwitchComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TwitchComponent);
     component = fixture.componentInstance;

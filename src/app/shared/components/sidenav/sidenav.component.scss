@@ -55,20 +55,20 @@
   align-items: center;
   color: var(--header);
   font-size: 16px;
-  
+
   padding: 2px 10px;
   border-left: 2px solid transparent;
-  
+
   transition: all 0.2s;
   &:hover {
     color: var(--text);
     border-left: 2px solid var(--text-inactive);
   }
-  
+
   img {
-    width: 20px
+    width: 20px;
   }
-  
+
   .tts-icon {
     width: 16px;
   }

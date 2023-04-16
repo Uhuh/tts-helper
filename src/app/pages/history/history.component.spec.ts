@@ -8,9 +8,8 @@ describe('HistoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HistoryComponent ]
-    })
-    .compileComponents();
+      declarations: [HistoryComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HistoryComponent);
     component = fixture.componentInstance;

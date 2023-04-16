@@ -1,4 +1,4 @@
-﻿import { TwitchChannelInfo } from "./twitch.interface";
+﻿import { TwitchChannelInfo } from './twitch.interface';
 
 export interface TwitchState {
   token: string | null;

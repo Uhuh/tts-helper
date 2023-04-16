@@ -1,8 +1,12 @@
-import { Injectable } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { selectIsTokenValid, selectTwitchChannelInfo, selectTwitchToken } from "../state/twitch/twitch.selectors";
-import { TwitchApi } from "../api/twitch.api";
-import { updateChannelInfo } from "../state/twitch/twitch.actions";
+import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
+import {
+  selectIsTokenValid,
+  selectTwitchChannelInfo,
+  selectTwitchToken,
+} from '../state/twitch/twitch.selectors';
+import { TwitchApi } from '../api/twitch.api';
+import { updateChannelInfo } from '../state/twitch/twitch.actions';
 
 @Injectable()
 export class TwitchService {
@@ -17,20 +21,20 @@ export class TwitchService {
 
   signOut() {
     this.twitchApi.updateToken('');
-    this.store.dispatch(updateChannelInfo(
-      {
+    this.store.dispatch(
+      updateChannelInfo({
         channelInfo: {
           channelId: '',
-          username: ''
-        }
+          username: '',
+        },
       })
     );
   }
-  
+
   updateToken(token: string) {
     return this.twitchApi.updateToken(token);
   }
-  
+
   getChannelInfo() {}
   validateToken(token: string) {}
 }

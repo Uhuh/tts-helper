@@ -1,5 +1,8 @@
 import { Component, Input, OnDestroy } from '@angular/core';
-import { AuditItem, AuditState, } from '../../../state/history/history-item.interface';
+import {
+  AuditItem,
+  AuditState,
+} from '../../../state/history/history-item.interface';
 import { invoke } from '@tauri-apps/api';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from 'src/app/shared/services/history.service';
@@ -42,7 +45,7 @@ export class HistoryItemComponent implements OnDestroy {
   get playing() {
     return this.audit.state === AuditState.playing;
   }
-  
+
   get finished() {
     return this.audit.state === AuditState.finished;
   }
@@ -50,10 +53,10 @@ export class HistoryItemComponent implements OnDestroy {
   get skipped() {
     return this.audit.state === AuditState.skipped;
   }
-  
+
   requeue() {
     this.historyService.updateHistory(this.audit.id, AuditState.playing);
-    
+
     invoke('play_tts', {
       request: {
         id: this.audit.id,
@@ -63,18 +66,17 @@ export class HistoryItemComponent implements OnDestroy {
           ['text', this.audit.text],
         ],
       },
-    })
-      .catch((e) => {
-        console.error(`Error invoking play_tts: ${e}`);
+    }).catch((e) => {
+      console.error(`Error invoking play_tts: ${e}`);
 
-        this.snackbar.open(
-          'Oops! We encountered an error while playing that.',
-          'Dismiss',
-          {
-            panelClass: 'notification-error',
-          }
-        );
-      });
+      this.snackbar.open(
+        'Oops! We encountered an error while playing that.',
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        }
+      );
+    });
   }
 
   skip() {

@@ -1,29 +1,27 @@
 <div class="header">
-  <span>
-    Twitch Settings
-  </span>
+  <span> Twitch Settings </span>
 </div>
 <div class="section">
   <div class="sub-header">
     <label>Connection Status</label>
     <div class="action-row">
-      <span class="twitch-status" [ngClass]="{valid: isTokenValid}">
+      <span class="twitch-status" [ngClass]="{ valid: isTokenValid }">
         {{ connectionStatus }}
       </span>
-      <a target="_blank" [href]="loginUrl" class="twitch-auth" *ngIf="!isTokenValid">
+      <a
+        target="_blank"
+        [href]="loginUrl"
+        class="twitch-auth"
+        *ngIf="!isTokenValid"
+      >
         authorize
       </a>
-      <div
-        class="twitch-auth"
-        *ngIf="isTokenValid"
-        (click)="signOut()"
-      >
+      <div class="twitch-auth" *ngIf="isTokenValid" (click)="signOut()">
         sign-out
       </div>
     </div>
     <p>{{ connectionMessage }}</p>
   </div>
-  
 </div>
 <div class="section">
   <div class="sub-header">
@@ -35,6 +33,10 @@
   <div class="sub-header">
     <label>Bits character limit</label>
     <p>The max allowed characters we'll play for you!</p>
-    <app-input placeholder="Set max char limit" type="number" [control]="bitsCharControl"></app-input>
+    <app-input
+      placeholder="Set max char limit"
+      type="number"
+      [control]="bitsCharControl"
+    ></app-input>
   </div>
 </div>

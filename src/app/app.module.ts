@@ -6,14 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { NavModule } from './shared/components/nav/nav.module';
 import { StoreModule } from '@ngrx/store';
 import { historyReducer } from './shared/state/history/history.reducers';
-import { TwitchService } from "./shared/services/twitch.service";
-import { LOCAL_STORAGE } from "./shared/tokens/localStorage.token";
-import { twitchReducer } from "./shared/state/twitch/twitch.reducers";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { TwitchApi } from "./shared/api/twitch.api";
-import { HttpClientModule } from "@angular/common/http";
-import { TwitchPubSub } from "./shared/services/twitch-pubsub";
-import { HistoryService } from "./shared/services/history.service";
+import { TwitchService } from './shared/services/twitch.service';
+import { LOCAL_STORAGE } from './shared/tokens/localStorage.token';
+import { twitchReducer } from './shared/state/twitch/twitch.reducers';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { TwitchApi } from './shared/api/twitch.api';
+import { HttpClientModule } from '@angular/common/http';
+import { TwitchPubSub } from './shared/services/twitch-pubsub';
+import { HistoryService } from './shared/services/history.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +21,10 @@ import { HistoryService } from "./shared/services/history.service";
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot({ historyState: historyReducer, twitchState: twitchReducer }),
+    StoreModule.forRoot({
+      historyState: historyReducer,
+      twitchState: twitchReducer,
+    }),
     BrowserAnimationsModule,
     MatSnackBarModule,
     NavModule,
@@ -33,8 +36,8 @@ import { HistoryService } from "./shared/services/history.service";
     HistoryService,
     {
       provide: LOCAL_STORAGE,
-      useValue: window.localStorage
-    }
+      useValue: window.localStorage,
+    },
   ],
   bootstrap: [AppComponent],
 })

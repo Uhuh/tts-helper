@@ -1,16 +1,22 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { combineLatest, Subject, takeUntil } from 'rxjs';
-import { TwitchService } from "../../shared/services/twitch.service";
-import { listen } from "@tauri-apps/api/event";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { FormControl } from "@angular/forms";
+import { TwitchService } from '../../shared/services/twitch.service';
+import { listen } from '@tauri-apps/api/event';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormControl } from '@angular/forms';
 
 export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
 @Component({
   selector: 'app-twitch',
   templateUrl: './twitch.component.html',
   styleUrls: ['./twitch.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class TwitchComponent implements OnInit, OnDestroy {
   private readonly destroyed$ = new Subject<void>();
@@ -23,18 +29,21 @@ export class TwitchComponent implements OnInit, OnDestroy {
 
   bitsControl = new FormControl('');
   bitsCharControl = new FormControl('');
-  
+
   connectionStatus: ConnectionType = 'Disconnected';
   connectionMessage = '';
   isTokenValid = false;
   constructor(
     private readonly twitchService: TwitchService,
     private readonly snackbar: MatSnackBar,
-    private readonly ref: ChangeDetectorRef,
+    private readonly ref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    combineLatest([this.twitchService.isTokenValid$, this.twitchService.twitchToken$])
+    combineLatest([
+      this.twitchService.isTokenValid$,
+      this.twitchService.twitchToken$,
+    ])
       .pipe(takeUntil(this.destroyed$))
       .subscribe(([isTokenValid, token]) => {
         this.isTokenValid = isTokenValid;
@@ -43,42 +52,44 @@ export class TwitchComponent implements OnInit, OnDestroy {
           this.connectionMessage = `You've been disconnected. You'll need to sign-in again to reconnect your Twitch account.`;
         } else if (token && this.isTokenValid) {
           this.connectionStatus = 'Connected';
-          this.connectionMessage = `Your Twitch account is currently connected with TTS Helper.`
+          this.connectionMessage = `Your Twitch account is currently connected with TTS Helper.`;
         } else {
           this.connectionStatus = 'Expired';
-          this.connectionMessage = `You haven't used the app for a long time, to keep your account secure we time out our sessions after two weeks of no activity.`
+          this.connectionMessage = `You haven't used the app for a long time, to keep your account secure we time out our sessions after two weeks of no activity.`;
         }
-        
+
         this.ref.detectChanges();
       });
-    
+
     listen('access-token', (authData) => {
-      const { token, provider } = authData.payload as { token: string, provider: 'twitch' | 'youtube' };
+      const { token, provider } = authData.payload as {
+        token: string;
+        provider: 'twitch' | 'youtube';
+      };
 
       if (provider !== 'twitch') {
         return;
       }
 
       this.twitchService.updateToken(token);
-    })
-      .catch(e => {
-        console.error('Encountered issue getting access token.', e);
+    }).catch((e) => {
+      console.error('Encountered issue getting access token.', e);
 
-        this.snackbar.open(
-          'Oops! We encountered an error while authorizing...',
-          'Dismiss',
-          {
-            panelClass: 'notification-error',
-          }
-        );
-      });
+      this.snackbar.open(
+        'Oops! We encountered an error while authorizing...',
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        }
+      );
+    });
   }
 
   signOut() {
     this.twitchService.signOut();
     this.ref.detectChanges();
   }
-  
+
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();

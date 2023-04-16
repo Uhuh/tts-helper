@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectAuditItems } from '../state/history/history.selectors';
-import { AuditItem, AuditSource, AuditState } from '../state/history/history-item.interface';
+import {
+  AuditItem,
+  AuditSource,
+  AuditState,
+} from '../state/history/history-item.interface';
 import {
   addHistory,
   updateHistoryStatus,
 } from '../state/history/history.actions';
 import { listen } from '@tauri-apps/api/event';
-import { invoke } from "@tauri-apps/api/tauri";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { invoke } from '@tauri-apps/api/tauri';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class HistoryService {
@@ -27,7 +31,7 @@ export class HistoryService {
       );
     });
   }
-  
+
   playTts(text: string, username: string, source: AuditSource) {
     invoke('play_tts', {
       /**

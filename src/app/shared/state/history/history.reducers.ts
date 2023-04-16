@@ -12,7 +12,10 @@ export const historyReducer = createReducer(
   on(updateHistoryStatus, (state, { id, auditState }) => {
     const item = state.auditItems.find((a) => a.id === id);
 
-    if (!item || item.state === AuditState.skipped && auditState === AuditState.finished) {
+    if (
+      !item ||
+      (item.state === AuditState.skipped && auditState === AuditState.finished)
+    ) {
       return state;
     }
 
