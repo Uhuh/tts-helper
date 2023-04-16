@@ -3,7 +3,7 @@
 }
 
 button {
-  background-color: var(--sidebar);
+  background-color: var(--background);
   border: 1px solid var(--text);
   color: var(--text);
   font-weight: 700;
@@ -17,7 +17,7 @@ button {
   
   &:hover {
     color: white;
-    background-color: var(--text-inactive);
+    background-color: var(--sidebar);
   }
 }
 
@@ -25,6 +25,6 @@ button {
   cursor: not-allowed;
   filter: brightness(0.6);
   &:hover {
-    background-color: var(--text-inactive);
+    background-color: var(--sidebar);
   }
 }
