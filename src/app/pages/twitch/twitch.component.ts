@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { TwitchService } from "../../shared/services/twitch.service";
 import { listen } from "@tauri-apps/api/event";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { FormControl } from "@angular/forms";
 
+export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
 @Component({
   selector: 'app-twitch',
   templateUrl: './twitch.component.html',
@@ -19,6 +21,11 @@ export class TwitchComponent implements OnInit, OnDestroy {
     'channel%3Aread%3Aredemptions+channel%3Aread%3Asubscriptions+chat%3Aread';
   readonly loginUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${this.clientId}&redirect_uri=${this.redirect}&response_type=token&scope=${this.scopes}`;
 
+  bitsControl = new FormControl('');
+  bitsCharControl = new FormControl('');
+  
+  connectionStatus: ConnectionType = 'Disconnected';
+  connectionMessage = '';
   isTokenValid = false;
   constructor(
     private readonly twitchService: TwitchService,
@@ -27,10 +34,21 @@ export class TwitchComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.twitchService.isTokenValid$
+    combineLatest([this.twitchService.isTokenValid$, this.twitchService.twitchToken$])
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(isTokenValid => {
+      .subscribe(([isTokenValid, token]) => {
         this.isTokenValid = isTokenValid;
+        if (!token) {
+          this.connectionStatus = 'Disconnected';
+          this.connectionMessage = `You've been disconnected. You'll need to sign-in again to reconnect your Twitch account.`;
+        } else if (token && this.isTokenValid) {
+          this.connectionStatus = 'Connected';
+          this.connectionMessage = `Your Twitch account is currently connected with TTS Helper.`
+        } else {
+          this.connectionStatus = 'Expired';
+          this.connectionMessage = `You haven't used the app for a long time, to keep your account secure we time out our sessions after two weeks of no activity.`
+        }
+        
         this.ref.detectChanges();
       });
     

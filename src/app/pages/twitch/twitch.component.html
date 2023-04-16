@@ -1,38 +1,40 @@
 <div class="header">
-  <h1>
-    Twitch customization
-  </h1>
-  <div class="header-info">
-    <p>Manage how users interact with your TTS via Twitch chat.</p>
-    <div class="twitch-authed" [ngClass]="{valid: isTokenValid}">
-      <p>Connection</p>
+  <span>
+    Twitch Settings
+  </span>
+</div>
+<div class="section">
+  <div class="sub-header">
+    <label>Connection Status</label>
+    <div class="action-row">
+      <span class="twitch-status" [ngClass]="{valid: isTokenValid}">
+        {{ connectionStatus }}
+      </span>
+      <a target="_blank" [href]="loginUrl" class="twitch-auth" *ngIf="!isTokenValid">
+        authorize
+      </a>
+      <div
+        class="twitch-auth"
+        *ngIf="isTokenValid"
+        (click)="signOut()"
+      >
+        sign-out
+      </div>
     </div>
+    <p>{{ connectionMessage }}</p>
   </div>
+  
 </div>
-<div class="warning">
-  <span>
-    By clicking <code>Connect Twitch</code> you'll be directed to your browser
-    to authorize the application.
-  </span>
-  <span>After authorizing your URL will contain a sensitive code.</span>
-  <span>
-    This code is so we can confirm with Twitch you authorized with us, and then
-    allow chat to interact with us!
-  </span>
-  <span>
-    We recommend you do this off stream or not in public view until you close
-    the tab.
-  </span>
-</div>
-<div class="action-row">
-  <a target="_blank" [href]="loginUrl" class="twitch-auth" *ngIf="!isTokenValid">
-    <app-button> Connect Twitch </app-button>
-  </a>
-  <app-button
-    *ngIf="isTokenValid"
-    class="twitch-signout"
-    (click)="signOut()"
-  >
-    Signout
-  </app-button>
+<div class="section">
+  <div class="sub-header">
+    <label>Minimum bits</label>
+    <p>The amount of bits required to trigger TTS</p>
+    <app-input placeholder="Set min bits" [control]="bitsControl"></app-input>
+  </div>
+
+  <div class="sub-header">
+    <label>Bits character limit</label>
+    <p>The max allowed characters we'll play for you!</p>
+    <app-input placeholder="Set max char limit" type="number" [control]="bitsCharControl"></app-input>
+  </div>
 </div>

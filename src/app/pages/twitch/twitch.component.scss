@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
 }
 
 .header-info {
@@ -12,38 +13,27 @@
 
 .action-row {
   display: flex;
-  justify-content: end;
-
-  .twitch-auth {
-  }
-  
-  .twitch-signout {
-  }
+  align-items: center;
+  gap: 10px;
+  margin: 0.5rem 0;
 }
 
-.twitch-authed {
-  border-radius: 4px;
-  padding: 8px 16px;
-  
-  p {
-    margin: 0;
-  }
-  
-  border: 2px solid var(--red);
-  background-color: var(--off-red-bg);
+.twitch-status {
+  font-size: 20px;
+  color: var(--red);
 }
 
 .valid {
-  border: 2px solid var(--green);
-  background-color: var(--off-green-bg);
+  color: var(--green);
 }
 
-.warning {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 15px;
-  border-radius: 6px;
-  background-color: var(--sidebar);
-  border: 2px solid var(--red);
+.twitch-auth {
+  color: var(--header);
+  padding: 4px 8px;
+  border-radius: 4px;
+  
+  &:hover {
+    cursor: pointer;
+    background-color: var(--sidebar);
+  }
 }
