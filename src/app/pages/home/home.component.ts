@@ -26,45 +26,8 @@ export class HomeComponent {
   speak(): void {
     const { value } = this.ttsControl;
     this.ttsControl.setValue('');
-
-    invoke('play_tts', {
-      request: {
-        url: 'https://api.streamelements.com/kappa/v2/speech',
-        params: [
-          ['voice', 'Brian'],
-          ['text', value],
-        ],
-      },
-    })
-      .then((id) => {
-        if (typeof id != 'number') {
-          throw new Error(`Unexpected response type: ${typeof id}`);
-        }
-        
-        if (this.disableHistory.value) {
-          return console.info('History logging for local TTS is disabled.');
-        }
-
-        this.historyService.addHistory({
-          id,
-          createdAt: new Date(),
-          source: 'tts-helper',
-          text: value ?? '[No TTS text found]',
-          username: '',
-          state: AuditState.playing,
-        });
-      })
-      .catch((e) => {
-        console.error(`Error invoking play_tts: ${e}`);
-
-        this.snackbar.open(
-          'Oops! We encountered an error while playing that.',
-          'Dismiss',
-          {
-            panelClass: 'notification-error',
-          }
-        );
-      });
+    
+    this.historyService.playTts(value ?? 'Oops no rizz!', '', 'tts-helper');
   }
 
   get isDisabled() {
