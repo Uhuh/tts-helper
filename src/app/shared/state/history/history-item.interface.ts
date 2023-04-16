@@ -4,11 +4,13 @@ export enum AuditState {
   finished,
 }
 
+export type AuditSource = 'youtube' | 'twitch' | 'tts-helper';
+
 export interface AuditItem {
   id: number;
   username: string;
   text: string;
-  source: 'youtube' | 'twitch' | 'tts-helper';
+  source: AuditSource;
   createdAt: Date;
   state: AuditState;
 }
