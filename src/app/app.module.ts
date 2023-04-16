@@ -12,6 +12,8 @@ import { twitchReducer } from "./shared/state/twitch/twitch.reducers";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { TwitchApi } from "./shared/api/twitch.api";
 import { HttpClientModule } from "@angular/common/http";
+import { TwitchPubSub } from "./shared/services/twitch-pubsub";
+import { HistoryService } from "./shared/services/history.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,6 +29,8 @@ import { HttpClientModule } from "@angular/common/http";
   providers: [
     TwitchService,
     TwitchApi,
+    TwitchPubSub,
+    HistoryService,
     {
       provide: LOCAL_STORAGE,
       useValue: window.localStorage
