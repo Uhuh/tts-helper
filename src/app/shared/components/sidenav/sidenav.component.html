@@ -5,23 +5,23 @@
   <div class="nav-groups">
     <div class="nav-group">
       <span class="nav-header">My Connections</span>
-      <a class="nav-link" [routerLink]="['twitch']">
+      <a class="nav-link" [routerLink]="['twitch']" routerLinkActive="active">
         <img src="assets/twitch.svg">
         <span>Twitch</span>
       </a>
-      <a class="nav-link" [routerLink]="['youtube']">
+      <a class="nav-link" [routerLink]="['youtube']" routerLinkActive="active">
         <img src="assets/youtube.svg">
         <span>Youtube</span>
       </a>
     </div>
     <div class="nav-group">
       <span class="nav-header">Text to Speech</span>
-      <a class="nav-link" [routerLink]="['queue']">
-        <img src="assets/clock.svg">
+      <a class="nav-link" [routerLink]="['queue']" routerLinkActive="active">
+        <img class="tts-icon" src="assets/clock.svg">
         <span>Queue</span>
       </a>
-      <a class="nav-link" [routerLink]="['history']">
-        <img src="assets/history.svg">
+      <a class="nav-link" [routerLink]="['history']" routerLinkActive="active">
+        <img class="tts-icon" src="assets/history.svg">
         <span>History</span>
       </a>
     </div>
