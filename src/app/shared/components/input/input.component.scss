@@ -11,8 +11,8 @@ input {
   outline: unset;
   color: var(--text);
   background-color: var(--sidebar);
+  border: 1px solid var(--header);
   border-color: var(--text);
-  border-style: unset;
 
   &::placeholder {
     color: var(--text-inactive);
