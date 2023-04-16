@@ -1,45 +1,3 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
-@use './theming/palette';
-// Plus imports for other components in your app.
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat.core();
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$tts-helper-primary: mat.define-palette(palette.$md-dark-purple);
-$tts-helper-accent: mat.define-palette(
-  palette.$md-light-purple,
-  A200,
-  A100,
-  A400
-);
-
-// The warn palette is optional (defaults to red).
-$tts-helper-warn: mat.define-palette(mat.$red-palette);
-
-// Create the theme object. A theme consists of configurations for individual
-// theming systems such as "color" or "typography".
-$tts-helper-theme: mat.define-dark-theme(
-  (
-    color: (
-      primary: $tts-helper-primary,
-      accent: $tts-helper-accent,
-      warn: $tts-helper-warn,
-    ),
-  )
-);
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-component-themes($tts-helper-theme);
-
 :root {
   --background: #201E25;
   --sidebar: #2B2930;
@@ -50,8 +8,8 @@ $tts-helper-theme: mat.define-dark-theme(
   --green: #24F92D;
   
   --text: #FFFFFF;
-  --text-inactive: #FFFFFF60;
-  --header: #FFFFFF80;
+  --text-inactive: rgba(255, 255, 255, 0.6);
+  --header: rgba(255, 255, 255, 0.8);
   
   --dark-purple: #211742;
   --bright-purple: #7b61ff;
@@ -108,49 +66,27 @@ a {
   }
 }
 
-.links {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 5px;
-  transition: all 0.1s;
-
-  .link {
-    text-align: center;
-    padding: 10px;
-    border-radius: 4px;
-    border: 2px solid var(--text-inactive);
-    color: white;
-
-    transition: all 0.2s;
-    &:hover {
-      border: 2px solid var(--dark-purple);
-      background-color: var(--bright-purple);
-      color: var(--text);
-    }
-  }
-
-  a:hover {
-    transition: all 0.1s;
-    color: var(--);
-  }
-}
-
 .header {
-  border-bottom: 2px solid var(--sidebar);
-  margin-bottom: 10px;
+  font-weight: 400;
+  font-size: 28px;
+  margin: 2rem 0;
 }
 
 .sub-header {
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  margin: 1.5rem 0;
   
   label {
     font-size: 20px;
+    color: var(--header);
   }
   
   p {
     margin: 0;
-    font-size: 14px;
+    font-size: 16px;
     color: var(--text-inactive);
   }
 }
@@ -158,11 +94,6 @@ a {
 .section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 10px;
-  padding-bottom: 20px;
-  
-  border-bottom: 2px solid var(--text-inactive);
 }
 
 .full-width {
