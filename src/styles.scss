@@ -1,16 +1,55 @@
-:root {
-  --background: #201E25;
-  --sidebar: #2B2930;
+@use '@angular/material' as mat;
+@include mat.core();
 
-  --blue: #0075FF;
-  --purple: #5918E1;
-  --yellow: #F9BD24;
-  --green: #24F92D;
-  
-  --text: #FFFFFF;
+$my-app-accent: mat.define-palette(mat.$grey-palette, A200, A100, A400);
+
+$tts-helper-palette: (
+  50: #e4e4e5,
+  100: #bcbcbe,
+  200: #908f92,
+  300: #636266,
+  400: #414046,
+  500: #201e25,
+  600: #1c1a21,
+  700: #18161b,
+  800: #131216,
+  900: #0b0a0d,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+  ),
+);
+
+$my-app-warn: mat.define-palette(mat.$red-palette, 800);
+$my-app-primary: mat.define-palette($tts-helper-palette, 600);
+
+$my-app-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $my-app-primary,
+      accent: $my-app-accent,
+      warn: $my-app-warn,
+    ),
+  )
+);
+
+@include mat.all-component-themes($my-app-theme);
+
+:root {
+  --background: #201e25;
+  --sidebar: #2b2930;
+
+  --blue: #0075ff;
+  --purple: #5918e1;
+  --yellow: #f9bd24;
+  --green: #24f92d;
+
+  --text: #ffffff;
   --text-inactive: rgba(255, 255, 255, 0.6);
   --header: rgba(255, 255, 255, 0.8);
-  
+
   --dark-purple: #211742;
   --bright-purple: #7b61ff;
   --red: #b40000;
@@ -78,12 +117,12 @@ a {
   gap: 12px;
 
   margin: 1.5rem 0;
-  
+
   label {
     font-size: 20px;
     color: var(--header);
   }
-  
+
   p {
     margin: 0;
     font-size: 16px;
@@ -120,10 +159,28 @@ a {
   background: var(--text-inactive);
 }
 
-.mat-drawer-backdrop.mat-drawer-shown {
-  background-color: rgba(black, 0.4);
-}
-
 a {
   color: var(--text);
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--sidebar);
+  border-radius: 5px;
+  border: 1px solid var(--text);
+  padding: 0;
+}
+
+.mat-mdc-form-field-flex {
+  height: 40px;
+}
+
+.mdc-text-field--no-label:not(.mdc-text-field--outlined):not(
+    .mdc-text-field--textarea
+  )
+  .mat-mdc-form-field-infix {
+  padding: 10px;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  height: 0;
 }
