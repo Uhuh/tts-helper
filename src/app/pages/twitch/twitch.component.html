@@ -28,7 +28,10 @@
     <label>Redeem</label>
     <p>This redeem will trigger TTS with user input.</p>
     <mat-form-field>
-      <mat-select placeholder="Select a redeem option">
+      <mat-select
+        placeholder="Select a redeem option"
+        [formControl]="redeemControl"
+      >
         <mat-option *ngFor="let redeem of redeems" [value]="redeem.id">
           {{ redeem.title }}
         </mat-option>

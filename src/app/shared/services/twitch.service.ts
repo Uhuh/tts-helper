@@ -2,12 +2,17 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   selectIsTokenValid,
+  selectSelectedRedeem,
   selectTwitchChannelInfo,
   selectTwitchRedeems,
   selectTwitchToken,
 } from '../state/twitch/twitch.selectors';
 import { TwitchApi } from '../api/twitch.api';
-import { updateChannelInfo } from '../state/twitch/twitch.actions';
+import {
+  updateChannelInfo,
+  updateSelectedRedeem,
+} from '../state/twitch/twitch.actions';
+import { TwitchRedeemInfo } from '../state/twitch/twitch.interface';
 
 @Injectable()
 export class TwitchService {
@@ -15,6 +20,7 @@ export class TwitchService {
   public readonly isTokenValid$ = this.store.select(selectIsTokenValid);
   public readonly channelInfo$ = this.store.select(selectTwitchChannelInfo);
   public readonly redeems$ = this.store.select(selectTwitchRedeems);
+  public readonly selectedRedeem$ = this.store.select(selectSelectedRedeem);
 
   constructor(
     private readonly store: Store,
@@ -42,6 +48,9 @@ export class TwitchService {
     return this.twitchApi.updateToken(token);
   }
 
-  getChannelInfo() {}
-  validateToken(token: string) {}
+  updateSelectedRedeem(redeem: TwitchRedeemInfo | null) {
+    this.store.dispatch(
+      updateSelectedRedeem({ selectedRedeem: redeem || null })
+    );
+  }
 }

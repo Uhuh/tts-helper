@@ -2,7 +2,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TwitchService } from './twitch.service';
 import { Subject, switchMap, takeUntil } from 'rxjs';
-import { TwitchChannelInfo } from '../state/twitch/twitch.interface';
+import {
+  TwitchChannelInfo,
+  TwitchRedeemInfo,
+} from '../state/twitch/twitch.interface';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient } from '@twurple/chat';
@@ -19,6 +22,7 @@ export class TwitchPubSub implements OnDestroy {
   channelInfo?: TwitchChannelInfo;
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
+  selectedRedeem: TwitchRedeemInfo | null = null;
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
@@ -39,10 +43,9 @@ export class TwitchPubSub implements OnDestroy {
       )
       .subscribe({
         next: (token) => {
+          this.cleanupListeners();
+
           if (!token || !this.channelInfo?.channelId) {
-            this.listener?.stop();
-            this.chat?.removeListener(this.onMessageListener);
-            this.listener = null;
             return;
           }
 
@@ -82,6 +85,10 @@ export class TwitchPubSub implements OnDestroy {
           console.error(`Failed to get users Twitch token`, err);
         },
       });
+
+    this.twitchService.selectedRedeem$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((redeem) => (this.selectedRedeem = redeem));
   }
 
   onMessage(user: string, text: string) {
@@ -97,7 +104,7 @@ export class TwitchPubSub implements OnDestroy {
    * @TODO - Handle redeems by using users selected redeem from twitch settings
    */
   onRedeem(redeem: TwitchRedeem) {
-    if (redeem.rewardTitle === 'ChatTTS') {
+    if (redeem.rewardId === this.selectedRedeem?.id) {
       const trimmedText = redeem.input;
       this.historyService.playTts(
         trimmedText,
@@ -105,18 +112,16 @@ export class TwitchPubSub implements OnDestroy {
         'twitch'
       );
     }
-
-    console.log(redeem);
-    console.log(redeem.userDisplayName);
-    console.log(redeem.input);
-    console.log(redeem.rewardTitle);
   }
 
-  ngOnDestroy() {
+  cleanupListeners() {
     this.chat?.removeListener(this.onMessageListener);
     this.listener?.removeListener(this.redeemListener);
     this.listener?.stop();
+  }
 
+  ngOnDestroy() {
+    this.cleanupListeners();
     this.destroyed$.next();
     this.destroyed$.complete();
   }

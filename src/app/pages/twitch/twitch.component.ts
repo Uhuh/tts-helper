@@ -32,6 +32,7 @@ export class TwitchComponent implements OnInit, OnDestroy {
 
   bitsControl = new FormControl('');
   bitsCharControl = new FormControl('');
+  redeemControl = new FormControl('');
 
   connectionStatus: ConnectionType = 'Disconnected';
   connectionMessage = '';
@@ -67,6 +68,19 @@ export class TwitchComponent implements OnInit, OnDestroy {
     this.twitchService.redeems$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((redeems) => (this.redeems = redeems));
+
+    this.twitchService.selectedRedeem$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((redeem) => {
+        this.redeemControl.setValue(redeem?.id ?? '');
+      });
+
+    this.redeemControl.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((redeem) => {
+        const selectedRedeem = this.redeems.find((r) => r.id === redeem);
+        this.twitchService.updateSelectedRedeem(selectedRedeem || null);
+      });
 
     listen('access-token', (authData) => {
       const { token, provider } = authData.payload as {
