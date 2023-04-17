@@ -127,6 +127,8 @@ export class TwitchApi implements OnDestroy {
               title: r.title,
             }));
 
+          console.log(redeems);
+
           this.store.dispatch(updateChannelRedeems({ redeems }));
         },
 
