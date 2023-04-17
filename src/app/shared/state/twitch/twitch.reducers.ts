@@ -2,6 +2,7 @@
 import { createReducer, on } from '@ngrx/store';
 import {
   updateChannelInfo,
+  updateChannelRedeems,
   updateToken,
   updateTokenValidity,
 } from './twitch.actions';
@@ -16,6 +17,7 @@ const initialState: TwitchState = {
   channelInfo: {
     channelId: '',
     username: '',
+    redeems: [],
   },
 };
 
@@ -33,6 +35,13 @@ export const twitchReducer = createReducer(
     ...state,
     channelInfo: {
       ...channelInfo,
+    },
+  })),
+  on(updateChannelRedeems, (state, { redeems }) => ({
+    ...state,
+    channelInfo: {
+      ...state.channelInfo,
+      redeems,
     },
   }))
 );

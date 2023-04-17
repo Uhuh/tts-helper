@@ -1,6 +1,14 @@
-﻿export interface TwitchChannelInfo {
+﻿export interface TwitchRedeemInfo {
+  id: string;
+  title: string;
+  cost: number;
+  prompt: string;
+}
+
+export interface TwitchChannelInfo {
   channelId: string;
   username: string;
+  redeems: TwitchRedeemInfo[];
 }
 
 export interface ValidUser {

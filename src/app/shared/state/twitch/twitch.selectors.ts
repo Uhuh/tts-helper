@@ -16,3 +16,7 @@ export const selectTwitchChannelInfo = createSelector(
   _selectTwitchState,
   (state) => state.channelInfo
 );
+export const selectTwitchRedeems = createSelector(
+  selectTwitchChannelInfo,
+  (state) => state.redeems
+);

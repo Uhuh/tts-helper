@@ -4,15 +4,22 @@ import { LOCAL_STORAGE } from '../tokens/localStorage.token';
 import { Observable } from 'rxjs';
 import {
   updateChannelInfo,
+  updateChannelRedeems,
   updateToken,
   updateTokenValidity,
 } from '../state/twitch/twitch.actions';
 import { Store } from '@ngrx/store';
-import { ValidUser } from '../state/twitch/twitch.interface';
+import { TwitchRedeemInfo, ValidUser } from '../state/twitch/twitch.interface';
+import { TwitchRedeem } from './twitch.interface';
+import { OnDestroy } from '@angular/core';
+import { switchMap, Subject, takeUntil } from 'rxjs';
 
 @Injectable()
-export class TwitchApi {
+export class TwitchApi implements OnDestroy {
+  private readonly destroyed$ = new Subject<void>();
+  private readonly apiUrl = 'https://api.twitch.tv/helix';
   private readonly url = 'https://id.twitch.tv';
+  private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
   private readonly storageKey = 'twitchAccessToken';
   private headers: HttpHeaders;
 
@@ -24,9 +31,40 @@ export class TwitchApi {
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `OAuth ${this.localStorage.getItem(this.storageKey)}`,
+      'Client-Id': this.clientId,
     });
 
     this.getTokenFromStorage();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  /**
+   * Get channels possible redeems so they can configure TTS for each redeem.
+   * @param broadcasterId
+   * @returns Array of redeems that belong to the broadcaster id.
+   */
+  getChannelRedeemCommands(
+    broadcasterId: string
+  ): Observable<{ data: TwitchRedeem[] }> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.localStorage.getItem(this.storageKey)}`,
+      'Client-Id': this.clientId,
+    });
+
+    return this.http.get<{ data: any[] }>(
+      `${this.apiUrl}/channel_points/custom_rewards`,
+      {
+        headers,
+        params: {
+          broadcaster_id: broadcasterId,
+        },
+      }
+    );
   }
 
   getTokenFromStorage() {
@@ -58,30 +96,59 @@ export class TwitchApi {
   }
 
   handleValidateToken(token: string | null) {
-    return this.validateToken(token ?? '').subscribe({
-      next: (validData: ValidUser) => {
-        this.store.dispatch(updateTokenValidity({ isTokenValid: true }));
-        this.updateStorage(token);
-        this.store.dispatch(updateToken({ token }));
-        this.store.dispatch(
-          updateChannelInfo({
-            channelInfo: {
-              channelId: validData.user_id,
-              username: validData.login,
-            },
-          })
-        );
-      },
-      error: (err) => {
-        console.error('Failed to validate users access token.', err);
-        this.updateStorage(null);
-        this.store.dispatch(updateToken({ token: null }));
-        this.store.dispatch(updateTokenValidity({ isTokenValid: false }));
-      },
-    });
+    return this.validateToken()
+      .pipe(
+        takeUntil(this.destroyed$),
+        switchMap((validUser: ValidUser) => {
+          this.updateStorage(token);
+          this.store.dispatch(updateTokenValidity({ isTokenValid: true }));
+          this.store.dispatch(updateToken({ token }));
+          this.store.dispatch(
+            updateChannelInfo({
+              channelInfo: {
+                channelId: validUser.user_id,
+                username: validUser.login,
+                redeems: [],
+              },
+            })
+          );
+
+          return this.getChannelRedeemCommands(validUser.user_id);
+        })
+      )
+      .subscribe({
+        next: (twitchRedeems) => {
+          const redeems = twitchRedeems.data
+            .filter((r) => r.is_enabled)
+            .map<TwitchRedeemInfo>((r) => ({
+              cost: r.cost ?? 0,
+              id: r.id,
+              prompt: r.prompt,
+              title: r.title,
+            }));
+
+          this.store.dispatch(updateChannelRedeems({ redeems }));
+        },
+
+        error: (err) => {
+          console.error('Failed to validate users access token.', err);
+          this.updateStorage(null);
+          this.store.dispatch(updateToken({ token: null }));
+          this.store.dispatch(updateTokenValidity({ isTokenValid: false }));
+          this.store.dispatch(
+            updateChannelInfo({
+              channelInfo: {
+                channelId: '',
+                username: '',
+                redeems: [],
+              },
+            })
+          );
+        },
+      });
   }
 
-  validateToken(token: string): Observable<ValidUser> {
+  validateToken(): Observable<ValidUser> {
     return this.http.get<ValidUser>(`${this.url}/oauth2/validate`, {
       headers: this.headers,
     });

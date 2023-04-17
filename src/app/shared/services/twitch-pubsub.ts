@@ -7,6 +7,8 @@ import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient } from '@twurple/chat';
 import { HistoryService } from './history.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TwitchRedeem } from './twitch-pubsub.interface';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
@@ -17,18 +19,21 @@ export class TwitchPubSub implements OnDestroy {
   channelInfo?: TwitchChannelInfo;
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
+
+  // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
+  redeemListener?: any;
 
   constructor(
     private readonly twitchService: TwitchService,
-    private readonly historyService: HistoryService
+    private readonly historyService: HistoryService,
+    private readonly snackbar: MatSnackBar
   ) {
     this.twitchService.channelInfo$
       .pipe(
         takeUntil(this.destroyed$),
         switchMap((channelInfo) => {
           this.channelInfo = channelInfo;
-
           return this.twitchService.twitchToken$;
         })
       )
@@ -47,27 +52,31 @@ export class TwitchPubSub implements OnDestroy {
           this.listener = new EventSubWsListener({ apiClient });
           this.listener.start();
 
-          this.listener.onChannelSubscription(
-            this.channelInfo?.channelId ?? '',
-            (c) => {
-              console.log(`${c.userDisplayName} just subbed...`);
-            }
-          );
-
           this.chat = new ChatClient({
             authProvider,
             channels: [this.channelInfo.username],
           });
+
           this.chat.connect().catch((e) => {
             console.error(`Failed to connect to chat.`, this.channelInfo, e);
+
+            this.snackbar.open(
+              'Oops! We encountered an error connecting to Twitch.',
+              'Dismiss',
+              {
+                panelClass: 'notification-error',
+              }
+            );
           });
 
-          this.onMessageListener = this.chat.onMessage((_, user, text) =>
-            this.chatMessages(user, text)
+          this.redeemListener = this.listener.onChannelRedemptionAdd(
+            this.channelInfo.channelId ?? '',
+            (c) => this.onRedeem(c)
           );
-          this.chat.onSub((_, user, info, msg) => {
-            console.log(user, info, msg);
-          });
+
+          this.onMessageListener = this.chat.onMessage((_, user, text) =>
+            this.onMessage(user, text)
+          );
         },
         error: (err) => {
           console.error(`Failed to get users Twitch token`, err);
@@ -75,7 +84,7 @@ export class TwitchPubSub implements OnDestroy {
       });
   }
 
-  chatMessages(user: string, text: string) {
+  onMessage(user: string, text: string) {
     /**
      * @TODO - Setup state for global command and prefix.
      */
@@ -84,7 +93,30 @@ export class TwitchPubSub implements OnDestroy {
     }
   }
 
+  /**
+   * @TODO - Handle redeems by using users selected redeem from twitch settings
+   */
+  onRedeem(redeem: TwitchRedeem) {
+    if (redeem.rewardTitle === 'ChatTTS') {
+      const trimmedText = redeem.input;
+      this.historyService.playTts(
+        trimmedText,
+        redeem.userDisplayName,
+        'twitch'
+      );
+    }
+
+    console.log(redeem);
+    console.log(redeem.userDisplayName);
+    console.log(redeem.input);
+    console.log(redeem.rewardTitle);
+  }
+
   ngOnDestroy() {
+    this.chat?.removeListener(this.onMessageListener);
+    this.listener?.removeListener(this.redeemListener);
+    this.listener?.stop();
+
     this.destroyed$.next();
     this.destroyed$.complete();
   }

@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import {
   selectIsTokenValid,
   selectTwitchChannelInfo,
+  selectTwitchRedeems,
   selectTwitchToken,
 } from '../state/twitch/twitch.selectors';
 import { TwitchApi } from '../api/twitch.api';
@@ -13,6 +14,7 @@ export class TwitchService {
   public readonly twitchToken$ = this.store.select(selectTwitchToken);
   public readonly isTokenValid$ = this.store.select(selectIsTokenValid);
   public readonly channelInfo$ = this.store.select(selectTwitchChannelInfo);
+  public readonly redeems$ = this.store.select(selectTwitchRedeems);
 
   constructor(
     private readonly store: Store,
@@ -26,9 +28,14 @@ export class TwitchService {
         channelInfo: {
           channelId: '',
           username: '',
+          redeems: [],
         },
       })
     );
+  }
+
+  getChannelRedeemCommands(broadcasterId: string) {
+    return this.twitchApi.getChannelRedeemCommands(broadcasterId);
   }
 
   updateToken(token: string) {
