@@ -6,7 +6,7 @@
 </mat-toolbar>
 <mat-sidenav-container class="container">
   <mat-sidenav #nav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile">
-    <app-sidenav></app-sidenav>
+    <app-sidenav [isMobile]="isMobile" [nav]="nav"></app-sidenav>
   </mat-sidenav>
   <mat-sidenav-content class="content">
     <ng-content></ng-content>

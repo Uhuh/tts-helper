@@ -1,26 +1,46 @@
 <div class="wrapper">
-  <a [routerLink]="['home']">
+  <a [routerLink]="['home']" (click)="close()">
     <img class="icon" src="assets/tts-helper.svg" />
   </a>
   <div class="nav-groups">
     <div class="nav-group">
       <span class="nav-header">My Connections</span>
-      <a class="nav-link" [routerLink]="['twitch']" routerLinkActive="active">
+      <a
+        class="nav-link"
+        [routerLink]="['twitch']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
         <img src="assets/twitch.svg" />
         <span>Twitch</span>
       </a>
-      <a class="nav-link" [routerLink]="['youtube']" routerLinkActive="active">
+      <a
+        class="nav-link"
+        [routerLink]="['youtube']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
         <img src="assets/youtube.svg" />
         <span>Youtube</span>
       </a>
     </div>
     <div class="nav-group">
       <span class="nav-header">Text to Speech</span>
-      <a class="nav-link" [routerLink]="['queue']" routerLinkActive="active">
+      <a
+        class="nav-link"
+        [routerLink]="['queue']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
         <img class="tts-icon" src="assets/clock.svg" />
         <span>Queue</span>
       </a>
-      <a class="nav-link" [routerLink]="['history']" routerLinkActive="active">
+      <a
+        class="nav-link"
+        [routerLink]="['history']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
         <img class="tts-icon" src="assets/history.svg" />
         <span>History</span>
       </a>
