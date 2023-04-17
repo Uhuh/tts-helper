@@ -1,0 +1,22 @@
+<div class="section">
+  <div class="sub-header">
+    <label>Connection Status</label>
+    <div class="action-row">
+      <span class="twitch-status" [ngClass]="{ valid: isTokenValid }">
+        {{ connectionStatus }}
+      </span>
+      <a
+        target="_blank"
+        [href]="loginUrl"
+        class="twitch-auth"
+        *ngIf="!isTokenValid"
+      >
+        authorize
+      </a>
+      <div class="twitch-auth" *ngIf="isTokenValid" (click)="signOut()">
+        sign-out
+      </div>
+    </div>
+    <p>{{ connectionMessage }}</p>
+  </div>
+</div>
