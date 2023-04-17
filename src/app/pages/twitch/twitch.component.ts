@@ -10,6 +10,7 @@ import { TwitchService } from '../../shared/services/twitch.service';
 import { listen } from '@tauri-apps/api/event';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl } from '@angular/forms';
+import { TwitchRedeemInfo } from 'src/app/shared/state/twitch/twitch.interface';
 
 export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
 @Component({
@@ -24,8 +25,10 @@ export class TwitchComponent implements OnInit, OnDestroy {
   private readonly redirect = 'http://localhost:12583/auth/twitch';
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
   private readonly scopes =
-    'channel%3Aread%3Aredemptions+channel%3Aread%3Asubscriptions+chat%3Aread';
+    'channel%3Aread%3Aredemptions+channel%3Aread%3Asubscriptions+chat%3Aread+channel%3Amanage%3Aredemptions';
   readonly loginUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${this.clientId}&redirect_uri=${this.redirect}&response_type=token&scope=${this.scopes}`;
+
+  redeems: TwitchRedeemInfo[] = [];
 
   bitsControl = new FormControl('');
   bitsCharControl = new FormControl('');
@@ -60,6 +63,10 @@ export class TwitchComponent implements OnInit, OnDestroy {
 
         this.ref.detectChanges();
       });
+
+    this.twitchService.redeems$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((redeems) => (this.redeems = redeems));
 
     listen('access-token', (authData) => {
       const { token, provider } = authData.payload as {

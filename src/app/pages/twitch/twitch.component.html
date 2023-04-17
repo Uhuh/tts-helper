@@ -24,6 +24,18 @@
   </div>
 </div>
 <div class="section">
+  <div class="sub-header" *ngIf="redeems.length">
+    <label>Redeem</label>
+    <p>This redeem will trigger TTS with user input.</p>
+    <mat-form-field>
+      <mat-select placeholder="Select a redeem option">
+        <mat-option *ngFor="let redeem of redeems" [value]="redeem.id">
+          {{ redeem.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
   <div class="sub-header">
     <label>Minimum bits</label>
     <p>The amount of bits required to trigger TTS</p>
