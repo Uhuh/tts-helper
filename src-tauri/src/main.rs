@@ -24,7 +24,7 @@ async fn play_tts(
     app: AppHandle,
 ) -> ApiResult<u32> {
     let controller = Controller::default();
-    controller.set_padding(Duration::from_secs(1));
+    controller.set_padding(Duration::from_millis(500));
     let id = now_playing.add(request.clone(), controller.clone());
     let on_done = {
         let now_playing = now_playing.inner().clone();
