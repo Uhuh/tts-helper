@@ -3,10 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LOCAL_STORAGE } from '../tokens/localStorage.token';
 import { Observable } from 'rxjs';
 import {
-  updateChannelInfo,
   updateChannelRedeems,
-  updateToken,
-  updateTokenValidity,
+  updateTwitchState,
 } from '../state/twitch/twitch.actions';
 import { Store } from '@ngrx/store';
 import { TwitchRedeemInfo, ValidUser } from '../state/twitch/twitch.interface';
@@ -101,15 +99,22 @@ export class TwitchApi implements OnDestroy {
         takeUntil(this.destroyed$),
         switchMap((validUser: ValidUser) => {
           this.updateStorage(token);
-          this.store.dispatch(updateTokenValidity({ isTokenValid: true }));
-          this.store.dispatch(updateToken({ token }));
+
+          const twitchState = {
+            isTokenValid: true,
+            token,
+            redeem: null,
+            redeemCharacterLimit: 300,
+            channelInfo: {
+              channelId: validUser.user_id,
+              username: validUser.login,
+              redeems: [],
+            },
+          };
+
           this.store.dispatch(
-            updateChannelInfo({
-              channelInfo: {
-                channelId: validUser.user_id,
-                username: validUser.login,
-                redeems: [],
-              },
+            updateTwitchState({
+              twitchState,
             })
           );
 
@@ -127,23 +132,28 @@ export class TwitchApi implements OnDestroy {
               title: r.title,
             }));
 
-          console.log(redeems);
-
           this.store.dispatch(updateChannelRedeems({ redeems }));
         },
 
         error: (err) => {
           console.error('Failed to validate users access token.', err);
           this.updateStorage(null);
-          this.store.dispatch(updateToken({ token: null }));
-          this.store.dispatch(updateTokenValidity({ isTokenValid: false }));
+
+          const twitchState = {
+            isTokenValid: false,
+            token: null,
+            redeem: null,
+            redeemCharacterLimit: 300,
+            channelInfo: {
+              channelId: '',
+              username: '',
+              redeems: [],
+            },
+          };
+
           this.store.dispatch(
-            updateChannelInfo({
-              channelInfo: {
-                channelId: '',
-                username: '',
-                redeems: [],
-              },
+            updateTwitchState({
+              twitchState,
             })
           );
         },

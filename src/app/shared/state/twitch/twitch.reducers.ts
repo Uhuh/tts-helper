@@ -7,6 +7,7 @@ import {
   updateRedeemCharLimit,
   updateToken,
   updateTokenValidity,
+  updateTwitchState,
 } from './twitch.actions';
 
 const initialState: TwitchState = {
@@ -27,6 +28,13 @@ const initialState: TwitchState = {
 
 export const twitchReducer = createReducer(
   initialState,
+  on(updateTwitchState, (state, { twitchState }) => ({
+    ...state,
+    ...twitchState,
+    channelInfo: {
+      ...twitchState.channelInfo,
+    },
+  })),
   on(updateToken, (state, { token }) => ({
     ...state,
     token,
