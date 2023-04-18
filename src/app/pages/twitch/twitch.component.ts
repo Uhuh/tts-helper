@@ -18,7 +18,9 @@ export class TwitchComponent implements OnInit, OnDestroy {
 
   bitsControl = new FormControl('');
   bitsCharControl = new FormControl('');
+
   redeemControl = new FormControl('');
+  redeemCharControl = new FormControl('');
 
   constructor(
     private readonly twitchService: TwitchService,
@@ -37,10 +39,24 @@ export class TwitchComponent implements OnInit, OnDestroy {
         this.redeems = redeems;
       });
 
-    this.twitchService.selectedRedeem$
+    this.twitchService.redeem$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((redeem) => {
         this.redeemControl.setValue(redeem?.id ?? '');
+      });
+
+    this.twitchService.redeemCharLimit$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((redeemCharLimit) => {
+        this.redeemCharControl.setValue(`${redeemCharLimit}`);
+      });
+
+    this.redeemCharControl.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((redeemCharLimit) => {
+        this.twitchService.updateRedeemCharLimit(
+          Number(redeemCharLimit) ?? 300
+        );
       });
 
     this.redeemControl.valueChanges

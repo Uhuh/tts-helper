@@ -4,6 +4,10 @@ import { TwitchState } from './twitch.model';
 export const _selectTwitchState =
   createFeatureSelector<Readonly<TwitchState>>('twitchState');
 
+export const selectTwitchState = createSelector(
+  _selectTwitchState,
+  (state) => state
+);
 export const selectTwitchToken = createSelector(
   _selectTwitchState,
   (state) => state.token
@@ -20,7 +24,11 @@ export const selectTwitchRedeems = createSelector(
   selectTwitchChannelInfo,
   (state) => state.redeems
 );
-export const selectSelectedRedeem = createSelector(
+export const selectRedeem = createSelector(
   _selectTwitchState,
-  (state) => state.selectedRedeem
+  (state) => state.redeem
+);
+export const selectRedeemCharLimit = createSelector(
+  _selectTwitchState,
+  (state) => state.redeemCharacterLimit
 );

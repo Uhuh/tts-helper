@@ -18,6 +18,16 @@
     </mat-form-field>
   </div>
 
+  <div class="sub-header" *ngIf="redeems.length">
+    <label>Redeem character limit</label>
+    <p>The max allowed characters we'll play for the redeem.</p>
+    <app-input
+      placeholder="Set min bits"
+      type="number"
+      [control]="redeemCharControl"
+    ></app-input>
+  </div>
+
   <div class="sub-header">
     <label>Minimum bits</label>
     <p>The amount of bits required to trigger TTS</p>

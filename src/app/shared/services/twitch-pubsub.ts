@@ -12,6 +12,7 @@ import { ChatClient } from '@twurple/chat';
 import { HistoryService } from './history.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TwitchRedeem } from './twitch-pubsub.interface';
+import { TwitchState } from '../state/twitch/twitch.model';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
@@ -19,7 +20,7 @@ export class TwitchPubSub implements OnDestroy {
   // TTS Helper client ID. This isn't a sensitive code.
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
 
-  channelInfo?: TwitchChannelInfo;
+  twitchState?: TwitchState;
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
   selectedRedeem: TwitchRedeemInfo | null = null;
@@ -33,60 +34,60 @@ export class TwitchPubSub implements OnDestroy {
     private readonly historyService: HistoryService,
     private readonly snackbar: MatSnackBar
   ) {
-    this.twitchService.channelInfo$
-      .pipe(
-        takeUntil(this.destroyed$),
-        switchMap((channelInfo) => {
-          this.channelInfo = channelInfo;
-          return this.twitchService.twitchToken$;
-        })
-      )
-      .subscribe({
-        next: (token) => {
-          this.cleanupListeners();
+    this.twitchService.twitchState$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((twitchState) => {
+        this.cleanupListeners();
+        this.twitchState = twitchState;
 
-          if (!token || !this.channelInfo?.channelId) {
-            return;
-          }
+        if (
+          !this.twitchState.token ||
+          !this.twitchState.channelInfo.channelId
+        ) {
+          return;
+        }
 
-          const authProvider = new StaticAuthProvider(this.clientId, token);
-          const apiClient = new ApiClient({ authProvider });
+        const authProvider = new StaticAuthProvider(
+          this.clientId,
+          this.twitchState.token
+        );
+        const apiClient = new ApiClient({ authProvider });
 
-          this.listener = new EventSubWsListener({ apiClient });
-          this.listener.start();
+        this.listener = new EventSubWsListener({ apiClient });
+        this.listener.start();
 
-          this.chat = new ChatClient({
-            authProvider,
-            channels: [this.channelInfo.username],
-          });
+        this.chat = new ChatClient({
+          authProvider,
+          channels: [this.twitchState.channelInfo.username],
+        });
 
-          this.chat.connect().catch((e) => {
-            console.error(`Failed to connect to chat.`, this.channelInfo, e);
-
-            this.snackbar.open(
-              'Oops! We encountered an error connecting to Twitch.',
-              'Dismiss',
-              {
-                panelClass: 'notification-error',
-              }
-            );
-          });
-
-          this.redeemListener = this.listener.onChannelRedemptionAdd(
-            this.channelInfo.channelId ?? '',
-            (c) => this.onRedeem(c)
+        this.chat.connect().catch((e) => {
+          console.error(
+            `Failed to connect to chat.`,
+            this.twitchState?.channelInfo,
+            e
           );
 
-          this.onMessageListener = this.chat.onMessage((_, user, text) =>
-            this.onMessage(user, text)
+          this.snackbar.open(
+            'Oops! We encountered an error connecting to Twitch.',
+            'Dismiss',
+            {
+              panelClass: 'notification-error',
+            }
           );
-        },
-        error: (err) => {
-          console.error(`Failed to get users Twitch token`, err);
-        },
+        });
+
+        this.redeemListener = this.listener.onChannelRedemptionAdd(
+          this.twitchState.channelInfo.channelId ?? '',
+          (c) => this.onRedeem(c)
+        );
+
+        this.onMessageListener = this.chat.onMessage((_, user, text) =>
+          this.onMessage(user, text)
+        );
       });
 
-    this.twitchService.selectedRedeem$
+    this.twitchService.redeem$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((redeem) => (this.selectedRedeem = redeem));
   }
@@ -105,7 +106,11 @@ export class TwitchPubSub implements OnDestroy {
    */
   onRedeem(redeem: TwitchRedeem) {
     if (redeem.rewardId === this.selectedRedeem?.id) {
-      const trimmedText = redeem.input;
+      const trimmedText = redeem.input.slice(
+        0,
+        this.twitchState?.redeemCharacterLimit ?? 300
+      );
+
       this.historyService.playTts(
         trimmedText,
         redeem.userDisplayName,

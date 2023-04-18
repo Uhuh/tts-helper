@@ -2,25 +2,30 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   selectIsTokenValid,
-  selectSelectedRedeem,
+  selectRedeemCharLimit,
+  selectRedeem,
   selectTwitchChannelInfo,
   selectTwitchRedeems,
+  selectTwitchState,
   selectTwitchToken,
 } from '../state/twitch/twitch.selectors';
 import { TwitchApi } from '../api/twitch.api';
 import {
   updateChannelInfo,
+  updateRedeemCharLimit,
   updateSelectedRedeem,
 } from '../state/twitch/twitch.actions';
 import { TwitchRedeemInfo } from '../state/twitch/twitch.interface';
 
 @Injectable()
 export class TwitchService {
+  public readonly twitchState$ = this.store.select(selectTwitchState);
   public readonly twitchToken$ = this.store.select(selectTwitchToken);
   public readonly isTokenValid$ = this.store.select(selectIsTokenValid);
   public readonly channelInfo$ = this.store.select(selectTwitchChannelInfo);
   public readonly redeems$ = this.store.select(selectTwitchRedeems);
-  public readonly selectedRedeem$ = this.store.select(selectSelectedRedeem);
+  public readonly redeem$ = this.store.select(selectRedeem);
+  public readonly redeemCharLimit$ = this.store.select(selectRedeemCharLimit);
 
   constructor(
     private readonly store: Store,
@@ -52,5 +57,9 @@ export class TwitchService {
     this.store.dispatch(
       updateSelectedRedeem({ selectedRedeem: redeem || null })
     );
+  }
+
+  updateRedeemCharLimit(redeemCharacterLimit: number) {
+    this.store.dispatch(updateRedeemCharLimit({ redeemCharacterLimit }));
   }
 }
