@@ -11,8 +11,14 @@ input {
   outline: unset;
   color: var(--text);
   background-color: var(--sidebar);
-  border: 1px solid var(--header);
+  border: unset;
   border-color: var(--text);
+  border: 1px solid transparent;
+  transition: all 0.2s;
+
+  &:focus {
+    border: 1px solid var(--blue);
+  }
 
   &::placeholder {
     color: var(--text-inactive);
