@@ -12,8 +12,8 @@ import {
 import { TwitchApi } from '../api/twitch.api';
 import {
   updateChannelInfo,
+  updateRedeem,
   updateRedeemCharLimit,
-  updateSelectedRedeem,
 } from '../state/twitch/twitch.actions';
 import { TwitchRedeemInfo } from '../state/twitch/twitch.interface';
 
@@ -54,9 +54,7 @@ export class TwitchService {
   }
 
   updateSelectedRedeem(redeem: TwitchRedeemInfo | null) {
-    this.store.dispatch(
-      updateSelectedRedeem({ selectedRedeem: redeem || null })
-    );
+    this.store.dispatch(updateRedeem({ redeem }));
   }
 
   updateRedeemCharLimit(redeemCharacterLimit: number) {

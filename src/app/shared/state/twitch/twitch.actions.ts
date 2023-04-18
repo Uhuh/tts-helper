@@ -17,9 +17,9 @@ export const updateChannelRedeems = createAction(
   '[ TwitchState ] Updating channel redeems',
   props<{ redeems: TwitchRedeemInfo[] }>()
 );
-export const updateSelectedRedeem = createAction(
-  '[ TwitchState ] Updating selected redeem',
-  props<{ selectedRedeem: TwitchRedeemInfo | null }>()
+export const updateRedeem = createAction(
+  '[ TwitchState ] Updating redeem',
+  props<{ redeem: TwitchRedeemInfo | null }>()
 );
 export const updateRedeemCharLimit = createAction(
   '[ TwitchState ] Updating redeem character limit',
