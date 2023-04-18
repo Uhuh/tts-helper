@@ -109,6 +109,10 @@ a {
   font-weight: 400;
   font-size: 28px;
   margin: 2rem 0;
+
+  @media (max-width: 600px) {
+    margin: 0;
+  }
 }
 
 .sub-header {
