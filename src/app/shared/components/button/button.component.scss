@@ -3,8 +3,8 @@
 }
 
 button {
-  background-color: var(--background);
-  border: 1px solid var(--text);
+  background-color: var(--white-5);
+  border: unset;
   color: var(--text);
   font-weight: 700;
   padding: 12px 24px;
@@ -16,8 +16,11 @@ button {
   justify-content: center;
 
   &:hover {
-    color: white;
-    background-color: var(--sidebar);
+    background-color: var(--white-10);
+  }
+
+  &:active {
+    background-color: var(--white-20);
   }
 }
 

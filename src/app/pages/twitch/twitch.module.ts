@@ -8,6 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
+import { RedeemsModule } from './redeems/redeems.module';
+import { BitsModule } from './bits/bits.module';
 
 @NgModule({
   declarations: [TwitchComponent],
@@ -24,6 +26,8 @@ import { AuthModule } from './auth/auth.module';
     MatSelectModule,
     ReactiveFormsModule,
     InputModule,
+    BitsModule,
+    RedeemsModule,
     AuthModule,
   ],
   exports: [TwitchComponent],

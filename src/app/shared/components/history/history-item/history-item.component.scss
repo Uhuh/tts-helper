@@ -1,7 +1,7 @@
 :host {
   border-radius: 6px;
   padding: 15px;
-  border: 2px solid var(--sidebar);
+  border: 2px solid var(--white-20);
 }
 
 .wrapper {
@@ -18,7 +18,7 @@
 
   hr {
     width: 100%;
-    border-color: var(--text-inactive);
+    border-color: var(--white-20);
   }
 
   .time {

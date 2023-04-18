@@ -38,20 +38,24 @@ $my-app-theme: mat.define-dark-theme(
 @include mat.all-component-themes($my-app-theme);
 
 :root {
-  --background: #201e25;
-  --sidebar: #2b2930;
+  --background: rgba(32, 30, 37, 1);
+  --sidebar: rgba(43, 41, 48, 1);
 
-  --blue: #0075ff;
-  --purple: #5918e1;
-  --yellow: #f9bd24;
-  --green: #24f92d;
+  --blue: rgba(0, 119, 255, 1);
+  --blue-20: rgba(0, 119, 255, 0.2);
+  --blue-5: rgba(0, 119, 255, 0.05);
+  --purple: rgba(89, 24, 225, 1);
+  --yellow: rgba(249, 189, 36, 1);
+  --green: rgba(36, 249, 45, 1);
+  --white: rgba(255, 255, 255, 1);
+  --white-5: rgba(255, 255, 255, 0.05);
+  --white-10: rgba(255, 255, 255, 0.1);
+  --white-20: rgba(255, 255, 255, 0.15);
 
-  --text: #ffffff;
+  --text: rgba(255, 255, 255, 1);
   --text-inactive: rgba(255, 255, 255, 0.6);
   --header: rgba(255, 255, 255, 0.8);
 
-  --dark-purple: #211742;
-  --bright-purple: #7b61ff;
   --red: #b40000;
   --off-red-bg: rgba(180, 0, 0, 0.37);
   --off-green-bg: rgba(0, 140, 0, 0.37);
@@ -96,13 +100,9 @@ a {
   height: 200px;
   font-size: 18px;
 
-  border: 2px dotted var(--text-inactive);
+  color: var(--header);
+  border: 2px dotted var(--white-20);
   border-radius: 6px;
-
-  .message {
-    color: var(--text);
-    font-size: 16px;
-  }
 }
 
 .header {
@@ -110,8 +110,9 @@ a {
   font-size: 28px;
   margin: 2rem 0;
 
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
     margin: 0;
+    margin-bottom: 2rem;
   }
 }
 
@@ -120,7 +121,7 @@ a {
   flex-direction: column;
   gap: 12px;
 
-  margin: 1.5rem 0;
+  margin-bottom: 1.5rem;
 
   label {
     font-size: 20px;
@@ -137,6 +138,19 @@ a {
 .section {
   display: flex;
   flex-direction: column;
+
+  .header {
+    margin-top: 1rem;
+    color: var(--header);
+    font-size: 24px;
+  }
+}
+
+.active {
+  button {
+    color: #121212 !important;
+    background-color: var(--blue) !important;
+  }
 }
 
 .full-width {
@@ -167,11 +181,23 @@ a {
   color: var(--text);
 }
 
+/* LOTS OF UGLY MATERIAL OVERRIDES PLEASE IGNORE */
+
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-  background-color: var(--sidebar);
+  background-color: var(--white-5);
+  border: 1px solid transparent;
   border-radius: 5px;
-  border: 1px solid var(--text);
   padding: 0;
+
+  &:focus,
+  &:active {
+    border: 1px solid var(--blue);
+  }
+}
+
+.mat-mdc-form-field-focus-overlay {
+  background-color: var(--white-20);
+  border: 1px solid var(--blue);
 }
 
 .mat-mdc-form-field-flex {
@@ -187,4 +213,13 @@ a {
 
 .mat-mdc-form-field-subscript-wrapper {
   height: 0;
+}
+
+.mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled)
+  .mdc-line-ripple::before {
+  border-bottom: unset !important;
 }
