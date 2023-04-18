@@ -1,11 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { invoke } from '@tauri-apps/api/tauri';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  AuditItem,
-  AuditState,
-} from 'src/app/shared/state/history/history-item.interface';
+import { AuditItem } from 'src/app/shared/state/history/history-item.interface';
 import { HistoryService } from 'src/app/shared/services/history.service';
 
 @Component({
@@ -18,10 +13,7 @@ export class HomeComponent {
   disableHistory = new FormControl<boolean>(false);
   history: AuditItem[] = [];
 
-  constructor(
-    private readonly historyService: HistoryService,
-    private readonly snackbar: MatSnackBar
-  ) {}
+  constructor(private readonly historyService: HistoryService) {}
 
   speak(): void {
     const { value } = this.ttsControl;

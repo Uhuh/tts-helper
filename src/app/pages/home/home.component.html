@@ -1,16 +1,16 @@
 <div class="header">
-  <span>Welcome home!</span>
+  <span>Main Settings</span>
 </div>
-<div>
+<div class="section">
   <div class="sub-header">
     <label>Play TTS locally.</label>
     <p>These show up in the history tab.</p>
+    <form class="form" (submit)="speak()">
+      <app-input [control]="ttsControl" placeholder="Enter something to say." />
+      <div class="action-row">
+        <app-button type="submit" [disabled]="isDisabled">Send</app-button>
+        <app-toggle [control]="disableHistory">Disable local history</app-toggle>
+      </div>
+    </form>
   </div>
-  <form class="form" (submit)="speak()">
-    <app-input [control]="ttsControl" placeholder="Enter something to say." />
-    <div class="action-row">
-      <app-button type="submit" [disabled]="isDisabled">Send</app-button>
-      <app-toggle [control]="disableHistory">Disable local history</app-toggle>
-    </div>
-  </form>
 </div>
