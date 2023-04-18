@@ -1,46 +1,14 @@
 <div class="header">
-  <span> Twitch Settings </span>
+  <span>Twitch Settings</span>
 </div>
 <app-auth></app-auth>
 <div class="section">
-  <div class="sub-header" *ngIf="redeems.length">
-    <label>Redeem</label>
-    <p>This redeem will trigger TTS with user input.</p>
-    <mat-form-field>
-      <mat-select
-        placeholder="Select a redeem option"
-        [formControl]="redeemControl"
-      >
-        <mat-option *ngFor="let redeem of redeems" [value]="redeem.id">
-          {{ redeem.title }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+  <div class="header">
+    <span>Redeem Settings</span>
   </div>
-
-  <div class="sub-header" *ngIf="redeems.length">
-    <label>Redeem character limit</label>
-    <p>The max allowed characters we'll play for the redeem.</p>
-    <app-input
-      placeholder="Set min bits"
-      type="number"
-      [control]="redeemCharControl"
-    ></app-input>
+  <app-redeems></app-redeems>
+  <div class="header">
+    <span>Donation Settings</span>
   </div>
-
-  <div class="sub-header">
-    <label>Minimum bits</label>
-    <p>The amount of bits required to trigger TTS</p>
-    <app-input placeholder="Set min bits" [control]="bitsControl"></app-input>
-  </div>
-
-  <div class="sub-header">
-    <label>Bits character limit</label>
-    <p>The max allowed characters we'll play for you!</p>
-    <app-input
-      placeholder="Set max char limit"
-      type="number"
-      [control]="bitsCharControl"
-    ></app-input>
-  </div>
+  <app-bits></app-bits>
 </div>
