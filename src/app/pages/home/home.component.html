@@ -5,12 +5,14 @@
   <div class="sub-header">
     <label>Play TTS locally.</label>
     <p>These show up in the history tab.</p>
-    <form class="form" (submit)="speak()">
+    <form class="action-row" (submit)="speak()">
       <app-input [control]="ttsControl" placeholder="Enter something to say." />
-      <div class="action-row">
-        <app-button type="submit" [disabled]="isDisabled">Send</app-button>
-        <app-toggle [control]="disableHistory">Disable local history</app-toggle>
-      </div>
+      <app-button type="submit" [disabled]="isDisabled">Send</app-button>
     </form>
   </div>
+  <div class="header">
+    <span>TTS Settings</span>
+  </div>
+  <app-tts-router></app-tts-router>
 </div>
+<router-outlet></router-outlet>
