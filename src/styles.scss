@@ -49,6 +49,7 @@ $my-app-theme: mat.define-dark-theme(
   --text: #ffffff;
   --text-inactive: rgba(255, 255, 255, 0.6);
   --header: rgba(255, 255, 255, 0.8);
+  --white-20: rgba(255, 255, 255, 0.2);
 
   --dark-purple: #211742;
   --bright-purple: #7b61ff;
@@ -96,13 +97,9 @@ a {
   height: 200px;
   font-size: 18px;
 
-  border: 2px dotted var(--text-inactive);
+  color: var(--header);
+  border: 2px dotted var(--white-20);
   border-radius: 6px;
-
-  .message {
-    color: var(--text);
-    font-size: 16px;
-  }
 }
 
 .header {
@@ -110,8 +107,9 @@ a {
   font-size: 28px;
   margin: 2rem 0;
 
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
     margin: 0;
+    margin-bottom: 2rem;
   }
 }
 
@@ -120,7 +118,7 @@ a {
   flex-direction: column;
   gap: 12px;
 
-  margin: 1.5rem 0;
+  margin-bottom: 1.5rem;
 
   label {
     font-size: 20px;
@@ -137,6 +135,12 @@ a {
 .section {
   display: flex;
   flex-direction: column;
+
+  .header {
+    margin-top: 1rem;
+    color: var(--header);
+    font-size: 24px;
+  }
 }
 
 .full-width {
@@ -187,4 +191,8 @@ a {
 
 .mat-mdc-form-field-subscript-wrapper {
   height: 0;
+}
+
+.mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgba(0, 0, 0, 0.6);
 }
