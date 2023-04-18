@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -6,9 +6,8 @@ import { FormControl } from '@angular/forms';
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss'],
 })
-export class InputComponent implements OnInit {
+export class InputComponent {
   @Input() placeholder = 'Put something here...';
   @Input() control!: FormControl<string | null>;
   @Input() type = 'text';
-  ngOnInit(): void {}
 }
