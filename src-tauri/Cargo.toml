@@ -1,39 +1,75 @@
+###
+# Workspace
+###
+
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.dependencies]
+# Tauri
+tauri = "1"
+tauri-build = "1"
+
+# Serialization
+serde = "1"
+serde_json = "1"
+
+# Audio
+rodio = "0.17"
+reqwest = "0.11"
+anyhow = "1"
+bytes = "1"
+
+###
+# tts-helper
+###
+
 [package]
 name = "tts-helper"
-version = "0.0.0"
+version = "0.1.0"
 description = "A Tauri App"
 authors = ["Dylan Warren (https://github.com/Uhuh)"]
 license = ""
 repository = ""
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+publish = false
 
 [build-dependencies]
-tauri-build = { version = "1.2", features = [] }
+tauri-build = { workspace = true , features = [] }
 
 [dependencies]
-tauri = { version = "1.2", features = ["shell-open"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-rodio = "0.17.1"
-reqwest = "0.11.16"
-anyhow = "1.0.70"
-bytes = "1"
-thiserror = "1"
-crossbeam = "0.8"
+# Tauri
+tauri = { workspace = true, features = ["shell-open"] }
 
-# Web server
+# Serialization
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+
+# Audio
+rodio = { workspace = true }
+tts-helper-audio = { path = "./crates/tts-helper-audio" }
+
+# Web
 tokio = { version = "1", features = ["rt"] }
 axum = { version = "0.6", default-features = false, features = [
     "http1",
     "tokio",
     "tracing",
 ] }
+reqwest = "0.11"
+bytes = "1"
+
+# Errors
+anyhow = "1.0.70"
+thiserror = "1"
 
 # Tracing
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Util
+crossbeam = "0.8"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
