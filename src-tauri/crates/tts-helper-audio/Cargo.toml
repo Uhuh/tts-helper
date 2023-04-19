@@ -1,0 +1,9 @@
+[package]
+name = "tts-helper-audio"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+# Audio
+rodio = { workspace = true }

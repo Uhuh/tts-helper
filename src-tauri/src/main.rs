@@ -24,9 +24,16 @@ async fn play_tts(
     app: AppHandle,
 ) -> ApiResult<u32> {
     let controller = Controller::default();
-    controller.set_padding(Duration::from_millis(500));
+    controller.set_end_delay(Duration::from_millis(500));
     let id = now_playing.add(request.clone(), controller.clone());
-    let on_done = {
+    let on_start = {
+        let app = app.clone();
+        move || {
+            trace!(id, "started playing");
+            drop(app.emit_all("audio-start", id));
+        }
+    };
+    let on_finish = {
         let now_playing = now_playing.inner().clone();
         move || {
             trace!(id, "done playing");
@@ -34,7 +41,7 @@ async fn play_tts(
             now_playing.remove(id)
         }
     };
-    audio_player.play_tts(request, on_done, controller).await?;
+    audio_player.play_tts(request, on_start, on_finish, controller).await?;
     Ok(id)
 }
 

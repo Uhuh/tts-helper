@@ -29,9 +29,9 @@ impl Controller {
 
     /// Sets the amount of time to pad the end of the audio source with silence.
     #[inline]
-    pub fn set_padding(&self, padding: Duration) {
-        self.state.padding_ns.store(
-            padding.as_nanos().try_into().unwrap_or(u64::MAX),
+    pub fn set_end_delay(&self, delay: Duration) {
+        self.state.end_delay_ns.store(
+            delay.as_nanos().try_into().unwrap_or(u64::MAX),
             Ordering::Relaxed,
         );
     }
@@ -39,25 +39,14 @@ impl Controller {
     /// Gets the amount of time to pad the end of the audio source with silence.
     #[inline]
     #[must_use]
-    pub fn padding(&self) -> Duration {
-        let nanos = self.state.padding_ns.load(Ordering::Relaxed);
+    pub fn end_delay(&self) -> Duration {
+        let nanos = self.state.end_delay_ns.load(Ordering::Relaxed);
         Duration::from_nanos(nanos)
-    }
-
-    /// Gets the amount of samples to pad the end of the audio source with silence.
-    /// 
-    /// ## Note
-    /// 
-    /// The sample rate is number of samples per second.
-    pub fn padding_samples(&self, sample_rate: u32) -> u64 {
-        let nanos = self.state.padding_ns.load(Ordering::Relaxed);
-        let samples = nanos.saturating_mul(sample_rate.into()) / 1_000_000_000;
-        samples
     }
 }
 
 #[derive(Debug, Default)]
 struct ControllerState {
     skipped: AtomicBool,
-    padding_ns: AtomicU64,
+    end_delay_ns: AtomicU64,
 }

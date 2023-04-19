@@ -1,13 +1,14 @@
-use std::{io::Cursor, sync::mpsc::TryRecvError, time::Duration};
+use std::{io::Cursor, time::Duration};
 
 use bytes::Bytes;
 use crossbeam::channel::{Receiver, RecvTimeoutError, Sender};
 use reqwest::Client;
-use rodio::{Decoder, OutputStream, PlayError, Source, StreamError};
+use rodio::{source::Zero, Decoder, OutputStream, PlayError, Source, StreamError};
 use thiserror::Error;
 use tracing::{error, info, instrument, trace};
+use tts_helper_audio::sources::SourceExt;
 
-use crate::{api_result::ApiResult, models::AudioRequest, services::Controllable};
+use crate::{api_result::ApiResult, models::AudioRequest};
 
 use super::Controller;
 
@@ -30,14 +31,16 @@ impl AudioPlayer {
     }
 
     /// Plays the audio at the given URL.
-    pub async fn play_tts<D>(
+    pub async fn play_tts<S, F>(
         &self,
         request: AudioRequest,
-        on_done: D,
+        on_start: S,
+        on_finish: F,
         controller: Controller,
     ) -> ApiResult<()>
     where
-        D: FnOnce() + Send + 'static,
+        S: FnOnce() + Send + 'static,
+        F: FnOnce() + Send + 'static,
     {
         // Download audio
         let data = self
@@ -53,7 +56,8 @@ impl AudioPlayer {
         // Play audio
         let _ = self.event_tx.send(AudioEvent::Play {
             data,
-            on_done: Box::new(on_done),
+            on_start: Box::new(on_start),
+            on_finish: Box::new(on_finish),
             controller,
         });
 
@@ -79,16 +83,14 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
         return;
     }
 
-    // Track completed sources
-    let mut playing = Vec::with_capacity(10);
-
     // Handle audio events
     loop {
         // Check for new events
         match event_rx.recv_timeout(Duration::from_millis(100)) {
             Ok(AudioEvent::Play {
                 data,
-                on_done,
+                on_start,
+                on_finish,
                 controller,
             }) => {
                 trace!("received audio");
@@ -103,27 +105,31 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
                 };
 
                 // Wrap the source in a controllable source
-                let source = Controllable::new(source.convert_samples(), controller);
+                let is_skipped = {
+                    let controller = controller.clone();
+                    move || controller.is_skipped()
+                };
+                let get_end_delay_duration = {
+                    let controller = controller.clone();
+                    move || controller.end_delay()
+                };
+
+                let source = source
+                    .convert_samples()
+                    .on_start(on_start)
+                    .on_finish(on_finish)
+                    .skip_when(is_skipped.clone());
+                let end_delay = Zero::new(source.channels(), source.sample_rate())
+                    .take_for(get_end_delay_duration)
+                    .skip_when(is_skipped);
 
                 // Enqueue the audio
                 trace!("enqueuing audio");
-                let done_rx = queue_tx.append_with_signal(source);
-                playing.push((done_rx, on_done));
+                queue_tx.append(source);
+                queue_tx.append(end_delay);
             }
             Err(RecvTimeoutError::Disconnected) => break,
             _ => {}
-        }
-
-        // Notify completed sources
-        for i in (0..playing.len()).rev() {
-            let (done_rx, on_done) = playing.swap_remove(i);
-            if let Err(TryRecvError::Empty) = done_rx.try_recv() {
-                // Not done yet
-                playing.push((done_rx, on_done));
-                continue;
-            }
-
-            on_done();
         }
     }
 
@@ -135,7 +141,8 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
 enum AudioEvent {
     Play {
         data: Bytes,
-        on_done: Box<dyn FnOnce() + Send + 'static>,
+        on_start: Box<dyn FnOnce() + Send + 'static>,
+        on_finish: Box<dyn FnOnce() + Send + 'static>,
         controller: Controller,
     },
 }
