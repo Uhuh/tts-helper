@@ -1,11 +1,7 @@
 ﻿import { StaticAuthProvider } from '@twurple/auth';
 import { Injectable, OnDestroy } from '@angular/core';
 import { TwitchService } from './twitch.service';
-import { Subject, switchMap, takeUntil } from 'rxjs';
-import {
-  TwitchChannelInfo,
-  TwitchRedeemInfo,
-} from '../state/twitch/twitch.interface';
+import { Subject, takeUntil } from 'rxjs';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient } from '@twurple/chat';
@@ -23,7 +19,7 @@ export class TwitchPubSub implements OnDestroy {
   twitchState?: TwitchState;
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
-  selectedRedeem: TwitchRedeemInfo | null = null;
+  selectedRedeem: string | null = null;
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
@@ -105,7 +101,7 @@ export class TwitchPubSub implements OnDestroy {
    * @TODO - Handle redeems by using users selected redeem from twitch settings
    */
   onRedeem(redeem: TwitchRedeem) {
-    if (redeem.rewardId === this.selectedRedeem?.id) {
+    if (redeem.rewardId === this.selectedRedeem) {
       const trimmedText = redeem.input.slice(
         0,
         this.twitchState?.redeemCharacterLimit ?? 300

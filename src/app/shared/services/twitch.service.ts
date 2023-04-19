@@ -53,7 +53,7 @@ export class TwitchService {
     return this.twitchApi.updateToken(token);
   }
 
-  updateSelectedRedeem(redeem: TwitchRedeemInfo | null) {
+  updateSelectedRedeem(redeem: string | null) {
     this.store.dispatch(updateRedeem({ redeem }));
   }
 

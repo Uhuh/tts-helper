@@ -4,6 +4,6 @@ export interface TwitchState {
   token: string | null;
   isTokenValid: boolean;
   channelInfo: TwitchChannelInfo;
-  redeem: TwitchRedeemInfo | null;
+  redeem: string | null;
   redeemCharacterLimit: number;
 }
