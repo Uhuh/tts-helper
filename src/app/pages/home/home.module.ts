@@ -33,6 +33,13 @@ import { TtsRouterModule } from './tts-router/tts-router.module';
                 (m) => m.StreamelementTtsModule
               ),
           },
+          {
+            path: 'tts-monster',
+            loadChildren: () =>
+              import('./tts-monster/tts-monster.module').then(
+                (m) => m.TtsMonsterModule
+              ),
+          },
         ],
       },
     ]),
