@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
 import { TwitchService } from '../../shared/services/twitch.service';
 import { listen } from '@tauri-apps/api/event';
 import { FormGroup, Validators } from '@angular/forms';
@@ -16,12 +16,14 @@ export class TwitchComponent implements OnInit, OnDestroy {
   redeemsGroup = new FormGroup({
     redeem: nonNullFormControl(''),
     redeemCharLimit: nonNullFormControl(300, {
-      validators: [Validators.min(0)],
+      validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
     }),
   });
 
   bitsGroup = new FormGroup({
-    bits: nonNullFormControl(0, { validators: [Validators.min(0)] }),
+    bits: nonNullFormControl(0, {
+      validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
+    }),
     bitsCharLimit: nonNullFormControl(300, { validators: [Validators.min(0)] }),
   });
 
@@ -42,6 +44,35 @@ export class TwitchComponent implements OnInit, OnDestroy {
     }).catch((e) => {
       console.error('Encountered issue getting access token.', e);
     });
+
+    this.redeemsGroup.valueChanges
+      .pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(1000),
+        filter(() => this.redeemsGroup.valid)
+      )
+      .subscribe((redeemsGroup) => {
+        if (
+          redeemsGroup.redeem === undefined ||
+          redeemsGroup.redeemCharLimit === undefined
+        ) {
+          console.info('Submitted redeemsGroup', redeemsGroup);
+          throw new Error('FormGroup submitted null values.');
+        }
+
+        this.twitchService.updateSelectedRedeem(redeemsGroup.redeem);
+        this.twitchService.updateRedeemCharLimit(
+          Number(redeemsGroup.redeemCharLimit)
+        );
+      });
+  }
+
+  get isFormPristine() {
+    return this.redeemsGroup.pristine && this.bitsGroup.pristine;
+  }
+
+  submit() {
+    console.log('helooo');
   }
 
   ngOnDestroy(): void {

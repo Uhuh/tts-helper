@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, first, takeUntil } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { TwitchRedeemInfo } from 'src/app/shared/state/twitch/twitch.interface';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
@@ -17,6 +17,7 @@ export class RedeemsComponent implements OnInit, OnDestroy {
     redeem: FormControl<string>;
     redeemCharLimit: FormControl<number>;
   }>;
+  redeemCharLimitControl!: FormControl<number>;
 
   redeems: TwitchRedeemInfo[] = [];
 
@@ -32,10 +33,19 @@ export class RedeemsComponent implements OnInit, OnDestroy {
       .subscribe((redeems) => {
         this.redeems = redeems;
       });
-  }
 
-  get redeemCharLimitControl() {
-    return this.redeemsGroup.get('redeemCharLimit') as FormControl<number>;
+    this.twitchService.twitchState$
+      .pipe(first(), takeUntil(this.destroyed$))
+      .subscribe((twitchState) => {
+        this.redeemsGroup.patchValue({
+          redeem: twitchState.redeem ?? '',
+          redeemCharLimit: twitchState.redeemCharacterLimit,
+        });
+      });
+
+    this.redeemCharLimitControl = this.redeemsGroup?.get(
+      'redeemCharLimit'
+    ) as FormControl<number>;
   }
 
   ngOnDestroy(): void {

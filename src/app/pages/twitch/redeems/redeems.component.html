@@ -19,5 +19,11 @@
       type="number"
       [control]="redeemCharLimitControl"
     ></app-input>
+    <mat-error *ngIf="redeemCharLimitControl.hasError('min')">
+      Minimum characters allowed is 0.
+    </mat-error>
+    <mat-error *ngIf="redeemCharLimitControl.hasError('pattern')">
+      Character limit must be a whole number.
+    </mat-error>
   </div>
 </ng-container>
