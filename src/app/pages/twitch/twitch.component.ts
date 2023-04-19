@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TwitchService } from '../../shared/services/twitch.service';
 import { listen } from '@tauri-apps/api/event';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormGroup, Validators } from '@angular/forms';
+import { nonNullFormControl } from 'src/app/shared/utils/form';
 
 @Component({
   selector: 'app-twitch',
@@ -12,11 +13,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class TwitchComponent implements OnInit, OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  constructor(
-    private readonly twitchService: TwitchService,
-    private readonly snackbar: MatSnackBar,
-    private readonly ref: ChangeDetectorRef
-  ) {}
+  redeemsGroup = new FormGroup({
+    redeem: nonNullFormControl(''),
+    redeemCharLimit: nonNullFormControl(300, {
+      validators: [Validators.min(0)],
+    }),
+  });
+
+  bitsGroup = new FormGroup({
+    bits: nonNullFormControl(0, { validators: [Validators.min(0)] }),
+    bitsCharLimit: nonNullFormControl(300, { validators: [Validators.min(0)] }),
+  });
+
+  constructor(private readonly twitchService: TwitchService) {}
 
   ngOnInit() {
     listen('access-token', (authData) => {
@@ -32,14 +41,6 @@ export class TwitchComponent implements OnInit, OnDestroy {
       this.twitchService.updateToken(token);
     }).catch((e) => {
       console.error('Encountered issue getting access token.', e);
-
-      this.snackbar.open(
-        'Oops! We encountered an error while authorizing...',
-        'Dismiss',
-        {
-          panelClass: 'notification-error',
-        }
-      );
     });
   }
 
