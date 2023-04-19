@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { TwitchRedeemInfo } from 'src/app/shared/state/twitch/twitch.interface';
+import { nonNullFormControl } from 'src/app/shared/utils/form';
 
 @Component({
   selector: 'app-redeems',
@@ -12,9 +13,12 @@ import { TwitchRedeemInfo } from 'src/app/shared/state/twitch/twitch.interface';
 export class RedeemsComponent implements OnInit, OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
+  @Input() redeemsGroup!: FormGroup<{
+    redeem: FormControl<string>;
+    redeemCharLimit: FormControl<number>;
+  }>;
+
   redeems: TwitchRedeemInfo[] = [];
-  redeemControl = new FormControl('');
-  redeemCharControl = new FormControl('');
 
   constructor(private readonly twitchService: TwitchService) {}
 
@@ -28,33 +32,10 @@ export class RedeemsComponent implements OnInit, OnDestroy {
       .subscribe((redeems) => {
         this.redeems = redeems;
       });
+  }
 
-    this.twitchService.redeem$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((redeem) => {
-        this.redeemControl.setValue(redeem?.id ?? '');
-      });
-
-    this.twitchService.redeemCharLimit$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((redeemCharLimit) => {
-        this.redeemCharControl.setValue(`${redeemCharLimit}`);
-      });
-
-    this.redeemCharControl.valueChanges
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((redeemCharLimit) => {
-        this.twitchService.updateRedeemCharLimit(
-          Number(redeemCharLimit) ?? 300
-        );
-      });
-
-    this.redeemControl.valueChanges
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((redeem) => {
-        const selectedRedeem = this.redeems.find((r) => r.id === redeem);
-        this.twitchService.updateSelectedRedeem(selectedRedeem || null);
-      });
+  get redeemCharLimitControl() {
+    return this.redeemsGroup.get('redeemCharLimit') as FormControl<number>;
   }
 
   ngOnDestroy(): void {
