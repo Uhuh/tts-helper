@@ -1,5 +1,15 @@
 <div class="wrapper">
   <div class="empty" *ngIf="!items.length">No history! Get to chatting.</div>
+  <ng-container *ngIf="currentlyPlaying">
+    <div class="sub-header">
+      <span>Currently playing</span>
+      <app-history-item
+        [audit]="currentlyPlaying"
+        class="playing"
+      ></app-history-item>
+      <hr />
+    </div>
+  </ng-container>
   <app-history-item
     *ngFor="let item of items"
     [audit]="item"
