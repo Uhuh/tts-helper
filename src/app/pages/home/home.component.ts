@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { AuditItem } from 'src/app/shared/state/history/history-item.interface';
 import { HistoryService } from 'src/app/shared/services/history.service';
+import { nonNullFormControl } from 'src/app/shared/utils/form';
 
 @Component({
   selector: 'app-home',
@@ -9,8 +9,7 @@ import { HistoryService } from 'src/app/shared/services/history.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-  ttsControl = new FormControl<string>('');
-  disableHistory = new FormControl<boolean>(false);
+  ttsControl = nonNullFormControl('');
   history: AuditItem[] = [];
 
   constructor(private readonly historyService: HistoryService) {}
