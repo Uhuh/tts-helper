@@ -12,7 +12,7 @@ import { VoiceSetting } from 'src/app/shared/state/config/config.interface';
 export class StreamelementTtsComponent implements OnInit, OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  voiceControl = new FormControl('');
+  voiceControl = new FormControl('', { nonNullable: true });
 
   voiceOptions: VoiceSetting[] = [
     {
