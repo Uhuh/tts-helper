@@ -8,12 +8,17 @@ use super::Controller;
 pub struct Controllable<S> {
     inner: S,
     controller: Controller,
+    elapsed_padding: u64,
 }
 
 impl<S> Controllable<S> {
     /// Create a new controllable [`Source`].
     pub fn new(inner: S, controller: Controller) -> Self {
-        Self { inner, controller }
+        Self {
+            inner,
+            controller,
+            elapsed_padding: 0,
+        }
     }
 }
 
@@ -43,13 +48,16 @@ where
             return Some(Duration::ZERO);
         }
 
-        self.inner.total_duration()
+        self.inner
+            .total_duration()
+            .map(|duration| duration + self.controller.padding())
     }
 }
 
 impl<S> Iterator for Controllable<S>
 where
-    S: Iterator,
+    S: Source + Iterator,
+    S::Item: Sample,
 {
     type Item = S::Item;
 
@@ -58,10 +66,24 @@ where
             return None;
         }
 
-        self.inner.next()
+        self.inner.next().or_else(|| {
+            // Padding after inner source finishes
+            if self.elapsed_padding > self.controller.padding_samples(self.sample_rate()) {
+                return None;
+            }
+
+            self.elapsed_padding += 1;
+            Some(Sample::zero_value())
+        })
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        self.inner.size_hint()
+        let (lower, upper) = self.inner.size_hint();
+        let remaining_padding = self
+            .controller
+            .padding_samples(self.sample_rate())
+            .saturating_sub(self.elapsed_padding);
+        let upper = upper.map(|upper| upper + remaining_padding as usize);
+        (lower, upper)
     }
 }

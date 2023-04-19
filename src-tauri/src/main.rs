@@ -5,7 +5,7 @@ mod api_result;
 mod models;
 mod services;
 
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use anyhow::Context;
 use models::{PlayingAudio, SetAudioState};
@@ -24,6 +24,7 @@ async fn play_tts(
     app: AppHandle,
 ) -> ApiResult<u32> {
     let controller = Controller::default();
+    controller.set_padding(Duration::from_millis(500));
     let id = now_playing.add(request.clone(), controller.clone());
     let on_done = {
         let now_playing = now_playing.inner().clone();
