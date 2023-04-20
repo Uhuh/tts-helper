@@ -93,7 +93,7 @@ export class TwitchPubSub implements OnDestroy {
      * @TODO - Setup state for global command and prefix.
      */
     if (text.startsWith('!say')) {
-      this.historyService.playTts(text.substring(4).trim(), user, 'twitch');
+      this.historyService.playTts(text.substring(4).trim(), user, 'twitch', 50);
     }
   }
 
@@ -102,15 +102,11 @@ export class TwitchPubSub implements OnDestroy {
    */
   onRedeem(redeem: TwitchRedeem) {
     if (redeem.rewardId === this.selectedRedeem) {
-      const trimmedText = redeem.input.slice(
-        0,
-        this.twitchState?.redeemCharacterLimit ?? 300
-      );
-
       this.historyService.playTts(
-        trimmedText,
+        redeem.input,
         redeem.userDisplayName,
-        'twitch'
+        'twitch',
+        this.twitchState?.redeemCharacterLimit ?? 300
       );
     }
   }
