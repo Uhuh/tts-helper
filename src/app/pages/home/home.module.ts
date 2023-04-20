@@ -6,13 +6,13 @@ import { InputModule } from '../../shared/components/input/input.module';
 import { ButtonModule } from '../../shared/components/button/button.module';
 import { ToggleModule } from '../../shared/components/toggle/toggle.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { HistoryService } from 'src/app/shared/services/history.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { TtsRouterModule } from './tts-router/tts-router.module';
+import { TtsRouterComponent } from './tts-router/tts-router.component';
+import { ModerationComponent } from './moderation/moderation.component';
 
 @NgModule({
-  declarations: [HomeComponent],
+  declarations: [HomeComponent, TtsRouterComponent, ModerationComponent],
   imports: [
     CommonModule,
     InputModule,
@@ -20,7 +20,6 @@ import { TtsRouterModule } from './tts-router/tts-router.module';
     FormsModule,
     ButtonModule,
     ToggleModule,
-    TtsRouterModule,
     RouterModule.forChild([
       {
         path: '',
@@ -44,9 +43,9 @@ import { TtsRouterModule } from './tts-router/tts-router.module';
       },
     ]),
     RouterModule,
+    ReactiveFormsModule,
     MatSelectModule,
   ],
   exports: [HomeComponent],
-  providers: [HistoryService],
 })
 export class HomeModule {}
