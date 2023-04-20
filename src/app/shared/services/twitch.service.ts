@@ -15,7 +15,6 @@ import {
   updateRedeem,
   updateRedeemCharLimit,
 } from '../state/twitch/twitch.actions';
-import { TwitchRedeemInfo } from '../state/twitch/twitch.interface';
 
 @Injectable()
 export class TwitchService {
