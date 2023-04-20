@@ -1,7 +1,10 @@
 <div class="wrapper">
   <div class="info">
-    <span class="username">{{ audit.username }} <img [src]="svg" /></span>
-    <span class="time">{{ audit.createdAt | date : 'medium' }}</span>
+    <span class="username">
+      <span class="name">{{ audit.username }}</span>
+      <img [src]="svg" />
+    </span>
+    <span>{{ audit.createdAt | date : 'short' }}</span>
   </div>
   <hr />
   <span class="text">{{ audit.text }}</span>
