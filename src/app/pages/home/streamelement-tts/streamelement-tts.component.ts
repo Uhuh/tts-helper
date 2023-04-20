@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
-import { VoiceSetting } from 'src/app/shared/state/config/config.interface';
+import { VoiceSettings } from 'src/app/shared/state/config/config.interface';
 
 @Component({
   selector: 'app-streamelement-tts',
@@ -14,7 +14,7 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
 
   voiceControl = new FormControl('', { nonNullable: true });
 
-  voiceOptions: VoiceSetting[] = [
+  voiceOptions: VoiceSettings[] = [
     {
       url: '',
       voice: '',
