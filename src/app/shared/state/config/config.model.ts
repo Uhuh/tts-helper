@@ -1,5 +1,6 @@
-import { VoiceSetting } from './config.interface';
+import { VoiceSettings } from './config.interface';
 
 export interface ConfigState {
-  voice: VoiceSetting;
+  voiceSettings: VoiceSettings;
+  bannedWords: string[];
 }

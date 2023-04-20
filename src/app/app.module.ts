@@ -14,6 +14,8 @@ import { TwitchApi } from './shared/api/twitch.api';
 import { HttpClientModule } from '@angular/common/http';
 import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { HistoryService } from './shared/services/history.service';
+import { ConfigService } from './shared/services/config.service';
+import { configReducer } from './shared/state/config/config.reducers';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,6 +26,7 @@ import { HistoryService } from './shared/services/history.service';
     StoreModule.forRoot({
       historyState: historyReducer,
       twitchState: twitchReducer,
+      configState: configReducer,
     }),
     BrowserAnimationsModule,
     MatSnackBarModule,
@@ -33,6 +36,7 @@ import { HistoryService } from './shared/services/history.service';
     TwitchService,
     TwitchApi,
     TwitchPubSub,
+    ConfigService,
     HistoryService,
     {
       provide: LOCAL_STORAGE,
