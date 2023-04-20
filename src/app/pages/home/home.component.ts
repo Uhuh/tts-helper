@@ -18,7 +18,12 @@ export class HomeComponent {
     const { value } = this.ttsControl;
     this.ttsControl.setValue('');
 
-    this.historyService.playTts(value ?? 'Oops no rizz!', '', 'tts-helper');
+    this.historyService.playTts(
+      value ?? 'Oops no rizz!',
+      '',
+      'tts-helper',
+      1000
+    );
   }
 
   get isDisabled() {

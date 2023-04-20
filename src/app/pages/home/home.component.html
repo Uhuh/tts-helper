@@ -5,7 +5,7 @@
   <div class="sub-header">
     <label>Play TTS locally.</label>
     <p>These show up in the history tab.</p>
-    <form class="action-row" (submit)="speak()">
+    <form class="action-row flex-wrap" (submit)="speak()">
       <app-input [control]="ttsControl" placeholder="Enter something to say." />
       <app-button type="submit" [disabled]="isDisabled">Send</app-button>
     </form>
@@ -14,5 +14,9 @@
     <span>TTS Settings</span>
   </div>
   <app-tts-router></app-tts-router>
+  <div class="header">
+    <span>Moderation</span>
+  </div>
+  <app-moderation></app-moderation>
 </div>
 <router-outlet></router-outlet>
