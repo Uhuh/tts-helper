@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectAuditItems } from '../state/history/history.selectors';
 import {
@@ -13,15 +13,27 @@ import {
 import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/tauri';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfigService } from './config.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Injectable()
-export class HistoryService {
+export class HistoryService implements OnDestroy {
+  private readonly destroyed$ = new Subject<void>();
+
   public readonly auditItems$ = this.store.select(selectAuditItems);
+  bannedWords: string[] = [];
 
   constructor(
     private readonly store: Store,
+    private readonly configService: ConfigService,
     private readonly snackbar: MatSnackBar
   ) {
+    this.configService.bannedWords$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((bannedWords) => {
+        this.bannedWords = bannedWords;
+      });
+
     listen('audio-done', (item) => {
       this.store.dispatch(
         updateHistoryStatus({
@@ -32,7 +44,24 @@ export class HistoryService {
     });
   }
 
-  playTts(text: string, username: string, source: AuditSource) {
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  playTts(
+    text: string,
+    username: string,
+    source: AuditSource,
+    charLimit: number
+  ) {
+    if (this.bannedWords.find((w) => text.includes(w))) {
+      return;
+    }
+
+    // Trim played audio down, but keep full message incase stream wants to requeue it.
+    const audioText = text.substring(0, charLimit);
+
     invoke('play_tts', {
       /**
        * @TODO - Setup state for handling selected TTS options
@@ -41,7 +70,7 @@ export class HistoryService {
         url: 'https://api.streamelements.com/kappa/v2/speech',
         params: [
           ['voice', 'Brian'],
-          ['text', text],
+          ['text', audioText],
         ],
       },
     })

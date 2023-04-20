@@ -1,0 +1,15 @@
+<div class="section">
+  <div class="sub-header">
+    <span>Banned words</span>
+    <p>
+      Put words separated by commas. Messages that contain any of these will be
+      ignored entirely.
+    </p>
+  </div>
+  <textarea
+    [formControl]="bannedWords"
+    class="banned-words hide"
+    [ngClass]="{ unhide: !hideBannedWords.value }"
+  ></textarea>
+  <app-toggle [control]="hideBannedWords">Blur banned words</app-toggle>
+</div>

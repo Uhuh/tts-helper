@@ -1,0 +1,9 @@
+.hide {
+  transition: all 0.15s;
+  filter: blur(4px);
+}
+
+.unhide {
+  transition: all 0.15s;
+  filter: unset;
+}
