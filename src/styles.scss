@@ -153,6 +153,27 @@ a {
   }
 }
 
+textarea {
+  color: var(--text);
+  border: unset;
+  border-radius: 6px;
+  padding: 15px 20px;
+
+  margin: 0.7rem 0;
+
+  background-color: var(--white-5);
+  max-width: 350px;
+  min-width: 250px;
+  min-height: 200px;
+  max-height: 400px;
+  transition: border 0.2s;
+
+  &:focus,
+  &:active {
+    outline: 1px solid var(--blue) !important;
+  }
+}
+
 .full-width {
   width: 100%;
 }
