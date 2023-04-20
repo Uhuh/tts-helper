@@ -37,13 +37,13 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: var(--background);
+  background-color: var(--blue-20);
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
 
 input:checked + .slider:before {
-  background-color: var(--text-inactive);
+  background-color: var(--blue);
 }
 
 input:checked + .slider:before {
