@@ -7,12 +7,17 @@ import { InputModule } from '../../shared/components/input/input.module';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AuthModule } from './auth/auth.module';
-import { RedeemsModule } from './redeems/redeems.module';
-import { BitsModule } from './bits/bits.module';
+import { AuthComponent } from './auth/auth.component';
+import { BitsComponent } from './bits/bits.component';
+import { RedeemsComponent } from './redeems/redeems.component';
 
 @NgModule({
-  declarations: [TwitchComponent],
+  declarations: [
+    TwitchComponent,
+    AuthComponent,
+    BitsComponent,
+    RedeemsComponent,
+  ],
   imports: [
     CommonModule,
     ButtonModule,
@@ -26,9 +31,6 @@ import { BitsModule } from './bits/bits.module';
     MatSelectModule,
     ReactiveFormsModule,
     InputModule,
-    BitsModule,
-    RedeemsModule,
-    AuthModule,
   ],
   exports: [TwitchComponent],
 })
