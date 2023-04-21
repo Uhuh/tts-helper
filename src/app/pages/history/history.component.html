@@ -1,4 +1,7 @@
 <div class="header">
-  <span> Redeemption history </span>
+  <span>Redemption history</span>
+  <app-button (click)="togglePause()" [ngClass]="{ active: isPaused }">{{
+    isPaused ? 'Unpause' : 'Pause'
+  }}</app-button>
 </div>
 <app-history-list></app-history-list>
