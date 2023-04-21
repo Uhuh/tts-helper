@@ -41,8 +41,16 @@ async fn play_tts(
             now_playing.remove(id)
         }
     };
-    audio_player.play_tts(request, on_start, on_finish, controller).await?;
+    audio_player
+        .play_tts(request, on_start, on_finish, controller)
+        .await?;
     Ok(id)
+}
+
+#[tauri::command]
+fn set_tts_paused(paused: bool, audio_player: State<'_, AudioPlayer>) -> ApiResult<()> {
+    audio_player.set_paused(paused);
+    Ok(())
 }
 
 #[tauri::command]
