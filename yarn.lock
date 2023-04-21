@@ -2261,6 +2261,13 @@
     "@material/theme" "15.0.0-canary.684e33d25.0"
     tslib "^2.1.0"
 
+"@ngrx/store-devtools@^15.4.0":
+  version "15.4.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-15.4.0.tgz#39c1a31f813dc4328ed0fb826843845c83422c2d"
+  integrity sha512-AqWRprSyS3u/vZlpsBOPMW1/0TZS2LE13/KpZedEY+RMCW+mi53esqgrdNGOB3Wr4vrI82Ar9fgaIm4TQO6LPg==
+  dependencies:
+    tslib "^2.0.0"
+
 "@ngrx/store@^15.4.0":
   version "15.4.0"
   resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-15.4.0.tgz#185ee18e5c4147c7db60fd3b223cc429f826d514"
@@ -7111,6 +7118,12 @@ tar@^6.1.11, tar@^6.1.2:
     minizlib "^2.1.1"
     mkdirp "^1.0.3"
     yallist "^4.0.0"
+
+"tauri-plugin-store-api@https://github.com/tauri-apps/tauri-plugin-store":
+  version "0.0.0"
+  resolved "https://github.com/tauri-apps/tauri-plugin-store#df267506bf12de451762f3f4b7f929ebed1421c9"
+  dependencies:
+    "@tauri-apps/api" "^1.2.0"
 
 terser-webpack-plugin@^5.1.3:
   version "5.3.7"

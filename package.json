@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "^15.2.0",
     "@angular/router": "^15.2.6",
     "@ngrx/store": "^15.4.0",
+    "@ngrx/store-devtools": "^15.4.0",
     "@tauri-apps/api": "^1.2.0",
     "@twurple/api": "^6.1.1",
     "@twurple/auth": "^6.1.1",
@@ -28,6 +29,7 @@
     "@twurple/eventsub-ws": "^6.1.1",
     "@twurple/pubsub": "^6.1.1",
     "rxjs": "~7.8.0",
+    "tauri-plugin-store-api": "https://github.com/tauri-apps/tauri-plugin-store",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
   },

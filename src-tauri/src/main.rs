@@ -77,6 +77,7 @@ fn main() -> anyhow::Result<()> {
     let audio_player = AudioPlayer::new_default()?;
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::default().build())
         .manage(audio_player)
         .manage(Arc::new(NowPlaying::default()))
         .setup(|app| {
