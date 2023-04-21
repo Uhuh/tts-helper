@@ -1,5 +1,8 @@
-<ng-container [formGroup]="redeemsGroup">
-  <div class="sub-header" *ngIf="redeems.length">
+<ng-container [formGroup]="redeemsGroup" *ngIf="redeems.length">
+  <div class="header">
+    <span>Redeem Settings</span>
+  </div>
+  <div class="sub-header">
     <label>Redeem</label>
     <p>This redeem will trigger TTS with user input.</p>
     <mat-form-field>
@@ -11,7 +14,7 @@
     </mat-form-field>
   </div>
 
-  <div class="sub-header" *ngIf="redeems.length">
+  <div class="sub-header">
     <label>Redeem character limit</label>
     <p>The max allowed characters we'll play for the redeem.</p>
     <app-input
