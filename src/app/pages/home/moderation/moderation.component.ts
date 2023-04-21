@@ -21,7 +21,9 @@ export class ModerationComponent implements OnInit, OnDestroy {
     this.configService.bannedWords$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((bannedWords) => {
-        this.bannedWords.patchValue(bannedWords.join(','));
+        this.bannedWords.patchValue(bannedWords.join(','), {
+          emitEvent: false,
+        });
       });
 
     this.bannedWords.valueChanges
