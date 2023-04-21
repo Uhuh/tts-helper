@@ -19,7 +19,7 @@ import {
   updateTokenValidity,
   updateTwitchState,
 } from '../state/twitch/twitch.actions';
-import { Subject, interval, switchMap, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
 import { ValidUser } from '../state/twitch/twitch.interface';
 
@@ -113,7 +113,16 @@ export class TwitchService implements OnDestroy {
       )
       .subscribe({
         next: (data) => {
-          this.store.dispatch(updateChannelRedeems({ redeems: data.data }));
+          this.store.dispatch(
+            updateChannelRedeems({
+              redeems: data.data.map((r) => ({
+                cost: r.cost,
+                id: r.id,
+                prompt: r.prompt,
+                title: r.title,
+              })),
+            })
+          );
         },
         error: (e) => console.error(e),
       });
