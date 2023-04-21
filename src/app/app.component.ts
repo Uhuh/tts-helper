@@ -6,6 +6,9 @@ import { updateTwitchState } from './shared/state/twitch/twitch.actions';
 import { Store } from '@ngrx/store';
 import { TwitchService } from './shared/services/twitch.service';
 import { debounceTime } from 'rxjs';
+import { ConfigService } from './shared/services/config.service';
+import { ConfigState } from './shared/state/config/config.model';
+import { updateConfigState } from './shared/state/config/config.actions';
 
 @Component({
   selector: 'app-root',
@@ -20,13 +23,13 @@ export class AppComponent {
   constructor(
     private readonly store: Store,
     private readonly twitchPubSub: TwitchPubSub,
+    private readonly configService: ConfigService,
     private readonly twitchService: TwitchService,
     private readonly storageService: StorageService
   ) {
     this.storageService
       .getFromStore<TwitchState>('.settings.json', 'twitch')
       .subscribe((data) => {
-        console.log('data from twitch.json', data?.value);
         if (!data || !data.value) {
           return this.twitchService.clearState();
         }
@@ -34,14 +37,30 @@ export class AppComponent {
         this.store.dispatch(updateTwitchState({ twitchState: data.value }));
       });
 
+    this.storageService
+      .getFromStore<ConfigState>('.settings.json', 'config')
+      .subscribe((data) => {
+        if (!data || !data.value) {
+          return;
+        }
+
+        this.store.dispatch(updateConfigState({ configState: data.value }));
+      });
+
     /**
-     * Handle saving the whole twitch state to memory
+     * Handle saving the whole state to memory
      * Debounce to ignore multi updates so it can save "less" times than needed
      */
+
+    this.configService.configState$
+      .pipe(debounceTime(500))
+      .subscribe((state) => {
+        this.storageService.saveToStore('.settings.json', 'config', state);
+      });
+
     this.twitchService.twitchState$
       .pipe(debounceTime(500))
       .subscribe((state) => {
-        console.log('Updating storage twitch.json', state);
         this.storageService.saveToStore('.settings.json', 'twitch', state);
       });
   }
