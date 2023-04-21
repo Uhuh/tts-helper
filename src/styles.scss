@@ -153,6 +153,20 @@ a {
   }
 }
 
+.warning {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  margin-bottom: 2rem;
+  border-radius: 6px;
+  background-color: var(--blue-5);
+  border: 1px solid var(--blue);
+
+  a {
+    color: var(--blue);
+  }
+}
+
 textarea {
   color: var(--text);
   border: unset;
