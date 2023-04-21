@@ -1,14 +1,13 @@
 ﻿import { StaticAuthProvider } from '@twurple/auth';
 import { Injectable, OnDestroy } from '@angular/core';
 import { TwitchService } from './twitch.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient } from '@twurple/chat';
 import { HistoryService } from './history.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TwitchRedeem } from './twitch-pubsub.interface';
-import { TwitchState } from '../state/twitch/twitch.model';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
@@ -16,10 +15,10 @@ export class TwitchPubSub implements OnDestroy {
   // TTS Helper client ID. This isn't a sensitive code.
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
 
-  twitchState?: TwitchState;
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
   selectedRedeem: string | null = null;
+  redeemCharLimit = 0;
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
@@ -30,23 +29,18 @@ export class TwitchPubSub implements OnDestroy {
     private readonly historyService: HistoryService,
     private readonly snackbar: MatSnackBar
   ) {
-    this.twitchService.twitchState$
+    combineLatest([
+      this.twitchService.twitchToken$,
+      this.twitchService.channelInfo$,
+    ])
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((twitchState) => {
+      .subscribe(([token, channelInfo]) => {
         this.cleanupListeners();
-        this.twitchState = twitchState;
-
-        if (
-          !this.twitchState.token ||
-          !this.twitchState.channelInfo.channelId
-        ) {
+        if (!token || !channelInfo.channelId) {
           return;
         }
 
-        const authProvider = new StaticAuthProvider(
-          this.clientId,
-          this.twitchState.token
-        );
+        const authProvider = new StaticAuthProvider(this.clientId, token);
         const apiClient = new ApiClient({ authProvider });
 
         this.listener = new EventSubWsListener({ apiClient });
@@ -54,15 +48,11 @@ export class TwitchPubSub implements OnDestroy {
 
         this.chat = new ChatClient({
           authProvider,
-          channels: [this.twitchState.channelInfo.username],
+          channels: [channelInfo.username],
         });
 
         this.chat.connect().catch((e) => {
-          console.error(
-            `Failed to connect to chat.`,
-            this.twitchState?.channelInfo,
-            e
-          );
+          console.error(`Failed to connect to chat.`, channelInfo, e);
 
           this.snackbar.open(
             'Oops! We encountered an error connecting to Twitch.',
@@ -74,7 +64,7 @@ export class TwitchPubSub implements OnDestroy {
         });
 
         this.redeemListener = this.listener.onChannelRedemptionAdd(
-          this.twitchState.channelInfo.channelId ?? '',
+          channelInfo.channelId ?? '',
           (c) => this.onRedeem(c)
         );
 
@@ -86,6 +76,10 @@ export class TwitchPubSub implements OnDestroy {
     this.twitchService.redeem$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((redeem) => (this.selectedRedeem = redeem));
+
+    this.twitchService.redeemCharLimit$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((charLimit) => (this.redeemCharLimit = charLimit));
   }
 
   onMessage(user: string, text: string) {
@@ -106,7 +100,7 @@ export class TwitchPubSub implements OnDestroy {
         redeem.input,
         redeem.userDisplayName,
         'twitch',
-        this.twitchState?.redeemCharacterLimit ?? 300
+        this.redeemCharLimit ?? 300
       );
     }
   }
