@@ -132,6 +132,8 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
                     move || !paused.load(Ordering::Relaxed)
                 };
 
+                let pause_delay =
+                    Zero::new(source.channels(), source.sample_rate()).skip_when(is_resumed);
                 let source = source
                     .convert_samples()
                     .on_start(on_start)
@@ -140,14 +142,12 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
                 let end_delay = Zero::new(source.channels(), source.sample_rate())
                     .take_for(get_end_delay_duration)
                     .skip_when(is_skipped);
-                let pause_delay =
-                    Zero::new(source.channels(), source.sample_rate()).skip_when(is_resumed);
 
                 // Enqueue the audio
                 trace!("enqueuing audio");
+                queue_tx.append(pause_delay);
                 queue_tx.append(source);
                 queue_tx.append(end_delay);
-                queue_tx.append(pause_delay);
             }
             Ok(AudioEvent::SetPaused(value)) => {
                 trace!(paused = value, "setting paused");
