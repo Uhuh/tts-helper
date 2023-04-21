@@ -4,6 +4,11 @@ import { ConfigState } from './config.model';
 export const _selectConfigState =
   createFeatureSelector<Readonly<ConfigState>>('configState');
 
+export const selectConfigState = createSelector(
+  _selectConfigState,
+  (state) => state
+);
+
 export const selectVoiceSettings = createSelector(
   _selectConfigState,
   (state) => state.voiceSettings
