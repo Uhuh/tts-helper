@@ -1,4 +1,11 @@
-use std::{io::Cursor, time::Duration};
+use std::{
+    io::Cursor,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+    time::Duration,
+};
 
 use bytes::Bytes;
 use crossbeam::channel::{Receiver, RecvTimeoutError, Sender};
@@ -63,6 +70,12 @@ impl AudioPlayer {
 
         Ok(())
     }
+
+    /// Sets whether the audio player is paused. Any currently playing sources will continue to play
+    /// until they finish, but no new sources will be played while paused.
+    pub fn set_paused(&self, paused: bool) {
+        let _ = self.event_tx.send(AudioEvent::SetPaused(paused));
+    }
 }
 
 #[instrument(skip_all)]
@@ -84,6 +97,7 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
     }
 
     // Handle audio events
+    let paused = Arc::new(AtomicBool::default());
     loop {
         // Check for new events
         match event_rx.recv_timeout(Duration::from_millis(100)) {
@@ -113,6 +127,10 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
                     let controller = controller.clone();
                     move || controller.end_delay()
                 };
+                let is_resumed = {
+                    let paused = paused.clone();
+                    move || !paused.load(Ordering::Relaxed)
+                };
 
                 let source = source
                     .convert_samples()
@@ -122,11 +140,18 @@ fn play_audio(event_rx: Receiver<AudioEvent>) {
                 let end_delay = Zero::new(source.channels(), source.sample_rate())
                     .take_for(get_end_delay_duration)
                     .skip_when(is_skipped);
+                let pause_delay =
+                    Zero::new(source.channels(), source.sample_rate()).skip_when(is_resumed);
 
                 // Enqueue the audio
                 trace!("enqueuing audio");
                 queue_tx.append(source);
                 queue_tx.append(end_delay);
+                queue_tx.append(pause_delay);
+            }
+            Ok(AudioEvent::SetPaused(value)) => {
+                trace!(paused = value, "setting paused");
+                paused.store(value, Ordering::Relaxed);
             }
             Err(RecvTimeoutError::Disconnected) => break,
             _ => {}
@@ -145,6 +170,7 @@ enum AudioEvent {
         on_finish: Box<dyn FnOnce() + Send + 'static>,
         controller: Controller,
     },
+    SetPaused(bool),
 }
 
 /// An error that can occur when creating an audio device.
