@@ -88,6 +88,7 @@ fn main() -> anyhow::Result<()> {
         })
         .invoke_handler(tauri::generate_handler![
             play_tts,
+            set_tts_paused,
             get_now_playing,
             set_audio_state,
         ])
