@@ -12,11 +12,7 @@ import {
 
 const initialState: TwitchState = {
   token: null,
-  /**
-   * Assume valid as the token will be validated on launch.
-   * If invalid we can alert the user with a snackbar message.
-   */
-  isTokenValid: true,
+  isTokenValid: false,
   channelInfo: {
     channelId: '',
     username: '',
