@@ -32,7 +32,9 @@
     "updater": {
       "active": true,
       "dialog": true,
-      "endpoints": [],
+      "endpoints": [
+        "https://s3.us-east-2.amazonaws.com/panku.io/latest.json"
+      ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ4ODM0MzRFQjBERUU0MDgKUldRSTVONndUa09EMkpZMnQrckdEUktmWGtWdzJHRWpZeWJONEsyTldKbWY1NGRjRGxGN1NLR3oK",
       "windows": {
         "installMode": "passive"
