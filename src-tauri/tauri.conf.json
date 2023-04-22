@@ -39,7 +39,7 @@
     },
     "windows": [
       {
-        "fullscreen": true,
+        "fullscreen": false,
         "resizable": true,
         "title": "TTS Helper",
         "width": 1000,
