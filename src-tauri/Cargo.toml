@@ -40,7 +40,7 @@ tauri-build = { workspace = true , features = [] }
 
 [dependencies]
 # Tauri
-tauri = { workspace = true, features = ["shell-open"] }
+tauri = { workspace = true, features = ["shell-open", "updater"] }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 
 # Serialization
