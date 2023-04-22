@@ -1,6 +1,9 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
+import { checkForUpdates } from './updater';
+
+checkForUpdates();
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
