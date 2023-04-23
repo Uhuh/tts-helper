@@ -68,7 +68,7 @@ export class HistoryService implements OnDestroy {
     charLimit: number,
     auditId?: number
   ) {
-    if (this.bannedWords.find((w) => text.includes(w))) {
+    if (this.bannedWords.find((w) => text.includes(w.toLowerCase()))) {
       return;
     }
 
