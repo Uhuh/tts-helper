@@ -1,0 +1,980 @@
+{
+  "streamElements": {
+    "english": [
+      {
+        "key": "Brian",
+        "displayName": "Brian | British English"
+      },
+      {
+        "key": "Aditi",
+        "displayName": "Aditi | Indian English"
+      },
+      {
+        "key": "Emma",
+        "displayName": "Emma | British English"
+      },
+      {
+        "key": "Amy",
+        "displayName": "Amy | British English"
+      },
+      {
+        "key": "Geraint",
+        "displayName": "Geraint | Welsh English"
+      },
+      {
+        "key": "Salli",
+        "displayName": "Salli | US English"
+      },
+      {
+        "key": "Matthew",
+        "displayName": "Matthew | US English"
+      },
+      {
+        "key": "Kendra",
+        "displayName": "Kendra | US English"
+      },
+      {
+        "key": "Justin",
+        "displayName": "Justin | US English"
+      },
+      {
+        "key": "Joey",
+        "displayName": "Joey | US English"
+      },
+      {
+        "key": "Joanna",
+        "displayName": "Joanna | US English"
+      },
+      {
+        "key": "Ivy",
+        "displayName": "Ivy | US English"
+      },
+      {
+        "key": "en-US-Wavenet-A",
+        "displayName": "Carter | US English"
+      },
+      {
+        "key": "en-US-Wavenet-B",
+        "displayName": "Paul | US English"
+      },
+      {
+        "key": "en-US-Wavenet-C",
+        "displayName": "Evelyn | US English"
+      },
+      {
+        "key": "en-US-Wavenet-D",
+        "displayName": "Liam | US English"
+      },
+      {
+        "key": "en-US-Wavenet-E",
+        "displayName": "Jasmine | US English"
+      },
+      {
+        "key": "en-US-Wavenet-F",
+        "displayName": "Madison | US English"
+      },
+      {
+        "key": "en-US-Standard-C",
+        "displayName": "Vanessa | US English"
+      },
+      {
+        "key": "en-US-Standard-D",
+        "displayName": "Zachary | US English"
+      },
+      {
+        "key": "en-US-Standard-E",
+        "displayName": "Audrey | US English"
+      },
+      {
+        "key": "Raveena",
+        "displayName": "Raveena | Indian English"
+      },
+      {
+        "key": "en-GB-Standard-A",
+        "displayName": "Layla | British English"
+      },
+      {
+        "key": "en-GB-Standard-B",
+        "displayName": "Ali | British English"
+      },
+      {
+        "key": "en-GB-Standard-C",
+        "displayName": "Scarlett | British English"
+      },
+      {
+        "key": "en-GB-Standard-D",
+        "displayName": "Oliver | British English"
+      },
+      {
+        "key": "en-GB-Wavenet-A",
+        "displayName": "Bella | British English"
+      },
+      {
+        "key": "en-GB-Wavenet-B",
+        "displayName": "John | British English"
+      },
+      {
+        "key": "en-GB-Wavenet-C",
+        "displayName": "Victoria | British English"
+      },
+      {
+        "key": "en-GB-Wavenet-D",
+        "displayName": "Ron | British English"
+      },
+      {
+        "key": "Russell",
+        "displayName": "Russell | Australian English"
+      },
+      {
+        "key": "Nicole",
+        "displayName": "Nicole | Australian English"
+      },
+      {
+        "key": "en-AU-Standard-A",
+        "displayName": "Zoe | Australian English"
+      },
+      {
+        "key": "en-AU-Standard-B",
+        "displayName": "Luke | Australian English"
+      },
+      {
+        "key": "en-AU-Wavenet-A",
+        "displayName": "Samantha | Australian English"
+      },
+      {
+        "key": "en-AU-Wavenet-B",
+        "displayName": "Steve | Australian English"
+      },
+      {
+        "key": "en-AU-Wavenet-C",
+        "displayName": "Courtney | Australian English"
+      },
+      {
+        "key": "en-AU-Wavenet-D",
+        "displayName": "Jayden | Australian English"
+      },
+      {
+        "key": "en-AU-Standard-C",
+        "displayName": "Ashleigh | Australian English"
+      },
+      {
+        "key": "en-AU-Standard-D",
+        "displayName": "Daniel | Australian English"
+      }
+    ],
+    "spanish": [
+      {
+        "key": "Penelope",
+        "displayName": "Penélope | US Spanish"
+      },
+      {
+        "key": "Miguel",
+        "displayName": "Miguel | US Spanish"
+      },
+      {
+        "key": "Mia",
+        "displayName": "Mia | Mexican, Spanish"
+      },
+      {
+        "key": "Enrique",
+        "displayName": "Enrique | Castilian Spanish"
+      },
+      {
+        "key": "Conchita",
+        "displayName": "Conchita | Castilian Spanish"
+      },
+      {
+        "key": "es-ES-Standard-A",
+        "displayName": "Rosalinda | Castilian Spanish"
+      }
+    ],
+    "japanese": [
+      {
+        "key": "Takumi",
+        "displayName": "Takumi | Japanese"
+      },
+      {
+        "key": "Mizuki",
+        "displayName": "Mizuki | Japanese"
+      },
+      {
+        "key": "ja-JP-Standard-A",
+        "displayName": "Koharu | Japanese"
+      },
+      {
+        "key": "ja-JP-Wavenet-A",
+        "displayName": "Miho | Japanese"
+      },
+      {
+        "key": "ja-JP-Wavenet-B",
+        "displayName": "Eiko | Japanese"
+      },
+      {
+        "key": "ja-JP-Wavenet-C",
+        "displayName": "Haruto | Japanese"
+      },
+      {
+        "key": "ja-JP-Wavenet-D",
+        "displayName": "Eichi | Japanese"
+      }
+    ],
+    "french": [
+      {
+        "key": "Mathieu",
+        "displayName": "Mathieu | French"
+      },
+      {
+        "key": "Celine",
+        "displayName": "Céline | French"
+      },
+      {
+        "key": "Chantal",
+        "displayName": "Chantal | Canadian French"
+      },
+      {
+        "key": "fr-CA-Standard-A",
+        "displayName": "Juliette | Canadian French"
+      },
+      {
+        "key": "fr-CA-Standard-B",
+        "displayName": "Felix | Canadian French"
+      },
+      {
+        "key": "fr-CA-Standard-C",
+        "displayName": "Camille | Canadian French"
+      },
+      {
+        "key": "fr-CA-Standard-D",
+        "displayName": "Jacques | Canadian French"
+      },
+      {
+        "key": "fr-FR_ReneeVoice",
+        "displayName": "Renee | French (français)"
+      },
+      {
+        "key": "fr-FR-Standard-C",
+        "displayName": "Yvonne | French (français)"
+      },
+      {
+        "key": "fr-FR-Standard-D",
+        "displayName": "Gaspard | French (français)"
+      },
+      {
+        "key": "fr-FR-Wavenet-A",
+        "displayName": "Emilie | French (français)"
+      },
+      {
+        "key": "fr-FR-Wavenet-B",
+        "displayName": "Marcel | French (français)"
+      },
+      {
+        "key": "fr-FR-Wavenet-C",
+        "displayName": "Brigitte | French (français)"
+      },
+      {
+        "key": "fr-FR-Wavenet-D",
+        "displayName": "Simon | French (français)"
+      }
+    ],
+    "german": [
+      {
+        "key": "Vicki",
+        "displayName": "Vicki | German"
+      },
+      {
+        "key": "Marlene",
+        "displayName": "Marlene | German"
+      },
+      {
+        "key": "Hans",
+        "displayName": "Hans | German"
+      },
+      {
+        "key": "de-DE-Standard-A",
+        "displayName": "Karolina | German"
+      },
+      {
+        "key": "de-DE-Standard-B",
+        "displayName": "Albert | German"
+      },
+      {
+        "key": "de-DE-Wavenet-A",
+        "displayName": "Angelika | German"
+      },
+      {
+        "key": "de-DE-Wavenet-B",
+        "displayName": "Oskar | German"
+      },
+      {
+        "key": "de-DE-Wavenet-C",
+        "displayName": "Nina | German"
+      },
+      {
+        "key": "de-DE-Wavenet-D",
+        "displayName": "Sebastian | German"
+      }
+    ],
+    "italian": [
+      {
+        "key": "Giorgio",
+        "displayName": "Giorgio | Italian"
+      },
+      {
+        "key": "Carla",
+        "displayName": "Carla | Italian"
+      },
+      {
+        "key": "Bianca",
+        "displayName": "Bianca | Italian"
+      },
+      {
+        "key": "it-IT-Wavenet-A",
+        "displayName": "Valentina | Italian"
+      },
+      {
+        "key": "it-IT-Wavenet-B",
+        "displayName": "Stella | Italian"
+      },
+      {
+        "key": "it-IT-Wavenet-C",
+        "displayName": "Alessandro | Italian"
+      },
+      {
+        "key": "it-IT-Wavenet-D",
+        "displayName": "Luca | Italian"
+      },
+      {
+        "key": "it-IT-Standard-A",
+        "displayName": "Gianna | Italian (italiano)"
+      }
+    ],
+    "russian": [
+      {
+        "key": "Tatyana",
+        "displayName": "Tatyana | Russian"
+      },
+      {
+        "key": "Maxim",
+        "displayName": "Maxim | Russian"
+      },
+      {
+        "key": "ru-RU-Wavenet-A",
+        "displayName": "Маша (Masha) | Russian (Russia)"
+      },
+      {
+        "key": "ru-RU-Wavenet-B",
+        "displayName": "Илья (Ilya) | Russian (Russia)"
+      },
+      {
+        "key": "ru-RU-Wavenet-C",
+        "displayName": "Алёна (Alena) | Russian (Russia)"
+      },
+      {
+        "key": "ru-RU-Wavenet-D",
+        "displayName": "Пётр (Petr) | Russian (Russia)"
+      }
+    ],
+    "ukrainian": [
+      {
+        "key": "uk-UA-Wavenet-A",
+        "displayName": "Vladislav | Ukrainian"
+      }
+    ],
+    "latvian": [
+      {
+        "key": "lv-lv-Standard-A",
+        "displayName": "Juris | Latvian"
+      }
+    ],
+    "slovak": [
+      {
+        "key": "sk-SK-Wavenet-A",
+        "displayName": "Eliska | Slovak"
+      }
+    ],
+    "czech": [
+      {
+        "key": "cs-CZ-Wavenet-A",
+        "displayName": "Silvia | Czech"
+      }
+    ],
+    "mandarin": [
+      {
+        "key": "Zhiyu",
+        "displayName": "Zhiyu | Chinese, Mandarin"
+      },
+      {
+        "key": "cmn-CN-Wavenet-A",
+        "displayName": "Li Na | Chinese, Mandarin"
+      },
+      {
+        "key": "cmn-CN-Wavenet-B",
+        "displayName": "Wang | Chinese, Mandarin"
+      },
+      {
+        "key": "cmn-CN-Wavenet-C",
+        "displayName": "Bai | Chinese, Mandarin"
+      },
+      {
+        "key": "cmn-CN-Wavenet-D",
+        "displayName": "Mingli | Chinese, Mandarin"
+      }
+    ],
+    "filipino": [
+      {
+        "key": "fil-PH-Wavenet-A",
+        "displayName": "Tala | Filipino"
+      }
+    ],
+    "vietnamese": [
+      {
+        "key": "vi-VN-Wavenet-A",
+        "displayName": "Linh | Vietnamese"
+      },
+      {
+        "key": "vi-VN-Wavenet-B",
+        "displayName": "Nguyen | Vietnamese"
+      },
+      {
+        "key": "vi-VN-Wavenet-C",
+        "displayName": "phuong | Vietnamese"
+      },
+      {
+        "key": "vi-VN-Wavenet-D",
+        "displayName": "Viet | Vietnamese"
+      }
+    ],
+    "arabic": [
+      {
+        "key": "ar-XA-Wavenet-A",
+        "displayName": "Aisha | Arabic"
+      },
+      {
+        "key": "ar-XA-Wavenet-B",
+        "displayName": "Ahmad | Arabic"
+      },
+      {
+        "key": "ar-XA-Wavenet-C",
+        "displayName": "Ahmad | Arabic"
+      }
+    ],
+    "turkish": [
+      {
+        "key": "Filiz",
+        "displayName": "Filiz | Turkish"
+      },
+      {
+        "key": "tr-TR-Standard-A",
+        "displayName": "Zehra | Turkish"
+      },
+      {
+        "key": "tr-TR-Wavenet-A",
+        "displayName": "Yagmur | Turkish"
+      },
+      {
+        "key": "tr-TR-Wavenet-B",
+        "displayName": "Mehmet | Turkish"
+      },
+      {
+        "key": "tr-TR-Wavenet-C",
+        "displayName": "Miray | Turkish"
+      },
+      {
+        "key": "tr-TR-Wavenet-D",
+        "displayName": "Elif | Turkish"
+      },
+      {
+        "key": "tr-TR-Wavenet-E",
+        "displayName": "Enes | Turkish"
+      }
+    ],
+    "swedish": [
+      {
+        "key": "Astrid",
+        "displayName": "Astrid | Swedish"
+      },
+      {
+        "key": "sv-SE-Standard-A",
+        "displayName": "Elsa | Swedish"
+      }
+    ],
+    "portuguese": [
+      {
+        "key": "Ines",
+        "displayName": "Inês | Portuguese"
+      },
+      {
+        "key": "Cristiano",
+        "displayName": "Cristiano | Portuguese"
+      },
+      {
+        "key": "Vitoria",
+        "displayName": "Vitória | Brazilian Portuguese"
+      },
+      {
+        "key": "Ricardo",
+        "displayName": "Ricardo | Brazilian Portuguese"
+      },
+      {
+        "key": "pt-BR-Standard-A",
+        "displayName": "Alice | Brazilian Portuguese"
+      },
+      {
+        "key": "pt-PT-Wavenet-A",
+        "displayName": "Beatriz | Portuguese (Portugal)"
+      },
+      {
+        "key": "pt-PT-Wavenet-B",
+        "displayName": "Francisco | Portuguese (Portugal)"
+      },
+      {
+        "key": "pt-PT-Wavenet-C",
+        "displayName": "Lucas | Portuguese (Portugal)"
+      },
+      {
+        "key": "pt-PT-Wavenet-D",
+        "displayName": "Carolina | Portuguese (Portugal)"
+      }
+    ],
+    "polish": [
+      {
+        "key": "Maja",
+        "displayName": "Maja | Polish"
+      },
+      {
+        "key": "Jan",
+        "displayName": "Jan | Polish"
+      },
+      {
+        "key": "Jacek",
+        "displayName": "Jacek | Polish"
+      },
+      {
+        "key": "Ewa",
+        "displayName": "Ewa | Polish"
+      },
+      {
+        "key": "pl-PL-Wavenet-A",
+        "displayName": "Amelia | Polish (Poland)"
+      },
+      {
+        "key": "pl-PL-Wavenet-B",
+        "displayName": "Stanislaw | Polish (Poland)"
+      },
+      {
+        "key": "pl-PL-Wavenet-C",
+        "displayName": "Tomasz | Polish (Poland)"
+      },
+      {
+        "key": "pl-PL-Wavenet-D",
+        "displayName": "Klaudia | Polish (Poland)"
+      }
+    ],
+    "dutch": [
+      {
+        "key": "Ruben",
+        "displayName": "Ruben | Dutch"
+      },
+      {
+        "key": "Lotte",
+        "displayName": "Lotte | Dutch"
+      },
+      {
+        "key": "nl-NL-Standard-A",
+        "displayName": "Annemieke | Dutch"
+      },
+      {
+        "key": "nl-NL-Wavenet-A",
+        "displayName": "Eva | Dutch"
+      },
+      {
+        "key": "nl-NL-Wavenet-B",
+        "displayName": "Lars | Dutch"
+      },
+      {
+        "key": "nl-NL-Wavenet-C",
+        "displayName": "Marc | Dutch"
+      },
+      {
+        "key": "nl-NL-Wavenet-D",
+        "displayName": "Verona | Dutch"
+      },
+      {
+        "key": "nl-NL-Wavenet-E",
+        "displayName": "Lotte | Dutch"
+      }
+    ],
+    "danish": [
+      {
+        "key": "Naja",
+        "displayName": "Naja | Danish"
+      },
+      {
+        "key": "Mads",
+        "displayName": "Mads | Danish"
+      },
+      {
+        "key": "da-DK-Wavenet-A",
+        "displayName": "Marie | Danish"
+      }
+    ],
+    "finnish": [
+      {
+        "key": "fi-FI-Wavenet-A",
+        "displayName": "Marianne | Finnish"
+      }
+    ],
+    "norwegian": [
+      {
+        "key": "Liv",
+        "displayName": "Liv | Norwegian"
+      },
+      {
+        "key": "nb-no-Wavenet-E",
+        "displayName": "Nora | Norwegian"
+      },
+      {
+        "key": "nb-no-Wavenet-A",
+        "displayName": "Malena | Norwegian"
+      },
+      {
+        "key": "nb-no-Wavenet-B",
+        "displayName": "Jacob | Norwegian"
+      },
+      {
+        "key": "nb-no-Wavenet-C",
+        "displayName": "Thea | Norwegian"
+      },
+      {
+        "key": "nb-no-Wavenet-D",
+        "displayName": "Aksel | Norwegian"
+      }
+    ],
+    "korean": [
+      {
+        "key": "Seoyeon",
+        "displayName": "Seoyeon | Korean"
+      },
+      {
+        "key": "ko-KR-Standard-A",
+        "displayName": "Heosu | Korean"
+      },
+      {
+        "key": "ko-KR-Wavenet-A",
+        "displayName": "Grace | Korean"
+      }
+    ],
+    "icelandic": [
+      {
+        "key": "Karl",
+        "displayName": "Karl | Icelandic"
+      },
+      {
+        "key": "Dora",
+        "displayName": "Dóra | Icelandic"
+      },
+      {
+        "key": "is-is-Standard-A",
+        "displayName": "Helga | Icelandic"
+      }
+    ]
+  },
+  "tiktok": {
+    "english": [
+      {
+        "key": "en_us_001",
+        "displayName": "Female | US English"
+      },
+      {
+        "key": "en_us_006",
+        "displayName": "Male 1 | US English"
+      },
+      {
+        "key": "en_us_007",
+        "displayName": "Male 2 | US English"
+      },
+      {
+        "key": "en_us_009",
+        "displayName": "Male 3 | US English"
+      },
+      {
+        "key": "en_us_010",
+        "displayName": "Male 4 | US English"
+      },
+      {
+        "key": "en_uk_001",
+        "displayName": "Male 1 | UK English"
+      },
+      {
+        "key": "en_uk_003",
+        "displayName": "Male 2 | UK English"
+      },
+      {
+        "key": "en_au_001",
+        "displayName": "Female | AU English"
+      },
+      {
+        "key": "en_au_002",
+        "displayName": "Male | AU English"
+      }
+    ],
+    "characters-english": [
+      {
+        "key": "en_us_ghostface",
+        "displayName": "Ghostface (Scream)"
+      },
+      {
+        "key": "en_us_chewbacca",
+        "displayName": "Chewbacca (Star Wars)"
+      },
+      {
+        "key": "en_us_c3po",
+        "displayName": "C3PO (Star Wars)"
+      },
+      {
+        "key": "en_us_stitch",
+        "displayName": "Stitch (Lilo & Stitch)"
+      },
+      {
+        "key": "en_us_stormtrooper",
+        "displayName": "Stormtrooper (Star Wars)"
+      },
+      {
+        "key": "en_us_rocket",
+        "displayName": "Rocket (Guardians of the Galaxy)"
+      }
+    ],
+    "singing-english": [
+      {
+        "key": "en_female_f08_salut_damour",
+        "displayName": "Alto"
+      },
+      {
+        "key": "en_male_m03_lobby",
+        "displayName": "Tenor"
+      },
+      {
+        "key": "en_male_m03_sunshine_soon",
+        "displayName": "Sunshine Soon"
+      },
+      {
+        "key": "en_female_f08_warmy_breeze",
+        "displayName": "Warmy Breeze"
+      },
+      {
+        "key": "en_female_ht_f08_glorious",
+        "displayName": "Glorious"
+      },
+      {
+        "key": "en_male_sing_funny_it_goes_up",
+        "displayName": "It Goes Up"
+      },
+      {
+        "key": "en_male_m2_xhxs_m03_silly",
+        "displayName": "Chipmunk"
+      },
+      {
+        "key": "en_female_ht_f08_wonderful_world",
+        "displayName": "Dramatic"
+      }
+    ],
+    "other-english": [
+      {
+        "key": "en_male_grinch",
+        "displayName": "Trickster"
+      },
+      {
+        "key": "en_male_wizard",
+        "displayName": "Magician"
+      },
+      {
+        "key": "en_female_ht_f08_halloween",
+        "displayName": "Opera"
+      },
+      {
+        "key": "en_female_madam_leota",
+        "displayName": "Madame Leota"
+      },
+      {
+        "key": "en_male_ghosthost",
+        "displayName": "Ghost Host"
+      },
+      {
+        "key": "en_male_pirate",
+        "displayName": "Pirate"
+      },
+      {
+        "key": "en_female_ht_f08_glorious",
+        "displayName": "Euphoric"
+      },
+      {
+        "key": "en_male_sing_funny_it_goes_up",
+        "displayName": "Hypetrain"
+      },
+      {
+        "key": "en_female_samc",
+        "displayName": "Empathetic"
+      },
+      {
+        "key": "en_male_cody",
+        "displayName": "Serious"
+      },
+      {
+        "key": "en_female_ht_f08_wonderful_world",
+        "displayName": "Melodrama"
+      },
+      {
+        "key": "en_male_m2_xhxs_m03_silly",
+        "displayName": "Quirky Time"
+      },
+      {
+        "key": "en_male_funny",
+        "displayName": "Wacky"
+      },
+      {
+        "key": "en_female_emotional",
+        "displayName": "Peaceful"
+      },
+      {
+        "key": "en_male_m03_sunshine_soon",
+        "displayName": "Toon Beat"
+      },
+      {
+        "key": "en_female_f08_warmy_breeze",
+        "displayName": "Open Mic"
+      },
+      {
+        "key": "en_male_m03_lobby",
+        "displayName": "Jingle"
+      },
+      {
+        "key": "en_female_f08_salut_damour",
+        "displayName": "Cottagecore"
+      },
+      {
+        "key": "es_mx_002",
+        "displayName": "Warm"
+      },
+      {
+        "key": "en_male_narration",
+        "displayName": "Story Teller"
+      },
+      {
+        "key": "en_us_007",
+        "displayName": "Professor"
+      },
+      {
+        "key": "en_us_009",
+        "displayName": "Scientist"
+      },
+      {
+        "key": "en_us_010",
+        "displayName": "Confidence"
+      },
+      {
+        "key": "en_us_006",
+        "displayName": "Joey"
+      },
+      {
+        "key": "en_au_001",
+        "displayName": "Metro"
+      },
+      {
+        "key": "en_uk_001",
+        "displayName": "Narrator"
+      },
+      {
+        "key": "en_us_002",
+        "displayName": "Jessie"
+      },
+      {
+        "key": "en_au_002",
+        "displayName": "Smooth"
+      }
+    ],
+    "japanese": [
+      {
+        "key": "jp_001",
+        "displayName": "Female 1"
+      },
+      {
+        "key": "jp_003",
+        "displayName": "Female 2"
+      },
+      {
+        "key": "jp_005",
+        "displayName": "Female 3"
+      },
+      {
+        "key": "jp_006",
+        "displayName": "Male"
+      }
+    ],
+    "korean": [
+      {
+        "key": "kr_002",
+        "displayName": "Male 1"
+      },
+      {
+        "key": "kr_004",
+        "displayName": "Male 2"
+      },
+      {
+        "key": "kr_003",
+        "displayName": "Female"
+      }
+    ],
+    "french": [
+      {
+        "key": "fr_001",
+        "displayName": "Male 1"
+      },
+      {
+        "key": "fr_002",
+        "displayName": "Male 2"
+      }
+    ],
+    "german": [
+      {
+        "key": "de_001",
+        "displayName": "Female"
+      },
+      {
+        "key": "de_002",
+        "displayName": "Male"
+      }
+    ],
+    "spanish": [
+      {
+        "key": "es_002",
+        "displayName": "Male"
+      }
+    ],
+    "spanish-mx": [
+      {
+        "key": "es_mx_002",
+        "displayName": "Male"
+      }
+    ],
+    "portuguese-br": [
+      {
+        "key": "br_003",
+        "displayName": "Female 2"
+      },
+      {
+        "key": "br_004",
+        "displayName": "Female 3"
+      },
+      {
+        "key": "br_005",
+        "displayName": "Male"
+      }
+    ],
+    "indonesian": [
+      {
+        "key": "id_001",
+        "displayName": "Female"
+      }
+    ]
+  }
+}
