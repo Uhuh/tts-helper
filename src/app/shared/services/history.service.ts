@@ -15,6 +15,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigService } from './config.service';
 import { Subject, takeUntil } from 'rxjs';
+import { VoiceSettings } from '../state/config/config.interface';
 
 @Injectable()
 export class HistoryService implements OnDestroy {
@@ -22,6 +23,7 @@ export class HistoryService implements OnDestroy {
 
   public readonly auditItems$ = this.store.select(selectAuditItems);
   bannedWords: string[] = [];
+  voiceSettings!: VoiceSettings;
 
   constructor(
     private readonly store: Store,
@@ -33,6 +35,10 @@ export class HistoryService implements OnDestroy {
       .subscribe((bannedWords) => {
         this.bannedWords = bannedWords;
       });
+
+    this.configService.voiceSettings$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((voiceSettings) => (this.voiceSettings = voiceSettings));
 
     listen('audio-done', (item) => {
       this.store.dispatch(
@@ -67,9 +73,9 @@ export class HistoryService implements OnDestroy {
        * @TODO - Setup state for handling selected TTS options
        */
       request: {
-        url: 'https://api.streamelements.com/kappa/v2/speech',
+        url: this.voiceSettings.url,
         params: [
-          ['voice', 'Brian'],
+          ['voice', this.voiceSettings.voice],
           ['text', audioText],
         ],
       },
