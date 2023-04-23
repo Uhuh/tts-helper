@@ -1,44 +1,22 @@
 <div class="header">
-  <span>Main Settings</span>
+  <span>Home</span>
 </div>
 <div class="section">
-  <div class="sub-header">
-    <label>Play TTS locally.</label>
-    <p>These show up in the history tab.</p>
-    <form class="action-row flex-wrap" (submit)="speak()">
-      <app-input [control]="ttsControl" placeholder="Enter something to say." />
-      <app-button type="submit" [disabled]="isDisabled">Send</app-button>
-    </form>
-  </div>
-  <div class="header">
-    <span>Moderation</span>
-  </div>
-  <app-moderation></app-moderation>
-  <div class="header">
-    <span>TTS Settings</span>
-  </div>
   <div class="warning">
-    <span>Selecting TTS is WIP.</span>
+    <p>Heyo! Thanks for using this.</p>
+    <p>
+      This home page will always be accessible by clicking the logo in the top
+      left.
+    </p>
+    <p>I'll figure out what to do with this page soon enough.</p>
   </div>
+
   <div class="sub-header">
-    <label>Select TTS service</label>
-    <p>Decide which TTS service to use.</p>
-    <div class="action-row flex-wrap">
-      <app-button
-        (click)="selectTts('stream-elements')"
-        [ngClass]="{ active: selectedTts.value === 'stream-elements' }"
-      >
-        StreamElements
-      </app-button>
-      <app-button
-        (click)="selectTts('tts-monster')"
-        [ngClass]="{ active: selectedTts.value === 'tts-monster' }"
-        >TTS Monster</app-button
-      >
+    <label>Support</label>
+    <p>Feedback, support or community</p>
+    <div>
+      Join the support server
+      <a class="" href="https://discord.gg/jNDjNVeuJp" target="_blank">here</a>
     </div>
   </div>
 </div>
-<app-streamelement-tts
-  *ngIf="selectedTts.value === 'stream-elements'"
-></app-streamelement-tts>
-<app-tts-monster *ngIf="selectedTts.value === 'tts-monster'"></app-tts-monster>
