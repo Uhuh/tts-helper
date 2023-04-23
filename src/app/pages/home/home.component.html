@@ -20,6 +20,25 @@
   <div class="warning">
     <span>Selecting TTS is WIP.</span>
   </div>
-  <app-tts-router></app-tts-router>
+  <div class="sub-header">
+    <label>Select TTS service</label>
+    <p>Decide which TTS service to use.</p>
+    <div class="action-row flex-wrap">
+      <app-button
+        (click)="selectTts('stream-elements')"
+        [ngClass]="{ active: selectedTts.value === 'stream-elements' }"
+      >
+        StreamElements
+      </app-button>
+      <app-button
+        (click)="selectTts('tts-monster')"
+        [ngClass]="{ active: selectedTts.value === 'tts-monster' }"
+        >TTS Monster</app-button
+      >
+    </div>
+  </div>
 </div>
-<router-outlet></router-outlet>
+<app-streamelement-tts
+  *ngIf="selectedTts.value === 'stream-elements'"
+></app-streamelement-tts>
+<app-tts-monster *ngIf="selectedTts.value === 'tts-monster'"></app-tts-monster>
