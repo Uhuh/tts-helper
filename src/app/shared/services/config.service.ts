@@ -23,9 +23,6 @@ export class ConfigService {
   public readonly voiceSettingsTts$ = this.store.select(selectVoiceSettingsTts);
   public readonly bannedWords$ = this.store.select(selectBannedWords);
 
-  /**
-   * @TODO - Need to get saving settings to appdata soon
-   */
   constructor(private readonly store: Store) {}
 
   updateBannedWords(bannedWords: string) {
