@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-row {
+  display: flex;
+  gap: 10px;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
