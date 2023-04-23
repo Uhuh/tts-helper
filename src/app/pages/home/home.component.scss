@@ -12,3 +12,11 @@
 .flex-wrap {
   flex-wrap: wrap;
 }
+a {
+  color: var(--blue);
+  transition: all 0.2s;
+
+  &:hover {
+    color: var(--blue-20);
+  }
+}
