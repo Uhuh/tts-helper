@@ -29,7 +29,7 @@ export class ModerationComponent implements OnInit, OnDestroy {
     this.bannedWords.valueChanges
       .pipe(takeUntil(this.destroyed$), debounceTime(1000))
       .subscribe((bannedWords) => {
-        this.configService.updateBannedWords(bannedWords);
+        this.configService.updateBannedWords(bannedWords.toLowerCase());
       });
   }
 
