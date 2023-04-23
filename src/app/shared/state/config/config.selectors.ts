@@ -14,6 +14,11 @@ export const selectVoiceSettings = createSelector(
   (state) => state.voiceSettings
 );
 
+export const selectVoiceSettingsTts = createSelector(
+  selectVoiceSettings,
+  (state) => state.tts
+);
+
 export const selectBannedWords = createSelector(
   _selectConfigState,
   (state) => state.bannedWords

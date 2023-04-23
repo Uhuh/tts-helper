@@ -3,13 +3,18 @@ import { ConfigState } from './config.model';
 import {
   updateBannedWords,
   updateConfigState,
+  updateLanguage,
+  updateUrl,
+  updateVoice,
   updateVoiceSettings,
 } from './config.actions';
 
 const initialState: ConfigState = {
   voiceSettings: {
-    url: '',
+    tts: 'stream-elements',
+    url: 'https://api.streamelements.com/kappa/v2/speech',
     voice: '',
+    language: '',
     voiceQueryParam: '',
   },
   bannedWords: [],
@@ -30,5 +35,26 @@ export const configReducer = createReducer(
   on(updateBannedWords, (state, { bannedWords }) => ({
     ...state,
     bannedWords,
+  })),
+  on(updateLanguage, (state, { language }) => ({
+    ...state,
+    voiceSettings: {
+      ...state.voiceSettings,
+      language,
+    },
+  })),
+  on(updateVoice, (state, { voice }) => ({
+    ...state,
+    voiceSettings: {
+      ...state.voiceSettings,
+      voice,
+    },
+  })),
+  on(updateUrl, (state, { url }) => ({
+    ...state,
+    voiceSettings: {
+      ...state.voiceSettings,
+      url,
+    },
   }))
 );
