@@ -4,6 +4,7 @@ import {
   updateBannedWords,
   updateConfigState,
   updateLanguage,
+  updateTts,
   updateUrl,
   updateVoice,
   updateVoiceSettings,
@@ -55,6 +56,13 @@ export const configReducer = createReducer(
     voiceSettings: {
       ...state.voiceSettings,
       url,
+    },
+  })),
+  on(updateTts, (state, { tts }) => ({
+    ...state,
+    voiceSettings: {
+      ...state.voiceSettings,
+      tts,
     },
   }))
 );
