@@ -1,8 +1,14 @@
+import { Subject, first, takeUntil } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { TwitchService } from 'src/app/shared/services/twitch.service';
-import { VoiceSettings } from 'src/app/shared/state/config/config.interface';
+import { nonNullFormControl } from 'src/app/shared/utils/form';
+import voices from '../../../shared/json/tts-options.json';
+import { ConfigService } from 'src/app/shared/services/config.service';
+import { isKeyOfObject } from 'src/app/shared/utils/util';
+
+export interface TTSOption {
+  key: string;
+  displayName: string;
+}
 
 @Component({
   selector: 'app-streamelement-tts',
@@ -12,19 +18,56 @@ import { VoiceSettings } from 'src/app/shared/state/config/config.interface';
 export class StreamelementTtsComponent implements OnInit, OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  voiceControl = new FormControl('', { nonNullable: true });
+  languageOptions = [...Object.keys(voices.streamElements)];
+  languageVoiceOptions: TTSOption[] = [];
 
-  voiceOptions: VoiceSettings[] = [
-    {
-      url: '',
-      voice: '',
-      voiceQueryParam: '',
-    },
-  ];
+  voiceControl = nonNullFormControl('');
+  languageControl = nonNullFormControl('');
 
-  constructor(private readonly twitchService: TwitchService) {}
+  constructor(private readonly configService: ConfigService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.configService.voiceSettings$
+      .pipe(first(), takeUntil(this.destroyed$))
+      .subscribe((voiceSettings) => {
+        this.languageControl.patchValue(voiceSettings.language, {
+          emitEvent: false,
+        });
+
+        if (
+          voiceSettings.language &&
+          isKeyOfObject(voiceSettings.language, voices.streamElements)
+        ) {
+          this.languageVoiceOptions =
+            voices.streamElements[voiceSettings.language];
+        }
+
+        this.voiceControl.patchValue(voiceSettings.voice, { emitEvent: false });
+      });
+
+    this.languageControl.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((language) => {
+        if (language === '') {
+          this.languageVoiceOptions = [];
+          return;
+        }
+
+        if (!isKeyOfObject(language, voices.streamElements)) {
+          return;
+        }
+
+        this.languageVoiceOptions = voices.streamElements[language];
+
+        this.configService.updateLanguage(language);
+      });
+
+    this.voiceControl.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((voice) => {
+        this.configService.updateVoice(voice);
+      });
+  }
 
   ngOnDestroy(): void {
     this.destroyed$.next();
