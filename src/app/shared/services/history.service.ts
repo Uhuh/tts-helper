@@ -20,7 +20,6 @@ import { VoiceSettings } from '../state/config/config.interface';
 @Injectable()
 export class HistoryService implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
-
   public readonly auditItems$ = this.store.select(selectAuditItems);
   bannedWords: string[] = [];
   voiceSettings!: VoiceSettings;
@@ -55,11 +54,19 @@ export class HistoryService implements OnDestroy {
     this.destroyed$.complete();
   }
 
+  requeue(audit: AuditItem) {
+    /**
+     * @TODO - Determine if not having a character limit on requeue is good or bad.
+     */
+    this.playTts(audit.text, audit.username, audit.source, 1000, audit.id);
+  }
+
   playTts(
     text: string,
     username: string,
     source: AuditSource,
-    charLimit: number
+    charLimit: number,
+    auditId?: number
   ) {
     if (this.bannedWords.find((w) => text.includes(w))) {
       return;
@@ -73,6 +80,7 @@ export class HistoryService implements OnDestroy {
        * @TODO - Setup state for handling selected TTS options
        */
       request: {
+        id: auditId,
         url: this.voiceSettings.url,
         params: [
           ['voice', this.voiceSettings.voice],
@@ -83,6 +91,10 @@ export class HistoryService implements OnDestroy {
       .then((id) => {
         if (typeof id != 'number') {
           throw new Error(`Unexpected response type: ${typeof id}`);
+        }
+
+        if (auditId) {
+          return;
         }
 
         this.addHistory({
