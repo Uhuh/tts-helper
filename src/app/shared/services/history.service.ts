@@ -15,13 +15,14 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigService } from './config.service';
 import { Subject, takeUntil } from 'rxjs';
+import { VoiceSettings } from '../state/config/config.interface';
 
 @Injectable()
 export class HistoryService implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
-
   public readonly auditItems$ = this.store.select(selectAuditItems);
   bannedWords: string[] = [];
+  voiceSettings!: VoiceSettings;
 
   constructor(
     private readonly store: Store,
@@ -33,6 +34,10 @@ export class HistoryService implements OnDestroy {
       .subscribe((bannedWords) => {
         this.bannedWords = bannedWords;
       });
+
+    this.configService.voiceSettings$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((voiceSettings) => (this.voiceSettings = voiceSettings));
 
     listen('audio-done', (item) => {
       this.store.dispatch(
@@ -49,11 +54,19 @@ export class HistoryService implements OnDestroy {
     this.destroyed$.complete();
   }
 
+  requeue(audit: AuditItem) {
+    /**
+     * @TODO - Determine if not having a character limit on requeue is good or bad.
+     */
+    this.playTts(audit.text, audit.username, audit.source, 1000, audit.id);
+  }
+
   playTts(
     text: string,
     username: string,
     source: AuditSource,
-    charLimit: number
+    charLimit: number,
+    auditId?: number
   ) {
     if (this.bannedWords.find((w) => text.includes(w))) {
       return;
@@ -67,9 +80,10 @@ export class HistoryService implements OnDestroy {
        * @TODO - Setup state for handling selected TTS options
        */
       request: {
-        url: 'https://api.streamelements.com/kappa/v2/speech',
+        id: auditId,
+        url: this.voiceSettings.url,
         params: [
-          ['voice', 'Brian'],
+          ['voice', this.voiceSettings.voice],
           ['text', audioText],
         ],
       },
@@ -77,6 +91,10 @@ export class HistoryService implements OnDestroy {
       .then((id) => {
         if (typeof id != 'number') {
           throw new Error(`Unexpected response type: ${typeof id}`);
+        }
+
+        if (auditId) {
+          return;
         }
 
         this.addHistory({

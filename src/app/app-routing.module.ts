@@ -18,6 +18,18 @@ const routes: Routes = [
       import('./pages/history/history.module').then((m) => m.HistoryModule),
   },
   {
+    path: 'moderation',
+    loadChildren: () =>
+      import('./pages/moderation/moderation.module').then(
+        (m) => m.ModerationModule
+      ),
+  },
+  {
+    path: 'settings',
+    loadChildren: () =>
+      import('./pages/settings/settings.module').then((m) => m.SettingsModule),
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',

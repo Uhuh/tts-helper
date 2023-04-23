@@ -1,6 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
+import { nonNullFormControl } from 'src/app/shared/utils/form';
 
 @Component({
   selector: 'app-bits',
@@ -10,17 +11,12 @@ import { Subject } from 'rxjs';
 export class BitsComponent implements OnInit, OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  @Input() bitsGroup!: FormGroup;
+  bits = nonNullFormControl(0, {
+    validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
+  });
+  bitsCharLimit = nonNullFormControl(300, { validators: [Validators.min(0)] });
 
   ngOnInit(): void {}
-
-  get bitsControl() {
-    return this.bitsGroup.get('bits') as FormControl<number>;
-  }
-
-  get bitsCharLimitControl() {
-    return this.bitsGroup.get('bitsCharLimit') as FormControl<number>;
-  }
 
   ngOnDestroy(): void {
     this.destroyed$.next();

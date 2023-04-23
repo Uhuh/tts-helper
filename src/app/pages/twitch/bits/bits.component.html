@@ -1,11 +1,11 @@
-<ng-container [formGroup]="bitsGroup">
+<ng-container>
   <div class="sub-header">
     <label>Minimum bits</label>
     <p>The amount of bits required to trigger TTS</p>
     <app-input
       placeholder="Set min bits"
       type="number"
-      [control]="bitsControl"
+      [control]="bits"
     ></app-input>
   </div>
 
@@ -15,7 +15,7 @@
     <app-input
       placeholder="Set max char limit"
       type="number"
-      [control]="bitsCharLimitControl"
+      [control]="bitsCharLimit"
     ></app-input>
   </div>
 </ng-container>

@@ -28,12 +28,21 @@
       <span class="nav-header">Text to Speech</span>
       <a
         class="nav-link"
-        [routerLink]="['queue']"
+        [routerLink]="['settings']"
         routerLinkActive="active"
         (click)="close()"
       >
-        <img class="tts-icon" src="assets/clock.svg" />
-        <span>Queue</span>
+        <mat-icon class="tts-icon">settings</mat-icon>
+        <span>Settings</span>
+      </a>
+      <a
+        class="nav-link"
+        [routerLink]="['moderation']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
+        <mat-icon class="tts-icon">construction</mat-icon>
+        <span>Moderation</span>
       </a>
       <a
         class="nav-link"
@@ -43,6 +52,15 @@
       >
         <img class="tts-icon" src="assets/history.svg" />
         <span>History</span>
+      </a>
+      <a
+        class="nav-link"
+        [routerLink]="['queue']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
+        <img class="tts-icon" src="assets/clock.svg" />
+        <span>Queue</span>
       </a>
     </div>
   </div>

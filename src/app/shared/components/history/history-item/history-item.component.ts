@@ -57,26 +57,7 @@ export class HistoryItemComponent implements OnDestroy {
   requeue() {
     this.historyService.updateHistory(this.audit.id, AuditState.playing);
 
-    invoke('play_tts', {
-      request: {
-        id: this.audit.id,
-        url: 'https://api.streamelements.com/kappa/v2/speech',
-        params: [
-          ['voice', 'Brian'],
-          ['text', this.audit.text],
-        ],
-      },
-    }).catch((e) => {
-      console.error(`Error invoking play_tts: ${e}`);
-
-      this.snackbar.open(
-        'Oops! We encountered an error while playing that.',
-        'Dismiss',
-        {
-          panelClass: 'notification-error',
-        }
-      );
-    });
+    this.historyService.requeue(this.audit);
   }
 
   skip() {

@@ -1,4 +1,4 @@
-<ng-container [formGroup]="redeemsGroup" *ngIf="redeems.length">
+<ng-container *ngIf="redeems.length">
   <div class="header">
     <span>Redeem Settings</span>
   </div>
@@ -6,7 +6,7 @@
     <label>Redeem</label>
     <p>This redeem will trigger TTS with user input.</p>
     <mat-form-field>
-      <mat-select placeholder="Select a redeem option" formControlName="redeem">
+      <mat-select placeholder="Select a redeem option" [formControl]="redeem">
         <mat-option *ngFor="let redeem of redeems" [value]="redeem.id">
           {{ redeem.title }}
         </mat-option>
