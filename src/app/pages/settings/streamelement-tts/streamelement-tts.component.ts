@@ -1,9 +1,8 @@
 import { Subject, first, takeUntil } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
-import voices from '../../../shared/json/tts-options.json';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import { isKeyOfObject } from 'src/app/shared/utils/util';
+import voices from '../../../shared/json/stream-elements-options.json';
 
 export interface TTSOption {
   key: string;
@@ -18,13 +17,25 @@ export interface TTSOption {
 export class StreamelementTtsComponent implements OnInit, OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  languageOptions = [...Object.keys(voices.streamElements)];
+  languageVoiceMap = new Map<string, { key: string; displayName: string }[]>();
+  languageOptions: string[] = [];
   languageVoiceOptions: TTSOption[] = [];
 
   voiceControl = nonNullFormControl('');
   languageControl = nonNullFormControl('');
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    for (const voice of voices) {
+      this.languageVoiceMap.set(
+        voice.language,
+        voice.options.sort((a, b) => {
+          return ('' + a.displayName).localeCompare(b.displayName);
+        })
+      );
+    }
+
+    this.languageOptions = [...this.languageVoiceMap.keys()].sort();
+  }
 
   ngOnInit(): void {
     this.configService.voiceSettings$
@@ -34,13 +45,8 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
           emitEvent: false,
         });
 
-        if (
-          voiceSettings.language &&
-          isKeyOfObject(voiceSettings.language, voices.streamElements)
-        ) {
-          this.languageVoiceOptions =
-            voices.streamElements[voiceSettings.language];
-        }
+        this.languageVoiceOptions =
+          this.languageVoiceMap.get(voiceSettings.language) ?? [];
 
         this.voiceControl.patchValue(voiceSettings.voice, { emitEvent: false });
       });
@@ -53,11 +59,8 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
           return;
         }
 
-        if (!isKeyOfObject(language, voices.streamElements)) {
-          return;
-        }
-
-        this.languageVoiceOptions = voices.streamElements[language];
+        const options = this.languageVoiceMap.get(language);
+        this.languageVoiceOptions = options ?? [];
 
         this.configService.updateLanguage(language);
       });
