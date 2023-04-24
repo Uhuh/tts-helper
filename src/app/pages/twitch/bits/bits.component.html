@@ -5,8 +5,14 @@
     <app-input
       placeholder="Set min bits"
       type="number"
-      [control]="bits"
+      [control]="minBits"
     ></app-input>
+    <mat-error *ngIf="minBits.hasError('min')">
+      Minimum bits allowed is 0.
+    </mat-error>
+    <mat-error *ngIf="minBits.hasError('pattern')">
+      Minimum bits must be a whole number.
+    </mat-error>
   </div>
 
   <div class="sub-header">
@@ -17,5 +23,11 @@
       type="number"
       [control]="bitsCharLimit"
     ></app-input>
+    <mat-error *ngIf="bitsCharLimit.hasError('min')">
+      Minimum character limit allowed is 0.
+    </mat-error>
+    <mat-error *ngIf="bitsCharLimit.hasError('pattern')">
+      Character limit must be a whole number.
+    </mat-error>
   </div>
 </ng-container>

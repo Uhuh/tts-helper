@@ -1,8 +1,10 @@
 ﻿import { TwitchState } from './twitch.model';
 import { createReducer, on } from '@ngrx/store';
 import {
+  updateBitsCharLimit,
   updateChannelInfo,
   updateChannelRedeems,
+  updateMinBits,
   updateRedeem,
   updateRedeemCharLimit,
   updateToken,
@@ -20,6 +22,8 @@ const initialState: TwitchState = {
   },
   redeem: null,
   redeemCharacterLimit: 300,
+  minBits: 100,
+  bitsCharacterLimit: 300,
 };
 
 export const twitchReducer = createReducer(
@@ -59,5 +63,13 @@ export const twitchReducer = createReducer(
   on(updateRedeemCharLimit, (state, { redeemCharacterLimit }) => ({
     ...state,
     redeemCharacterLimit,
+  })),
+  on(updateMinBits, (state, { minBits }) => ({
+    ...state,
+    minBits,
+  })),
+  on(updateBitsCharLimit, (state, { bitsCharacterLimit }) => ({
+    ...state,
+    bitsCharacterLimit,
   }))
 );
