@@ -28,7 +28,7 @@ bytes = "1"
 [package]
 name = "tts-helper"
 version = "0.1.0"
-description = "A Tauri App"
+description = "An application to help streamers manage TTS events."
 authors = ["Dylan Warren (https://github.com/Uhuh)"]
 license = ""
 repository = ""
@@ -42,6 +42,7 @@ tauri-build = { workspace = true , features = [] }
 # Tauri
 tauri = { workspace = true, features = ["shell-open", "updater"] }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
+tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 
 # Serialization
 serde = { workspace = true, features = ["derive"] }
