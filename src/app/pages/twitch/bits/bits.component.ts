@@ -49,7 +49,7 @@ export class BitsComponent implements OnInit, OnDestroy {
         filter(() => this.bitsCharLimit.valid && !this.bitsCharLimit.pristine)
       )
       .subscribe((bitsCharLimit) => {
-        this.twitchService.updateBitsCharLimit(bitsCharLimit);
+        this.twitchService.updateBitsCharLimit(Number(bitsCharLimit));
       });
   }
 
