@@ -8,11 +8,15 @@ import {
   selectTwitchRedeems,
   selectTwitchState,
   selectTwitchToken,
+  selectMinBits,
+  selectBitsCharLimit,
 } from '../state/twitch/twitch.selectors';
 import { TwitchApi } from '../api/twitch.api';
 import {
+  updateBitsCharLimit,
   updateChannelInfo,
   updateChannelRedeems,
+  updateMinBits,
   updateRedeem,
   updateRedeemCharLimit,
   updateToken,
@@ -34,6 +38,8 @@ export class TwitchService implements OnDestroy {
   public readonly redeems$ = this.store.select(selectTwitchRedeems);
   public readonly redeem$ = this.store.select(selectRedeem);
   public readonly redeemCharLimit$ = this.store.select(selectRedeemCharLimit);
+  public readonly minBits$ = this.store.select(selectMinBits);
+  public readonly bitsCharLimit$ = this.store.select(selectBitsCharLimit);
 
   constructor(
     private readonly store: Store,
@@ -74,6 +80,8 @@ export class TwitchService implements OnDestroy {
           token: null,
           redeem: null,
           redeemCharacterLimit: 300,
+          minBits: 100,
+          bitsCharacterLimit: 300,
           channelInfo: {
             channelId: '',
             username: '',
@@ -134,5 +142,13 @@ export class TwitchService implements OnDestroy {
 
   updateRedeemCharLimit(redeemCharacterLimit: number) {
     this.store.dispatch(updateRedeemCharLimit({ redeemCharacterLimit }));
+  }
+
+  updateMinBits(minBits: number) {
+    this.store.dispatch(updateMinBits({ minBits }));
+  }
+
+  updateBitsCharLimit(bitsCharacterLimit: number) {
+    this.store.dispatch(updateBitsCharLimit({ bitsCharacterLimit }));
   }
 }

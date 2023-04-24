@@ -30,3 +30,11 @@ export const updateRedeemCharLimit = createAction(
   '[ TwitchState ] Updating redeem character limit',
   props<{ redeemCharacterLimit: number }>()
 );
+export const updateMinBits = createAction(
+  '[ TwitchState ] Updating min bits',
+  props<{ minBits: number }>()
+);
+export const updateBitsCharLimit = createAction(
+  '[ TwitchState ] Updating bits character limit',
+  props<{ bitsCharacterLimit: number }>()
+);

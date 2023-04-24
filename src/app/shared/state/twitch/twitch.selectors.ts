@@ -32,3 +32,11 @@ export const selectRedeemCharLimit = createSelector(
   _selectTwitchState,
   (state) => state.redeemCharacterLimit
 );
+export const selectMinBits = createSelector(
+  _selectTwitchState,
+  (state) => state.minBits
+);
+export const selectBitsCharLimit = createSelector(
+  _selectTwitchState,
+  (state) => state.bitsCharacterLimit
+);
