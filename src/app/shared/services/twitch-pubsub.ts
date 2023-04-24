@@ -7,7 +7,7 @@ import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient } from '@twurple/chat';
 import { HistoryService } from './history.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TwitchRedeem } from './twitch-pubsub.interface';
+import { TwitchCheer, TwitchRedeem } from './twitch-pubsub.interface';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
@@ -17,12 +17,17 @@ export class TwitchPubSub implements OnDestroy {
 
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
+
   selectedRedeem: string | null = null;
   redeemCharLimit = 0;
+
+  minBits = 0;
+  bitsCharLimit = 0;
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
   redeemListener?: any;
+  bitsListener?: any;
 
   constructor(
     private readonly twitchService: TwitchService,
@@ -68,6 +73,11 @@ export class TwitchPubSub implements OnDestroy {
           (c) => this.onRedeem(c)
         );
 
+        this.bitsListener = this.listener.onChannelCheer(
+          channelInfo.channelId ?? '',
+          (cheer) => this.onBits(cheer as TwitchCheer)
+        );
+
         this.onMessageListener = this.chat.onMessage((_, user, text) =>
           this.onMessage(user, text)
         );
@@ -80,6 +90,14 @@ export class TwitchPubSub implements OnDestroy {
     this.twitchService.redeemCharLimit$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((charLimit) => (this.redeemCharLimit = charLimit));
+
+    this.twitchService.minBits$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((minBits) => (this.minBits = minBits));
+
+    this.twitchService.bitsCharLimit$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((bitsCharLimit) => (this.bitsCharLimit = bitsCharLimit));
   }
 
   onMessage(user: string, text: string) {
@@ -91,9 +109,19 @@ export class TwitchPubSub implements OnDestroy {
     }
   }
 
-  /**
-   * @TODO - Handle redeems by using users selected redeem from twitch settings
-   */
+  onBits(cheer: TwitchCheer) {
+    if (cheer.bits >= this.minBits) {
+      const cleanedInput = cheer.message.replaceAll(/Cheer[0-9]+/g, '');
+
+      this.historyService.playTts(
+        cleanedInput,
+        cheer.userDisplayName,
+        'twitch',
+        this.bitsCharLimit ?? 300
+      );
+    }
+  }
+
   onRedeem(redeem: TwitchRedeem) {
     if (redeem.rewardId === this.selectedRedeem) {
       this.historyService.playTts(

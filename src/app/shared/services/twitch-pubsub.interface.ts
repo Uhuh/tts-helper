@@ -14,3 +14,15 @@ export interface TwitchRedeem {
   userId: string;
   userName: string;
 }
+
+export interface TwitchCheer {
+  bits: number;
+  broadcasterId: string;
+  broadcasterDisplayName: string;
+  broadcasterName: string;
+  isAnonymous: boolean;
+  message: string;
+  userId: string;
+  userDisplayName: string;
+  userName: string;
+}
