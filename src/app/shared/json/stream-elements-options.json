@@ -1,0 +1,1171 @@
+[
+  {
+    "language": "Turkish",
+    "options": [
+      {
+        "key": "Filiz",
+        "displayName": "Filiz"
+      },
+      {
+        "key": "tr-TR-Standard-A",
+        "displayName": "Zehra"
+      }
+    ]
+  },
+  {
+    "language": "Swedish",
+    "options": [
+      {
+        "key": "Astrid",
+        "displayName": "Astrid"
+      },
+      {
+        "key": "sv-SE-Standard-A",
+        "displayName": "Elsa"
+      }
+    ]
+  },
+  {
+    "language": "Russian",
+    "options": [
+      {
+        "key": "Tatyana",
+        "displayName": "Tatyana"
+      },
+      {
+        "key": "Maxim",
+        "displayName": "Maxim"
+      }
+    ]
+  },
+  {
+    "language": "Romanian",
+    "options": [
+      {
+        "key": "Carmen",
+        "displayName": "Carmen"
+      }
+    ]
+  },
+  {
+    "language": "Portuguese",
+    "options": [
+      {
+        "key": "Ines",
+        "displayName": "Inês"
+      },
+      {
+        "key": "Cristiano",
+        "displayName": "Cristiano"
+      }
+    ]
+  },
+  {
+    "language": "Brazilian Portuguese",
+    "options": [
+      {
+        "key": "Vitoria",
+        "displayName": "Vitória"
+      },
+      {
+        "key": "Ricardo",
+        "displayName": "Ricardo"
+      },
+      {
+        "key": "pt-BR-Standard-A",
+        "displayName": "Alice"
+      }
+    ]
+  },
+  {
+    "language": "Polish",
+    "options": [
+      {
+        "key": "Maja",
+        "displayName": "Maja"
+      },
+      {
+        "key": "Jan",
+        "displayName": "Jan"
+      },
+      {
+        "key": "Jacek",
+        "displayName": "Jacek"
+      },
+      {
+        "key": "Ewa",
+        "displayName": "Ewa"
+      }
+    ]
+  },
+  {
+    "language": "Dutch",
+    "options": [
+      {
+        "key": "Ruben",
+        "displayName": "Ruben"
+      },
+      {
+        "key": "Lotte",
+        "displayName": "Lotte"
+      },
+      {
+        "key": "nl-NL-Standard-A",
+        "displayName": "Annemieke"
+      },
+      {
+        "key": "nl-NL-Wavenet-A",
+        "displayName": "Eva"
+      },
+      {
+        "key": "nl-NL-Wavenet-B",
+        "displayName": "Lars"
+      },
+      {
+        "key": "nl-NL-Wavenet-C",
+        "displayName": "Marc"
+      },
+      {
+        "key": "nl-NL-Wavenet-D",
+        "displayName": "Verona"
+      },
+      {
+        "key": "nl-NL-Wavenet-E",
+        "displayName": "Lotte"
+      }
+    ]
+  },
+  {
+    "language": "Norwegian",
+    "options": [
+      {
+        "key": "Liv",
+        "displayName": "Liv"
+      },
+      {
+        "key": "nb-no-Wavenet-E",
+        "displayName": "Nora"
+      },
+      {
+        "key": "nb-no-Wavenet-A",
+        "displayName": "Malena"
+      },
+      {
+        "key": "nb-no-Wavenet-B",
+        "displayName": "Jacob"
+      },
+      {
+        "key": "nb-no-Wavenet-C",
+        "displayName": "Thea"
+      },
+      {
+        "key": "nb-no-Wavenet-D",
+        "displayName": "Aksel"
+      }
+    ]
+  },
+  {
+    "language": "Korean",
+    "options": [
+      {
+        "key": "Seoyeon",
+        "displayName": "Seoyeon"
+      },
+      {
+        "key": "ko-KR-Standard-A",
+        "displayName": "Heosu"
+      },
+      {
+        "key": "ko-KR-Wavenet-A",
+        "displayName": "Grace"
+      }
+    ]
+  },
+  {
+    "language": "Japanese",
+    "options": [
+      {
+        "key": "Takumi",
+        "displayName": "Takumi"
+      },
+      {
+        "key": "Mizuki",
+        "displayName": "Mizuki"
+      },
+      {
+        "key": "ja-JP-Standard-A",
+        "displayName": "Koharu"
+      },
+      {
+        "key": "ja-JP-Wavenet-A",
+        "displayName": "Miho"
+      },
+      {
+        "key": "ja-JP-Wavenet-B",
+        "displayName": "Eiko"
+      },
+      {
+        "key": "ja-JP-Wavenet-C",
+        "displayName": "Haruto"
+      },
+      {
+        "key": "ja-JP-Wavenet-D",
+        "displayName": "Eichi"
+      }
+    ]
+  },
+  {
+    "language": "Italian",
+    "options": [
+      {
+        "key": "Giorgio",
+        "displayName": "Giorgio"
+      },
+      {
+        "key": "Carla",
+        "displayName": "Carla"
+      },
+      {
+        "key": "Bianca",
+        "displayName": "Bianca"
+      },
+      {
+        "key": "it-IT-Wavenet-A",
+        "displayName": "Valentina"
+      },
+      {
+        "key": "it-IT-Wavenet-B",
+        "displayName": "Stella"
+      },
+      {
+        "key": "it-IT-Wavenet-C",
+        "displayName": "Alessandro"
+      },
+      {
+        "key": "it-IT-Wavenet-D",
+        "displayName": "Luca"
+      }
+    ]
+  },
+  {
+    "language": "Icelandic",
+    "options": [
+      {
+        "key": "Karl",
+        "displayName": "Karl"
+      },
+      {
+        "key": "Dora",
+        "displayName": "Dóra"
+      },
+      {
+        "key": "is-is-Standard-A",
+        "displayName": "Helga NEW!"
+      }
+    ]
+  },
+  {
+    "language": "French",
+    "options": [
+      {
+        "key": "Mathieu",
+        "displayName": "Mathieu"
+      },
+      {
+        "key": "Celine",
+        "displayName": "Céline"
+      }
+    ]
+  },
+  {
+    "language": "Canadian French",
+    "options": [
+      {
+        "key": "Chantal",
+        "displayName": "Chantal"
+      },
+      {
+        "key": "fr-CA-Standard-A",
+        "displayName": "Juliette"
+      },
+      {
+        "key": "fr-CA-Standard-B",
+        "displayName": "Felix"
+      },
+      {
+        "key": "fr-CA-Standard-C",
+        "displayName": "Camille"
+      },
+      {
+        "key": "fr-CA-Standard-D",
+        "displayName": "Jacques"
+      }
+    ]
+  },
+  {
+    "language": "US Spanish",
+    "options": [
+      {
+        "key": "Penelope",
+        "displayName": "Penélope"
+      },
+      {
+        "key": "Miguel",
+        "displayName": "Miguel"
+      }
+    ]
+  },
+  {
+    "language": "Mexican, Spanish",
+    "options": [
+      {
+        "key": "Mia",
+        "displayName": "Mia"
+      }
+    ]
+  },
+  {
+    "language": "Castilian Spanish",
+    "options": [
+      {
+        "key": "Enrique",
+        "displayName": "Enrique"
+      },
+      {
+        "key": "Conchita",
+        "displayName": "Conchita"
+      },
+      {
+        "key": "es-ES-Standard-A",
+        "displayName": "Rosalinda"
+      }
+    ]
+  },
+  {
+    "language": "English (Welsh)",
+    "options": [
+      {
+        "key": "Geraint",
+        "displayName": "Geraint"
+      }
+    ]
+  },
+  {
+    "language": "English (US)",
+    "options": [
+      {
+        "key": "Salli",
+        "displayName": "Salli"
+      },
+      {
+        "key": "Matthew",
+        "displayName": "Matthew"
+      },
+      {
+        "key": "Kimberly",
+        "displayName": "Kimberly"
+      },
+      {
+        "key": "Kendra",
+        "displayName": "Kendra"
+      },
+      {
+        "key": "Justin",
+        "displayName": "Justin"
+      },
+      {
+        "key": "Joey",
+        "displayName": "Joey"
+      },
+      {
+        "key": "Joanna",
+        "displayName": "Joanna"
+      },
+      {
+        "key": "Ivy",
+        "displayName": "Ivy"
+      },
+      {
+        "key": "en-US-Wavenet-A",
+        "displayName": "Carter"
+      },
+      {
+        "key": "en-US-Wavenet-B",
+        "displayName": "Paul"
+      },
+      {
+        "key": "en-US-Wavenet-C",
+        "displayName": "Evelyn"
+      },
+      {
+        "key": "en-US-Wavenet-D",
+        "displayName": "Liam"
+      },
+      {
+        "key": "en-US-Wavenet-E",
+        "displayName": "Jasmine"
+      },
+      {
+        "key": "en-US-Wavenet-F",
+        "displayName": "Madison"
+      },
+      {
+        "key": "en-US-Standard-B",
+        "displayName": "Mark"
+      },
+      {
+        "key": "en-US-Standard-C",
+        "displayName": "Vanessa"
+      },
+      {
+        "key": "en-US-Standard-D",
+        "displayName": "Zachary"
+      },
+      {
+        "key": "en-US-Standard-E",
+        "displayName": "Audrey"
+      }
+    ]
+  },
+  {
+    "language": "English (Indian)",
+    "options": [
+      {
+        "key": "Raveena",
+        "displayName": "Raveena"
+      },
+      {
+        "key": "Aditi",
+        "displayName": "Aditi"
+      }
+    ]
+  },
+  {
+    "language": "English (UK)",
+    "options": [
+      {
+        "key": "Emma",
+        "displayName": "Emma"
+      },
+      {
+        "key": "Brian",
+        "displayName": "Brian"
+      },
+      {
+        "key": "Amy",
+        "displayName": "Amy"
+      },
+      {
+        "key": "en-GB-Standard-A",
+        "displayName": "Layla"
+      },
+      {
+        "key": "en-GB-Standard-B",
+        "displayName": "Ali"
+      },
+      {
+        "key": "en-GB-Standard-C",
+        "displayName": "Scarlett"
+      },
+      {
+        "key": "en-GB-Standard-D",
+        "displayName": "Oliver"
+      },
+      {
+        "key": "en-GB-Wavenet-A",
+        "displayName": "Bella"
+      },
+      {
+        "key": "en-GB-Wavenet-B",
+        "displayName": "John"
+      },
+      {
+        "key": "en-GB-Wavenet-C",
+        "displayName": "Victoria"
+      },
+      {
+        "key": "en-GB-Wavenet-D",
+        "displayName": "Ron"
+      }
+    ]
+  },
+  {
+    "language": "English (Australian)",
+    "options": [
+      {
+        "key": "Russell",
+        "displayName": "Russell"
+      },
+      {
+        "key": "Nicole",
+        "displayName": "Nicole"
+      },
+      {
+        "key": "en-AU-Standard-A",
+        "displayName": "Zoe"
+      },
+      {
+        "key": "en-AU-Standard-B",
+        "displayName": "Luke"
+      },
+      {
+        "key": "en-AU-Wavenet-A",
+        "displayName": "Samantha"
+      },
+      {
+        "key": "en-AU-Wavenet-B",
+        "displayName": "Steve"
+      },
+      {
+        "key": "en-AU-Wavenet-C",
+        "displayName": "Courtney"
+      },
+      {
+        "key": "en-AU-Wavenet-D",
+        "displayName": "Jayden"
+      },
+      {
+        "key": "en-AU-Standard-C",
+        "displayName": "Ashleigh"
+      },
+      {
+        "key": "en-AU-Standard-D",
+        "displayName": "Daniel"
+      }
+    ]
+  },
+  {
+    "language": "German",
+    "options": [
+      {
+        "key": "Vicki",
+        "displayName": "Vicki"
+      },
+      {
+        "key": "Marlene",
+        "displayName": "Marlene"
+      },
+      {
+        "key": "Hans",
+        "displayName": "Hans"
+      },
+      {
+        "key": "de-DE-Standard-A",
+        "displayName": "Karolina"
+      },
+      {
+        "key": "de-DE-Standard-B",
+        "displayName": "Albert"
+      },
+      {
+        "key": "de-DE-Wavenet-A",
+        "displayName": "Angelika"
+      },
+      {
+        "key": "de-DE-Wavenet-B",
+        "displayName": "Oskar"
+      },
+      {
+        "key": "de-DE-Wavenet-C",
+        "displayName": "Nina"
+      },
+      {
+        "key": "de-DE-Wavenet-D",
+        "displayName": "Sebastian"
+      }
+    ]
+  },
+  {
+    "language": "Danish",
+    "options": [
+      {
+        "key": "Naja",
+        "displayName": "Naja"
+      },
+      {
+        "key": "Mads",
+        "displayName": "Mads"
+      },
+      {
+        "key": "da-DK-Wavenet-A",
+        "displayName": "Marie"
+      }
+    ]
+  },
+  {
+    "language": "Welsh",
+    "options": [
+      {
+        "key": "Gwyneth",
+        "displayName": "Gwyneth"
+      }
+    ]
+  },
+  {
+    "language": "Chinese, Mandarin",
+    "options": [
+      {
+        "key": "Zhiyu",
+        "displayName": "Zhiyu"
+      }
+    ]
+  },
+  {
+    "language": "Italian (italiano)",
+    "options": [
+      {
+        "key": "it-IT-Standard-A",
+        "displayName": "Gianna"
+      }
+    ]
+  },
+  {
+    "language": "French (français)",
+    "options": [
+      {
+        "key": "fr-FR-Standard-C",
+        "displayName": "Yvonne"
+      },
+      {
+        "key": "fr-FR-Standard-D",
+        "displayName": "Gaspard"
+      },
+      {
+        "key": "fr-FR-Wavenet-A",
+        "displayName": "Emilie"
+      },
+      {
+        "key": "fr-FR-Wavenet-B",
+        "displayName": "Marcel"
+      },
+      {
+        "key": "fr-FR-Wavenet-C",
+        "displayName": "Brigitte"
+      },
+      {
+        "key": "fr-FR-Wavenet-D",
+        "displayName": "Simon"
+      }
+    ]
+  },
+  {
+    "language": "Polish (Poland)",
+    "options": [
+      {
+        "key": "pl-PL-Wavenet-A",
+        "displayName": "Amelia"
+      },
+      {
+        "key": "pl-PL-Wavenet-B",
+        "displayName": "Stanislaw"
+      },
+      {
+        "key": "pl-PL-Wavenet-C",
+        "displayName": "Tomasz"
+      },
+      {
+        "key": "pl-PL-Wavenet-D",
+        "displayName": "Klaudia"
+      }
+    ]
+  },
+  {
+    "language": "Portuguese (Portugal)",
+    "options": [
+      {
+        "key": "pt-PT-Wavenet-A",
+        "displayName": "Beatriz"
+      },
+      {
+        "key": "pt-PT-Wavenet-B",
+        "displayName": "Francisco"
+      },
+      {
+        "key": "pt-PT-Wavenet-C",
+        "displayName": "Lucas"
+      },
+      {
+        "key": "pt-PT-Wavenet-D",
+        "displayName": "Carolina"
+      }
+    ]
+  },
+  {
+    "language": "Russian (Russia)",
+    "options": [
+      {
+        "key": "ru-RU-Wavenet-A",
+        "displayName": "Маша (Masha)"
+      },
+      {
+        "key": "ru-RU-Wavenet-B",
+        "displayName": "Илья (Ilya)"
+      },
+      {
+        "key": "ru-RU-Wavenet-C",
+        "displayName": "Алёна (Alena)"
+      },
+      {
+        "key": "ru-RU-Wavenet-D",
+        "displayName": "Пётр (Petr)"
+      }
+    ]
+  },
+  {
+    "language": "Slovak (Slovakia)",
+    "options": [
+      {
+        "key": "sk-SK-Wavenet-A",
+        "displayName": "Eliska"
+      }
+    ]
+  },
+  {
+    "language": "Turkish (Turkey)",
+    "options": [
+      {
+        "key": "tr-TR-Wavenet-A",
+        "displayName": "Yagmur"
+      },
+      {
+        "key": "tr-TR-Wavenet-B",
+        "displayName": "Mehmet"
+      },
+      {
+        "key": "tr-TR-Wavenet-C",
+        "displayName": "Miray"
+      },
+      {
+        "key": "tr-TR-Wavenet-D",
+        "displayName": "Elif"
+      },
+      {
+        "key": "tr-TR-Wavenet-E",
+        "displayName": "Enes"
+      }
+    ]
+  },
+  {
+    "language": "Ukrainian (Ukraine)",
+    "options": [
+      {
+        "key": "uk-UA-Wavenet-A",
+        "displayName": "Vladislav"
+      }
+    ]
+  },
+  {
+    "language": "Arabic",
+    "options": [
+      {
+        "key": "ar-XA-Wavenet-A",
+        "displayName": "Aisha"
+      },
+      {
+        "key": "ar-XA-Wavenet-B",
+        "displayName": "Ahmad"
+      },
+      {
+        "key": "ar-XA-Wavenet-C",
+        "displayName": "Ahmad"
+      }
+    ]
+  },
+  {
+    "language": "Czech",
+    "options": [
+      {
+        "key": "cs-CZ-Wavenet-A",
+        "displayName": "Silvia"
+      },
+      {
+        "key": "Jakub",
+        "displayName": "Jakub"
+      }
+    ]
+  },
+  {
+    "language": "English (India)",
+    "options": [
+      {
+        "key": "en-IN-Wavenet-A",
+        "displayName": "Anushri"
+      },
+      {
+        "key": "en-IN-Wavenet-B",
+        "displayName": "Sundar"
+      },
+      {
+        "key": "en-IN-Wavenet-C",
+        "displayName": "Satya"
+      }
+    ]
+  },
+  {
+    "language": "Filipino",
+    "options": [
+      {
+        "key": "fil-PH-Wavenet-A",
+        "displayName": "Tala"
+      }
+    ]
+  },
+  {
+    "language": "Finnish",
+    "options": [
+      {
+        "key": "fi-FI-Wavenet-A",
+        "displayName": "Marianne"
+      },
+      {
+        "key": "Heidi",
+        "displayName": "Heidi"
+      }
+    ]
+  },
+  {
+    "language": "Greek",
+    "options": [
+      {
+        "key": "el-GR-Wavenet-A",
+        "displayName": "Thalia"
+      },
+      {
+        "key": "Stefanos",
+        "displayName": "Stefanos"
+      }
+    ]
+  },
+  {
+    "language": "Hindi",
+    "options": [
+      {
+        "key": "hi-IN-Wavenet-A",
+        "displayName": "Sneha"
+      },
+      {
+        "key": "hi-IN-Wavenet-B",
+        "displayName": "Arnav"
+      },
+      {
+        "key": "hi-IN-Wavenet-C",
+        "displayName": "Aadhav"
+      }
+    ]
+  },
+  {
+    "language": "Hungarian",
+    "options": [
+      {
+        "key": "hu-HU-Wavenet-A",
+        "displayName": "Ishtevan"
+      },
+      {
+        "key": "Szabolcs",
+        "displayName": "Szabolcs"
+      }
+    ]
+  },
+  {
+    "language": "Indonesian",
+    "options": [
+      {
+        "key": "id-ID-Wavenet-A",
+        "displayName": "Anisa"
+      },
+      {
+        "key": "id-ID-Wavenet-B",
+        "displayName": "Budi"
+      },
+      {
+        "key": "id-ID-Wavenet-C",
+        "displayName": "Bayu"
+      },
+      {
+        "key": "Andika",
+        "displayName": "Andika"
+      }
+    ]
+  },
+  {
+    "language": "Mandarin Chinese",
+    "options": [
+      {
+        "key": "cmn-CN-Wavenet-A",
+        "displayName": "Li Na"
+      },
+      {
+        "key": "cmn-CN-Wavenet-B",
+        "displayName": "Wang"
+      },
+      {
+        "key": "cmn-CN-Wavenet-C",
+        "displayName": "Bai"
+      },
+      {
+        "key": "cmn-CN-Wavenet-D",
+        "displayName": "Mingli"
+      }
+    ]
+  },
+  {
+    "language": "Vietnamese",
+    "options": [
+      {
+        "key": "vi-VN-Wavenet-A",
+        "displayName": "Linh"
+      },
+      {
+        "key": "vi-VN-Wavenet-B",
+        "displayName": "Nguyen"
+      },
+      {
+        "key": "vi-VN-Wavenet-C",
+        "displayName": "phuong"
+      },
+      {
+        "key": "vi-VN-Wavenet-D",
+        "displayName": "Viet"
+      },
+      {
+        "key": "An",
+        "displayName": "An"
+      }
+    ]
+  },
+  {
+    "language": "Serbian",
+    "options": [
+      {
+        "key": "sr-rs-Standard-A",
+        "displayName": "Aleksandra NEW!"
+      }
+    ]
+  },
+  {
+    "language": "Latvian",
+    "options": [
+      {
+        "key": "lv-lv-Standard-A",
+        "displayName": "Juris NEW!"
+      }
+    ]
+  },
+  {
+    "language": "Bulgarian",
+    "options": [
+      {
+        "key": "bg-bg-Standard-A",
+        "displayName": "Nikolina NEW!"
+      },
+      {
+        "key": "Ivan",
+        "displayName": "Ivan"
+      }
+    ]
+  },
+  {
+    "language": "Afrikaans (South Africa)",
+    "options": [
+      {
+        "key": "af-ZA-Standard-A",
+        "displayName": "Sonya NEW!"
+      }
+    ]
+  },
+  {
+    "language": "Hong Kong (traditional characters)",
+    "options": [
+      {
+        "key": "Tracy",
+        "displayName": "Tracy"
+      },
+      {
+        "key": "Danny",
+        "displayName": "Danny"
+      }
+    ]
+  },
+  {
+    "language": "Chinese (simplified characters)",
+    "options": [
+      {
+        "key": "Huihui",
+        "displayName": "Huihui"
+      },
+      {
+        "key": "Yaoyao",
+        "displayName": "Yaoyao"
+      },
+      {
+        "key": "Kangkang",
+        "displayName": "Kangkang"
+      }
+    ]
+  },
+  {
+    "language": "Taiwanese (traditional characters)",
+    "options": [
+      {
+        "key": "HanHan",
+        "displayName": "HanHan"
+      },
+      {
+        "key": "Zhiwei",
+        "displayName": "Zhiwei"
+      }
+    ]
+  },
+  {
+    "language": "Hebrew",
+    "options": [
+      {
+        "key": "Asaf",
+        "displayName": "Doron"
+      }
+    ]
+  },
+  {
+    "language": "Slovak",
+    "options": [
+      {
+        "key": "Filip",
+        "displayName": "Filip"
+      }
+    ]
+  },
+  {
+    "language": "Catalan (Spain)",
+    "options": [
+      {
+        "key": "Herena",
+        "displayName": "Herena"
+      }
+    ]
+  },
+  {
+    "language": "Hindi (India)",
+    "options": [
+      {
+        "key": "Kalpana",
+        "displayName": "Kalpana"
+      },
+      {
+        "key": "Hemant",
+        "displayName": "Hemant"
+      }
+    ]
+  },
+  {
+    "language": "Croatian",
+    "options": [
+      {
+        "key": "Matej",
+        "displayName": "Matej"
+      }
+    ]
+  },
+  {
+    "language": "Malay",
+    "options": [
+      {
+        "key": "Rizwan",
+        "displayName": "Rizwan"
+      }
+    ]
+  },
+  {
+    "language": "Slovenian",
+    "options": [
+      {
+        "key": "Lado",
+        "displayName": "Lado"
+      }
+    ]
+  },
+  {
+    "language": "Tamil (India)",
+    "options": [
+      {
+        "key": "Valluvar",
+        "displayName": "Valluvar"
+      }
+    ]
+  },
+  {
+    "language": "English (Canada)",
+    "options": [
+      {
+        "key": "Linda",
+        "displayName": "Linda"
+      },
+      {
+        "key": "Heather",
+        "displayName": "Heather"
+      }
+    ]
+  },
+  {
+    "language": "English (Ireland)",
+    "options": [
+      {
+        "key": "Sean",
+        "displayName": "Sean"
+      }
+    ]
+  },
+  {
+    "language": "German (Austria)",
+    "options": [
+      {
+        "key": "Michael",
+        "displayName": "Michael"
+      }
+    ]
+  },
+  {
+    "language": "German (Switzerland)",
+    "options": [
+      {
+        "key": "Karsten",
+        "displayName": "Karsten"
+      }
+    ]
+  },
+  {
+    "language": "French (Switzerland)",
+    "options": [
+      {
+        "key": "Guillaume",
+        "displayName": "Guillaume"
+      }
+    ]
+  },
+  {
+    "language": "Thai",
+    "options": [
+      {
+        "key": "Pattara",
+        "displayName": "Pattara"
+      }
+    ]
+  },
+  {
+    "language": "Arabic (Egypt)",
+    "options": [
+      {
+        "key": "Hoda",
+        "displayName": "Hoda"
+      }
+    ]
+  },
+  {
+    "language": "Arabic (Saudi Arabia)",
+    "options": [
+      {
+        "key": "Naayf",
+        "displayName": "Naayf"
+      }
+    ]
+  }
+]
