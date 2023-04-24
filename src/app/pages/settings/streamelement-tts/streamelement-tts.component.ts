@@ -26,15 +26,10 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
 
   constructor(private readonly configService: ConfigService) {
     for (const voice of voices) {
-      this.languageVoiceMap.set(
-        voice.language,
-        voice.options.sort((a, b) => {
-          return ('' + a.displayName).localeCompare(b.displayName);
-        })
-      );
+      this.languageVoiceMap.set(voice.language, voice.options);
     }
 
-    this.languageOptions = [...this.languageVoiceMap.keys()].sort();
+    this.languageOptions = [...this.languageVoiceMap.keys()];
   }
 
   ngOnInit(): void {
