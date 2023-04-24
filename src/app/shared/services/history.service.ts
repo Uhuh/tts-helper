@@ -92,7 +92,6 @@ export class HistoryService implements OnDestroy {
         if (typeof id != 'number') {
           throw new Error(`Unexpected response type: ${typeof id}`);
         }
-        console.log(auditId, id);
 
         if (auditId !== undefined) {
           return;
