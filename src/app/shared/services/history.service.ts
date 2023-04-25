@@ -107,10 +107,10 @@ export class HistoryService implements OnDestroy {
         });
       })
       .catch((e) => {
-        console.error(`Error invoking play_tts: ${e}`);
+        console.error(`Error invoking play_tts`, e);
 
         this.snackbar.open(
-          'Oops! We encountered an error while playing that.',
+          'Oops! We encountered an error while playing that.\n' + e.message,
           'Dismiss',
           {
             panelClass: 'notification-error',
