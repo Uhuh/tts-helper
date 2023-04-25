@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthComponent } from './auth/auth.component';
 import { BitsComponent } from './bits/bits.component';
 import { RedeemsComponent } from './redeems/redeems.component';
+import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { RedeemsComponent } from './redeems/redeems.component';
     MatSelectModule,
     ReactiveFormsModule,
     InputModule,
+    ToggleModule,
   ],
   exports: [TwitchComponent],
 })

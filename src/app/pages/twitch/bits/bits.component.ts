@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { Subject, combineLatest, debounceTime, filter, takeUntil } from 'rxjs';
+import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 
@@ -18,18 +18,19 @@ export class BitsComponent implements OnInit, OnDestroy {
   bitsCharLimit = nonNullFormControl(300, {
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
+  enabled = nonNullFormControl(true);
 
   constructor(private readonly twitchService: TwitchService) {}
 
   ngOnInit(): void {
-    combineLatest([
-      this.twitchService.minBits$,
-      this.twitchService.bitsCharLimit$,
-    ])
+    this.twitchService.bitInfo$
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(([minBits, bitsCharLimit]) => {
-        this.minBits.patchValue(minBits, { emitEvent: false });
-        this.bitsCharLimit.patchValue(bitsCharLimit, { emitEvent: false });
+      .subscribe((bitInfo) => {
+        this.minBits.patchValue(bitInfo.minBits, { emitEvent: false });
+        this.bitsCharLimit.patchValue(bitInfo.bitsCharacterLimit, {
+          emitEvent: false,
+        });
+        this.enabled.patchValue(bitInfo.enabled, { emitEvent: false });
       });
 
     this.minBits.valueChanges
@@ -50,6 +51,16 @@ export class BitsComponent implements OnInit, OnDestroy {
       )
       .subscribe((bitsCharLimit) => {
         this.twitchService.updateBitsCharLimit(Number(bitsCharLimit));
+      });
+
+    this.enabled.valueChanges
+      .pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(1000),
+        filter(() => !this.enabled.pristine)
+      )
+      .subscribe((enabled) => {
+        this.twitchService.updateBitEnabled(enabled);
       });
   }
 
