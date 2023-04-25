@@ -91,6 +91,12 @@ a {
   --mdc-snackbar-container-color: #f23a2f;
 }
 
+.mat-mdc-snack-bar-container .mdc-snackbar__label,
+.mat-mdc-snack-bar-container
+  .mat-mdc-button.mat-mdc-snack-bar-action:not(:disabled) {
+  color: var(--text) !important;
+}
+
 .empty {
   display: flex;
   flex-direction: column;
