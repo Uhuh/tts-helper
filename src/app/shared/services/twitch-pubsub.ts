@@ -8,6 +8,10 @@ import { ChatClient } from '@twurple/chat';
 import { HistoryService } from './history.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TwitchCheer, TwitchRedeem } from './twitch-pubsub.interface';
+import {
+  TwitchBitState,
+  TwitchRedeemState,
+} from '../state/twitch/twitch.model';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
@@ -18,11 +22,8 @@ export class TwitchPubSub implements OnDestroy {
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
 
-  selectedRedeem: string | null = null;
-  redeemCharLimit = 0;
-
-  minBits = 0;
-  bitsCharLimit = 0;
+  bitInfo: TwitchBitState | null = null;
+  redeemInfo: TwitchRedeemState | null = null;
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
@@ -83,21 +84,13 @@ export class TwitchPubSub implements OnDestroy {
         );
       });
 
-    this.twitchService.redeem$
+    this.twitchService.redeemInfo$
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((redeem) => (this.selectedRedeem = redeem));
+      .subscribe((redeemInfo) => (this.redeemInfo = redeemInfo));
 
-    this.twitchService.redeemCharLimit$
+    this.twitchService.bitInfo$
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((charLimit) => (this.redeemCharLimit = charLimit));
-
-    this.twitchService.minBits$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((minBits) => (this.minBits = minBits));
-
-    this.twitchService.bitsCharLimit$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((bitsCharLimit) => (this.bitsCharLimit = bitsCharLimit));
+      .subscribe((bitInfo) => (this.bitInfo = bitInfo));
   }
 
   onMessage(user: string, text: string) {
@@ -110,32 +103,44 @@ export class TwitchPubSub implements OnDestroy {
   }
 
   onBits(cheer: TwitchCheer) {
-    if (cheer.bits >= this.minBits) {
-      const cleanedInput = cheer.message.replaceAll(/Cheer[0-9]+/g, '');
-
-      this.historyService.playTts(
-        cleanedInput,
-        cheer.userDisplayName,
-        'twitch',
-        this.bitsCharLimit ?? 300
-      );
+    if (
+      !this.bitInfo ||
+      !this.bitInfo.enabled ||
+      cheer.bits < this.bitInfo.minBits
+    ) {
+      return;
     }
+
+    const cleanedInput = cheer.message.replaceAll(/Cheer[0-9]+/g, '');
+
+    this.historyService.playTts(
+      cleanedInput,
+      cheer.userDisplayName,
+      'twitch',
+      this.bitInfo.bitsCharacterLimit ?? 300
+    );
   }
 
   onRedeem(redeem: TwitchRedeem) {
-    if (redeem.rewardId === this.selectedRedeem) {
-      this.historyService.playTts(
-        redeem.input,
-        redeem.userDisplayName,
-        'twitch',
-        this.redeemCharLimit ?? 300
-      );
+    if (
+      redeem.rewardId !== this.redeemInfo?.redeem ||
+      !this.redeemInfo.enabled
+    ) {
+      return;
     }
+
+    this.historyService.playTts(
+      redeem.input,
+      redeem.userDisplayName,
+      'twitch',
+      this.redeemInfo.redeemCharacterLimit ?? 300
+    );
   }
 
   cleanupListeners() {
     this.chat?.removeListener(this.onMessageListener);
     this.listener?.removeListener(this.redeemListener);
+    this.listener?.removeListener(this.bitsListener);
     this.listener?.stop();
   }
 

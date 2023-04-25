@@ -1,12 +1,14 @@
 ﻿import { TwitchState } from './twitch.model';
 import { createReducer, on } from '@ngrx/store';
 import {
+  updateBitEnabled,
   updateBitsCharLimit,
   updateChannelInfo,
   updateChannelRedeems,
   updateMinBits,
   updateRedeem,
   updateRedeemCharLimit,
+  updateRedeemEnabled,
   updateToken,
   updateTokenValidity,
   updateTwitchState,
@@ -20,10 +22,16 @@ const initialState: TwitchState = {
     username: '',
     redeems: [],
   },
-  redeem: null,
-  redeemCharacterLimit: 300,
-  minBits: 100,
-  bitsCharacterLimit: 300,
+  redeemInfo: {
+    enabled: true,
+    redeem: null,
+    redeemCharacterLimit: 300,
+  },
+  bitInfo: {
+    enabled: true,
+    minBits: 100,
+    bitsCharacterLimit: 300,
+  },
 };
 
 export const twitchReducer = createReducer(
@@ -56,20 +64,46 @@ export const twitchReducer = createReducer(
       redeems,
     },
   })),
+  on(updateRedeemEnabled, (state, { enabled }) => ({
+    ...state,
+    redeemInfo: {
+      ...state.redeemInfo,
+      enabled,
+    },
+  })),
   on(updateRedeem, (state, { redeem }) => ({
     ...state,
-    redeem,
+    redeemInfo: {
+      ...state.redeemInfo,
+      redeem,
+    },
   })),
   on(updateRedeemCharLimit, (state, { redeemCharacterLimit }) => ({
     ...state,
-    redeemCharacterLimit,
+    redeemInfo: {
+      ...state.redeemInfo,
+      redeemCharacterLimit,
+    },
+  })),
+  on(updateBitEnabled, (state, { enabled }) => ({
+    ...state,
+    bitInfo: {
+      ...state.bitInfo,
+      enabled,
+    },
   })),
   on(updateMinBits, (state, { minBits }) => ({
     ...state,
-    minBits,
+    bitInfo: {
+      ...state.bitInfo,
+      minBits,
+    },
   })),
   on(updateBitsCharLimit, (state, { bitsCharacterLimit }) => ({
     ...state,
-    bitsCharacterLimit,
+    bitInfo: {
+      ...state.bitInfo,
+      bitsCharacterLimit,
+    },
   }))
 );

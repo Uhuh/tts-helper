@@ -17,6 +17,7 @@ export class RedeemsComponent implements OnInit, OnDestroy {
   redeemCharLimitControl = nonNullFormControl(300, {
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
+  enabled = nonNullFormControl(true);
 
   redeems: TwitchRedeemInfo[] = [];
 
@@ -33,16 +34,27 @@ export class RedeemsComponent implements OnInit, OnDestroy {
         this.redeems = redeems;
       });
 
-    combineLatest([
-      this.twitchService.redeem$,
-      this.twitchService.redeemCharLimit$,
-    ])
+    this.twitchService.redeemInfo$
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(([redeem, redeemCharLimit]) => {
-        this.redeem.patchValue(redeem ?? '', { emitEvent: false });
-        this.redeemCharLimitControl.patchValue(redeemCharLimit, {
-          emitEvent: false,
-        });
+      .subscribe((redeemInfo) => {
+        this.redeem.patchValue(redeemInfo.redeem ?? '', { emitEvent: false });
+        this.redeemCharLimitControl.patchValue(
+          redeemInfo.redeemCharacterLimit,
+          {
+            emitEvent: false,
+          }
+        );
+        this.enabled.patchValue(redeemInfo.enabled, { emitEvent: false });
+      });
+
+    this.enabled.valueChanges
+      .pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(1000),
+        filter(() => !this.enabled.pristine)
+      )
+      .subscribe((enabled) => {
+        this.twitchService.updateRedeemEnabled(enabled);
       });
 
     this.redeem.valueChanges

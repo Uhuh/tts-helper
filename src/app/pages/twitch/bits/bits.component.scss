@@ -1,0 +1,9 @@
+.disabled {
+  transition: color 0.2s;
+  color: var(--red);
+}
+
+.enabled {
+  transition: color 0.2s;
+  color: var(--blue);
+}

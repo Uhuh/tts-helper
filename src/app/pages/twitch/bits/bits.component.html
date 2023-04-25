@@ -1,4 +1,16 @@
-<ng-container>
+<div class="sub-header">
+  <label>Handle bits</label>
+  <p>Enable or disable TTS events for bits.</p>
+  <app-toggle
+    [control]="enabled"
+    class="disabled"
+    [ngClass]="{ enabled: enabled.value }"
+  >
+    {{ enabled.value ? 'Enabled' : 'Disabled' }}
+  </app-toggle>
+</div>
+
+<ng-container *ngIf="enabled.value">
   <div class="sub-header">
     <label>Minimum bits</label>
     <p>The amount of bits required to trigger TTS</p>

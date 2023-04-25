@@ -24,19 +24,37 @@ export const selectTwitchRedeems = createSelector(
   selectTwitchChannelInfo,
   (state) => state.redeems
 );
-export const selectRedeem = createSelector(
+
+export const selectRedeemInfo = createSelector(
   _selectTwitchState,
+  (state) => state.redeemInfo
+);
+export const selectRedeemEnabled = createSelector(
+  selectRedeemInfo,
+  (state) => state.enabled
+);
+export const selectRedeem = createSelector(
+  selectRedeemInfo,
   (state) => state.redeem
 );
 export const selectRedeemCharLimit = createSelector(
-  _selectTwitchState,
+  selectRedeemInfo,
   (state) => state.redeemCharacterLimit
 );
-export const selectMinBits = createSelector(
+
+export const selectBitInfo = createSelector(
   _selectTwitchState,
+  (state) => state.bitInfo
+);
+export const selectBitEnabled = createSelector(
+  selectBitInfo,
+  (state) => state.enabled
+);
+export const selectMinBits = createSelector(
+  selectBitInfo,
   (state) => state.minBits
 );
 export const selectBitsCharLimit = createSelector(
-  _selectTwitchState,
+  selectBitInfo,
   (state) => state.bitsCharacterLimit
 );

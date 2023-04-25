@@ -2,23 +2,23 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   selectIsTokenValid,
-  selectRedeemCharLimit,
-  selectRedeem,
   selectTwitchChannelInfo,
   selectTwitchRedeems,
   selectTwitchState,
   selectTwitchToken,
-  selectMinBits,
-  selectBitsCharLimit,
+  selectRedeemInfo,
+  selectBitInfo,
 } from '../state/twitch/twitch.selectors';
 import { TwitchApi } from '../api/twitch.api';
 import {
+  updateBitEnabled,
   updateBitsCharLimit,
   updateChannelInfo,
   updateChannelRedeems,
   updateMinBits,
   updateRedeem,
   updateRedeemCharLimit,
+  updateRedeemEnabled,
   updateToken,
   updateTokenValidity,
   updateTwitchState,
@@ -33,13 +33,12 @@ export class TwitchService implements OnDestroy {
 
   public readonly twitchState$ = this.store.select(selectTwitchState);
   public readonly twitchToken$ = this.store.select(selectTwitchToken);
+  public readonly redeems$ = this.store.select(selectTwitchRedeems);
   public readonly isTokenValid$ = this.store.select(selectIsTokenValid);
   public readonly channelInfo$ = this.store.select(selectTwitchChannelInfo);
-  public readonly redeems$ = this.store.select(selectTwitchRedeems);
-  public readonly redeem$ = this.store.select(selectRedeem);
-  public readonly redeemCharLimit$ = this.store.select(selectRedeemCharLimit);
-  public readonly minBits$ = this.store.select(selectMinBits);
-  public readonly bitsCharLimit$ = this.store.select(selectBitsCharLimit);
+
+  public readonly redeemInfo$ = this.store.select(selectRedeemInfo);
+  public readonly bitInfo$ = this.store.select(selectBitInfo);
 
   constructor(
     private readonly store: Store,
@@ -78,10 +77,16 @@ export class TwitchService implements OnDestroy {
         twitchState: {
           isTokenValid: false,
           token: null,
-          redeem: null,
-          redeemCharacterLimit: 300,
-          minBits: 100,
-          bitsCharacterLimit: 300,
+          redeemInfo: {
+            enabled: true,
+            redeem: null,
+            redeemCharacterLimit: 300,
+          },
+          bitInfo: {
+            enabled: true,
+            minBits: 100,
+            bitsCharacterLimit: 300,
+          },
           channelInfo: {
             channelId: '',
             username: '',
@@ -150,5 +155,13 @@ export class TwitchService implements OnDestroy {
 
   updateBitsCharLimit(bitsCharacterLimit: number) {
     this.store.dispatch(updateBitsCharLimit({ bitsCharacterLimit }));
+  }
+
+  updateRedeemEnabled(enabled: boolean) {
+    this.store.dispatch(updateRedeemEnabled({ enabled }));
+  }
+
+  updateBitEnabled(enabled: boolean) {
+    this.store.dispatch(updateBitEnabled({ enabled }));
   }
 }
