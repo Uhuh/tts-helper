@@ -1,4 +1,4 @@
-import { Subject, first, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { ConfigService } from 'src/app/shared/services/config.service';
@@ -34,7 +34,7 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.configService.voiceSettings$
-      .pipe(first(), takeUntil(this.destroyed$))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe((voiceSettings) => {
         this.languageControl.patchValue(voiceSettings.language, {
           emitEvent: false,
@@ -56,6 +56,7 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
 
         const options = this.languageVoiceMap.get(language);
         this.languageVoiceOptions = options ?? [];
+        this.voiceControl.patchValue(this.languageVoiceOptions[0].key ?? '');
 
         this.configService.updateLanguage(language);
       });
