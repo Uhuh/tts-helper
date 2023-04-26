@@ -8,7 +8,10 @@
   <mat-sidenav #nav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile">
     <app-sidenav [isMobile]="isMobile" [nav]="nav"></app-sidenav>
   </mat-sidenav>
-  <mat-sidenav-content class="content">
+  <mat-sidenav-content
+    class="content"
+    [ngClass]="{ openedMobile: isMobile && nav.opened }"
+  >
     <ng-content></ng-content>
   </mat-sidenav-content>
 </mat-sidenav-container>

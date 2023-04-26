@@ -10,6 +10,7 @@
 
   .content {
     display: flex;
+    transition: scale 0.3s;
   }
 
   .app-logo {
@@ -19,6 +20,10 @@
   .toolbar {
     display: flex;
     align-items: center;
+  }
+
+  .openedMobile {
+    scale: 1.05;
   }
 
   @media (max-width: 900px) {
