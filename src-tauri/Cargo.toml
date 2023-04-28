@@ -17,7 +17,7 @@ serde_json = "1"
 
 # Audio
 rodio = "0.17"
-reqwest = "0.11"
+reqwest = { version = "0.11", features = ["json"] }
 anyhow = "1"
 bytes = "1"
 
@@ -59,7 +59,7 @@ axum = { version = "0.6", default-features = false, features = [
     "tokio",
     "tracing",
 ] }
-reqwest = "0.11"
+reqwest = { version = "0.11", features = ["json"] }
 bytes = "1"
 
 # Errors

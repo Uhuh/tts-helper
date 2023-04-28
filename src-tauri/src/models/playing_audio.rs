@@ -9,3 +9,15 @@ pub struct PlayingAudio {
     #[serde(flatten)]
     pub request: AudioRequest,
 }
+
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct TtsMonsterResponse {
+    pub data: Data,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Data {
+    pub link: String,
+    pub warning: String,
+}
