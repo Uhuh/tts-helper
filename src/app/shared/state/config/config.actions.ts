@@ -17,16 +17,6 @@ export const updateBannedWords = createAction(
   props<{ bannedWords: string[] }>()
 );
 
-export const updateLanguage = createAction(
-  '[ ConfigState ] Updating voice language',
-  props<{ language: string }>()
-);
-
-export const updateVoice = createAction(
-  '[ ConfigState ] Updating voice',
-  props<{ voice: string }>()
-);
-
 export const updateTts = createAction(
   '[ ConfigState ] Updating tts',
   props<{ tts: TtsType }>()
@@ -35,4 +25,19 @@ export const updateTts = createAction(
 export const updateUrl = createAction(
   '[ ConfigState ] Updating url',
   props<{ url: string }>()
+);
+
+export const updateTtsMonsterOverlayInfo = createAction(
+  '[ ConfigState ] Updating tts monster overlay info',
+  props<{ overlay: string; key: string; userId: string }>()
+);
+
+export const updateLanguage = createAction(
+  '[ ConfigState ] Updating voice language',
+  props<{ language: string }>()
+);
+
+export const updateVoice = createAction(
+  '[ ConfigState ] Updating voice',
+  props<{ voice: string }>()
 );
