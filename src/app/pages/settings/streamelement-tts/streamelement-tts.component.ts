@@ -33,7 +33,7 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.configService.voiceSettings$
+    this.configService.streamElements$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((voiceSettings) => {
         this.languageControl.patchValue(voiceSettings.language, {

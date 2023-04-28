@@ -14,6 +14,16 @@ export const selectVoiceSettings = createSelector(
   (state) => state.voiceSettings
 );
 
+export const selectStreamElements = createSelector(
+  selectVoiceSettings,
+  (state) => state.streamElements
+);
+
+export const selectTtsMonster = createSelector(
+  selectVoiceSettings,
+  (state) => state.ttsMonster
+);
+
 export const selectVoiceSettingsTts = createSelector(
   selectVoiceSettings,
   (state) => state.tts

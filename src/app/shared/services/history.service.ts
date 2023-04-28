@@ -75,17 +75,29 @@ export class HistoryService implements OnDestroy {
     // Trim played audio down, but keep full message incase stream wants to requeue it.
     const audioText = text.substring(0, charLimit);
 
+    const params: [string, string][] = [];
+    if (this.voiceSettings.tts === 'stream-elements') {
+      params.push(['voice', this.voiceSettings.streamElements.voice]);
+      params.push(['text', audioText]);
+    }
+
+    const data = {
+      userId: this.voiceSettings.ttsMonster.userId,
+      key: this.voiceSettings.ttsMonster.key,
+      ai: true,
+      message: audioText,
+      details: {
+        provider: 'tts-helper',
+      },
+    };
+
     invoke('play_tts', {
-      /**
-       * @TODO - Setup state for handling selected TTS options
-       */
       request: {
         id: auditId,
+        tts: this.voiceSettings.tts,
         url: this.voiceSettings.url,
-        params: [
-          ['voice', this.voiceSettings.voice],
-          ['text', audioText],
-        ],
+        params,
+        data: { data: data },
       },
     })
       .then((id) => {
