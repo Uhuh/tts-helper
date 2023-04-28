@@ -5,6 +5,7 @@ import {
   updateConfigState,
   updateLanguage,
   updateTts,
+  updateTtsMonsterOverlayInfo,
   updateUrl,
   updateVoice,
   updateVoiceSettings,
@@ -14,9 +15,20 @@ const initialState: ConfigState = {
   voiceSettings: {
     tts: 'stream-elements',
     url: 'https://api.streamelements.com/kappa/v2/speech',
-    voice: '',
-    language: '',
-    voiceQueryParam: '',
+    streamElements: {
+      voice: '',
+      language: '',
+    },
+    ttsMonster: {
+      overlay: '',
+      userId: '',
+      key: '',
+      message: '',
+      ai: false,
+      details: {
+        provider: 'tts-helper',
+      },
+    },
   },
   bannedWords: [],
 };
@@ -41,14 +53,32 @@ export const configReducer = createReducer(
     ...state,
     voiceSettings: {
       ...state.voiceSettings,
-      language,
+      streamElements: {
+        ...state.voiceSettings.streamElements,
+        language,
+      },
     },
   })),
   on(updateVoice, (state, { voice }) => ({
     ...state,
     voiceSettings: {
       ...state.voiceSettings,
-      voice,
+      streamElements: {
+        ...state.voiceSettings.streamElements,
+        voice,
+      },
+    },
+  })),
+  on(updateTtsMonsterOverlayInfo, (state, { overlay, key, userId }) => ({
+    ...state,
+    voiceSettings: {
+      ...state.voiceSettings,
+      ttsMonster: {
+        ...state.voiceSettings.ttsMonster,
+        overlay,
+        key,
+        userId,
+      },
     },
   })),
   on(updateUrl, (state, { url }) => ({

@@ -8,7 +8,20 @@ export const TtsUrlMap = {
 export interface VoiceSettings {
   tts: TtsType;
   url: string;
-  voice: string;
-  language: string;
-  voiceQueryParam: string;
+  streamElements: {
+    voice: string;
+    language: string;
+  };
+  ttsMonster: TtsMonsterData;
+}
+
+export interface TtsMonsterData {
+  overlay: string;
+  userId: string;
+  key: string;
+  message: string;
+  ai: boolean;
+  details: {
+    provider: 'tts-helper';
+  };
 }
