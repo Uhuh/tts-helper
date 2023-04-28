@@ -15,7 +15,7 @@ use thiserror::Error;
 use tracing::{error, info, instrument, trace};
 use tts_helper_audio::sources::SourceExt;
 
-use crate::{api_result::ApiResult, models::AudioRequest};
+use crate::{api_result::ApiResult, models::{AudioRequest, TtsMonsterResponse}};
 
 use super::Controller;
 
@@ -49,16 +49,36 @@ impl AudioPlayer {
         S: FnOnce() + Send + 'static,
         F: FnOnce() + Send + 'static,
     {
-        // Download audio
-        let data = self
-            .client
-            .get(request.url)
-            .query(&request.params)
-            .send()
-            .await?
-            .error_for_status()?
-            .bytes()
-            .await?;
+        let data = if request.tts == "tts-monster" {
+            let response = self
+                .client
+                .post(request.url)
+                .json(&request.data)
+                .send()
+                .await?
+                .json::<TtsMonsterResponse>()
+                .await?;
+
+            // TTS Monster returns the URL we need to download
+            self
+                .client
+                .get(response.data.link)
+                .send()
+                .await?
+                .error_for_status()?
+                .bytes()
+                .await?
+        } else {
+            self
+                .client
+                .get(request.url)
+                .query(&request.params)
+                .send()
+                .await?
+                .error_for_status()?
+                .bytes()
+                .await?
+        };
 
         // Play audio
         let _ = self.event_tx.send(AudioEvent::Play {
