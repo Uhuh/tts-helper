@@ -11,6 +11,7 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatSelectModule,
     MatFormFieldModule,
     ReactiveFormsModule,
+    ToggleModule,
   ],
   exports: [SettingsComponent],
   providers: [HistoryService, ConfigService],

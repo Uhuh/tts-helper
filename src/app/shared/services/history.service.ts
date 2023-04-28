@@ -84,7 +84,7 @@ export class HistoryService implements OnDestroy {
     const data = {
       userId: this.voiceSettings.ttsMonster.userId,
       key: this.voiceSettings.ttsMonster.key,
-      ai: true,
+      ai: this.voiceSettings.ttsMonster.ai,
       message: audioText,
       details: {
         provider: 'tts-helper',

@@ -13,6 +13,7 @@ import {
   updateConfigState,
   updateLanguage,
   updateTts,
+  updateTtsMonsterAi,
   updateTtsMonsterOverlayInfo,
   updateUrl,
   updateVoice,
@@ -45,6 +46,10 @@ export class ConfigService {
 
   updateVoice(voice: string) {
     this.store.dispatch(updateVoice({ voice }));
+  }
+
+  updateTtsMonsterAi(ai: boolean) {
+    this.store.dispatch(updateTtsMonsterAi({ ai }));
   }
 
   updateTtsMonsterOverlayInfo(partial: {
