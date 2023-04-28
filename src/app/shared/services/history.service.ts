@@ -92,9 +92,6 @@ export class HistoryService implements OnDestroy {
     };
 
     invoke('play_tts', {
-      /**
-       * @TODO - Setup state for handling selected TTS options
-       */
       request: {
         id: auditId,
         tts: this.voiceSettings.tts,
