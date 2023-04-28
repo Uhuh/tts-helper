@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 
@@ -24,12 +24,8 @@ export class TtsMonsterComponent implements OnInit, OnDestroy {
         this.ai.patchValue(ttsMonster.ai, { emitEvent: false });
       });
 
-    this.ai.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe((ai) => {
-      this.configService.updateTtsMonsterAi(ai);
-    });
-
     this.overlay.valueChanges
-      .pipe(takeUntil(this.destroyed$), debounceTime(500))
+      .pipe(takeUntil(this.destroyed$))
       .subscribe((overlay) => {
         let [key, userId] = overlay.split('/').reverse();
 

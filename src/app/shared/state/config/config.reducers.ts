@@ -5,7 +5,6 @@ import {
   updateConfigState,
   updateLanguage,
   updateTts,
-  updateTtsMonsterAi,
   updateTtsMonsterOverlayInfo,
   updateUrl,
   updateVoice,
@@ -67,16 +66,6 @@ export const configReducer = createReducer(
       streamElements: {
         ...state.voiceSettings.streamElements,
         voice,
-      },
-    },
-  })),
-  on(updateTtsMonsterAi, (state, { ai }) => ({
-    ...state,
-    voiceSettings: {
-      ...state.voiceSettings,
-      ttsMonster: {
-        ...state.voiceSettings.ttsMonster,
-        ai,
       },
     },
   })),

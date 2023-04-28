@@ -27,11 +27,6 @@ export const updateUrl = createAction(
   props<{ url: string }>()
 );
 
-export const updateTtsMonsterAi = createAction(
-  '[ ConfigState ] Updating tts monster ai',
-  props<{ ai: boolean }>()
-);
-
 export const updateTtsMonsterOverlayInfo = createAction(
   '[ ConfigState ] Updating tts monster overlay info',
   props<{ overlay: string; key: string; userId: string }>()
