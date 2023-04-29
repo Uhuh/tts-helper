@@ -27,14 +27,32 @@
         StreamElements
       </app-button>
       <app-button
-        (click)="selectTts('tts-monster')"
-        [ngClass]="{ active: selectedTts.value === 'tts-monster' }"
-        >TTS Monster</app-button
+        (click)="selectTts('amazon-polly')"
+        [ngClass]="{ active: selectedTts.value === 'amazon-polly' }"
       >
+        Amazon Polly
+      </app-button>
+      <app-button
+        (click)="selectTts('windows')"
+        [ngClass]="{ active: selectedTts.value === 'windows' }"
+      >
+        Windows
+      </app-button>
+      <app-button
+        (click)="selectTts('tts-monster')"
+        class="disabled"
+        [ngClass]="{ active: selectedTts.value === 'tts-monster' }"
+      >
+        TTS Monster
+      </app-button>
     </div>
   </div>
 </div>
 <app-streamelement-tts
   *ngIf="selectedTts.value === 'stream-elements'"
 ></app-streamelement-tts>
+<app-amazon-polly
+  *ngIf="selectedTts.value === 'amazon-polly'"
+></app-amazon-polly>
 <app-tts-monster *ngIf="selectedTts.value === 'tts-monster'"></app-tts-monster>
+<app-windows *ngIf="selectedTts.value === 'windows'"></app-windows>

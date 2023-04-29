@@ -11,12 +11,16 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
+import { WindowsComponent } from './windows/windows.component';
 
 @NgModule({
   declarations: [
     SettingsComponent,
     StreamelementTtsComponent,
     TtsMonsterComponent,
+    AmazonPollyComponent,
+    WindowsComponent,
   ],
   imports: [
     CommonModule,
