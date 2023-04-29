@@ -161,7 +161,7 @@ export class HistoryService implements OnDestroy {
     signer.getSynthesizeSpeechUrl(pollyParams, (error, url) => {
       if (error) {
         this.snackbar.open(
-          `Oops! We had issues communicating with Polly!\n` + error.message,
+          `Oops! We had issues communicating with Polly!`,
           'Dismiss',
           {
             panelClass: 'notification-error',
@@ -199,7 +199,7 @@ export class HistoryService implements OnDestroy {
       .catch((e) => {
         console.error(`Error invoking play_tts`, e);
         this.snackbar.open(
-          'Oops! We encountered an error while playing that.\n' + e.message,
+          'Oops! We encountered an error while playing that.',
           'Dismiss',
           {
             panelClass: 'notification-error',
