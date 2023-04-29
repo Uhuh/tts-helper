@@ -37,6 +37,13 @@
         Windows
       </app-button>
       <app-button
+        (click)="selectTts('tiktok')"
+        class="disabled"
+        [ngClass]="{ active: selectedTts.value === 'tiktok' }"
+      >
+        TikTok
+      </app-button>
+      <app-button
         (click)="selectTts('tts-monster')"
         class="disabled"
         [ngClass]="{ active: selectedTts.value === 'tts-monster' }"

@@ -2,10 +2,12 @@ export type TtsType =
   | 'stream-elements'
   | 'tts-monster'
   | 'amazon-polly'
-  | 'windows';
+  | 'windows'
+  | 'tiktok';
 
 export const TtsUrlMap = {
   'stream-elements': 'https://api.streamelements.com/kappa/v2/speech',
+  tiktok: '',
   'tts-monster': '',
   'amazon-polly': '',
   windows: '',
