@@ -49,26 +49,17 @@ impl AudioPlayer {
         S: FnOnce() + Send + 'static,
         F: FnOnce() + Send + 'static,
     {
-        let data = if request.tts == "tts-monster" {
-            let response = self
-                .client
-                .post(request.url)
-                .json(&request.data)
-                .send()
-                .await?
-                .json::<TtsMonsterResponse>()
-                .await?;
-
-            // TTS Monster returns the URL we need to download
+        let data = if request.tts == "amazon-polly" {
             self
                 .client
-                .get(response.data.link)
+                .get(request.url)
                 .send()
                 .await?
                 .error_for_status()?
                 .bytes()
                 .await?
         } else {
+            // Default is stream-elements
             self
                 .client
                 .get(request.url)
