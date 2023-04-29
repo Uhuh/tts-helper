@@ -128,6 +128,18 @@ export class HistoryService implements OnDestroy {
 
   handleAmazonPolly(options: TtsOptions) {
     const { audioText } = options;
+
+    if (!this.amazonPolly.poolId) {
+      this.snackbar.open(
+        `Oops! You didn't provide a Pool ID for Amazon Polly.`,
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        }
+      );
+      return;
+    }
+
     /**
      * Amazon wants me to configure this GLOBAL config variable for region and the pool ID
      */
@@ -148,6 +160,13 @@ export class HistoryService implements OnDestroy {
 
     signer.getSynthesizeSpeechUrl(pollyParams, (error, url) => {
       if (error) {
+        this.snackbar.open(
+          `Oops! We had issues communicating with Polly!\n` + error.message,
+          'Dismiss',
+          {
+            panelClass: 'notification-error',
+          }
+        );
         return console.error('Failed to get Amazon Polly url', error);
       }
 
