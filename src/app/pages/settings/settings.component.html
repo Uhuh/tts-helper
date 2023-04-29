@@ -13,9 +13,6 @@
   <div class="header">
     <span>TTS Settings</span>
   </div>
-  <div class="warning">
-    <span>Currently only StreamElements changes are supported.</span>
-  </div>
   <div class="sub-header">
     <label>Select TTS service</label>
     <p>Decide which TTS service to use.</p>
@@ -34,6 +31,7 @@
       </app-button>
       <app-button
         (click)="selectTts('windows')"
+        class="disabled"
         [ngClass]="{ active: selectedTts.value === 'windows' }"
       >
         Windows
