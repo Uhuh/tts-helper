@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
+  selectAmazonPolly,
   selectBannedWords,
   selectConfigState,
   selectStreamElements,
+  selectTts,
   selectTtsMonster,
-  selectVoiceSettings,
-  selectVoiceSettingsTts,
+  selectUrl,
 } from '../state/config/config.selectors';
 import {
+  updateAmazonPollyLanguage, updateAmazonPollyPoolId, updateAmazonPollyRegion, updateAmazonPollyVoice,
   updateBannedWords,
   updateConfigState,
-  updateLanguage,
+  updateStreamElementsLanguage,
   updateTts,
   updateTtsMonsterOverlayInfo,
   updateUrl,
@@ -22,10 +24,11 @@ import { TtsType, TtsUrlMap } from '../state/config/config.interface';
 @Injectable()
 export class ConfigService {
   public readonly configState$ = this.store.select(selectConfigState);
-  public readonly voiceSettings$ = this.store.select(selectVoiceSettings);
   public readonly streamElements$ = this.store.select(selectStreamElements);
   public readonly ttsMonster$ = this.store.select(selectTtsMonster);
-  public readonly voiceSettingsTts$ = this.store.select(selectVoiceSettingsTts);
+  public readonly amazonPolly$ = this.store.select(selectAmazonPolly);
+  public readonly configTts$ = this.store.select(selectTts);
+  public readonly configUrl$ = this.store.select(selectUrl);
   public readonly bannedWords$ = this.store.select(selectBannedWords);
 
   constructor(private readonly store: Store) {}
@@ -39,10 +42,26 @@ export class ConfigService {
     this.store.dispatch(updateBannedWords({ bannedWords: words }));
   }
 
-  updateLanguage(language: string) {
-    this.store.dispatch(updateLanguage({ language }));
+  updateStreamElementsLanguage(language: string) {
+    this.store.dispatch(updateStreamElementsLanguage({ language }));
   }
 
+  updateAmazonPollyLanguage(language: string) {
+    this.store.dispatch(updateAmazonPollyLanguage({ language }));
+  }
+  
+  updateAmazonPollyRegion(region: string) {
+    this.store.dispatch(updateAmazonPollyRegion({ region }));
+  }
+
+  updateAmazonPollyPoolId(poolId: string) {
+    this.store.dispatch(updateAmazonPollyPoolId({ poolId }));
+  }
+
+  updateAmazonPollyVoice(voice: string) {
+    this.store.dispatch(updateAmazonPollyVoice({ voice }));
+  }
+  
   updateVoice(voice: string) {
     this.store.dispatch(updateVoice({ voice }));
   }
@@ -68,23 +87,27 @@ export class ConfigService {
       updateConfigState({
         configState: {
           bannedWords: [],
-          voiceSettings: {
-            tts: 'stream-elements',
-            url: 'https://api.streamelements.com/kappa/v2/speech',
-            streamElements: {
-              language: '',
-              voice: '',
+          tts: 'stream-elements',
+          url: 'https://api.streamelements.com/kappa/v2/speech',
+          streamElements: {
+            language: '',
+            voice: '',
+          },
+          ttsMonster: {
+            overlay: '',
+            userId: '',
+            key: '',
+            message: '',
+            ai: false,
+            details: {
+              provider: 'tts-helper',
             },
-            ttsMonster: {
-              overlay: '',
-              userId: '',
-              key: '',
-              message: '',
-              ai: false,
-              details: {
-                provider: 'tts-helper',
-              },
-            },
+          },
+          amazonPolly: {
+            voice: '',
+            language: '',
+            poolId: '',
+            region: '',
           },
         },
       })

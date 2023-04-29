@@ -1,15 +1,10 @@
 import { createAction, props } from '@ngrx/store';
-import { TtsType, VoiceSettings } from './config.interface';
+import { TtsType } from './config.interface';
 import { ConfigState } from './config.model';
 
 export const updateConfigState = createAction(
   '[ ConfigState ] Updating config state',
   props<{ configState: ConfigState }>()
-);
-
-export const updateVoiceSettings = createAction(
-  '[ ConfigState ] Updating voice settings',
-  props<{ voiceSettings: VoiceSettings }>()
 );
 
 export const updateBannedWords = createAction(
@@ -27,13 +22,33 @@ export const updateUrl = createAction(
   props<{ url: string }>()
 );
 
+export const updateAmazonPollyRegion = createAction(
+  '[ ConfigState ] Updating amazon polly region',
+  props<{ region: string }>(),
+);
+
+export const updateAmazonPollyPoolId = createAction(
+  '[ ConfigState ] Updating amazon polly pool ID',
+  props<{ poolId: string }>(),
+);
+
+export const updateAmazonPollyLanguage= createAction(
+  '[ ConfigState ] Updating amazon polly language',
+  props<{ language: string }>(),
+);
+
+export const updateAmazonPollyVoice = createAction(
+  '[ ConfigState ] Updating amazon polly voice',
+  props<{ voice: string }>(),
+);
+
 export const updateTtsMonsterOverlayInfo = createAction(
   '[ ConfigState ] Updating tts monster overlay info',
   props<{ overlay: string; key: string; userId: string }>()
 );
 
-export const updateLanguage = createAction(
-  '[ ConfigState ] Updating voice language',
+export const updateStreamElementsLanguage = createAction(
+  '[ ConfigState ] Updating stream elements voice language',
   props<{ language: string }>()
 );
 

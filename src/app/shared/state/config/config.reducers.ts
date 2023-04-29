@@ -1,34 +1,40 @@
 import { createReducer, on } from '@ngrx/store';
 import { ConfigState } from './config.model';
 import {
+  updateAmazonPollyLanguage,
+  updateAmazonPollyPoolId,
+  updateAmazonPollyRegion,
+  updateAmazonPollyVoice,
   updateBannedWords,
-  updateConfigState,
-  updateLanguage,
+  updateConfigState, updateStreamElementsLanguage,
   updateTts,
   updateTtsMonsterOverlayInfo,
   updateUrl,
   updateVoice,
-  updateVoiceSettings,
 } from './config.actions';
 
 const initialState: ConfigState = {
-  voiceSettings: {
-    tts: 'stream-elements',
-    url: 'https://api.streamelements.com/kappa/v2/speech',
-    streamElements: {
-      voice: '',
-      language: '',
+  tts: 'stream-elements',
+  url: 'https://api.streamelements.com/kappa/v2/speech',
+  streamElements: {
+    voice: '',
+    language: '',
+  },
+  ttsMonster: {
+    overlay: '',
+    userId: '',
+    key: '',
+    message: '',
+    ai: false,
+    details: {
+      provider: 'tts-helper',
     },
-    ttsMonster: {
-      overlay: '',
-      userId: '',
-      key: '',
-      message: '',
-      ai: false,
-      details: {
-        provider: 'tts-helper',
-      },
-    },
+  },
+  amazonPolly: {
+    voice: '',
+    language: '',
+    poolId: '',
+    region: '',
   },
   bannedWords: [],
 };
@@ -39,60 +45,67 @@ export const configReducer = createReducer(
     ...state,
     ...configState,
   })),
-  on(updateVoiceSettings, (state, { voiceSettings }) => ({
-    ...state,
-    voiceSettings: {
-      ...voiceSettings,
-    },
-  })),
   on(updateBannedWords, (state, { bannedWords }) => ({
     ...state,
     bannedWords,
   })),
-  on(updateLanguage, (state, { language }) => ({
+  on(updateStreamElementsLanguage, (state, { language }) => ({
     ...state,
-    voiceSettings: {
-      ...state.voiceSettings,
-      streamElements: {
-        ...state.voiceSettings.streamElements,
-        language,
-      },
+    streamElements: {
+      ...state.streamElements,
+      language,
     },
   })),
   on(updateVoice, (state, { voice }) => ({
     ...state,
-    voiceSettings: {
-      ...state.voiceSettings,
-      streamElements: {
-        ...state.voiceSettings.streamElements,
-        voice,
-      },
+    streamElements: {
+      ...state.streamElements,
+      voice,
+    },
+  })),
+  on(updateAmazonPollyPoolId, (state, { poolId }) => ({
+    ...state,
+    amazonPolly: {
+      ...state.amazonPolly,
+      poolId,
+    },
+  })),
+  on(updateAmazonPollyRegion, (state, { region }) => ({
+    ...state,
+    amazonPolly: {
+      ...state.amazonPolly,
+      region,
+    },
+  })),
+  on(updateAmazonPollyLanguage, (state, { language }) => ({
+    ...state,
+    amazonPolly: {
+      ...state.amazonPolly,
+      language,
+    },
+  })),
+  on(updateAmazonPollyVoice, (state, { voice }) => ({
+    ...state,
+    amazonPolly: {
+      ...state.amazonPolly,
+      voice,
     },
   })),
   on(updateTtsMonsterOverlayInfo, (state, { overlay, key, userId }) => ({
     ...state,
-    voiceSettings: {
-      ...state.voiceSettings,
-      ttsMonster: {
-        ...state.voiceSettings.ttsMonster,
-        overlay,
-        key,
-        userId,
-      },
+    ttsMonster: {
+      ...state.ttsMonster,
+      overlay,
+      key,
+      userId,
     },
   })),
   on(updateUrl, (state, { url }) => ({
     ...state,
-    voiceSettings: {
-      ...state.voiceSettings,
-      url,
-    },
+    url,
   })),
   on(updateTts, (state, { tts }) => ({
     ...state,
-    voiceSettings: {
-      ...state.voiceSettings,
-      tts,
-    },
+    tts,
   }))
 );

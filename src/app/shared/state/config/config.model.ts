@@ -1,6 +1,15 @@
-import { VoiceSettings } from './config.interface';
+import {
+  AmazonPollyData,
+  StreamElementsData,
+  TtsMonsterData,
+  TtsType,
+} from './config.interface';
 
 export interface ConfigState {
-  voiceSettings: VoiceSettings;
+  tts: TtsType;
+  url: string;
+  streamElements: StreamElementsData;
+  ttsMonster: TtsMonsterData;
+  amazonPolly: AmazonPollyData;
   bannedWords: string[];
 }
