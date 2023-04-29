@@ -17,33 +17,33 @@ export interface TTSOption {
 export class StreamelementTtsComponent implements OnInit, OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  languageVoiceMap = new Map<string, { key: string; displayName: string }[]>();
+  languageVoiceMap = new Map<string, TTSOption[]>();
   languageOptions: string[] = [];
   languageVoiceOptions: TTSOption[] = [];
 
   voiceControl = nonNullFormControl('');
   languageControl = nonNullFormControl('');
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {}
+
+  ngOnInit(): void {
     for (const voice of voices) {
       this.languageVoiceMap.set(voice.language, voice.options);
     }
 
     this.languageOptions = [...this.languageVoiceMap.keys()];
-  }
-
-  ngOnInit(): void {
+    
     this.configService.streamElements$
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((voiceSettings) => {
-        this.languageControl.patchValue(voiceSettings.language, {
+      .subscribe((streamElements) => {
+        this.languageControl.patchValue(streamElements.language, {
           emitEvent: false,
         });
 
         this.languageVoiceOptions =
-          this.languageVoiceMap.get(voiceSettings.language) ?? [];
+          this.languageVoiceMap.get(streamElements.language) ?? [];
 
-        this.voiceControl.patchValue(voiceSettings.voice, { emitEvent: false });
+        this.voiceControl.patchValue(streamElements.voice, { emitEvent: false });
       });
 
     this.languageControl.valueChanges
@@ -58,7 +58,7 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
         this.languageVoiceOptions = options ?? [];
         this.voiceControl.patchValue(this.languageVoiceOptions[0].key ?? '');
 
-        this.configService.updateLanguage(language);
+        this.configService.updateStreamElementsLanguage(language);
       });
 
     this.voiceControl.valueChanges
