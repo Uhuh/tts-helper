@@ -9,6 +9,8 @@ import {
   updateRedeem,
   updateRedeemCharLimit,
   updateRedeemEnabled,
+  updateSubCharLimit,
+  updateSubEnabled,
   updateToken,
   updateTokenValidity,
   updateTwitchState,
@@ -17,6 +19,10 @@ import {
 const initialState: TwitchState = {
   token: null,
   isTokenValid: false,
+  subsInfo: {
+    enabled: true,
+    subCharacterLimit: 300,
+  },
   channelInfo: {
     channelId: '',
     username: '',
@@ -62,6 +68,20 @@ export const twitchReducer = createReducer(
     channelInfo: {
       ...state.channelInfo,
       redeems,
+    },
+  })),
+  on(updateSubEnabled, (state, { enabled }) => ({
+    ...state,
+    subsInfo: {
+      ...state.subsInfo,
+      enabled,
+    },
+  })),
+  on(updateSubCharLimit, (state, { subCharacterLimit }) => ({
+    ...state,
+    subsInfo: {
+      ...state.subsInfo,
+      subCharacterLimit,
     },
   })),
   on(updateRedeemEnabled, (state, { enabled }) => ({

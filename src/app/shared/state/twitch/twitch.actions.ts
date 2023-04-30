@@ -23,6 +23,15 @@ export const updateChannelRedeems = createAction(
   props<{ redeems: TwitchRedeemInfo[] }>()
 );
 
+export const updateSubEnabled = createAction(
+  '[ TwitchState ] Updating sub info enabled',
+  props<{ enabled: boolean }>()
+);
+export const updateSubCharLimit = createAction(
+  '[ TwitchState ] Updating sub info char limit',
+  props<{ subCharacterLimit: number }>()
+);
+
 export const updateRedeemEnabled = createAction(
   '[ TwitchState ] Updating redeem info enabled',
   props<{ enabled: boolean }>()

@@ -8,6 +8,7 @@ import {
   selectTwitchToken,
   selectRedeemInfo,
   selectBitInfo,
+  selectSubInfo,
 } from '../state/twitch/twitch.selectors';
 import { TwitchApi } from '../api/twitch.api';
 import {
@@ -19,6 +20,8 @@ import {
   updateRedeem,
   updateRedeemCharLimit,
   updateRedeemEnabled,
+  updateSubCharLimit,
+  updateSubEnabled,
   updateToken,
   updateTokenValidity,
   updateTwitchState,
@@ -37,6 +40,7 @@ export class TwitchService implements OnDestroy {
   public readonly isTokenValid$ = this.store.select(selectIsTokenValid);
   public readonly channelInfo$ = this.store.select(selectTwitchChannelInfo);
 
+  public readonly subsInfo$ = this.store.select(selectSubInfo);
   public readonly redeemInfo$ = this.store.select(selectRedeemInfo);
   public readonly bitInfo$ = this.store.select(selectBitInfo);
 
@@ -77,6 +81,10 @@ export class TwitchService implements OnDestroy {
         twitchState: {
           isTokenValid: false,
           token: null,
+          subsInfo: {
+            enabled: true,
+            subCharacterLimit: 300,
+          },
           redeemInfo: {
             enabled: true,
             redeem: null,
@@ -163,5 +171,13 @@ export class TwitchService implements OnDestroy {
 
   updateBitEnabled(enabled: boolean) {
     this.store.dispatch(updateBitEnabled({ enabled }));
+  }
+
+  updateSubEnabled(enabled: boolean) {
+    this.store.dispatch(updateSubEnabled({ enabled }));
+  }
+
+  updateSubCharLimit(subCharacterLimit: number) {
+    this.store.dispatch(updateSubCharLimit({ subCharacterLimit }));
   }
 }

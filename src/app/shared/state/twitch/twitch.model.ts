@@ -12,9 +12,15 @@ export interface TwitchBitState {
   bitsCharacterLimit: number;
 }
 
+export interface TwitchSubState {
+  enabled: boolean;
+  subCharacterLimit: number;
+}
+
 export interface TwitchState {
   token: string | null;
   isTokenValid: boolean;
+  subsInfo: TwitchSubState;
   channelInfo: TwitchChannelInfo;
   bitInfo: TwitchBitState;
   redeemInfo: TwitchRedeemState;
