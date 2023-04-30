@@ -11,6 +11,7 @@ import { AuthComponent } from './auth/auth.component';
 import { BitsComponent } from './bits/bits.component';
 import { RedeemsComponent } from './redeems/redeems.component';
 import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
+import { SubsComponent } from './subs/subs.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
     AuthComponent,
     BitsComponent,
     RedeemsComponent,
+    SubsComponent,
   ],
   imports: [
     CommonModule,

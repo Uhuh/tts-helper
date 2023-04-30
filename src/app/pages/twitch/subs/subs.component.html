@@ -1,0 +1,51 @@
+<div class="header">
+  <span>Subscription Settings</span>
+</div>
+
+<div class="sub-header">
+  <label>Handle subscriptions</label>
+  <p>Enable or disable TTS events for subs.</p>
+  <app-toggle
+    [control]="enabled"
+    class="disabled"
+    [ngClass]="{ enabled: enabled.value }"
+  >
+    Enabled
+  </app-toggle>
+</div>
+
+<div class="section">
+  <div class="sub-header">
+    <label>Subs character limit</label>
+    <p>The max allowed characters we'll play for a sub event!</p>
+    <app-input
+      placeholder="Enter a character limit"
+      type="number"
+      [control]="charLimit"
+    ></app-input>
+    <mat-error *ngIf="charLimit.hasError('min')">
+      Minimum characters allowed is 0.
+    </mat-error>
+    <mat-error *ngIf="charLimit.hasError('pattern')">
+      Character limit must be a whole number.
+    </mat-error>
+  </div>
+
+  <div class="sub-header">
+    <label>Gift subs message</label>
+    <p>Customize what your TTS says when a user gifts subs!</p>
+    <p>Use variables to get info from the gift!</p>
+    <div class="var-buttons">
+      <app-button (click)="appendText('{amount}')" size="sm">
+        Amount
+      </app-button>
+      <app-button (click)="appendText('{username}')" size="sm">
+        Username
+      </app-button>
+    </div>
+    <textarea
+      placeholder="Thanks {username} for the {amount} subs!"
+      [formControl]="giftMessage"
+    ></textarea>
+  </div>
+</div>
