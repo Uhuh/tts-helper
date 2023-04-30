@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 
+export type ButtonStyles = 'primary' | 'active' | 'outline';
+
 @Component({
   selector: 'app-button',
   templateUrl: './button.component.html',
@@ -9,4 +11,5 @@ export class ButtonComponent {
   @Input() text = '[NONE]';
   @Input() disabled = false;
   @Input() size = 'md';
+  @Input() style: ButtonStyles = 'primary';
 }

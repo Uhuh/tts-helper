@@ -36,3 +36,8 @@ button {
     background-color: var(--sidebar);
   }
 }
+
+.active {
+  color: #121212 !important;
+  background-color: var(--blue) !important;
+}
