@@ -21,6 +21,7 @@ const initialState: TwitchState = {
   isTokenValid: false,
   subsInfo: {
     enabled: true,
+    giftMessage: '',
     subCharacterLimit: 300,
   },
   channelInfo: {
@@ -35,6 +36,7 @@ const initialState: TwitchState = {
   },
   bitInfo: {
     enabled: true,
+    exact: false,
     minBits: 100,
     bitsCharacterLimit: 300,
   },

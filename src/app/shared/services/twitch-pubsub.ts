@@ -17,6 +17,7 @@ import {
 import {
   TwitchBitState,
   TwitchRedeemState,
+  TwitchSubState,
 } from '../state/twitch/twitch.model';
 
 @Injectable()
@@ -30,6 +31,7 @@ export class TwitchPubSub implements OnDestroy {
 
   bitInfo: TwitchBitState | null = null;
   redeemInfo: TwitchRedeemState | null = null;
+  subsInfo: TwitchSubState | null = null;
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
@@ -117,6 +119,10 @@ export class TwitchPubSub implements OnDestroy {
     this.twitchService.bitInfo$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((bitInfo) => (this.bitInfo = bitInfo));
+
+    this.twitchService.subsInfo$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((subsInfo) => (this.subsInfo = subsInfo));
   }
 
   onMessage(user: string, text: string) {
@@ -144,7 +150,8 @@ export class TwitchPubSub implements OnDestroy {
     if (
       !this.bitInfo ||
       !this.bitInfo.enabled ||
-      cheer.bits < this.bitInfo.minBits
+      cheer.bits < this.bitInfo.minBits ||
+      (this.bitInfo.exact && cheer.bits !== this.bitInfo.minBits)
     ) {
       return;
     }

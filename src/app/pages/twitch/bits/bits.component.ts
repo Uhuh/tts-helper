@@ -19,6 +19,7 @@ export class BitsComponent implements OnInit, OnDestroy {
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
   enabled = nonNullFormControl(true);
+  exact = nonNullFormControl(false);
 
   constructor(private readonly twitchService: TwitchService) {}
 
@@ -31,6 +32,7 @@ export class BitsComponent implements OnInit, OnDestroy {
           emitEvent: false,
         });
         this.enabled.patchValue(bitInfo.enabled, { emitEvent: false });
+        this.exact.patchValue(bitInfo.exact, { emitEvent: false });
       });
 
     this.minBits.valueChanges
@@ -55,9 +57,11 @@ export class BitsComponent implements OnInit, OnDestroy {
 
     this.enabled.valueChanges
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((enabled) => {
-        this.twitchService.updateBitEnabled(enabled);
-      });
+      .subscribe((enabled) => this.twitchService.updateBitsEnabled(enabled));
+
+    this.exact.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((exact) => this.twitchService.updateBitsExact(exact));
   }
 
   ngOnDestroy(): void {

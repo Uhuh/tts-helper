@@ -8,12 +8,14 @@ export interface TwitchRedeemState {
 
 export interface TwitchBitState {
   enabled: boolean;
+  exact: boolean;
   minBits: number;
   bitsCharacterLimit: number;
 }
 
 export interface TwitchSubState {
   enabled: boolean;
+  giftMessage: string;
   subCharacterLimit: number;
 }
 

@@ -14,6 +14,7 @@ import { TwitchApi } from '../api/twitch.api';
 import {
   updateBitEnabled,
   updateBitsCharLimit,
+  updateBitsExact,
   updateChannelInfo,
   updateChannelRedeems,
   updateMinBits,
@@ -83,6 +84,7 @@ export class TwitchService implements OnDestroy {
           token: null,
           subsInfo: {
             enabled: true,
+            giftMessage: '',
             subCharacterLimit: 300,
           },
           redeemInfo: {
@@ -92,6 +94,7 @@ export class TwitchService implements OnDestroy {
           },
           bitInfo: {
             enabled: true,
+            exact: false,
             minBits: 100,
             bitsCharacterLimit: 300,
           },
@@ -169,8 +172,12 @@ export class TwitchService implements OnDestroy {
     this.store.dispatch(updateRedeemEnabled({ enabled }));
   }
 
-  updateBitEnabled(enabled: boolean) {
+  updateBitsEnabled(enabled: boolean) {
     this.store.dispatch(updateBitEnabled({ enabled }));
+  }
+
+  updateBitsExact(exact: boolean) {
+    this.store.dispatch(updateBitsExact({ exact }));
   }
 
   updateSubEnabled(enabled: boolean) {

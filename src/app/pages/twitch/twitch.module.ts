@@ -12,6 +12,7 @@ import { BitsComponent } from './bits/bits.component';
 import { RedeemsComponent } from './redeems/redeems.component';
 import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
 import { SubsComponent } from './subs/subs.component';
+import { GiftVariablesComponent } from './subs/gift-variables/gift-variables.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { SubsComponent } from './subs/subs.component';
     BitsComponent,
     RedeemsComponent,
     SubsComponent,
+    GiftVariablesComponent,
   ],
   imports: [
     CommonModule,
