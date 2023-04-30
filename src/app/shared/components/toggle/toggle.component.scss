@@ -50,6 +50,16 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+.disabled {
+  transition: color 0.2s;
+  color: var(--text-inactive);
+}
+
+.enabled {
+  transition: color 0.2s;
+  color: var(--text);
+}
+
 /* Rounded sliders */
 .slider.round {
   border-radius: 34px;
