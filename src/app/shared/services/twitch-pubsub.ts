@@ -7,7 +7,13 @@ import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient } from '@twurple/chat';
 import { HistoryService } from './history.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TwitchCheer, TwitchRedeem } from './twitch-pubsub.interface';
+import {
+  TwitchCheer,
+  TwitchGiftSub,
+  TwitchRedeem,
+  TwitchSub,
+  TwitchSubMessage,
+} from './twitch-pubsub.interface';
 import {
   TwitchBitState,
   TwitchRedeemState,
@@ -29,6 +35,11 @@ export class TwitchPubSub implements OnDestroy {
   onMessageListener?: any;
   redeemListener?: any;
   bitsListener?: any;
+
+  // Subs listener
+  subsListener?: any;
+  giftSubListener?: any;
+  subMessageListener?: any;
 
   constructor(
     private readonly twitchService: TwitchService,
@@ -76,7 +87,22 @@ export class TwitchPubSub implements OnDestroy {
 
         this.bitsListener = this.listener.onChannelCheer(
           channelInfo.channelId ?? '',
-          (cheer) => this.onBits(cheer as TwitchCheer)
+          (cheer) => this.onBits(cheer)
+        );
+
+        this.subsListener = this.listener.onChannelSubscription(
+          channelInfo.channelId ?? '',
+          (sub) => this.onSub(sub)
+        );
+
+        this.giftSubListener = this.listener.onChannelSubscriptionGift(
+          channelInfo.channelId ?? '',
+          (gift) => this.onGiftSub(gift)
+        );
+
+        this.subMessageListener = this.listener.onChannelSubscriptionMessage(
+          channelInfo.channelId ?? '',
+          (message) => this.onSubMessage(message)
         );
 
         this.onMessageListener = this.chat.onMessage((_, user, text) =>
@@ -102,6 +128,18 @@ export class TwitchPubSub implements OnDestroy {
     }
   }
 
+  onSubMessage(message: TwitchSubMessage) {
+    console.log('sub message', message);
+  }
+
+  onGiftSub(gift: TwitchGiftSub) {
+    console.log('sub gift', gift);
+  }
+
+  onSub(sub: TwitchSub) {
+    console.log('sub', sub);
+  }
+
   onBits(cheer: TwitchCheer) {
     if (
       !this.bitInfo ||
@@ -115,7 +153,7 @@ export class TwitchPubSub implements OnDestroy {
 
     this.historyService.playTts(
       cleanedInput,
-      cheer.userDisplayName,
+      cheer.userDisplayName ?? '[ANONYMOUS]',
       'twitch',
       this.bitInfo.bitsCharacterLimit ?? 300
     );
