@@ -37,7 +37,7 @@ export class BitsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed$),
         debounceTime(1000),
-        filter(() => this.minBits.valid && !this.minBits.pristine)
+        filter(() => this.minBits.valid)
       )
       .subscribe((minBits) => {
         this.twitchService.updateMinBits(Number(minBits));
@@ -47,18 +47,14 @@ export class BitsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed$),
         debounceTime(1000),
-        filter(() => this.bitsCharLimit.valid && !this.bitsCharLimit.pristine)
+        filter(() => this.bitsCharLimit.valid)
       )
       .subscribe((bitsCharLimit) => {
         this.twitchService.updateBitsCharLimit(Number(bitsCharLimit));
       });
 
     this.enabled.valueChanges
-      .pipe(
-        takeUntil(this.destroyed$),
-        debounceTime(1000),
-        filter(() => !this.enabled.pristine)
-      )
+      .pipe(takeUntil(this.destroyed$))
       .subscribe((enabled) => {
         this.twitchService.updateBitEnabled(enabled);
       });
