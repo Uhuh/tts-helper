@@ -12,8 +12,8 @@ button {
   transition: 0.2s;
   cursor: pointer;
   display: flex;
-  width: 100%;
   justify-content: center;
+  width: fit-content;
 
   &:hover {
     background-color: var(--white-10);
@@ -22,6 +22,11 @@ button {
   &:active {
     background-color: var(--white-20);
   }
+}
+
+.sm {
+  font-size: 12px;
+  padding: 10px 20px;
 }
 
 .disabled {
