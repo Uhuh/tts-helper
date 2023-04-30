@@ -4,17 +4,11 @@
 
 <div class="sub-header">
   <label>Handle subscriptions</label>
-  <p>Enable or disable TTS events for subs.</p>
-  <app-toggle
-    [control]="enabled"
-    class="disabled"
-    [ngClass]="{ enabled: enabled.value }"
-  >
-    Enabled
-  </app-toggle>
+  <p>Enable or disable TTS for all sub events.</p>
+  <app-toggle [control]="enabled"> Enabled </app-toggle>
 </div>
 
-<div class="section">
+<div class="section" *ngIf="enabled.value">
   <div class="sub-header">
     <label>Subs character limit</label>
     <p>The max allowed characters we'll play for a sub event!</p>
@@ -34,15 +28,22 @@
   <div class="sub-header">
     <label>Gift subs message</label>
     <p>Customize what your TTS says when a user gifts subs!</p>
-    <p>Use variables to get info from the gift!</p>
-    <div class="var-buttons">
-      <app-button (click)="appendText('{amount}')" size="sm">
-        Amount
-      </app-button>
-      <app-button (click)="appendText('{username}')" size="sm">
-        Username
-      </app-button>
+    <div class="warning">
+      <app-gift-variables></app-gift-variables>
+      <div class="example">
+        Example:
+        <span class="example-text">
+          Thanks
+          <span class="var">{{ '{username}' }}</span>
+          for the
+          <span class="var">{{ '{amount}' }}</span>
+          subs!
+        </span>
+        Will turn into:
+        <i class="example-text">Thanks Mei for the 2 subs!</i>
+      </div>
     </div>
+    <div class="var-buttons"></div>
     <textarea
       placeholder="Thanks {username} for the {amount} subs!"
       [formControl]="giftMessage"
