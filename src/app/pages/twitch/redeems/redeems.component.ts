@@ -48,11 +48,7 @@ export class RedeemsComponent implements OnInit, OnDestroy {
       });
 
     this.enabled.valueChanges
-      .pipe(
-        takeUntil(this.destroyed$),
-        debounceTime(1000),
-        filter(() => !this.enabled.pristine)
-      )
+      .pipe(takeUntil(this.destroyed$))
       .subscribe((enabled) => {
         this.twitchService.updateRedeemEnabled(enabled);
       });
@@ -61,7 +57,7 @@ export class RedeemsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed$),
         debounceTime(1000),
-        filter(() => this.redeem.valid && !this.redeem.pristine)
+        filter(() => this.redeem.valid)
       )
       .subscribe((redeem) => {
         this.twitchService.updateSelectedRedeem(redeem);
@@ -71,11 +67,7 @@ export class RedeemsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed$),
         debounceTime(1000),
-        filter(
-          () =>
-            this.redeemCharLimitControl.valid &&
-            !this.redeemCharLimitControl.pristine
-        )
+        filter(() => this.redeemCharLimitControl.valid)
       )
       .subscribe((redeemCharLimitControl) => {
         this.twitchService.updateRedeemCharLimit(

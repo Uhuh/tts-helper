@@ -13,28 +13,51 @@
   <div class="header">
     <span>TTS Settings</span>
   </div>
-  <div class="warning">
-    <span>Currently only StreamElements changes are supported.</span>
-  </div>
   <div class="sub-header">
     <label>Select TTS service</label>
     <p>Decide which TTS service to use.</p>
     <div class="action-row flex-wrap">
       <app-button
         (click)="selectTts('stream-elements')"
-        [ngClass]="{ active: selectedTts.value === 'stream-elements' }"
+        [style]="selectedTts.value === 'stream-elements' ? 'active' : 'primary'"
       >
         StreamElements
       </app-button>
       <app-button
-        (click)="selectTts('tts-monster')"
-        [ngClass]="{ active: selectedTts.value === 'tts-monster' }"
-        >TTS Monster</app-button
+        (click)="selectTts('amazon-polly')"
+        [style]="selectedTts.value === 'amazon-polly' ? 'active' : 'primary'"
       >
+        Amazon Polly
+      </app-button>
+      <app-button
+        (click)="selectTts('windows')"
+        class="disabled"
+        [style]="selectedTts.value === 'windows' ? 'active' : 'primary'"
+      >
+        Windows
+      </app-button>
+      <app-button
+        (click)="selectTts('tiktok')"
+        class="disabled"
+        [style]="selectedTts.value === 'tiktok' ? 'active' : 'primary'"
+      >
+        TikTok
+      </app-button>
+      <app-button
+        (click)="selectTts('tts-monster')"
+        class="disabled"
+        [style]="selectedTts.value === 'tts-monster' ? 'active' : 'primary'"
+      >
+        TTS Monster
+      </app-button>
     </div>
   </div>
 </div>
 <app-streamelement-tts
   *ngIf="selectedTts.value === 'stream-elements'"
 ></app-streamelement-tts>
+<app-amazon-polly
+  *ngIf="selectedTts.value === 'amazon-polly'"
+></app-amazon-polly>
 <app-tts-monster *ngIf="selectedTts.value === 'tts-monster'"></app-tts-monster>
+<app-windows *ngIf="selectedTts.value === 'windows'"></app-windows>

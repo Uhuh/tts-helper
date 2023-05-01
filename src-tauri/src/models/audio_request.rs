@@ -32,6 +32,6 @@ pub struct AudioRequest {
     pub url: Url,
     /// StreamElements values
     pub params: Vec<(String, String)>,
-    /// TTS Monster data
-    pub data: TtsMonsterDataWrapper,
+    // TTS Monster data
+    // pub data: Option<TtsMonsterDataWrapper>,
 }

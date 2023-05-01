@@ -23,6 +23,19 @@ export const updateChannelRedeems = createAction(
   props<{ redeems: TwitchRedeemInfo[] }>()
 );
 
+export const updateSubEnabled = createAction(
+  '[ TwitchState ] Updating sub info enabled',
+  props<{ enabled: boolean }>()
+);
+export const updateSubCharLimit = createAction(
+  '[ TwitchState ] Updating sub info char limit',
+  props<{ subCharacterLimit: number }>()
+);
+export const updateGiftMessage = createAction(
+  '[ TwitchState ] Updating gift sub message',
+  props<{ giftMessage: string }>()
+);
+
 export const updateRedeemEnabled = createAction(
   '[ TwitchState ] Updating redeem info enabled',
   props<{ enabled: boolean }>()
@@ -47,4 +60,8 @@ export const updateMinBits = createAction(
 export const updateBitsCharLimit = createAction(
   '[ TwitchState ] Updating bits character limit',
   props<{ bitsCharacterLimit: number }>()
+);
+export const updateBitsExact = createAction(
+  '[ TwitchState ] Updating bits exact',
+  props<{ exact: boolean }>()
 );

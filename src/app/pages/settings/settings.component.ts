@@ -23,7 +23,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.configService.voiceSettingsTts$
+    this.configService.configTts$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((tts) => {
         this.selectedTts.patchValue(tts, {

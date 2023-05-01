@@ -1,0 +1,422 @@
+﻿{
+  "regions": [
+    "us-east-2",
+    "us-east-1",
+    "us-west-1",
+    "us-west-2",
+    "af-south-1",
+    "ap-east-1",
+    "ap-south-2",
+    "ap-southeast-3",
+    "ap-southeast-4",
+    "ap-south-1",
+    "ap-northeast-3",
+    "ap-northeast-2",
+    "ap-southeast-1",
+    "ap-southeast-2",
+    "ap-northeast-1",
+    "ca-central-1",
+    "eu-central-1",
+    "eu-west-1",
+    "eu-west-2",
+    "eu-south-1",
+    "eu-west-3",
+    "eu-south-2",
+    "eu-north-1",
+    "eu-central-2",
+    "me-south-1",
+    "me-central-1",
+    "sa-east-1"
+  ],
+  "voices": [
+    {
+      "language": "Arabic",
+      "voices": [
+        {
+          "displayName": "Zeina, Female",
+          "value": "Zeina"
+        }
+      ]
+    },
+    {
+      "language": "Chinese, Mandarin",
+      "voices": [
+        {
+          "displayName": "Zhiyu, Female",
+          "value": "Zhiyu"
+        }
+      ]
+    },
+    {
+      "language": "Danish",
+      "voices": [
+        {
+          "displayName": "Mads, Male",
+          "value": "Mads"
+        },
+        {
+          "displayName": "Naja, Female",
+          "value": "Naja"
+        }
+      ]
+    },
+    {
+      "language": "Dutch",
+      "voices": [
+        {
+          "displayName": "Lotte, Female",
+          "value": "Lotte"
+        },
+        {
+          "displayName": "Ruben, Male",
+          "value": "Ruben"
+        }
+      ]
+    },
+    {
+      "language": "English, Australian",
+      "voices": [
+        {
+          "displayName": "Nicole, Female",
+          "value": "Nicole"
+        },
+        {
+          "displayName": "Russell, Male",
+          "value": "Russell"
+        }
+      ]
+    },
+    {
+      "language": "English, British",
+      "voices": [
+        {
+          "displayName": "Amy, Female",
+          "value": "Amy"
+        },
+        {
+          "displayName": "Brian, Male",
+          "value": "Brian"
+        },
+        {
+          "displayName": "Emma, Female",
+          "value": "Emma"
+        }
+      ]
+    },
+    {
+      "language": "English, Indian",
+      "voices": [
+        {
+          "displayName": "Aditi, Female",
+          "value": "Aditi"
+        },
+        {
+          "displayName": "Raveena, Female",
+          "value": "Raveena"
+        }
+      ]
+    },
+    {
+      "language": "English, US",
+      "voices": [
+        {
+          "displayName": "Ivy, Female",
+          "value": "Ivy"
+        },
+        {
+          "displayName": "Joanna, Female",
+          "value": "Joanna"
+        },
+        {
+          "displayName": "Joey, Male",
+          "value": "Joey"
+        },
+        {
+          "displayName": "Justin, Male",
+          "value": "Justin"
+        },
+        {
+          "displayName": "Kendra, Female",
+          "value": "Kendra"
+        },
+        {
+          "displayName": "Kimberly, Female",
+          "value": "Kimberly"
+        },
+        {
+          "displayName": "Matthew, Male",
+          "value": "Matthew"
+        },
+        {
+          "displayName": "Salli, Female",
+          "value": "Salli"
+        }
+      ]
+    },
+    {
+      "language": "English, Welsh",
+      "voices": [
+        {
+          "displayName": "Geraint, Male",
+          "value": "Geraint"
+        }
+      ]
+    },
+    {
+      "language": "French",
+      "voices": [
+        {
+          "displayName": "Céline, Female",
+          "value": "Céline"
+        },
+        {
+          "displayName": "Léa, Female",
+          "value": "Léa"
+        },
+        {
+          "displayName": "Mathieu, Male",
+          "value": "Mathieu"
+        }
+      ]
+    },
+    {
+      "language": "French, Canadian",
+      "voices": [
+        {
+          "displayName": "Chantal, Female",
+          "value": "Chantal"
+        }
+      ]
+    },
+    {
+      "language": "German",
+      "voices": [
+        {
+          "displayName": "Hans, Male",
+          "value": "Hans"
+        },
+        {
+          "displayName": "Marlene, Female",
+          "value": "Marlene"
+        },
+        {
+          "displayName": "Vicki, Female",
+          "value": "Vicki"
+        }
+      ]
+    },
+    {
+      "language": "Hindi",
+      "voices": [
+        {
+          "displayName": "Aditi, Female",
+          "value": "Aditi"
+        }
+      ]
+    },
+    {
+      "language": "Icelandic",
+      "voices": [
+        {
+          "displayName": "Dóra, Female",
+          "value": "Dóra"
+        },
+        {
+          "displayName": "Karl, Male",
+          "value": "Karl"
+        }
+      ]
+    },
+    {
+      "language": "Italian",
+      "voices": [
+        {
+          "displayName": "Bianca, Female",
+          "value": "Bianca"
+        },
+        {
+          "displayName": "Carla, Female",
+          "value": "Carla"
+        },
+        {
+          "displayName": "Giorgio, Male",
+          "value": "Giorgio"
+        }
+      ]
+    },
+    {
+      "language": "Japanese",
+      "voices": [
+        {
+          "displayName": "Mizuki, Female",
+          "value": "Mizuki"
+        },
+        {
+          "displayName": "Takumi, Male",
+          "value": "Takumi"
+        }
+      ]
+    },
+    {
+      "language": "Korean",
+      "voices": [
+        {
+          "displayName": "Seoyeon, Female",
+          "value": "Seoyeon"
+        }
+      ]
+    },
+    {
+      "language": "Norwegian",
+      "voices": [
+        {
+          "displayName": "Liv, Female",
+          "value": "Liv"
+        }
+      ]
+    },
+    {
+      "language": "Polish",
+      "voices": [
+        {
+          "displayName": "Ewa, Female",
+          "value": "Ewa"
+        },
+        {
+          "displayName": "Jacek, Male",
+          "value": "Jacek"
+        },
+        {
+          "displayName": "Jan, Male",
+          "value": "Jan"
+        },
+        {
+          "displayName": "Maja, Female",
+          "value": "Maja"
+        }
+      ]
+    },
+    {
+      "language": "Portuguese",
+      "voices": [
+        {
+          "displayName": "Cristiano, Male",
+          "value": "Cristiano"
+        },
+        {
+          "displayName": "Inês, Female",
+          "value": "Inês"
+        }
+      ]
+    },
+    {
+      "language": "Portuguese, Brazilian",
+      "voices": [
+        {
+          "displayName": "Camila, Female",
+          "value": "Camila"
+        },
+        {
+          "displayName": "Ricardo, Male",
+          "value": "Ricardo"
+        },
+        {
+          "displayName": "Vitória, Female",
+          "value": "Vitória"
+        }
+      ]
+    },
+    {
+      "language": "Romanian",
+      "voices": [
+        {
+          "displayName": "Carmen, Female",
+          "value": "Carmen"
+        }
+      ]
+    },
+    {
+      "language": "Russian",
+      "voices": [
+        {
+          "displayName": "Maxim, Male",
+          "value": "Maxim"
+        },
+        {
+          "displayName": "Tatyana, Female",
+          "value": "Tatyana"
+        }
+      ]
+    },
+    {
+      "language": "Spanish, Castilian",
+      "voices": [
+        {
+          "displayName": "Conchita, Female",
+          "value": "Conchita"
+        },
+        {
+          "displayName": "Enrique, Male",
+          "value": "Enrique"
+        },
+        {
+          "displayName": "Lucia, Female",
+          "value": "Lucia"
+        }
+      ]
+    },
+    {
+      "language": "Spanish, Mexican",
+      "voices": [
+        {
+          "displayName": "Mia, Female",
+          "value": "Mia"
+        }
+      ]
+    },
+    {
+      "language": "Spanish, US",
+      "voices": [
+        {
+          "displayName": "Lupe, Female",
+          "value": "Lupe"
+        },
+        {
+          "displayName": "Miguel, Male",
+          "value": "Miguel"
+        },
+        {
+          "displayName": "Penélope, Female",
+          "value": "Penélope"
+        }
+      ]
+    },
+    {
+      "language": "Swedish",
+      "voices": [
+        {
+          "displayName": "Astrid, Female",
+          "value": "Astrid"
+        }
+      ]
+    },
+    {
+      "language": "Turkish",
+      "voices": [
+        {
+          "displayName": "Filiz, Female",
+          "value": "Filiz"
+        }
+      ]
+    },
+    {
+      "language": "Welsh",
+      "voices": [
+        {
+          "displayName": "Gwyneth, Female",
+          "value": "Gwyneth"
+        }
+      ]
+    }
+  ]
+}

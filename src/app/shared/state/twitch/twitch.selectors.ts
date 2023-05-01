@@ -25,6 +25,19 @@ export const selectTwitchRedeems = createSelector(
   (state) => state.redeems
 );
 
+export const selectSubInfo = createSelector(
+  _selectTwitchState,
+  (state) => state.subsInfo
+);
+export const selectSubEnabled = createSelector(
+  selectSubInfo,
+  (state) => state.enabled
+);
+export const selectSubCharLimit = createSelector(
+  selectSubInfo,
+  (state) => state.subCharacterLimit
+);
+
 export const selectRedeemInfo = createSelector(
   _selectTwitchState,
   (state) => state.redeemInfo

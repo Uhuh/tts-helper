@@ -1,3 +1,12 @@
-<button [disabled]="disabled" [ngClass]="{ disabled: disabled }">
+<button
+  [disabled]="disabled"
+  [ngClass]="{
+    disabled: disabled,
+    sm: size === 'sm',
+    md: size === 'md',
+    lg: size === 'lg'
+  }"
+  [class]="style"
+>
   <ng-content></ng-content>
 </button>

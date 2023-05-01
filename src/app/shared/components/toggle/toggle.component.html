@@ -2,4 +2,6 @@
   <input type="checkbox" [formControl]="control" />
   <span class="slider round"></span>
 </label>
-<span><ng-content></ng-content></span>
+<span class="disabled" [ngClass]="{ enabled: control.value }"
+  ><ng-content></ng-content
+></span>

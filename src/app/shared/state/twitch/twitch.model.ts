@@ -8,13 +8,21 @@ export interface TwitchRedeemState {
 
 export interface TwitchBitState {
   enabled: boolean;
+  exact: boolean;
   minBits: number;
   bitsCharacterLimit: number;
+}
+
+export interface TwitchSubState {
+  enabled: boolean;
+  giftMessage: string;
+  subCharacterLimit: number;
 }
 
 export interface TwitchState {
   token: string | null;
   isTokenValid: boolean;
+  subsInfo: TwitchSubState;
   channelInfo: TwitchChannelInfo;
   bitInfo: TwitchBitState;
   redeemInfo: TwitchRedeemState;

@@ -5,10 +5,13 @@ import {
   updateBitsCharLimit,
   updateChannelInfo,
   updateChannelRedeems,
+  updateGiftMessage,
   updateMinBits,
   updateRedeem,
   updateRedeemCharLimit,
   updateRedeemEnabled,
+  updateSubCharLimit,
+  updateSubEnabled,
   updateToken,
   updateTokenValidity,
   updateTwitchState,
@@ -17,6 +20,11 @@ import {
 const initialState: TwitchState = {
   token: null,
   isTokenValid: false,
+  subsInfo: {
+    enabled: true,
+    giftMessage: '',
+    subCharacterLimit: 300,
+  },
   channelInfo: {
     channelId: '',
     username: '',
@@ -29,6 +37,7 @@ const initialState: TwitchState = {
   },
   bitInfo: {
     enabled: true,
+    exact: false,
     minBits: 100,
     bitsCharacterLimit: 300,
   },
@@ -62,6 +71,27 @@ export const twitchReducer = createReducer(
     channelInfo: {
       ...state.channelInfo,
       redeems,
+    },
+  })),
+  on(updateSubEnabled, (state, { enabled }) => ({
+    ...state,
+    subsInfo: {
+      ...state.subsInfo,
+      enabled,
+    },
+  })),
+  on(updateSubCharLimit, (state, { subCharacterLimit }) => ({
+    ...state,
+    subsInfo: {
+      ...state.subsInfo,
+      subCharacterLimit,
+    },
+  })),
+  on(updateGiftMessage, (state, { giftMessage }) => ({
+    ...state,
+    subsInfo: {
+      ...state.subsInfo,
+      giftMessage,
     },
   })),
   on(updateRedeemEnabled, (state, { enabled }) => ({

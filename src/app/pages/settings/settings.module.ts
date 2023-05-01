@@ -11,13 +11,16 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
+import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
+import { WindowsComponent } from './windows/windows.component';
 
 @NgModule({
   declarations: [
     SettingsComponent,
     StreamelementTtsComponent,
     TtsMonsterComponent,
+    AmazonPollyComponent,
+    WindowsComponent,
   ],
   imports: [
     CommonModule,
@@ -32,7 +35,6 @@ import { ToggleModule } from 'src/app/shared/components/toggle/toggle.module';
     MatSelectModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    ToggleModule,
   ],
   exports: [SettingsComponent],
   providers: [HistoryService, ConfigService],

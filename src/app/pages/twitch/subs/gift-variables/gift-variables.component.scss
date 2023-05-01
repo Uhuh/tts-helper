@@ -1,0 +1,10 @@
+table {
+  table-layout: auto;
+  width: 100%;
+}
+
+tr td {
+  &:last-child {
+    color: var(--text-inactive);
+  }
+}

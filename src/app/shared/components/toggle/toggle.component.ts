@@ -7,5 +7,5 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./toggle.component.scss'],
 })
 export class ToggleComponent {
-  @Input() control!: FormControl<boolean | null>;
+  @Input() control!: FormControl<boolean>;
 }

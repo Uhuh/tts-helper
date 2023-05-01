@@ -9,24 +9,29 @@ export const selectConfigState = createSelector(
   (state) => state
 );
 
-export const selectVoiceSettings = createSelector(
-  _selectConfigState,
-  (state) => state.voiceSettings
-);
-
 export const selectStreamElements = createSelector(
-  selectVoiceSettings,
+  _selectConfigState,
   (state) => state.streamElements
 );
 
 export const selectTtsMonster = createSelector(
-  selectVoiceSettings,
+  _selectConfigState,
   (state) => state.ttsMonster
 );
 
-export const selectVoiceSettingsTts = createSelector(
-  selectVoiceSettings,
+export const selectAmazonPolly = createSelector(
+  _selectConfigState,
+  (state) => state.amazonPolly
+);
+
+export const selectTts = createSelector(
+  _selectConfigState,
   (state) => state.tts
+);
+
+export const selectUrl = createSelector(
+  _selectConfigState,
+  (state) => state.url
 );
 
 export const selectBannedWords = createSelector(

@@ -19,6 +19,7 @@ export class BitsComponent implements OnInit, OnDestroy {
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
   enabled = nonNullFormControl(true);
+  exact = nonNullFormControl(false);
 
   constructor(private readonly twitchService: TwitchService) {}
 
@@ -31,13 +32,14 @@ export class BitsComponent implements OnInit, OnDestroy {
           emitEvent: false,
         });
         this.enabled.patchValue(bitInfo.enabled, { emitEvent: false });
+        this.exact.patchValue(bitInfo.exact, { emitEvent: false });
       });
 
     this.minBits.valueChanges
       .pipe(
         takeUntil(this.destroyed$),
         debounceTime(1000),
-        filter(() => this.minBits.valid && !this.minBits.pristine)
+        filter(() => this.minBits.valid)
       )
       .subscribe((minBits) => {
         this.twitchService.updateMinBits(Number(minBits));
@@ -47,21 +49,19 @@ export class BitsComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroyed$),
         debounceTime(1000),
-        filter(() => this.bitsCharLimit.valid && !this.bitsCharLimit.pristine)
+        filter(() => this.bitsCharLimit.valid)
       )
       .subscribe((bitsCharLimit) => {
         this.twitchService.updateBitsCharLimit(Number(bitsCharLimit));
       });
 
     this.enabled.valueChanges
-      .pipe(
-        takeUntil(this.destroyed$),
-        debounceTime(1000),
-        filter(() => !this.enabled.pristine)
-      )
-      .subscribe((enabled) => {
-        this.twitchService.updateBitEnabled(enabled);
-      });
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((enabled) => this.twitchService.updateBitsEnabled(enabled));
+
+    this.exact.valueChanges
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((exact) => this.twitchService.updateBitsExact(exact));
   }
 
   ngOnDestroy(): void {

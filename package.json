@@ -1,6 +1,6 @@
 {
   "name": "tauri-app",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -28,6 +28,7 @@
     "@twurple/chat": "^6.1.1",
     "@twurple/eventsub-ws": "^6.1.1",
     "@twurple/pubsub": "^6.1.1",
+    "aws-sdk": "^2.1368.0",
     "rxjs": "~7.8.0",
     "tauri-plugin-store-api": "https://github.com/tauri-apps/tauri-plugin-store",
     "tslib": "^2.3.0",
