@@ -135,7 +135,16 @@ export class TwitchPubSub implements OnDestroy {
   }
 
   onSubMessage(message: TwitchSubMessage) {
-    console.log('sub message', message);
+    if (!this.subsInfo?.enabled || !message.messageText) {
+      return;
+    }
+
+    this.historyService.playTts(
+      message.messageText,
+      message.userDisplayName,
+      'twitch',
+      this.subsInfo.subCharacterLimit
+    );
   }
 
   onGiftSub(gift: TwitchGiftSub) {
@@ -155,7 +164,11 @@ export class TwitchPubSub implements OnDestroy {
     );
   }
 
+  /**
+   * @TODO -
+   */
   onSub(sub: TwitchSub) {
+    return;
     /**
      * Ignore users that received a gift sub
      */
