@@ -165,7 +165,7 @@ export class TwitchPubSub implements OnDestroy {
   }
 
   /**
-   * @TODO -
+   * @TODO - Figure out if on subs need to trigger TTS or have custom messages
    */
   onSub(sub: TwitchSub) {
     return;
