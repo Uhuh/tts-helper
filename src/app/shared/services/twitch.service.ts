@@ -17,6 +17,7 @@ import {
   updateBitsExact,
   updateChannelInfo,
   updateChannelRedeems,
+  updateGiftMessage,
   updateMinBits,
   updateRedeem,
   updateRedeemCharLimit,
@@ -182,6 +183,10 @@ export class TwitchService implements OnDestroy {
 
   updateSubEnabled(enabled: boolean) {
     this.store.dispatch(updateSubEnabled({ enabled }));
+  }
+
+  updateGiftMessage(giftMessage: string) {
+    this.store.dispatch(updateGiftMessage({ giftMessage }));
   }
 
   updateSubCharLimit(subCharacterLimit: number) {

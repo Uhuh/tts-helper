@@ -139,17 +139,41 @@ export class TwitchPubSub implements OnDestroy {
   }
 
   onGiftSub(gift: TwitchGiftSub) {
-    console.log('sub gift', gift);
+    if (!this.subsInfo?.enabled) {
+      return;
+    }
+
+    const parsedInput = this.subsInfo.giftMessage
+      .replaceAll(/{username}/g, gift.gifterDisplayName)
+      .replaceAll(/{amount}/g, `${gift.amount}`);
+
+    this.historyService.playTts(
+      parsedInput,
+      gift.gifterDisplayName,
+      'twitch',
+      999
+    );
   }
 
   onSub(sub: TwitchSub) {
-    console.log('sub', sub);
+    /**
+     * Ignore users that received a gift sub
+     */
+    if (!this.subsInfo?.enabled || sub.isGift) {
+      return;
+    }
+
+    this.historyService.playTts(
+      'Thanks for the sub',
+      sub.userDisplayName,
+      'twitch',
+      999
+    );
   }
 
   onBits(cheer: TwitchCheer) {
     if (
-      !this.bitInfo ||
-      !this.bitInfo.enabled ||
+      !this.bitInfo?.enabled ||
       cheer.bits < this.bitInfo.minBits ||
       (this.bitInfo.exact && cheer.bits !== this.bitInfo.minBits)
     ) {
@@ -162,7 +186,7 @@ export class TwitchPubSub implements OnDestroy {
       cleanedInput,
       cheer.userDisplayName ?? '[ANONYMOUS]',
       'twitch',
-      this.bitInfo.bitsCharacterLimit ?? 300
+      this.bitInfo.bitsCharacterLimit
     );
   }
 
@@ -178,7 +202,7 @@ export class TwitchPubSub implements OnDestroy {
       redeem.input,
       redeem.userDisplayName,
       'twitch',
-      this.redeemInfo.redeemCharacterLimit ?? 300
+      this.redeemInfo.redeemCharacterLimit
     );
   }
 
@@ -186,6 +210,9 @@ export class TwitchPubSub implements OnDestroy {
     this.chat?.removeListener(this.onMessageListener);
     this.listener?.removeListener(this.redeemListener);
     this.listener?.removeListener(this.bitsListener);
+    this.listener?.removeListener(this.subsListener);
+    this.listener?.removeListener(this.giftSubListener);
+    this.listener?.removeListener(this.subMessageListener);
     this.listener?.stop();
   }
 

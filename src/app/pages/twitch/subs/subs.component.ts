@@ -25,10 +25,11 @@ export class SubsComponent implements OnInit, OnDestroy {
     this.twitchService.subsInfo$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((subsInfo) => {
-        this.enabled.patchValue(subsInfo.enabled, { emitEvent: false });
         this.charLimit.patchValue(subsInfo.subCharacterLimit, {
           emitEvent: false,
         });
+        this.enabled.patchValue(subsInfo.enabled, { emitEvent: false });
+        this.giftMessage.patchValue(subsInfo.giftMessage, { emitEvent: false });
       });
 
     this.enabled.valueChanges
@@ -44,10 +45,12 @@ export class SubsComponent implements OnInit, OnDestroy {
       .subscribe((charLimit) =>
         this.twitchService.updateSubCharLimit(Number(charLimit))
       );
-  }
 
-  appendText(text: string) {
-    this.giftMessage.patchValue(`${this.giftMessage.value}${text}`);
+    this.giftMessage.valueChanges
+      .pipe(takeUntil(this.destroyed$), debounceTime(1000))
+      .subscribe((giftMessage) =>
+        this.twitchService.updateGiftMessage(giftMessage)
+      );
   }
 
   ngOnDestroy(): void {

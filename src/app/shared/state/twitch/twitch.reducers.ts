@@ -5,6 +5,7 @@ import {
   updateBitsCharLimit,
   updateChannelInfo,
   updateChannelRedeems,
+  updateGiftMessage,
   updateMinBits,
   updateRedeem,
   updateRedeemCharLimit,
@@ -84,6 +85,13 @@ export const twitchReducer = createReducer(
     subsInfo: {
       ...state.subsInfo,
       subCharacterLimit,
+    },
+  })),
+  on(updateGiftMessage, (state, { giftMessage }) => ({
+    ...state,
+    subsInfo: {
+      ...state.subsInfo,
+      giftMessage,
     },
   })),
   on(updateRedeemEnabled, (state, { enabled }) => ({
