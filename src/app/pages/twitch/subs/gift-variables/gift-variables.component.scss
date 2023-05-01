@@ -4,12 +4,6 @@ table {
 }
 
 tr td {
-  &:first-child {
-    color: var(--orange);
-    font-size: 16px;
-    font-family: monospace;
-  }
-
   &:last-child {
     color: var(--text-inactive);
   }

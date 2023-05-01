@@ -169,6 +169,19 @@ a {
   }
 }
 
+.var {
+  color: var(--orange);
+  font-size: 16px;
+  font-family: monospace;
+
+  &::before {
+    content: '{';
+  }
+  &::after {
+    content: '}';
+  }
+}
+
 textarea {
   color: var(--text);
   border: unset;
