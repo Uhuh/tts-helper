@@ -56,6 +56,8 @@ $my-app-theme: mat.define-dark-theme(
   --text-inactive: rgba(255, 255, 255, 0.6);
   --header: rgba(255, 255, 255, 0.8);
 
+  --orange: #f09845;
+
   --red: #b40000;
   --off-red-bg: rgba(180, 0, 0, 0.37);
   --off-green-bg: rgba(0, 140, 0, 0.37);
@@ -153,13 +155,6 @@ a {
   }
 }
 
-.active {
-  button {
-    color: #121212 !important;
-    background-color: var(--blue) !important;
-  }
-}
-
 .warning {
   display: flex;
   flex-direction: column;
@@ -183,11 +178,11 @@ textarea {
   margin: 0.7rem 0;
 
   background-color: var(--white-5);
-  max-width: 350px;
-  min-width: 250px;
+  max-width: 100%;
   min-height: 200px;
   max-height: 400px;
   transition: border 0.2s;
+  resize: vertical;
 
   &:focus,
   &:active {

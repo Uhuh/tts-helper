@@ -19,34 +19,34 @@
     <div class="action-row flex-wrap">
       <app-button
         (click)="selectTts('stream-elements')"
-        [ngClass]="{ active: selectedTts.value === 'stream-elements' }"
+        [style]="selectedTts.value === 'stream-elements' ? 'active' : 'primary'"
       >
         StreamElements
       </app-button>
       <app-button
         (click)="selectTts('amazon-polly')"
-        [ngClass]="{ active: selectedTts.value === 'amazon-polly' }"
+        [style]="selectedTts.value === 'amazon-polly' ? 'active' : 'primary'"
       >
         Amazon Polly
       </app-button>
       <app-button
         (click)="selectTts('windows')"
         class="disabled"
-        [ngClass]="{ active: selectedTts.value === 'windows' }"
+        [style]="selectedTts.value === 'windows' ? 'active' : 'primary'"
       >
         Windows
       </app-button>
       <app-button
         (click)="selectTts('tiktok')"
         class="disabled"
-        [ngClass]="{ active: selectedTts.value === 'tiktok' }"
+        [style]="selectedTts.value === 'tiktok' ? 'active' : 'primary'"
       >
         TikTok
       </app-button>
       <app-button
         (click)="selectTts('tts-monster')"
         class="disabled"
-        [ngClass]="{ active: selectedTts.value === 'tts-monster' }"
+        [style]="selectedTts.value === 'tts-monster' ? 'active' : 'primary'"
       >
         TTS Monster
       </app-button>
