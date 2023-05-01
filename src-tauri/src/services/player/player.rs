@@ -15,7 +15,7 @@ use thiserror::Error;
 use tracing::{error, info, instrument, trace};
 use tts_helper_audio::sources::SourceExt;
 
-use crate::{api_result::ApiResult, models::{AudioRequest, TtsMonsterResponse}};
+use crate::{api_result::ApiResult, models::{AudioRequest}};
 
 use super::Controller;
 
