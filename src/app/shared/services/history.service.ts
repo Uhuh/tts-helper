@@ -21,7 +21,10 @@ import {
   TtsMonsterData,
   TtsType,
 } from '../state/config/config.interface';
-import { Polly, config, CognitoIdentityCredentials } from 'aws-sdk';
+
+import { PollyClient } from '@aws-sdk/client-polly';
+import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
+import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { TtsOptions } from './history.interface';
 
 @Injectable()
@@ -126,7 +129,7 @@ export class HistoryService implements OnDestroy {
     }
   }
 
-  handleAmazonPolly(options: TtsOptions) {
+  async handleAmazonPolly(options: TtsOptions) {
     const { audioText } = options;
 
     if (!this.amazonPolly.poolId) {
@@ -140,14 +143,6 @@ export class HistoryService implements OnDestroy {
       return;
     }
 
-    /**
-     * Amazon wants me to configure this GLOBAL config variable for region and the pool ID
-     */
-    config.region = this.amazonPolly.region;
-    config.credentials = new CognitoIdentityCredentials({
-      IdentityPoolId: this.amazonPolly.poolId,
-    });
-
     const pollyParams = {
       OutputFormat: 'mp3',
       SampleRate: '22050',
@@ -156,23 +151,32 @@ export class HistoryService implements OnDestroy {
       VoiceId: this.amazonPolly.voice,
     };
 
-    const signer = new Polly.Presigner();
+    try {
+      const url = await getSynthesizeSpeechUrl({
+        client: new PollyClient({
+          region: this.amazonPolly.region,
+          credentials: fromCognitoIdentityPool({
+            clientConfig: {
+              region: this.amazonPolly.region,
+            },
+            identityPoolId: this.amazonPolly.poolId,
+          }),
+        }),
+        params: pollyParams,
+      });
 
-    signer.getSynthesizeSpeechUrl(pollyParams, (error, url) => {
-      if (error) {
-        this.snackbar.open(
-          `Oops! We had issues communicating with Polly!`,
-          'Dismiss',
-          {
-            panelClass: 'notification-error',
-          }
-        );
-        return console.error('Failed to get Amazon Polly url', error);
-      }
-
-      this.apiUrl = url;
+      this.apiUrl = url.toString();
       this.handleTtsInvoke(options);
-    });
+    } catch (e) {
+      this.snackbar.open(
+        `Oops! We had issues communicating with Polly!`,
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        }
+      );
+      return console.error('Failed to get Amazon Polly url', e);
+    }
   }
 
   handleTtsInvoke(options: TtsOptions) {
@@ -234,4 +238,14 @@ export class HistoryService implements OnDestroy {
   updateHistory(id: number, auditState: AuditState) {
     return this.store.dispatch(updateHistoryStatus({ id, auditState }));
   }
+}
+function fromCognitoIndentityPool(arg0: {
+  identityPoolId: string;
+}):
+  | import('@aws-sdk/types').AwsCredentialIdentity
+  | import('@aws-sdk/types').Provider<
+      import('@aws-sdk/types').AwsCredentialIdentity
+    >
+  | undefined {
+  throw new Error('Function not implemented.');
 }
