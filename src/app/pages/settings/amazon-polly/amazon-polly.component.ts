@@ -3,7 +3,6 @@ import { ConfigService } from '../../../shared/services/config.service';
 import { Subject, takeUntil } from 'rxjs';
 import { nonNullFormControl } from '../../../shared/utils/form';
 import voices from '../../../shared/json/amazon-polly.json';
-import { updateAmazonPollyLanguage } from '../../../shared/state/config/config.actions';
 
 @Component({
   selector: 'app-amazon-polly',

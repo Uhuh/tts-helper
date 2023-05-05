@@ -12,21 +12,10 @@ import {
 } from '../state/twitch/twitch.selectors';
 import { TwitchApi } from '../api/twitch.api';
 import {
-  updateBitEnabled,
-  updateBitsCharLimit,
-  updateBitsExact,
-  updateChannelInfo,
-  updateChannelRedeems,
-  updateGiftMessage,
-  updateMinBits,
-  updateRedeem,
-  updateRedeemCharLimit,
-  updateRedeemEnabled,
-  updateSubCharLimit,
-  updateSubEnabled,
-  updateToken,
-  updateTokenValidity,
-  updateTwitchState,
+  twitchBitsInfo,
+  twitchInfo,
+  twitchRedeemInfo,
+  twitchSubInfo,
 } from '../state/twitch/twitch.actions';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
@@ -79,7 +68,7 @@ export class TwitchService implements OnDestroy {
 
   clearState() {
     this.store.dispatch(
-      updateTwitchState({
+      twitchInfo.twitchState({
         twitchState: {
           isTokenValid: false,
           token: null,
@@ -119,12 +108,10 @@ export class TwitchService implements OnDestroy {
       .pipe(
         takeUntil(this.destroyed$),
         switchMap((user: ValidUser) => {
-          console.info(user);
-
-          this.store.dispatch(updateToken({ token }));
-          this.store.dispatch(updateTokenValidity({ isTokenValid: true }));
+          this.store.dispatch(twitchInfo.token({ token }));
+          this.store.dispatch(twitchInfo.isTokenValid({ isTokenValid: true }));
           this.store.dispatch(
-            updateChannelInfo({
+            twitchInfo.channelInfo({
               channelInfo: {
                 username: user.login,
                 channelId: user.user_id,
@@ -139,7 +126,7 @@ export class TwitchService implements OnDestroy {
       .subscribe({
         next: (data) => {
           this.store.dispatch(
-            updateChannelRedeems({
+            twitchInfo.redeems({
               redeems: data.data.map((r) => ({
                 cost: r.cost,
                 id: r.id,
@@ -153,43 +140,45 @@ export class TwitchService implements OnDestroy {
       });
   }
 
+  updateRedeemEnabled(enabled: boolean) {
+    this.store.dispatch(twitchRedeemInfo.enabled({ enabled }));
+  }
+
   updateSelectedRedeem(redeem: string | null) {
-    this.store.dispatch(updateRedeem({ redeem }));
+    this.store.dispatch(twitchRedeemInfo.redeem({ redeem }));
   }
 
   updateRedeemCharLimit(redeemCharacterLimit: number) {
-    this.store.dispatch(updateRedeemCharLimit({ redeemCharacterLimit }));
+    this.store.dispatch(
+      twitchRedeemInfo.redeemCharLimit({ redeemCharacterLimit })
+    );
   }
 
   updateMinBits(minBits: number) {
-    this.store.dispatch(updateMinBits({ minBits }));
+    this.store.dispatch(twitchBitsInfo.minBits({ minBits }));
   }
 
   updateBitsCharLimit(bitsCharacterLimit: number) {
-    this.store.dispatch(updateBitsCharLimit({ bitsCharacterLimit }));
-  }
-
-  updateRedeemEnabled(enabled: boolean) {
-    this.store.dispatch(updateRedeemEnabled({ enabled }));
+    this.store.dispatch(twitchBitsInfo.bitsCharLimit({ bitsCharacterLimit }));
   }
 
   updateBitsEnabled(enabled: boolean) {
-    this.store.dispatch(updateBitEnabled({ enabled }));
+    this.store.dispatch(twitchBitsInfo.enabled({ enabled }));
   }
 
   updateBitsExact(exact: boolean) {
-    this.store.dispatch(updateBitsExact({ exact }));
+    this.store.dispatch(twitchBitsInfo.exact({ exact }));
   }
 
   updateSubEnabled(enabled: boolean) {
-    this.store.dispatch(updateSubEnabled({ enabled }));
+    this.store.dispatch(twitchSubInfo.enabled({ enabled }));
   }
 
   updateGiftMessage(giftMessage: string) {
-    this.store.dispatch(updateGiftMessage({ giftMessage }));
+    this.store.dispatch(twitchSubInfo.giftMessage({ giftMessage }));
   }
 
   updateSubCharLimit(subCharacterLimit: number) {
-    this.store.dispatch(updateSubCharLimit({ subCharacterLimit }));
+    this.store.dispatch(twitchSubInfo.subCharLimit({ subCharacterLimit }));
   }
 }

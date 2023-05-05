@@ -1,67 +1,42 @@
-﻿import { createAction, props } from '@ngrx/store';
+﻿import { createAction, createActionGroup, props } from '@ngrx/store';
 import { TwitchChannelInfo, TwitchRedeemInfo } from './twitch.interface';
 import { TwitchState } from './twitch.model';
 
-export const updateTwitchState = createAction(
-  '[ TwitchState ] Updating whole state',
-  props<{ twitchState: TwitchState }>()
-);
-export const updateToken = createAction(
-  '[ TwitchState ] Updating token',
-  props<{ token: string | null }>()
-);
-export const updateTokenValidity = createAction(
-  '[ TwitchState ] Updating token validity',
-  props<{ isTokenValid: boolean }>()
-);
-export const updateChannelInfo = createAction(
-  '[ TwitchState ] Updating channel info',
-  props<{ channelInfo: TwitchChannelInfo }>()
-);
-export const updateChannelRedeems = createAction(
-  '[ TwitchState ] Updating channel redeems',
-  props<{ redeems: TwitchRedeemInfo[] }>()
-);
+export const twitchInfo = createActionGroup({
+  source: 'TwitchState - Twitch Info',
+  events: {
+    Token: props<{ token: string | null }>(),
+    Redeems: props<{ redeems: TwitchRedeemInfo[] }>(),
+    'Twitch State': props<{ twitchState: TwitchState }>(),
+    'Is Token Valid': props<{ isTokenValid: boolean }>(),
+    'Channel Info': props<{ channelInfo: TwitchChannelInfo }>(),
+  },
+});
 
-export const updateSubEnabled = createAction(
-  '[ TwitchState ] Updating sub info enabled',
-  props<{ enabled: boolean }>()
-);
-export const updateSubCharLimit = createAction(
-  '[ TwitchState ] Updating sub info char limit',
-  props<{ subCharacterLimit: number }>()
-);
-export const updateGiftMessage = createAction(
-  '[ TwitchState ] Updating gift sub message',
-  props<{ giftMessage: string }>()
-);
+export const twitchSubInfo = createActionGroup({
+  source: 'TwitchState - Twitch Sub Info',
+  events: {
+    Enabled: props<{ enabled: boolean }>(),
+    'Sub Char Limit': props<{ subCharacterLimit: number }>(),
+    'Gift Message': props<{ giftMessage: string }>(),
+  },
+});
 
-export const updateRedeemEnabled = createAction(
-  '[ TwitchState ] Updating redeem info enabled',
-  props<{ enabled: boolean }>()
-);
-export const updateRedeem = createAction(
-  '[ TwitchState ] Updating redeem',
-  props<{ redeem: string | null }>()
-);
-export const updateRedeemCharLimit = createAction(
-  '[ TwitchState ] Updating redeem character limit',
-  props<{ redeemCharacterLimit: number }>()
-);
+export const twitchRedeemInfo = createActionGroup({
+  source: 'TwitchState - Twitch Redeem Info',
+  events: {
+    Enabled: props<{ enabled: boolean }>(),
+    Redeem: props<{ redeem: string | null }>(),
+    'Redeem Char Limit': props<{ redeemCharacterLimit: number }>(),
+  },
+});
 
-export const updateBitEnabled = createAction(
-  '[ TwitchState ] Updating bit info enabled',
-  props<{ enabled: boolean }>()
-);
-export const updateMinBits = createAction(
-  '[ TwitchState ] Updating min bits',
-  props<{ minBits: number }>()
-);
-export const updateBitsCharLimit = createAction(
-  '[ TwitchState ] Updating bits character limit',
-  props<{ bitsCharacterLimit: number }>()
-);
-export const updateBitsExact = createAction(
-  '[ TwitchState ] Updating bits exact',
-  props<{ exact: boolean }>()
-);
+export const twitchBitsInfo = createActionGroup({
+  source: 'TwitchState - Twitch Bits Info',
+  events: {
+    Exact: props<{ exact: boolean }>(),
+    Enabled: props<{ enabled: boolean }>(),
+    'Min Bits': props<{ minBits: number }>(),
+    'Bits Char Limit': props<{ bitsCharacterLimit: number }>(),
+  },
+});

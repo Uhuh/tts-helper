@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { StorageService } from './shared/services/storage.service';
 import { TwitchState } from './shared/state/twitch/twitch.model';
-import { updateTwitchState } from './shared/state/twitch/twitch.actions';
+import { twitchInfo } from './shared/state/twitch/twitch.actions';
 import { Store } from '@ngrx/store';
 import { TwitchService } from './shared/services/twitch.service';
 import { debounceTime } from 'rxjs';
 import { ConfigService } from './shared/services/config.service';
 import { ConfigState } from './shared/state/config/config.model';
-import { updateConfigState } from './shared/state/config/config.actions';
+import { configInfo } from './shared/state/config/config.actions';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +34,9 @@ export class AppComponent {
           return this.twitchService.clearState();
         }
 
-        this.store.dispatch(updateTwitchState({ twitchState: data.value }));
+        this.store.dispatch(
+          twitchInfo.twitchState({ twitchState: data.value })
+        );
       });
 
     this.storageService
@@ -44,7 +46,9 @@ export class AppComponent {
           return;
         }
 
-        this.store.dispatch(updateConfigState({ configState: data.value }));
+        this.store.dispatch(
+          configInfo.configState({ configState: data.value })
+        );
       });
 
     /**

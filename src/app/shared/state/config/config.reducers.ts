@@ -1,16 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { ConfigState } from './config.model';
 import {
-  updateAmazonPollyLanguage,
-  updateAmazonPollyPoolId,
-  updateAmazonPollyRegion,
-  updateAmazonPollyVoice,
-  updateBannedWords,
-  updateConfigState, updateStreamElementsLanguage,
-  updateTts,
   updateTtsMonsterOverlayInfo,
-  updateUrl,
-  updateVoice,
+  streamElementsInfo,
+  amazonPollyInfo,
+  configInfo,
 } from './config.actions';
 
 const initialState: ConfigState = {
@@ -24,7 +18,6 @@ const initialState: ConfigState = {
     overlay: '',
     userId: '',
     key: '',
-    message: '',
     ai: false,
     details: {
       provider: 'tts-helper',
@@ -41,50 +34,50 @@ const initialState: ConfigState = {
 
 export const configReducer = createReducer(
   initialState,
-  on(updateConfigState, (state, { configState }) => ({
+  on(configInfo.configState, (state, { configState }) => ({
     ...state,
     ...configState,
   })),
-  on(updateBannedWords, (state, { bannedWords }) => ({
+  on(configInfo.bannedWords, (state, { bannedWords }) => ({
     ...state,
     bannedWords,
   })),
-  on(updateStreamElementsLanguage, (state, { language }) => ({
+  on(streamElementsInfo.language, (state, { language }) => ({
     ...state,
     streamElements: {
       ...state.streamElements,
       language,
     },
   })),
-  on(updateVoice, (state, { voice }) => ({
+  on(streamElementsInfo.voice, (state, { voice }) => ({
     ...state,
     streamElements: {
       ...state.streamElements,
       voice,
     },
   })),
-  on(updateAmazonPollyPoolId, (state, { poolId }) => ({
+  on(amazonPollyInfo.poolId, (state, { poolId }) => ({
     ...state,
     amazonPolly: {
       ...state.amazonPolly,
       poolId,
     },
   })),
-  on(updateAmazonPollyRegion, (state, { region }) => ({
+  on(amazonPollyInfo.region, (state, { region }) => ({
     ...state,
     amazonPolly: {
       ...state.amazonPolly,
       region,
     },
   })),
-  on(updateAmazonPollyLanguage, (state, { language }) => ({
+  on(amazonPollyInfo.language, (state, { language }) => ({
     ...state,
     amazonPolly: {
       ...state.amazonPolly,
       language,
     },
   })),
-  on(updateAmazonPollyVoice, (state, { voice }) => ({
+  on(amazonPollyInfo.voice, (state, { voice }) => ({
     ...state,
     amazonPolly: {
       ...state.amazonPolly,
@@ -100,11 +93,11 @@ export const configReducer = createReducer(
       userId,
     },
   })),
-  on(updateUrl, (state, { url }) => ({
+  on(configInfo.url, (state, { url }) => ({
     ...state,
     url,
   })),
-  on(updateTts, (state, { tts }) => ({
+  on(configInfo.tts, (state, { tts }) => ({
     ...state,
     tts,
   }))

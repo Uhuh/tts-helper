@@ -29,7 +29,6 @@ export interface TtsMonsterData {
   overlay: string;
   userId: string;
   key: string;
-  message: string;
   ai: boolean;
   details: {
     provider: 'tts-helper';

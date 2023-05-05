@@ -10,14 +10,10 @@ import {
   selectUrl,
 } from '../state/config/config.selectors';
 import {
-  updateAmazonPollyLanguage, updateAmazonPollyPoolId, updateAmazonPollyRegion, updateAmazonPollyVoice,
-  updateBannedWords,
-  updateConfigState,
-  updateStreamElementsLanguage,
-  updateTts,
+  configInfo,
+  amazonPollyInfo,
+  streamElementsInfo,
   updateTtsMonsterOverlayInfo,
-  updateUrl,
-  updateVoice,
 } from '../state/config/config.actions';
 import { TtsType, TtsUrlMap } from '../state/config/config.interface';
 
@@ -39,31 +35,31 @@ export class ConfigService {
       .filter((w) => !!w)
       .map((w) => w.trim());
 
-    this.store.dispatch(updateBannedWords({ bannedWords: words }));
+    this.store.dispatch(configInfo.bannedWords({ bannedWords: words }));
   }
 
   updateStreamElementsLanguage(language: string) {
-    this.store.dispatch(updateStreamElementsLanguage({ language }));
+    this.store.dispatch(streamElementsInfo.language({ language }));
+  }
+
+  updateVoice(voice: string) {
+    this.store.dispatch(streamElementsInfo.voice({ voice }));
   }
 
   updateAmazonPollyLanguage(language: string) {
-    this.store.dispatch(updateAmazonPollyLanguage({ language }));
+    this.store.dispatch(amazonPollyInfo.language({ language }));
   }
-  
+
   updateAmazonPollyRegion(region: string) {
-    this.store.dispatch(updateAmazonPollyRegion({ region }));
+    this.store.dispatch(amazonPollyInfo.region({ region }));
   }
 
   updateAmazonPollyPoolId(poolId: string) {
-    this.store.dispatch(updateAmazonPollyPoolId({ poolId }));
+    this.store.dispatch(amazonPollyInfo.poolId({ poolId }));
   }
 
   updateAmazonPollyVoice(voice: string) {
-    this.store.dispatch(updateAmazonPollyVoice({ voice }));
-  }
-  
-  updateVoice(voice: string) {
-    this.store.dispatch(updateVoice({ voice }));
+    this.store.dispatch(amazonPollyInfo.voice({ voice }));
   }
 
   updateTtsMonsterOverlayInfo(partial: {
@@ -75,16 +71,16 @@ export class ConfigService {
   }
 
   updateTts(tts: TtsType) {
-    this.store.dispatch(updateTts({ tts }));
+    this.store.dispatch(configInfo.tts({ tts }));
   }
 
   updateUrl(tts: TtsType) {
-    this.store.dispatch(updateUrl({ url: TtsUrlMap[tts] }));
+    this.store.dispatch(configInfo.url({ url: TtsUrlMap[tts] }));
   }
 
   clearState() {
     this.store.dispatch(
-      updateConfigState({
+      configInfo.configState({
         configState: {
           bannedWords: [],
           tts: 'stream-elements',
@@ -97,7 +93,6 @@ export class ConfigService {
             overlay: '',
             userId: '',
             key: '',
-            message: '',
             ai: false,
             details: {
               provider: 'tts-helper',

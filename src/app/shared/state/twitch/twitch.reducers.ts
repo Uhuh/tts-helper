@@ -1,20 +1,10 @@
 ﻿import { TwitchState } from './twitch.model';
 import { createReducer, on } from '@ngrx/store';
 import {
-  updateBitEnabled,
-  updateBitsCharLimit,
-  updateChannelInfo,
-  updateChannelRedeems,
-  updateGiftMessage,
-  updateMinBits,
-  updateRedeem,
-  updateRedeemCharLimit,
-  updateRedeemEnabled,
-  updateSubCharLimit,
-  updateSubEnabled,
-  updateToken,
-  updateTokenValidity,
-  updateTwitchState,
+  twitchInfo,
+  twitchRedeemInfo,
+  twitchBitsInfo,
+  twitchSubInfo,
 } from './twitch.actions';
 
 const initialState: TwitchState = {
@@ -45,95 +35,95 @@ const initialState: TwitchState = {
 
 export const twitchReducer = createReducer(
   initialState,
-  on(updateTwitchState, (state, { twitchState }) => ({
+  on(twitchInfo.twitchState, (state, { twitchState }) => ({
     ...state,
     ...twitchState,
     channelInfo: {
       ...twitchState.channelInfo,
     },
   })),
-  on(updateToken, (state, { token }) => ({
+  on(twitchInfo.token, (state, { token }) => ({
     ...state,
     token,
   })),
-  on(updateTokenValidity, (state, { isTokenValid }) => ({
+  on(twitchInfo.isTokenValid, (state, { isTokenValid }) => ({
     ...state,
     isTokenValid,
   })),
-  on(updateChannelInfo, (state, { channelInfo }) => ({
+  on(twitchInfo.channelInfo, (state, { channelInfo }) => ({
     ...state,
     channelInfo: {
       ...channelInfo,
     },
   })),
-  on(updateChannelRedeems, (state, { redeems }) => ({
+  on(twitchInfo.redeems, (state, { redeems }) => ({
     ...state,
     channelInfo: {
       ...state.channelInfo,
       redeems,
     },
   })),
-  on(updateSubEnabled, (state, { enabled }) => ({
+  on(twitchSubInfo.enabled, (state, { enabled }) => ({
     ...state,
     subsInfo: {
       ...state.subsInfo,
       enabled,
     },
   })),
-  on(updateSubCharLimit, (state, { subCharacterLimit }) => ({
+  on(twitchSubInfo.subCharLimit, (state, { subCharacterLimit }) => ({
     ...state,
     subsInfo: {
       ...state.subsInfo,
       subCharacterLimit,
     },
   })),
-  on(updateGiftMessage, (state, { giftMessage }) => ({
+  on(twitchSubInfo.giftMessage, (state, { giftMessage }) => ({
     ...state,
     subsInfo: {
       ...state.subsInfo,
       giftMessage,
     },
   })),
-  on(updateRedeemEnabled, (state, { enabled }) => ({
+  on(twitchBitsInfo.enabled, (state, { enabled }) => ({
     ...state,
     redeemInfo: {
       ...state.redeemInfo,
       enabled,
     },
   })),
-  on(updateRedeem, (state, { redeem }) => ({
-    ...state,
-    redeemInfo: {
-      ...state.redeemInfo,
-      redeem,
-    },
-  })),
-  on(updateRedeemCharLimit, (state, { redeemCharacterLimit }) => ({
-    ...state,
-    redeemInfo: {
-      ...state.redeemInfo,
-      redeemCharacterLimit,
-    },
-  })),
-  on(updateBitEnabled, (state, { enabled }) => ({
+  on(twitchBitsInfo.enabled, (state, { enabled }) => ({
     ...state,
     bitInfo: {
       ...state.bitInfo,
       enabled,
     },
   })),
-  on(updateMinBits, (state, { minBits }) => ({
+  on(twitchBitsInfo.minBits, (state, { minBits }) => ({
     ...state,
     bitInfo: {
       ...state.bitInfo,
       minBits,
     },
   })),
-  on(updateBitsCharLimit, (state, { bitsCharacterLimit }) => ({
+  on(twitchBitsInfo.bitsCharLimit, (state, { bitsCharacterLimit }) => ({
     ...state,
     bitInfo: {
       ...state.bitInfo,
       bitsCharacterLimit,
+    },
+  })),
+  on(twitchRedeemInfo.redeem, (state, { redeem }) => ({
+    ...state,
+    redeemInfo: {
+      ...state.redeemInfo,
+      redeem,
+    },
+  })),
+  on(twitchRedeemInfo.redeemCharLimit, (state, { redeemCharacterLimit }) => ({
+    ...state,
+    redeemInfo: {
+      ...state.redeemInfo,
+      redeemCharacterLimit,
     },
   }))
 );
