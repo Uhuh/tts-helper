@@ -1,9 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { HistoryService } from 'src/app/shared/services/history.service';
 import { TtsType } from 'src/app/shared/state/config/config.interface';
-import { AuditItem } from 'src/app/shared/state/history/history-item.interface';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 
 @Component({
@@ -11,30 +10,21 @@ import { nonNullFormControl } from 'src/app/shared/utils/form';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent implements OnInit, OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
+export class SettingsComponent {
   ttsControl = nonNullFormControl('');
   selectedTts = nonNullFormControl<TtsType>('stream-elements');
-  history: AuditItem[] = [];
 
   constructor(
     private readonly historyService: HistoryService,
     private readonly configService: ConfigService
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.configService.configTts$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((tts) => {
         this.selectedTts.patchValue(tts, {
           emitEvent: false,
         });
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   selectTts(tts: TtsType) {

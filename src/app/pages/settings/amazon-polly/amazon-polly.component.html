@@ -38,7 +38,10 @@
         placeholder="Select a language"
         [formControl]="languageControl"
       >
-        <mat-option *ngFor="let language of languageOptions" [value]="language">
+        <mat-option
+          *ngFor="let language of languageOptions()"
+          [value]="language"
+        >
           {{ language }}
         </mat-option>
       </mat-select>
@@ -50,7 +53,7 @@
     <mat-form-field>
       <mat-select placeholder="Select a voice" [formControl]="voiceControl">
         <mat-option
-          *ngFor="let voice of languageVoiceOptions"
+          *ngFor="let voice of languageVoiceOptions()"
           [value]="voice.value"
         >
           {{ voice.displayName }}

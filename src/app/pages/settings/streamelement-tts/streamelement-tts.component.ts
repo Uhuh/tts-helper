@@ -1,8 +1,8 @@
-import { Subject, takeUntil } from 'rxjs';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import voices from '../../../shared/json/stream-elements-options.json';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface TTSOption {
   key: string;
@@ -14,9 +14,7 @@ export interface TTSOption {
   templateUrl: './streamelement-tts.component.html',
   styleUrls: ['./streamelement-tts.component.scss'],
 })
-export class StreamelementTtsComponent implements OnInit, OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
-
+export class StreamelementTtsComponent {
   languageVoiceMap = new Map<string, TTSOption[]>();
   languageOptions: string[] = [];
   languageVoiceOptions: TTSOption[] = [];
@@ -24,17 +22,15 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
   voiceControl = nonNullFormControl('');
   languageControl = nonNullFormControl('');
 
-  constructor(private readonly configService: ConfigService) {}
-
-  ngOnInit(): void {
+  constructor(private readonly configService: ConfigService) {
     for (const voice of voices) {
       this.languageVoiceMap.set(voice.language, voice.options);
     }
 
     this.languageOptions = [...this.languageVoiceMap.keys()];
-    
+
     this.configService.streamElements$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((streamElements) => {
         this.languageControl.patchValue(streamElements.language, {
           emitEvent: false,
@@ -43,11 +39,13 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
         this.languageVoiceOptions =
           this.languageVoiceMap.get(streamElements.language) ?? [];
 
-        this.voiceControl.patchValue(streamElements.voice, { emitEvent: false });
+        this.voiceControl.patchValue(streamElements.voice, {
+          emitEvent: false,
+        });
       });
 
     this.languageControl.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((language) => {
         if (language === '') {
           this.languageVoiceOptions = [];
@@ -62,14 +60,9 @@ export class StreamelementTtsComponent implements OnInit, OnDestroy {
       });
 
     this.voiceControl.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((voice) => {
         this.configService.updateVoice(voice);
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }

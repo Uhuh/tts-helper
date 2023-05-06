@@ -1,16 +1,15 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { HistoryService } from '../../services/history.service';
 import { AuditItem } from '../../state/history/history-item.interface';
 import { listen } from '@tauri-apps/api/event';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-history-list',
   templateUrl: './history-list.component.html',
   styleUrls: ['./history-list.component.scss'],
 })
-export class HistoryListComponent implements OnInit, OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
+export class HistoryListComponent {
   items: AuditItem[] = [];
   currentlyPlaying?: AuditItem;
 
@@ -22,7 +21,7 @@ export class HistoryListComponent implements OnInit, OnDestroy {
       const id = item.payload as number;
       this.currentlyPlaying = this.items.find((i) => i.id === id);
       // It will absolutely not display in time without this.
-      this.ref.detectChanges();
+      this.ref.markForCheck();
     });
 
     listen('audio-done', (item) => {
@@ -30,19 +29,12 @@ export class HistoryListComponent implements OnInit, OnDestroy {
       if (this.currentlyPlaying?.id !== id) return;
       this.currentlyPlaying = undefined;
     });
-  }
 
-  ngOnInit(): void {
     this.historyService.auditItems$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((items) => {
         this.items = items;
-        this.ref.detectChanges();
+        this.ref.markForCheck();
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }

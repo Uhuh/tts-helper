@@ -1,50 +1,51 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ConfigService } from '../../../shared/services/config.service';
-import { Subject, takeUntil } from 'rxjs';
 import { nonNullFormControl } from '../../../shared/utils/form';
 import voices from '../../../shared/json/amazon-polly.json';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+export interface LanguageOptions {
+  value: string;
+  displayName: string;
+}
 
 @Component({
   selector: 'app-amazon-polly',
   templateUrl: './amazon-polly.component.html',
   styleUrls: ['./amazon-polly.component.scss'],
 })
-export class AmazonPollyComponent implements OnInit, OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
-
+export class AmazonPollyComponent {
   regions = [...voices.regions];
-  languageVoiceMap = new Map<
-    string,
-    { value: string; displayName: string }[]
-  >();
-  languageOptions: string[] = [];
-  languageVoiceOptions: { value: string; displayName: string }[] = [];
+  languageVoiceMap = new Map<string, LanguageOptions[]>();
+  languageVoiceOptions = signal<LanguageOptions[]>([]);
+  languageOptions = signal<string[]>([]);
 
-  regionControl = nonNullFormControl('us-east-1');
+  regionControl = nonNullFormControl(this.regions[0]);
   poolIdControl = nonNullFormControl('');
   languageControl = nonNullFormControl('');
   voiceControl = nonNullFormControl('');
 
-  constructor(private readonly configService: ConfigService) {}
-  ngOnInit() {
+  constructor(private readonly configService: ConfigService) {
     for (const voice of voices.voices) {
       this.languageVoiceMap.set(voice.language, voice.voices);
     }
 
-    this.languageOptions = [...this.languageVoiceMap.keys()];
+    this.languageOptions.set([...this.languageVoiceMap.keys()]);
 
-    this.languageVoiceOptions =
-      this.languageVoiceMap.get(this.languageOptions[0]) ?? [];
+    this.languageVoiceOptions.set(
+      this.languageVoiceMap.get(this.languageOptions()[0]) ?? []
+    );
 
     this.configService.amazonPolly$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((amazonPolly) => {
         this.languageControl.patchValue(amazonPolly.language, {
           emitEvent: false,
         });
 
-        this.languageVoiceOptions =
-          this.languageVoiceMap.get(amazonPolly.language) ?? [];
+        this.languageVoiceOptions.set(
+          this.languageVoiceMap.get(amazonPolly.language) ?? []
+        );
 
         this.voiceControl.patchValue(amazonPolly.voice, { emitEvent: false });
         this.poolIdControl.patchValue(amazonPolly.poolId, { emitEvent: false });
@@ -52,39 +53,36 @@ export class AmazonPollyComponent implements OnInit, OnDestroy {
       });
 
     this.languageControl.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((language) => {
         if (language === '') {
-          this.languageVoiceOptions = [];
+          this.languageVoiceOptions.set([]);
           return;
         }
 
         const options = this.languageVoiceMap.get(language);
-        this.languageVoiceOptions = options ?? [];
-        this.voiceControl.patchValue(this.languageVoiceOptions[0].value ?? '');
+        this.languageVoiceOptions.set(options ?? []);
+        this.voiceControl.patchValue(
+          this.languageVoiceOptions()[0].value ?? ''
+        );
 
         this.configService.updateAmazonPollyLanguage(language);
       });
 
     this.regionControl.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((region) =>
         this.configService.updateAmazonPollyRegion(region)
       );
 
     this.poolIdControl.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((poolId) =>
         this.configService.updateAmazonPollyPoolId(poolId)
       );
 
     this.voiceControl.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((voice) => this.configService.updateAmazonPollyVoice(voice));
-  }
-
-  ngOnDestroy() {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }

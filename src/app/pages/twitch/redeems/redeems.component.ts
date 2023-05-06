@@ -1,6 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, combineLatest, debounceTime, filter, takeUntil } from 'rxjs';
+import { Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Validators } from '@angular/forms';
+import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { TwitchRedeemInfo } from 'src/app/shared/state/twitch/twitch.interface';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
@@ -10,9 +11,7 @@ import { nonNullFormControl } from 'src/app/shared/utils/form';
   templateUrl: './redeems.component.html',
   styleUrls: ['./redeems.component.scss'],
 })
-export class RedeemsComponent implements OnInit, OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
-
+export class RedeemsComponent {
   redeem = nonNullFormControl('');
   redeemCharLimitControl = nonNullFormControl(300, {
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
@@ -21,21 +20,19 @@ export class RedeemsComponent implements OnInit, OnDestroy {
 
   redeems: TwitchRedeemInfo[] = [];
 
-  constructor(private readonly twitchService: TwitchService) {}
-
-  ngOnInit(): void {
+  constructor(private readonly twitchService: TwitchService) {
     /**
      * @TODO - Investigate glitch when authorizing and when this gets populated the inputs don't act like expected.
      * (with ref.detectChanges)
      */
     this.twitchService.redeems$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((redeems) => {
         this.redeems = redeems;
       });
 
     this.twitchService.redeemInfo$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((redeemInfo) => {
         this.redeem.patchValue(redeemInfo.redeem ?? '', { emitEvent: false });
         this.redeemCharLimitControl.patchValue(
@@ -48,14 +45,14 @@ export class RedeemsComponent implements OnInit, OnDestroy {
       });
 
     this.enabled.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((enabled) => {
         this.twitchService.updateRedeemEnabled(enabled);
       });
 
     this.redeem.valueChanges
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(),
         debounceTime(1000),
         filter(() => this.redeem.valid)
       )
@@ -65,7 +62,7 @@ export class RedeemsComponent implements OnInit, OnDestroy {
 
     this.redeemCharLimitControl.valueChanges
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(),
         debounceTime(1000),
         filter(() => this.redeemCharLimitControl.valid)
       )
@@ -74,10 +71,5 @@ export class RedeemsComponent implements OnInit, OnDestroy {
           Number(redeemCharLimitControl)
         );
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }

@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators } from '@angular/forms';
-import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
+import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 
@@ -9,21 +10,16 @@ import { nonNullFormControl } from 'src/app/shared/utils/form';
   templateUrl: './subs.component.html',
   styleUrls: ['./subs.component.scss'],
 })
-export class SubsComponent implements OnInit, OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
-
+export class SubsComponent {
   enabled = nonNullFormControl(true);
   charLimit = nonNullFormControl(300, {
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
-
   giftMessage = nonNullFormControl('');
 
-  constructor(private readonly twitchService: TwitchService) {}
-
-  ngOnInit(): void {
+  constructor(private readonly twitchService: TwitchService) {
     this.twitchService.subsInfo$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((subsInfo) => {
         this.charLimit.patchValue(subsInfo.subCharacterLimit, {
           emitEvent: false,
@@ -33,12 +29,12 @@ export class SubsComponent implements OnInit, OnDestroy {
       });
 
     this.enabled.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((enabled) => this.twitchService.updateSubEnabled(enabled));
 
     this.charLimit.valueChanges
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(),
         debounceTime(1000),
         filter(() => this.charLimit.valid)
       )
@@ -47,14 +43,9 @@ export class SubsComponent implements OnInit, OnDestroy {
       );
 
     this.giftMessage.valueChanges
-      .pipe(takeUntil(this.destroyed$), debounceTime(1000))
+      .pipe(takeUntilDestroyed(), debounceTime(1000))
       .subscribe((giftMessage) =>
         this.twitchService.updateGiftMessage(giftMessage)
       );
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }

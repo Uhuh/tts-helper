@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { invoke } from '@tauri-apps/api';
 
 @Component({
@@ -7,13 +7,13 @@ import { invoke } from '@tauri-apps/api';
   styleUrls: ['./history.component.scss'],
 })
 export class HistoryComponent {
-  isPaused = false;
+  isPaused = signal(false);
 
   togglePause() {
-    this.isPaused = !this.isPaused;
+    this.isPaused.set(!this.isPaused());
 
     invoke('set_tts_paused', {
-      paused: this.isPaused,
+      paused: this.isPaused(),
     }).catch(() => {
       console.error('Failed to pause audio');
     });

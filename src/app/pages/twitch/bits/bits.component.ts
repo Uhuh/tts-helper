@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators } from '@angular/forms';
-import { Subject, debounceTime, filter, takeUntil } from 'rxjs';
+import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 
@@ -9,9 +10,7 @@ import { nonNullFormControl } from 'src/app/shared/utils/form';
   templateUrl: './bits.component.html',
   styleUrls: ['./bits.component.scss'],
 })
-export class BitsComponent implements OnInit, OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
-
+export class BitsComponent {
   minBits = nonNullFormControl(0, {
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
@@ -21,11 +20,9 @@ export class BitsComponent implements OnInit, OnDestroy {
   enabled = nonNullFormControl(true);
   exact = nonNullFormControl(false);
 
-  constructor(private readonly twitchService: TwitchService) {}
-
-  ngOnInit(): void {
+  constructor(private readonly twitchService: TwitchService) {
     this.twitchService.bitInfo$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((bitInfo) => {
         this.minBits.patchValue(bitInfo.minBits, { emitEvent: false });
         this.bitsCharLimit.patchValue(bitInfo.bitsCharacterLimit, {
@@ -37,7 +34,7 @@ export class BitsComponent implements OnInit, OnDestroy {
 
     this.minBits.valueChanges
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(),
         debounceTime(1000),
         filter(() => this.minBits.valid)
       )
@@ -47,7 +44,7 @@ export class BitsComponent implements OnInit, OnDestroy {
 
     this.bitsCharLimit.valueChanges
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(),
         debounceTime(1000),
         filter(() => this.bitsCharLimit.valid)
       )
@@ -56,16 +53,11 @@ export class BitsComponent implements OnInit, OnDestroy {
       });
 
     this.enabled.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((enabled) => this.twitchService.updateBitsEnabled(enabled));
 
     this.exact.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((exact) => this.twitchService.updateBitsExact(exact));
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }

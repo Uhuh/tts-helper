@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 
@@ -8,28 +8,22 @@ import { nonNullFormControl } from 'src/app/shared/utils/form';
   templateUrl: './tts-monster.component.html',
   styleUrls: ['./tts-monster.component.scss'],
 })
-export class TtsMonsterComponent implements OnInit, OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
-
+export class TtsMonsterComponent {
   overlay = nonNullFormControl('');
   ai = nonNullFormControl(false);
 
-  constructor(private readonly configService: ConfigService) {}
-
-  ngOnInit(): void {
+  constructor(private readonly configService: ConfigService) {
     this.configService.ttsMonster$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((ttsMonster) => {
         this.overlay.patchValue(ttsMonster.overlay, { emitEvent: false });
         this.ai.patchValue(ttsMonster.ai, { emitEvent: false });
       });
 
     this.overlay.valueChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((overlay) => {
         let [key, userId] = overlay.split('/').reverse();
-
-        console.log(key, userId, overlay.split('/').reverse());
 
         // If one is invalid then make both empty string.
         if (!key || !userId) {
@@ -43,10 +37,5 @@ export class TtsMonsterComponent implements OnInit, OnDestroy {
           overlay,
         });
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }
