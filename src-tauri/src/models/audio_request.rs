@@ -30,6 +30,10 @@ pub struct AudioRequest {
     pub tts: String,
     /// The URL.
     pub url: Url,
+    /// ID of audio output device
+    pub device: String,
+    /// Volume to play tts at
+    pub volume: i32,
     /// StreamElements values
     pub params: Vec<(String, String)>,
     // TTS Monster data
