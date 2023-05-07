@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectAuditItems } from '../state/history/history.selectors';
 import {
@@ -14,7 +14,6 @@ import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/tauri';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigService } from './config.service';
-import { Subject, takeUntil } from 'rxjs';
 import {
   AmazonPollyData,
   StreamElementsData,
@@ -26,15 +25,17 @@ import { PollyClient } from '@aws-sdk/client-polly';
 import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { TtsOptions } from './history.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable()
-export class HistoryService implements OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
+export class HistoryService {
   public readonly auditItems$ = this.store.select(selectAuditItems);
   bannedWords: string[] = [];
 
   tts: TtsType = 'stream-elements';
   apiUrl = '';
+  deviceId = '';
+  deviceVolume = 100;
   streamElements!: StreamElementsData;
   ttsMonster!: TtsMonsterData;
   amazonPolly!: AmazonPollyData;
@@ -45,27 +46,35 @@ export class HistoryService implements OnDestroy {
     private readonly snackbar: MatSnackBar
   ) {
     this.configService.configTts$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((tts) => (this.tts = tts));
 
+    this.configService.deviceVolume$
+      .pipe(takeUntilDestroyed())
+      .subscribe((volume) => (this.deviceVolume = volume));
+
+    this.configService.selectedDevice$
+      .pipe(takeUntilDestroyed())
+      .subscribe((device) => (this.deviceId = device));
+
     this.configService.configUrl$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((url) => (this.apiUrl = url));
 
     this.configService.bannedWords$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((bannedWords) => (this.bannedWords = bannedWords));
 
     this.configService.streamElements$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((streamElements) => (this.streamElements = streamElements));
 
     this.configService.ttsMonster$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((ttsMonster) => (this.ttsMonster = ttsMonster));
 
     this.configService.amazonPolly$
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
 
     listen('audio-done', (item) => {
@@ -76,11 +85,6 @@ export class HistoryService implements OnDestroy {
         })
       );
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   requeue(audit: AuditItem) {
@@ -185,6 +189,8 @@ export class HistoryService implements OnDestroy {
     invoke('play_tts', {
       request: {
         id: auditId,
+        device: this.deviceId,
+        volume: this.deviceVolume,
         tts: this.tts,
         url: this.apiUrl,
         params,
@@ -238,14 +244,4 @@ export class HistoryService implements OnDestroy {
   updateHistory(id: number, auditState: AuditState) {
     return this.store.dispatch(updateHistoryStatus({ id, auditState }));
   }
-}
-function fromCognitoIndentityPool(arg0: {
-  identityPoolId: string;
-}):
-  | import('@aws-sdk/types').AwsCredentialIdentity
-  | import('@aws-sdk/types').Provider<
-      import('@aws-sdk/types').AwsCredentialIdentity
-    >
-  | undefined {
-  throw new Error('Function not implemented.');
 }
