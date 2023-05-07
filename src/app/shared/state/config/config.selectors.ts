@@ -34,6 +34,16 @@ export const selectUrl = createSelector(
   (state) => state.url
 );
 
+export const selectAudioDevice = createSelector(
+  _selectConfigState,
+  (state) => state.audioDevice
+);
+
+export const selectDeviceVolume = createSelector(
+  _selectConfigState,
+  (state) => state.deviceVolume
+);
+
 export const selectBannedWords = createSelector(
   _selectConfigState,
   (state) => state.bannedWords

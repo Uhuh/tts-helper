@@ -7,8 +7,10 @@ export const configInfo = createActionGroup({
   events: {
     Tts: props<{ tts: TtsType }>(),
     Url: props<{ url: string }>(),
-    'Config State': props<{ configState: ConfigState }>(),
+    'Audio Device': props<{ audioDevice: string }>(),
+    'Device Volume': props<{ deviceVolume: number }>(),
     'Banned Words': props<{ bannedWords: string[] }>(),
+    'Config State': props<{ configState: ConfigState }>(),
   },
 });
 

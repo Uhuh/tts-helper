@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   selectAmazonPolly,
+  selectAudioDevice,
   selectBannedWords,
   selectConfigState,
+  selectDeviceVolume,
   selectStreamElements,
   selectTts,
   selectTtsMonster,
@@ -16,6 +18,7 @@ import {
   updateTtsMonsterOverlayInfo,
 } from '../state/config/config.actions';
 import { TtsType, TtsUrlMap } from '../state/config/config.interface';
+import { initialState } from '../state/config/config.reducers';
 
 @Injectable()
 export class ConfigService {
@@ -23,6 +26,8 @@ export class ConfigService {
   public readonly streamElements$ = this.store.select(selectStreamElements);
   public readonly ttsMonster$ = this.store.select(selectTtsMonster);
   public readonly amazonPolly$ = this.store.select(selectAmazonPolly);
+  public readonly selectedDevice$ = this.store.select(selectAudioDevice);
+  public readonly deviceVolume$ = this.store.select(selectDeviceVolume);
   public readonly configTts$ = this.store.select(selectTts);
   public readonly configUrl$ = this.store.select(selectUrl);
   public readonly bannedWords$ = this.store.select(selectBannedWords);
@@ -78,33 +83,18 @@ export class ConfigService {
     this.store.dispatch(configInfo.url({ url: TtsUrlMap[tts] }));
   }
 
+  updateSelectedDevice(audioDevice: string) {
+    this.store.dispatch(configInfo.audioDevice({ audioDevice }));
+  }
+
+  updateDeviceVolume(deviceVolume: number) {
+    this.store.dispatch(configInfo.deviceVolume({ deviceVolume }));
+  }
+
   clearState() {
     this.store.dispatch(
       configInfo.configState({
-        configState: {
-          bannedWords: [],
-          tts: 'stream-elements',
-          url: 'https://api.streamelements.com/kappa/v2/speech',
-          streamElements: {
-            language: '',
-            voice: '',
-          },
-          ttsMonster: {
-            overlay: '',
-            userId: '',
-            key: '',
-            ai: false,
-            details: {
-              provider: 'tts-helper',
-            },
-          },
-          amazonPolly: {
-            voice: '',
-            language: '',
-            poolId: '',
-            region: '',
-          },
-        },
+        configState: initialState,
       })
     );
   }

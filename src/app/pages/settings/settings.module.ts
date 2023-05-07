@@ -9,10 +9,12 @@ import { TtsMonsterComponent } from './tts-monster/tts-monster.component';
 import { HistoryService } from 'src/app/shared/services/history.service';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
 import { WindowsComponent } from './windows/windows.component';
+import { DeviceComponent } from './device/device.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,7 @@ import { WindowsComponent } from './windows/windows.component';
     TtsMonsterComponent,
     AmazonPollyComponent,
     WindowsComponent,
+    DeviceComponent,
   ],
   imports: [
     CommonModule,
@@ -33,6 +36,7 @@ import { WindowsComponent } from './windows/windows.component';
       },
     ]),
     MatSelectModule,
+    MatSliderModule,
     MatFormFieldModule,
     ReactiveFormsModule,
   ],

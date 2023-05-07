@@ -7,12 +7,15 @@ import {
   configInfo,
 } from './config.actions';
 
-const initialState: ConfigState = {
+export const initialState: ConfigState = {
+  bannedWords: [],
   tts: 'stream-elements',
   url: 'https://api.streamelements.com/kappa/v2/speech',
+  audioDevice: '',
+  deviceVolume: 100,
   streamElements: {
-    voice: '',
     language: '',
+    voice: '',
   },
   ttsMonster: {
     overlay: '',
@@ -29,7 +32,6 @@ const initialState: ConfigState = {
     poolId: '',
     region: '',
   },
-  bannedWords: [],
 };
 
 export const configReducer = createReducer(
@@ -100,5 +102,13 @@ export const configReducer = createReducer(
   on(configInfo.tts, (state, { tts }) => ({
     ...state,
     tts,
+  })),
+  on(configInfo.audioDevice, (state, { audioDevice }) => ({
+    ...state,
+    audioDevice,
+  })),
+  on(configInfo.deviceVolume, (state, { deviceVolume }) => ({
+    ...state,
+    deviceVolume,
   }))
 );
