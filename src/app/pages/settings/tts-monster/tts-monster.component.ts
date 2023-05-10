@@ -2,11 +2,14 @@ import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
+import { InputComponent } from '../../../shared/components/input/input.component';
 
 @Component({
   selector: 'app-tts-monster',
   templateUrl: './tts-monster.component.html',
   styleUrls: ['./tts-monster.component.scss'],
+  standalone: true,
+  imports: [InputComponent],
 })
 export class TtsMonsterComponent {
   overlay = nonNullFormControl('');

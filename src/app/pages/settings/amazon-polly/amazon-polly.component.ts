@@ -3,6 +3,12 @@ import { ConfigService } from '../../../shared/services/config.service';
 import { nonNullFormControl } from '../../../shared/utils/form';
 import voices from '../../../shared/json/amazon-polly.json';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { InputComponent } from '../../../shared/components/input/input.component';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 export interface LanguageOptions {
   value: string;
@@ -13,6 +19,16 @@ export interface LanguageOptions {
   selector: 'app-amazon-polly',
   templateUrl: './amazon-polly.component.html',
   styleUrls: ['./amazon-polly.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgFor,
+    MatOptionModule,
+    InputComponent,
+  ],
 })
 export class AmazonPollyComponent {
   regions = [...voices.regions];

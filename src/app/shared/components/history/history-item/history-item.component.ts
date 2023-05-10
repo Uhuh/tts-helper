@@ -6,11 +6,15 @@ import {
 import { invoke } from '@tauri-apps/api';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from 'src/app/shared/services/history.service';
+import { NgClass, DatePipe } from '@angular/common';
+import { ButtonComponent } from '../../button/button.component';
 
 @Component({
   selector: 'app-history-item',
   templateUrl: './history-item.component.html',
   styleUrls: ['./history-item.component.scss'],
+  standalone: true,
+  imports: [ButtonComponent, NgClass, DatePipe],
 })
 export class HistoryItemComponent {
   @Input() audit!: AuditItem;

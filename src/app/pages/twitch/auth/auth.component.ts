@@ -2,6 +2,7 @@ import { Component, ChangeDetectorRef, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
+import { NgClass, NgIf } from '@angular/common';
 
 export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
 
@@ -9,6 +10,8 @@ export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss'],
+  standalone: true,
+  imports: [NgClass, NgIf],
 })
 export class AuthComponent {
   // Rust server running so we can auth in the users browser

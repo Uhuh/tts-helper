@@ -4,11 +4,17 @@ import { Validators } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { InputComponent } from '../../../shared/components/input/input.component';
+import { NgIf } from '@angular/common';
+import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 
 @Component({
   selector: 'app-bits',
   templateUrl: './bits.component.html',
   styleUrls: ['./bits.component.scss'],
+  standalone: true,
+  imports: [ToggleComponent, NgIf, InputComponent, MatFormFieldModule],
 })
 export class BitsComponent {
   minBits = nonNullFormControl(0, {

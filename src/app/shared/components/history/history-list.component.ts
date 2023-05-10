@@ -3,11 +3,15 @@ import { HistoryService } from '../../services/history.service';
 import { AuditItem } from '../../state/history/history-item.interface';
 import { listen } from '@tauri-apps/api/event';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HistoryItemComponent } from './history-item/history-item.component';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-history-list',
   templateUrl: './history-list.component.html',
   styleUrls: ['./history-list.component.scss'],
+  standalone: true,
+  imports: [NgIf, HistoryItemComponent, NgFor],
 })
 export class HistoryListComponent {
   items: AuditItem[] = [];

@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { NavModule } from './shared/components/nav/nav.module';
 import { StoreModule } from '@ngrx/store';
 import { historyReducer } from './shared/state/history/history.reducers';
 import { TwitchService } from './shared/services/twitch.service';
@@ -17,6 +16,7 @@ import { ConfigService } from './shared/services/config.service';
 import { configReducer } from './shared/state/config/config.reducers';
 import { StorageService } from './shared/services/storage.service';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { NavComponent } from './shared/components/nav/nav.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,7 +31,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     }),
     BrowserAnimationsModule,
     MatSnackBarModule,
-    NavModule,
+    NavComponent,
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
   providers: [

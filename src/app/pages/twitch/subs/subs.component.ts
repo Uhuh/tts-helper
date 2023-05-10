@@ -1,14 +1,29 @@
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Validators } from '@angular/forms';
+import { Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
+import { GiftVariablesComponent } from './gift-variables/gift-variables.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { InputComponent } from '../../../shared/components/input/input.component';
+import { NgIf } from '@angular/common';
+import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 
 @Component({
   selector: 'app-subs',
   templateUrl: './subs.component.html',
   styleUrls: ['./subs.component.scss'],
+  standalone: true,
+  imports: [
+    ToggleComponent,
+    NgIf,
+    InputComponent,
+    MatFormFieldModule,
+    GiftVariablesComponent,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
 export class SubsComponent {
   enabled = nonNullFormControl(true);

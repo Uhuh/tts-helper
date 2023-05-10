@@ -3,6 +3,11 @@ import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import voices from '../../../shared/json/stream-elements-options.json';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 export interface TTSOption {
   key: string;
@@ -13,6 +18,15 @@ export interface TTSOption {
   selector: 'app-streamelement-tts',
   templateUrl: './streamelement-tts.component.html',
   styleUrls: ['./streamelement-tts.component.scss'],
+  standalone: true,
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgFor,
+    MatOptionModule,
+  ],
 })
 export class StreamelementTtsComponent {
   languageVoiceMap = new Map<string, TTSOption[]>();
