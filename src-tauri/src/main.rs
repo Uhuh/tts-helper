@@ -9,7 +9,7 @@ use std::{sync::Arc, time::Duration};
 
 use anyhow::Context;
 use models::{PlayingAudio, SetAudioState};
-use services::{run_auth_server, AudioPlayer, Controller, NowPlaying};
+use services::{run_auth_server, AudioPlayer, Controller, DeviceService, NowPlaying};
 use tracing::trace;
 
 use crate::{api_result::ApiResult, models::AudioRequest};
@@ -73,6 +73,13 @@ fn main() -> anyhow::Result<()> {
         })
         .with(tracing_subscriber::fmt::layer().compact())
         .try_init()?;
+
+    let device_service = DeviceService::init()?;
+    let default_device = device_service
+        .default_output_id()
+        .and_then(|id| device_service.output_device(id));
+    let devices = device_service.output_device_names();
+    dbg!(devices, default_device.is_some());
 
     let audio_player = AudioPlayer::new_default()?;
 
