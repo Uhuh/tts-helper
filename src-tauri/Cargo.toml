@@ -22,10 +22,6 @@ tauri-plugin-playback = { path = "../plugins/tauri-plugin-playback" }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 
-# Audio
-rodio = { workspace = true }
-tts-helper-audio = { path = "../lib-backend/tts-helper-audio" }
-
 # Web
 tokio = { version = "1", features = ["rt"] }
 axum = { version = "0.6", default-features = false, features = [
@@ -33,19 +29,13 @@ axum = { version = "0.6", default-features = false, features = [
     "tokio",
     "tracing",
 ] }
-reqwest = { workspace = true, features = ["json"] }
-bytes = { workspace = true }
 
 # Errors
 anyhow = { workspace = true }
-thiserror = { workspace = true }
 
 # Tracing
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true, features = ["env-filter"] }
-
-# Util
-crossbeam = { workspace = true }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
