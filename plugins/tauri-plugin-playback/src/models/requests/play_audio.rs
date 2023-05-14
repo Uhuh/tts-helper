@@ -23,6 +23,7 @@ pub enum RequestAudioData {
 
 /// Raw audio data.
 #[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct RawAudioData {
     /// The audio data.
     pub data: Bytes,

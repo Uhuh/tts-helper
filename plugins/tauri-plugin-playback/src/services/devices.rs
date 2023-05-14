@@ -2,7 +2,7 @@ use std::{
     collections::HashMap,
     error::Error,
     sync::{
-        atomic::{AtomicU64, Ordering},
+        atomic::{AtomicU32, Ordering},
         Arc,
     },
 };
@@ -106,7 +106,7 @@ struct ManagedDevice {
 /// Gets the next globally-unique device ID.
 fn get_next_device_id() -> DeviceId {
     // Technically we can run out of device IDs, but how...
-    static NEXT_ID: AtomicU64 = AtomicU64::new(0);
+    static NEXT_ID: AtomicU32 = AtomicU32::new(0);
     let id = NEXT_ID.fetch_add(1, Ordering::Relaxed);
     DeviceId(id)
 }

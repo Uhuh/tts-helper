@@ -12,6 +12,7 @@ use tts_helper_models::requests::{ApiError, ApiResult};
 
 use crate::{
     models::{
+        audio::AudioId,
         devices::{DeviceId, OutputDeviceList},
         requests::{PlayAudioRequest, RequestAudioData, SetAudioState, SetPlaybackState},
     },
@@ -97,7 +98,7 @@ fn play_audio(
     playback_svc: State<'_, PlaybackService>,
     now_playing_svc: State<'_, NowPlayingService>,
     app: AppHandle,
-) -> ApiResult<u64> {
+) -> ApiResult<AudioId> {
     // Decode source data
     let source = match request.data {
         RequestAudioData::Raw(raw) => Decoder::new(Cursor::new(raw.data))?,
@@ -113,7 +114,7 @@ fn play_audio(
         .on_start({
             let app = app.clone();
             move || {
-                trace!(id, "started playing");
+                trace!(id = id.0, "started playing");
                 drop(app.emit_all("playback::audio::start", id));
             }
         })
@@ -121,7 +122,7 @@ fn play_audio(
             let app = app.clone();
             let now_playing_svc = now_playing_svc.inner().clone();
             move || {
-                trace!(id, "finished playing");
+                trace!(id = id.0, "finished playing");
                 now_playing_svc.remove(id);
                 drop(app.emit_all("playback::audio::finish", id));
             }
@@ -147,7 +148,7 @@ fn set_audio_state(
 ) -> ApiResult<()> {
     let entry = now_playing_svc
         .get(state.id)
-        .ok_or_else(|| ApiError::new(format_args!("no audio found with id {}", state.id)))?;
+        .ok_or_else(|| ApiError::new(format_args!("no audio found with id {}", state.id.0)))?;
 
     state.apply(&entry.controller);
 
@@ -157,7 +158,7 @@ fn set_audio_state(
 /// Lists all queued (or playing) audio sources.
 #[tauri::command(async)]
 #[instrument(skip_all)]
-fn list_audio(now_playing_svc: State<'_, NowPlayingService>) -> Vec<u64> {
+fn list_audio(now_playing_svc: State<'_, NowPlayingService>) -> Vec<AudioId> {
     now_playing_svc
         .list()
         .into_iter()

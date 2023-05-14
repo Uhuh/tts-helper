@@ -1,9 +1,11 @@
 use std::sync::{
-    atomic::{AtomicU64, Ordering},
+    atomic::{AtomicU32, Ordering},
     Arc, RwLock,
 };
 
 use static_assertions::assert_impl_all;
+
+use crate::models::audio::AudioId;
 
 use super::playback::SourceController;
 
@@ -18,14 +20,14 @@ assert_impl_all!(NowPlayingService: Send, Sync);
 #[derive(Debug, Default)]
 struct NowPlayingData {
     playing: RwLock<Vec<NowPlayingEntry>>,
-    next_id: AtomicU64,
+    next_id: AtomicU32,
 }
 
 impl NowPlayingService {
     /// Tracks a new request.
     #[inline]
-    pub fn add(&self, controller: SourceController) -> u64 {
-        let id = self.data.next_id.fetch_add(1, Ordering::Relaxed);
+    pub fn add(&self, controller: SourceController) -> AudioId {
+        let id = AudioId(self.data.next_id.fetch_add(1, Ordering::Relaxed));
         let entry = NowPlayingEntry { id, controller };
         self.data.playing.write().unwrap().push(entry);
         id
@@ -33,7 +35,7 @@ impl NowPlayingService {
 
     /// Removes a request from the queue if it exists.
     #[inline]
-    pub fn remove(&self, id: u64) {
+    pub fn remove(&self, id: AudioId) {
         self.data
             .playing
             .write()
@@ -43,7 +45,7 @@ impl NowPlayingService {
 
     /// Gets an entry from the queue if it exists.
     #[inline]
-    pub fn get(&self, id: u64) -> Option<NowPlayingEntry> {
+    pub fn get(&self, id: AudioId) -> Option<NowPlayingEntry> {
         self.data
             .playing
             .read()
@@ -64,7 +66,7 @@ impl NowPlayingService {
 #[derive(Clone, Debug)]
 pub struct NowPlayingEntry {
     /// The ID of the request.
-    pub id: u64,
+    pub id: AudioId,
     /// The controller for the request.
     pub controller: SourceController,
 }

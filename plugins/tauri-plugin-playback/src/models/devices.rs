@@ -8,7 +8,7 @@ use super::common::WithId;
 /// not guaranteed to point to the same device across multiple runs of the program.
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash, Serialize, Deserialize)]
 #[serde(transparent)]
-pub struct DeviceId(pub u64);
+pub struct DeviceId(pub u32);
 
 /// Information about an audio device. This is cheaply clonable.
 #[derive(Clone, Debug, Serialize)]
@@ -25,6 +25,7 @@ pub type DeviceInfoWithId = WithId<DeviceInfo, DeviceId>;
 
 /// A list of all available audio devices.
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct OutputDeviceList {
     /// The names of all available output devices.
     pub output_devices: Vec<DeviceInfoWithId>,

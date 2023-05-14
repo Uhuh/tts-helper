@@ -6,6 +6,7 @@ pub type ApiResult<T> = Result<T, ApiError>;
 
 /// An error formatted for an API.
 #[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ApiError {
     /// The error message.
     pub message: String,
