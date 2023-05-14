@@ -1,30 +1,3 @@
-###
-# Workspace
-###
-
-[workspace]
-resolver = "2"
-members = ["crates/*"]
-
-[workspace.dependencies]
-# Tauri
-tauri = "1"
-tauri-build = "1"
-
-# Serialization
-serde = "1"
-serde_json = "1"
-
-# Audio
-rodio = "0.17"
-reqwest = { version = "0.11", features = ["json"] }
-anyhow = "1"
-bytes = "1"
-
-###
-# tts-helper
-###
-
 [package]
 name = "tts-helper"
 version = "0.1.0"
@@ -36,13 +9,14 @@ edition = "2021"
 publish = false
 
 [build-dependencies]
-tauri-build = { workspace = true , features = [] }
+tauri-build = { workspace = true, features = [] }
 
 [dependencies]
 # Tauri
 tauri = { workspace = true, features = ["shell-open", "updater"] }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
+tauri-plugin-playback = { path = "../plugins/tauri-plugin-playback" }
 
 # Serialization
 serde = { workspace = true, features = ["derive"] }
@@ -50,7 +24,7 @@ serde_json = { workspace = true }
 
 # Audio
 rodio = { workspace = true }
-tts-helper-audio = { path = "./crates/tts-helper-audio" }
+tts-helper-audio = { path = "../lib-backend/tts-helper-audio" }
 
 # Web
 tokio = { version = "1", features = ["rt"] }
@@ -59,19 +33,19 @@ axum = { version = "0.6", default-features = false, features = [
     "tokio",
     "tracing",
 ] }
-reqwest = { version = "0.11", features = ["json"] }
-bytes = "1"
+reqwest = { workspace = true, features = ["json"] }
+bytes = { workspace = true }
 
 # Errors
-anyhow = "1.0.70"
-thiserror = "1"
+anyhow = { workspace = true }
+thiserror = { workspace = true }
 
 # Tracing
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["env-filter"] }
 
 # Util
-crossbeam = "0.8"
+crossbeam = { workspace = true }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

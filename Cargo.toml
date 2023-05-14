@@ -1,0 +1,32 @@
+[workspace]
+resolver = "2"
+members = ["src-tauri", "plugins/*", "lib-backend/*"]
+
+[workspace.dependencies]
+# Tauri
+tauri = "1"
+tauri-build = "1"
+
+# Serialization
+serde = "1"
+serde_with = "3"
+serde_json = "1"
+
+# Audio
+rodio = "0.17"
+
+# Web
+reqwest = "0.11"
+bytes = "1"
+
+# Errors
+anyhow = "1"
+thiserror = "1"
+
+# Tracing
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Utility
+crossbeam = "0.8"
+static_assertions = "1"

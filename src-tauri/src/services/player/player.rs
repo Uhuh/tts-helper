@@ -15,7 +15,7 @@ use thiserror::Error;
 use tracing::{error, info, instrument, trace};
 use tts_helper_audio::sources::SourceExt;
 
-use crate::{api_result::ApiResult, models::{AudioRequest}};
+use crate::{api_result::ApiResult, models::AudioRequest};
 
 use super::Controller;
 
@@ -50,8 +50,7 @@ impl AudioPlayer {
         F: FnOnce() + Send + 'static,
     {
         let data = if request.tts == "amazon-polly" {
-            self
-                .client
+            self.client
                 .get(request.url)
                 .send()
                 .await?
@@ -60,8 +59,7 @@ impl AudioPlayer {
                 .await?
         } else {
             // Default is stream-elements
-            self
-                .client
+            self.client
                 .get(request.url)
                 .query(&request.params)
                 .send()
