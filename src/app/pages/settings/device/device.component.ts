@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
@@ -28,7 +28,7 @@ import { DeviceId, DeviceInfo, OutputDeviceList, WithId } from 'src/app/shared/s
   ],
 })
 export class DeviceComponent {
-  devices: WithId<DeviceInfo, DeviceId>[] = [];
+  devices = signal<WithId<DeviceInfo, DeviceId>[]>([]);
   selectedDevice = nonNullFormControl('');
   volume = nonNullFormControl(100);
 
@@ -37,7 +37,7 @@ export class DeviceComponent {
     private readonly playbackService: PlaybackService
   ) {
     this.playbackService.listOutputDevices().then((devices) => {
-      this.devices = devices.outputDevices;
+      this.devices.set(devices.outputDevices);
     });
 
     this.configService.selectedDevice$
