@@ -1,7 +1,8 @@
-use std::io::Cursor;
+use std::{io::Cursor, time::Duration};
 
 use rodio::{Decoder, DevicesError, Source};
 use tauri::{
+    api::http::ClientBuilder,
     generate_handler,
     plugin::{Builder, TauriPlugin},
     AppHandle, Manager, State, Wry,
@@ -20,6 +21,7 @@ use crate::{
         devices::DeviceService,
         now_playing::NowPlayingService,
         playback::{PlaybackController, PlaybackService, SourceController, SourceEvents},
+        tts::TtsService,
     },
 };
 
@@ -32,7 +34,19 @@ pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
     let device_service = DeviceService::init()?;
     let playback_service = PlaybackService::new(controller.clone());
     let now_playing_service = NowPlayingService::default();
+    let client = ClientBuilder::new()
+        .max_redirections(10)
+        .connect_timeout(Duration::from_secs(30))
+        .build()
+        .map_err(InitError::HttpClient)?;
+    let tts_service = TtsService::new(client.clone());
 
+    // Setup playback
+    if let Some(device) = device_service.default_output_device() {
+        playback_service.set_device(device);
+    }
+
+    // Build plugin
     let plugin = Builder::new("playback")
         .invoke_handler(generate_handler![
             list_output_devices,
@@ -50,10 +64,13 @@ pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
             app.manage(device_service);
             app.manage(playback_service);
             app.manage(now_playing_service);
+            app.manage(client);
+            app.manage(tts_service);
 
             Ok(())
         })
         .build();
+
     Ok(plugin)
 }
 
@@ -64,13 +81,17 @@ pub enum InitError {
     /// Failed to initialize the device service.
     #[error("failed to initialize device service")]
     DeviceService(#[from] DevicesError),
+
+    /// Failed to initialize the HTTP client.
+    #[error("failed to initialize HTTP client")]
+    HttpClient(tauri::api::Error),
 }
 
 /// Gets a list of output devices.
 #[tauri::command(async)]
 #[instrument(skip_all)]
 fn list_output_devices(device_svc: State<'_, DeviceService>) -> OutputDeviceList {
-    let output_devices = device_svc.output_device_infos();
+    let output_devices = device_svc.output_devices();
     OutputDeviceList { output_devices }
 }
 
@@ -91,19 +112,25 @@ fn set_output_device(
 }
 
 /// Enqueues audio to be played.
-#[tauri::command(async)]
+#[tauri::command]
 #[instrument(skip_all)]
-fn play_audio(
+async fn play_audio(
     request: PlayAudioRequest,
     playback_svc: State<'_, PlaybackService>,
     now_playing_svc: State<'_, NowPlayingService>,
+    tts_svc: State<'_, TtsService>,
     app: AppHandle,
 ) -> ApiResult<AudioId> {
-    // Decode source data
-    let source = match request.data {
-        RequestAudioData::Raw(raw) => Decoder::new(Cursor::new(raw.data))?,
+    // Get source data
+    let raw = match request.data {
+        RequestAudioData::Raw(raw) => raw.data,
+        RequestAudioData::StreamElements(stream_elements) => {
+            tts_svc.stream_elements(stream_elements).await?
+        }
     };
-    let source = source.convert_samples();
+
+    // Decode source data
+    let source = Decoder::new(Cursor::new(raw))?.convert_samples();
 
     // Enqueue source
     let controller = SourceController::default();

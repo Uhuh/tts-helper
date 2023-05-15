@@ -71,7 +71,7 @@ impl DeviceService {
         Ok(Self { data })
     }
 
-    /// Gets a device by ID.
+    /// Gets an output device by ID.
     #[must_use]
     pub fn output_device(&self, id: DeviceId) -> Option<Arc<Device>> {
         self.data
@@ -82,7 +82,7 @@ impl DeviceService {
 
     /// Gets [`DeviceInfoWithId`]s for all available output devices.
     #[must_use]
-    pub fn output_device_infos(&self) -> Vec<DeviceInfoWithId> {
+    pub fn output_devices(&self) -> Vec<DeviceInfoWithId> {
         self.data
             .output_devices
             .iter()
@@ -91,6 +91,16 @@ impl DeviceService {
                 inner: managed.metadata.clone(),
             })
             .collect()
+    }
+
+    /// Gets the default output device.
+    #[must_use]
+    pub fn default_output_device(&self) -> Option<Arc<Device>> {
+        self.data
+            .output_devices
+            .values()
+            .find(|managed| managed.metadata.is_default)
+            .map(|managed| managed.device.clone())
     }
 }
 

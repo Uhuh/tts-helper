@@ -44,6 +44,8 @@ pub struct PlaybackController {
     state: Arc<PlaybackControllerState>,
 }
 
+assert_impl_all!(PlaybackController: Send, Sync);
+
 #[derive(Debug, Default)]
 struct PlaybackControllerState {
     end_delay_ns: AtomicU64,
