@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { invoke } from '@tauri-apps/api';
-import { HistoryListComponent } from '../../shared/components/history/history-list.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
+import { HistoryListComponent } from "./history-list/history-list.component";
 
 @Component({
   selector: 'app-history',

@@ -1,11 +1,10 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { HistoryService } from '../../services/history.service';
-import { AuditItem } from '../../state/history/history-item.interface';
-import { listen } from '@tauri-apps/api/event';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HistoryItemComponent } from './history-item/history-item.component';
 import { NgIf, NgFor } from '@angular/common';
-import { PlaybackService } from '../../services/playback.service';
+import { AuditItem } from "../../../shared/state/history/history-item.interface";
+import { HistoryService } from "../../../shared/services/history.service";
+import { PlaybackService } from "../../../shared/services/playback.service";
+import { HistoryItemComponent } from "../history-item/history-item.component";
 
 @Component({
   selector: 'app-history-list',
