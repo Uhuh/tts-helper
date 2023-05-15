@@ -1,0 +1,33 @@
+[package]
+name = "tauri-plugin-playback"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+# Tauri
+tauri = { workspace = true }
+
+# Serialization
+serde = { workspace = true, features = ["derive", "rc"] }
+serde_with = { workspace = true }
+serde_json = { workspace = true }
+tts-helper-models = { path = "../../lib-backend/tts-helper-models" }
+
+# Audio
+rodio = { workspace = true }
+tts-helper-audio = { path = "../../lib-backend/tts-helper-audio" }
+
+# Web
+bytes = { workspace = true, features = ["serde"] }
+
+# Errors
+anyhow = "1"
+thiserror = { workspace = true }
+
+# Tracing
+tracing = { workspace = true }
+
+# Util
+crossbeam = { workspace = true }
+static_assertions = { workspace = true }

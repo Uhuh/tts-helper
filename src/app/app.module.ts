@@ -17,6 +17,7 @@ import { configReducer } from './shared/state/config/config.reducers';
 import { StorageService } from './shared/services/storage.service';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NavComponent } from './shared/components/nav/nav.component';
+import { PlaybackService } from './shared/services/playback.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,7 +42,8 @@ import { NavComponent } from './shared/components/nav/nav.component';
     StorageService,
     ConfigService,
     HistoryService,
+    PlaybackService,
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

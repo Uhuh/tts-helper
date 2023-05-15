@@ -6,8 +6,8 @@
   <p>Select where you want sound to come out of.</p>
   <mat-form-field>
     <mat-select placeholder="Select a device" [formControl]="selectedDevice">
-      <mat-option *ngFor="let device of devices" [value]="device.deviceId">
-        {{ device.label }}
+      <mat-option *ngFor="let device of devices" [value]="device.id">
+        {{ device.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>

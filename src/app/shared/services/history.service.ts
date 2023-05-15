@@ -10,7 +10,6 @@ import {
   addHistory,
   updateHistoryStatus,
 } from '../state/history/history.actions';
-import { listen } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/tauri';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigService } from './config.service';
@@ -24,8 +23,10 @@ import {
 import { PollyClient } from '@aws-sdk/client-polly';
 import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
-import { TtsOptions } from './history.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { PlaybackService } from './playback.service';
+import { PlayAudioRequest } from './playback.interface';
+import { RequestAudioData } from './playback.interface';
 
 @Injectable()
 export class HistoryService {
@@ -43,7 +44,8 @@ export class HistoryService {
   constructor(
     private readonly store: Store,
     private readonly configService: ConfigService,
-    private readonly snackbar: MatSnackBar
+    private readonly snackbar: MatSnackBar,
+    private readonly playback: PlaybackService
   ) {
     this.configService.configTts$
       .pipe(takeUntilDestroyed())
@@ -77,14 +79,16 @@ export class HistoryService {
       .pipe(takeUntilDestroyed())
       .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
 
-    listen('audio-done', (item) => {
-      this.store.dispatch(
-        updateHistoryStatus({
-          id: item.payload as number,
-          auditState: AuditState.finished,
-        })
-      );
-    });
+    this.playback.audioFinished$
+      .pipe(takeUntilDestroyed())
+      .subscribe((id) => {
+        this.store.dispatch(
+          updateHistoryStatus({
+            id,
+            auditState: AuditState.finished,
+          })
+        );
+      });
   }
 
   requeue(audit: AuditItem) {
@@ -105,137 +109,118 @@ export class HistoryService {
       return;
     }
 
-    // Trim played audio down, but keep full message incase stream wants to requeue it.
+    // Trim played audio down, but keep full message in case stream wants to requeue it.
     const audioText = text.substring(0, charLimit);
-
-    const ttsOptions: TtsOptions = {
-      audioText,
-      text,
-      source,
-      username,
-      auditId,
-      params: [],
-    };
-
-    switch (this.tts) {
-      case 'amazon-polly':
-        this.handleAmazonPolly(ttsOptions);
-        break;
-      case 'stream-elements': {
-        const params: [string, string][] = [
-          ['voice', this.streamElements.voice],
-          ['text', audioText],
-        ];
-
-        this.handleTtsInvoke({ ...ttsOptions, params });
-        break;
-      }
-    }
-  }
-
-  async handleAmazonPolly(options: TtsOptions) {
-    const { audioText } = options;
-
-    if (!this.amazonPolly.poolId) {
-      this.snackbar.open(
-        `Oops! You didn't provide a Pool ID for Amazon Polly.`,
-        'Dismiss',
-        {
-          panelClass: 'notification-error',
-        }
-      );
-      return;
-    }
-
-    const pollyParams = {
-      OutputFormat: 'mp3',
-      SampleRate: '22050',
-      Text: audioText,
-      TextType: 'text',
-      VoiceId: this.amazonPolly.voice,
-    };
-
-    try {
-      const url = await getSynthesizeSpeechUrl({
-        client: new PollyClient({
-          region: this.amazonPolly.region,
-          credentials: fromCognitoIdentityPool({
-            clientConfig: {
-              region: this.amazonPolly.region,
-            },
-            identityPoolId: this.amazonPolly.poolId,
-          }),
-        }),
-        params: pollyParams,
-      });
-
-      this.apiUrl = url.toString();
-      this.handleTtsInvoke(options);
-    } catch (e) {
-      this.snackbar.open(
-        `Oops! We had issues communicating with Polly!`,
-        'Dismiss',
-        {
-          panelClass: 'notification-error',
-        }
-      );
-      return console.error('Failed to get Amazon Polly url', e);
-    }
-  }
-
-  handleTtsInvoke(options: TtsOptions) {
-    const { text, audioText, source, username, params, auditId } = options;
-
-    invoke('play_tts', {
-      request: {
-        id: auditId,
-        device: this.deviceId,
-        volume: this.deviceVolume,
-        tts: this.tts,
-        url: this.apiUrl,
-        params,
-      },
-    })
-      .then((id) =>
-        this.handleNewHistory({
-          id: Number(id),
-          text,
-          audioText,
+    const data = this.getRequestData(audioText);
+    if (data !== null) {
+      this.playback.playAudio({ data })
+        .then((id) => this.addHistory({
+          id,
+          createdAt: new Date(),
           source,
+          text,
           username,
-          auditId,
-        })
-      )
-      .catch((e) => {
-        console.error(`Error invoking play_tts`, e);
-        this.snackbar.open(
-          'Oops! We encountered an error while playing that.',
-          'Dismiss',
-          {
-            panelClass: 'notification-error',
-          }
-        );
-      });
-  }
-
-  handleNewHistory(options: TtsOptions) {
-    if (typeof options.id != 'number') {
-      throw new Error(`Unexpected response type: ${typeof options.id}`);
+          state: AuditState.playing,
+        }))
+        .catch((e) => {
+          console.error(`Error playing TTS`, e);
+          this.snackbar.open(
+            'Oops! We encountered an error while playing that.',
+            'Dismiss',
+            {
+              panelClass: 'notification-error',
+            }
+          );
+        });
     }
 
-    if (options.auditId !== undefined) {
-      return;
-    }
+    // const ttsOptions: TtsOptions = {
+    //   audioText,
+    //   text,
+    //   source,
+    //   username,
+    //   auditId,
+    //   params: [],
+    // };
 
-    this.addHistory({
-      id: options.id,
-      createdAt: new Date(),
-      source: options.source,
-      text: options.text ?? '[No TTS text found]',
-      username: options.username,
-      state: AuditState.playing,
-    });
+    // switch (this.tts) {
+    //   case 'amazon-polly':
+    //     this.handleAmazonPolly(ttsOptions);
+    //     break;
+    //   case 'stream-elements': {
+    //     const params: [string, string][] = [
+    //       ['voice', this.streamElements.voice],
+    //       ['text', audioText],
+    //     ];
+
+    //     this.handleTtsInvoke({ ...ttsOptions, params });
+    //     break;
+    //   }
+    // }
   }
+
+  private getRequestData(text: string): RequestAudioData | null {
+    switch (this.tts) {
+      case 'stream-elements':
+        return {
+          type: 'streamElements',
+          voice: this.streamElements.voice,
+          text,
+        };
+      default:
+        return null;
+    }
+  }
+
+  // async handleAmazonPolly(options: TtsOptions) {
+  //   const { audioText } = options;
+
+  //   if (!this.amazonPolly.poolId) {
+  //     this.snackbar.open(
+  //       `Oops! You didn't provide a Pool ID for Amazon Polly.`,
+  //       'Dismiss',
+  //       {
+  //         panelClass: 'notification-error',
+  //       }
+  //     );
+  //     return;
+  //   }
+
+  //   const pollyParams = {
+  //     OutputFormat: 'mp3',
+  //     SampleRate: '22050',
+  //     Text: audioText,
+  //     TextType: 'text',
+  //     VoiceId: this.amazonPolly.voice,
+  //   };
+
+  //   try {
+  //     const url = await getSynthesizeSpeechUrl({
+  //       client: new PollyClient({
+  //         region: this.amazonPolly.region,
+  //         credentials: fromCognitoIdentityPool({
+  //           clientConfig: {
+  //             region: this.amazonPolly.region,
+  //           },
+  //           identityPoolId: this.amazonPolly.poolId,
+  //         }),
+  //       }),
+  //       params: pollyParams,
+  //     });
+
+  //     this.apiUrl = url.toString();
+  //     this.handleTtsInvoke(options);
+  //   } catch (e) {
+  //     this.snackbar.open(
+  //       `Oops! We had issues communicating with Polly!`,
+  //       'Dismiss',
+  //       {
+  //         panelClass: 'notification-error',
+  //       }
+  //     );
+  //     return console.error('Failed to get Amazon Polly url', e);
+  //   }
+  // }
 
   addHistory(audit: AuditItem) {
     return this.store.dispatch(addHistory({ audit }));
