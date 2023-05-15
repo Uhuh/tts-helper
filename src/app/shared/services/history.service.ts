@@ -10,7 +10,6 @@ import {
   addHistory,
   updateHistoryStatus,
 } from '../state/history/history.actions';
-import { invoke } from '@tauri-apps/api/tauri';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigService } from './config.service';
 import {
@@ -20,12 +19,8 @@ import {
   TtsType,
 } from '../state/config/config.interface';
 
-import { PollyClient } from '@aws-sdk/client-polly';
-import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
-import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PlaybackService } from './playback.service';
-import { PlayAudioRequest } from './playback.interface';
 import { RequestAudioData } from './playback.interface';
 
 @Injectable()
@@ -79,16 +74,14 @@ export class HistoryService {
       .pipe(takeUntilDestroyed())
       .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
 
-    this.playback.audioFinished$
-      .pipe(takeUntilDestroyed())
-      .subscribe((id) => {
-        this.store.dispatch(
-          updateHistoryStatus({
-            id,
-            auditState: AuditState.finished,
-          })
-        );
-      });
+    this.playback.audioFinished$.pipe(takeUntilDestroyed()).subscribe((id) => {
+      this.store.dispatch(
+        updateHistoryStatus({
+          id,
+          auditState: AuditState.finished,
+        })
+      );
+    });
   }
 
   requeue(audit: AuditItem) {
@@ -112,27 +105,41 @@ export class HistoryService {
     // Trim played audio down, but keep full message in case stream wants to requeue it.
     const audioText = text.substring(0, charLimit);
     const data = this.getRequestData(audioText);
-    if (data !== null) {
-      this.playback.playAudio({ data })
-        .then((id) => this.addHistory({
+
+    if (!data) {
+      return;
+    }
+
+    this.playback
+      .playAudio({ data })
+      .then((id) => {
+        /**
+         * @TODO - Need to fix requeueing audio on the server side so skipping
+         * requeued audio works as expected
+         */
+        if (auditId) {
+          return this.updateHistory(auditId, AuditState.playing);
+        }
+
+        this.addHistory({
           id,
           createdAt: new Date(),
           source,
           text,
           username,
           state: AuditState.playing,
-        }))
-        .catch((e) => {
-          console.error(`Error playing TTS`, e);
-          this.snackbar.open(
-            'Oops! We encountered an error while playing that.',
-            'Dismiss',
-            {
-              panelClass: 'notification-error',
-            }
-          );
         });
-    }
+      })
+      .catch((e) => {
+        console.error(`Error playing TTS`, e);
+        this.snackbar.open(
+          'Oops! We encountered an error while playing that.',
+          'Dismiss',
+          {
+            panelClass: 'notification-error',
+          }
+        );
+      });
 
     // const ttsOptions: TtsOptions = {
     //   audioText,

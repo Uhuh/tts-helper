@@ -1,10 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { invoke } from '@tauri-apps/api';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from 'src/app/shared/services/history.service';
 import { NgClass, DatePipe } from '@angular/common';
-import { AuditItem, AuditState } from "../../../shared/state/history/history-item.interface";
-import { ButtonComponent } from "../../../shared/components/button/button.component";
+import {
+  AuditItem,
+  AuditState,
+} from '../../../shared/state/history/history-item.interface';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { PlaybackService } from 'src/app/shared/services/playback.service';
 
 @Component({
   selector: 'app-history-item',
@@ -18,6 +21,7 @@ export class HistoryItemComponent {
 
   constructor(
     private readonly historyService: HistoryService,
+    private readonly playbackService: PlaybackService,
     private readonly snackbar: MatSnackBar
   ) {}
 
@@ -55,12 +59,8 @@ export class HistoryItemComponent {
   }
 
   skip() {
-    invoke('set_audio_state', {
-      state: {
-        id: this.audit.id,
-        skip: true,
-      },
-    })
+    this.playbackService
+      .setAudioState({ id: this.audit.id, skipped: true })
       .then(() =>
         this.historyService.updateHistory(this.audit.id, AuditState.skipped)
       )
