@@ -1,13 +1,10 @@
 import { Component, Input } from '@angular/core';
-import {
-  AuditItem,
-  AuditState,
-} from '../../../state/history/history-item.interface';
 import { invoke } from '@tauri-apps/api';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from 'src/app/shared/services/history.service';
 import { NgClass, DatePipe } from '@angular/common';
-import { ButtonComponent } from '../../button/button.component';
+import { AuditItem, AuditState } from "../../../shared/state/history/history-item.interface";
+import { ButtonComponent } from "../../../shared/components/button/button.component";
 
 @Component({
   selector: 'app-history-item',
