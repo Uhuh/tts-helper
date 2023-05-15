@@ -9,6 +9,8 @@ import { NgFor } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { PlaybackService } from 'src/app/shared/services/playback.service';
+import { DeviceId, DeviceInfo, OutputDeviceList, WithId } from 'src/app/shared/services/playback.interface';
 
 @Component({
   selector: 'app-device',
@@ -26,20 +28,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ],
 })
 export class DeviceComponent {
-  devices: MediaDeviceInfo[] = [];
+  devices: WithId<DeviceInfo, DeviceId>[] = [];
   selectedDevice = nonNullFormControl('');
   volume = nonNullFormControl(100);
 
-  constructor(private readonly configService: ConfigService) {
-    /**
-     * @TODO - Handle user denies...
-     * This should prompt the user once, if they accept it should remember
-     */
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(() => {
-      navigator.mediaDevices.enumerateDevices().then((devices) => {
-        const audioDevices = devices.filter((d) => d.kind === 'audiooutput');
-        this.devices = audioDevices;
-      });
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly playbackService: PlaybackService
+  ) {
+    this.playbackService.listOutputDevices().then((devices) => {
+      this.devices = devices.outputDevices;
     });
 
     this.configService.selectedDevice$

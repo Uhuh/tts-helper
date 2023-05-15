@@ -1,41 +1,33 @@
 import { Injectable } from "@angular/core";
 import { invoke } from "@tauri-apps/api";
-
-type AudioId = number;
-type DeviceId = number;
-type WithId<T, Id> = T & { id: Id };
-
-interface DeviceInfo {
-    name: string;
-    isDefault: boolean;
-}
-
-interface OutputDeviceList {
-    outputDevices: WithId<DeviceInfo, DeviceId>[];
-}
-
-interface PlayAudioRequest {
-    deviceId: DeviceId;
-    data: RequestAudioData;
-}
-
-type RequestAudioData = {
-    type: "raw";
-    data: Uint8Array;
-};
-
-interface PlaybackState {
-    /** End delay in milliseconds. */
-    endDelay: number;
-    paused: boolean;
-}
-
-interface AudioState {
-    skipped: boolean;
-}
+import { listen } from "@tauri-apps/api/event";
+import { Subject } from "rxjs";
+import { AudioId, AudioState, DeviceId, OutputDeviceList, PlayAudioRequest, PlaybackState, WithId } from "./playback.interface";
 
 @Injectable()
 export class PlaybackService {
+    /**
+     * Emits when an audio source starts playing.
+     */
+    readonly audioStarted$ = new Subject<AudioId>();
+
+    /**
+     * Emits when an audio source finishes playing.
+     */
+    readonly audioFinished$ = new Subject<AudioId>();
+
+    constructor() {
+        listen("playback::audio::started", (event) => {
+            const id = event.payload as AudioId;
+            this.audioStarted$.next(id);
+        });
+
+        listen("playback::audio::finished", (event) => {
+            const id = event.payload as AudioId;
+            this.audioFinished$.next(id);
+        });
+    }
+
     /**
      * Gets a list of the available output devices.
      * @returns A list of the available output devices.
@@ -54,11 +46,13 @@ export class PlaybackService {
     }
 
     /**
-     * Plays the given audio data.
+     * Enqueues the given audio data to be played. This does not wait for the audio to finish
+     * playing.
      * @param request The audio data to play.
      */
-    async playAudio(request: PlayAudioRequest): Promise<void> {
-        await invoke("plugin:playback|play_audio", { request });
+    async playAudio(request: PlayAudioRequest): Promise<AudioId> {
+        const id = await invoke("plugin:playback|play_audio", { request });
+        return id as AudioId;
     }
 
     /**

@@ -5,6 +5,7 @@ import { listen } from '@tauri-apps/api/event';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HistoryItemComponent } from './history-item/history-item.component';
 import { NgIf, NgFor } from '@angular/common';
+import { PlaybackService } from '../../services/playback.service';
 
 @Component({
   selector: 'app-history-list',
@@ -18,21 +19,24 @@ export class HistoryListComponent {
   currentlyPlaying?: AuditItem;
 
   constructor(
+    private readonly playbackService: PlaybackService,
     private readonly historyService: HistoryService,
     private readonly ref: ChangeDetectorRef
   ) {
-    listen('audio-start', (item) => {
-      const id = item.payload as number;
-      this.currentlyPlaying = this.items.find((i) => i.id === id);
-      // It will absolutely not display in time without this.
-      this.ref.markForCheck();
-    });
+    this.playbackService.audioStarted$
+      .pipe(takeUntilDestroyed())
+      .subscribe((id) => {
+        this.currentlyPlaying = this.items.find((i) => i.id === id);
+        // It will absolutely not display in time without this.
+        this.ref.markForCheck();
+      });
 
-    listen('audio-done', (item) => {
-      const id = item.payload as number;
-      if (this.currentlyPlaying?.id !== id) return;
-      this.currentlyPlaying = undefined;
-    });
+    this.playbackService.audioFinished$
+      .pipe(takeUntilDestroyed())
+      .subscribe((id) => {
+        if (this.currentlyPlaying?.id !== id) return;
+        this.currentlyPlaying = undefined;
+      });
 
     this.historyService.auditItems$
       .pipe(takeUntilDestroyed())
