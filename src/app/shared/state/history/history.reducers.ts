@@ -1,6 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { HistoryState } from './history.model';
-import { addHistory, updateHistoryStatus } from './history.actions';
+import {
+  addHistory,
+  removeHistory,
+  updateHistoryStatus,
+} from './history.actions';
 import { AuditState } from './history-item.interface';
 
 const initialState: HistoryState = {
@@ -31,5 +35,21 @@ export const historyReducer = createReducer(
   on(addHistory, (state, { audit }) => ({
     ...state,
     auditItems: [audit, ...state.auditItems],
-  }))
+  })),
+  on(removeHistory, (state, { auditId }) => {
+    const item = state.auditItems.find((a) => a.id === auditId);
+
+    if (!item) {
+      return state;
+    }
+
+    const index = state.auditItems.indexOf(item);
+    const items = [...state.auditItems.map((a) => ({ ...a }))];
+    items.splice(index, 1);
+
+    return {
+      ...state,
+      auditItems: [...items],
+    };
+  })
 );

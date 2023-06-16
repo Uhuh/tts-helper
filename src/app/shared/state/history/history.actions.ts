@@ -10,3 +10,8 @@ export const addHistory = createAction(
   '[ HistoryState ] Adding audit to history',
   props<{ audit: AuditItem }>()
 );
+
+export const removeHistory = createAction(
+  '[ HistoryState ] Removing audit from history',
+  props<{ auditId: number }>()
+);
