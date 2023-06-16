@@ -3,7 +3,7 @@
     "language": "Afrikaans (South Africa)",
     "options": [
       {
-        "key": "af-ZA-Standard-A",
+        "value": "af-ZA-Standard-A",
         "displayName": "Sonya NEW!"
       }
     ]
@@ -12,15 +12,15 @@
     "language": "Arabic",
     "options": [
       {
-        "key": "ar-XA-Wavenet-B",
+        "value": "ar-XA-Wavenet-B",
         "displayName": "Ahmad"
       },
       {
-        "key": "ar-XA-Wavenet-C",
+        "value": "ar-XA-Wavenet-C",
         "displayName": "Ahmad"
       },
       {
-        "key": "ar-XA-Wavenet-A",
+        "value": "ar-XA-Wavenet-A",
         "displayName": "Aisha"
       }
     ]
@@ -29,7 +29,7 @@
     "language": "Arabic (Egypt)",
     "options": [
       {
-        "key": "Hoda",
+        "value": "Hoda",
         "displayName": "Hoda"
       }
     ]
@@ -38,7 +38,7 @@
     "language": "Arabic (Saudi Arabia)",
     "options": [
       {
-        "key": "Naayf",
+        "value": "Naayf",
         "displayName": "Naayf"
       }
     ]
@@ -47,15 +47,15 @@
     "language": "Brazilian Portuguese",
     "options": [
       {
-        "key": "pt-BR-Standard-A",
+        "value": "pt-BR-Standard-A",
         "displayName": "Alice"
       },
       {
-        "key": "Ricardo",
+        "value": "Ricardo",
         "displayName": "Ricardo"
       },
       {
-        "key": "Vitoria",
+        "value": "Vitoria",
         "displayName": "Vitória"
       }
     ]
@@ -64,11 +64,11 @@
     "language": "Bulgarian",
     "options": [
       {
-        "key": "Ivan",
+        "value": "Ivan",
         "displayName": "Ivan"
       },
       {
-        "key": "bg-bg-Standard-A",
+        "value": "bg-bg-Standard-A",
         "displayName": "Nikolina NEW!"
       }
     ]
@@ -77,23 +77,23 @@
     "language": "Canadian French",
     "options": [
       {
-        "key": "fr-CA-Standard-C",
+        "value": "fr-CA-Standard-C",
         "displayName": "Camille"
       },
       {
-        "key": "Chantal",
+        "value": "Chantal",
         "displayName": "Chantal"
       },
       {
-        "key": "fr-CA-Standard-B",
+        "value": "fr-CA-Standard-B",
         "displayName": "Felix"
       },
       {
-        "key": "fr-CA-Standard-D",
+        "value": "fr-CA-Standard-D",
         "displayName": "Jacques"
       },
       {
-        "key": "fr-CA-Standard-A",
+        "value": "fr-CA-Standard-A",
         "displayName": "Juliette"
       }
     ]
@@ -102,15 +102,15 @@
     "language": "Castilian Spanish",
     "options": [
       {
-        "key": "Conchita",
+        "value": "Conchita",
         "displayName": "Conchita"
       },
       {
-        "key": "Enrique",
+        "value": "Enrique",
         "displayName": "Enrique"
       },
       {
-        "key": "es-ES-Standard-A",
+        "value": "es-ES-Standard-A",
         "displayName": "Rosalinda"
       }
     ]
@@ -119,7 +119,7 @@
     "language": "Catalan (Spain)",
     "options": [
       {
-        "key": "Herena",
+        "value": "Herena",
         "displayName": "Herena"
       }
     ]
@@ -128,15 +128,15 @@
     "language": "Chinese (simplified characters)",
     "options": [
       {
-        "key": "Huihui",
+        "value": "Huihui",
         "displayName": "Huihui"
       },
       {
-        "key": "Kangkang",
+        "value": "Kangkang",
         "displayName": "Kangkang"
       },
       {
-        "key": "Yaoyao",
+        "value": "Yaoyao",
         "displayName": "Yaoyao"
       }
     ]
@@ -145,7 +145,7 @@
     "language": "Chinese, Mandarin",
     "options": [
       {
-        "key": "Zhiyu",
+        "value": "Zhiyu",
         "displayName": "Zhiyu"
       }
     ]
@@ -154,7 +154,7 @@
     "language": "Croatian",
     "options": [
       {
-        "key": "Matej",
+        "value": "Matej",
         "displayName": "Matej"
       }
     ]
@@ -163,11 +163,11 @@
     "language": "Czech",
     "options": [
       {
-        "key": "Jakub",
+        "value": "Jakub",
         "displayName": "Jakub"
       },
       {
-        "key": "cs-CZ-Wavenet-A",
+        "value": "cs-CZ-Wavenet-A",
         "displayName": "Silvia"
       }
     ]
@@ -176,15 +176,15 @@
     "language": "Danish",
     "options": [
       {
-        "key": "Mads",
+        "value": "Mads",
         "displayName": "Mads"
       },
       {
-        "key": "da-DK-Wavenet-A",
+        "value": "da-DK-Wavenet-A",
         "displayName": "Marie"
       },
       {
-        "key": "Naja",
+        "value": "Naja",
         "displayName": "Naja"
       }
     ]
@@ -193,35 +193,35 @@
     "language": "Dutch",
     "options": [
       {
-        "key": "nl-NL-Standard-A",
+        "value": "nl-NL-Standard-A",
         "displayName": "Annemieke"
       },
       {
-        "key": "nl-NL-Wavenet-A",
+        "value": "nl-NL-Wavenet-A",
         "displayName": "Eva"
       },
       {
-        "key": "nl-NL-Wavenet-B",
+        "value": "nl-NL-Wavenet-B",
         "displayName": "Lars"
       },
       {
-        "key": "Lotte",
+        "value": "Lotte",
         "displayName": "Lotte"
       },
       {
-        "key": "nl-NL-Wavenet-E",
+        "value": "nl-NL-Wavenet-E",
         "displayName": "Lotte"
       },
       {
-        "key": "nl-NL-Wavenet-C",
+        "value": "nl-NL-Wavenet-C",
         "displayName": "Marc"
       },
       {
-        "key": "Ruben",
+        "value": "Ruben",
         "displayName": "Ruben"
       },
       {
-        "key": "nl-NL-Wavenet-D",
+        "value": "nl-NL-Wavenet-D",
         "displayName": "Verona"
       }
     ]
@@ -230,43 +230,43 @@
     "language": "English (Australian)",
     "options": [
       {
-        "key": "en-AU-Standard-C",
+        "value": "en-AU-Standard-C",
         "displayName": "Ashleigh"
       },
       {
-        "key": "en-AU-Wavenet-C",
+        "value": "en-AU-Wavenet-C",
         "displayName": "Courtney"
       },
       {
-        "key": "en-AU-Standard-D",
+        "value": "en-AU-Standard-D",
         "displayName": "Daniel"
       },
       {
-        "key": "en-AU-Wavenet-D",
+        "value": "en-AU-Wavenet-D",
         "displayName": "Jayden"
       },
       {
-        "key": "en-AU-Standard-B",
+        "value": "en-AU-Standard-B",
         "displayName": "Luke"
       },
       {
-        "key": "Nicole",
+        "value": "Nicole",
         "displayName": "Nicole"
       },
       {
-        "key": "Russell",
+        "value": "Russell",
         "displayName": "Russell"
       },
       {
-        "key": "en-AU-Wavenet-A",
+        "value": "en-AU-Wavenet-A",
         "displayName": "Samantha"
       },
       {
-        "key": "en-AU-Wavenet-B",
+        "value": "en-AU-Wavenet-B",
         "displayName": "Steve"
       },
       {
-        "key": "en-AU-Standard-A",
+        "value": "en-AU-Standard-A",
         "displayName": "Zoe"
       }
     ]
@@ -275,11 +275,11 @@
     "language": "English (Canada)",
     "options": [
       {
-        "key": "Heather",
+        "value": "Heather",
         "displayName": "Heather"
       },
       {
-        "key": "Linda",
+        "value": "Linda",
         "displayName": "Linda"
       }
     ]
@@ -288,15 +288,15 @@
     "language": "English (India)",
     "options": [
       {
-        "key": "en-IN-Wavenet-A",
+        "value": "en-IN-Wavenet-A",
         "displayName": "Anushri"
       },
       {
-        "key": "en-IN-Wavenet-C",
+        "value": "en-IN-Wavenet-C",
         "displayName": "Satya"
       },
       {
-        "key": "en-IN-Wavenet-B",
+        "value": "en-IN-Wavenet-B",
         "displayName": "Sundar"
       }
     ]
@@ -305,11 +305,11 @@
     "language": "English (Indian)",
     "options": [
       {
-        "key": "Aditi",
+        "value": "Aditi",
         "displayName": "Aditi"
       },
       {
-        "key": "Raveena",
+        "value": "Raveena",
         "displayName": "Raveena"
       }
     ]
@@ -318,7 +318,7 @@
     "language": "English (Ireland)",
     "options": [
       {
-        "key": "Sean",
+        "value": "Sean",
         "displayName": "Sean"
       }
     ]
@@ -327,47 +327,47 @@
     "language": "English (UK)",
     "options": [
       {
-        "key": "en-GB-Standard-B",
+        "value": "en-GB-Standard-B",
         "displayName": "Ali"
       },
       {
-        "key": "Amy",
+        "value": "Amy",
         "displayName": "Amy"
       },
       {
-        "key": "en-GB-Wavenet-A",
+        "value": "en-GB-Wavenet-A",
         "displayName": "Bella"
       },
       {
-        "key": "Brian",
+        "value": "Brian",
         "displayName": "Brian"
       },
       {
-        "key": "Emma",
+        "value": "Emma",
         "displayName": "Emma"
       },
       {
-        "key": "en-GB-Wavenet-B",
+        "value": "en-GB-Wavenet-B",
         "displayName": "John"
       },
       {
-        "key": "en-GB-Standard-A",
+        "value": "en-GB-Standard-A",
         "displayName": "Layla"
       },
       {
-        "key": "en-GB-Standard-D",
+        "value": "en-GB-Standard-D",
         "displayName": "Oliver"
       },
       {
-        "key": "en-GB-Wavenet-D",
+        "value": "en-GB-Wavenet-D",
         "displayName": "Ron"
       },
       {
-        "key": "en-GB-Standard-C",
+        "value": "en-GB-Standard-C",
         "displayName": "Scarlett"
       },
       {
-        "key": "en-GB-Wavenet-C",
+        "value": "en-GB-Wavenet-C",
         "displayName": "Victoria"
       }
     ]
@@ -376,75 +376,75 @@
     "language": "English (US)",
     "options": [
       {
-        "key": "en-US-Standard-E",
+        "value": "en-US-Standard-E",
         "displayName": "Audrey"
       },
       {
-        "key": "en-US-Wavenet-A",
+        "value": "en-US-Wavenet-A",
         "displayName": "Carter"
       },
       {
-        "key": "en-US-Wavenet-C",
+        "value": "en-US-Wavenet-C",
         "displayName": "Evelyn"
       },
       {
-        "key": "Ivy",
+        "value": "Ivy",
         "displayName": "Ivy"
       },
       {
-        "key": "en-US-Wavenet-E",
+        "value": "en-US-Wavenet-E",
         "displayName": "Jasmine"
       },
       {
-        "key": "Joanna",
+        "value": "Joanna",
         "displayName": "Joanna"
       },
       {
-        "key": "Joey",
+        "value": "Joey",
         "displayName": "Joey"
       },
       {
-        "key": "Justin",
+        "value": "Justin",
         "displayName": "Justin"
       },
       {
-        "key": "Kendra",
+        "value": "Kendra",
         "displayName": "Kendra"
       },
       {
-        "key": "Kimberly",
+        "value": "Kimberly",
         "displayName": "Kimberly"
       },
       {
-        "key": "en-US-Wavenet-D",
+        "value": "en-US-Wavenet-D",
         "displayName": "Liam"
       },
       {
-        "key": "en-US-Wavenet-F",
+        "value": "en-US-Wavenet-F",
         "displayName": "Madison"
       },
       {
-        "key": "en-US-Standard-B",
+        "value": "en-US-Standard-B",
         "displayName": "Mark"
       },
       {
-        "key": "Matthew",
+        "value": "Matthew",
         "displayName": "Matthew"
       },
       {
-        "key": "en-US-Wavenet-B",
+        "value": "en-US-Wavenet-B",
         "displayName": "Paul"
       },
       {
-        "key": "Salli",
+        "value": "Salli",
         "displayName": "Salli"
       },
       {
-        "key": "en-US-Standard-C",
+        "value": "en-US-Standard-C",
         "displayName": "Vanessa"
       },
       {
-        "key": "en-US-Standard-D",
+        "value": "en-US-Standard-D",
         "displayName": "Zachary"
       }
     ]
@@ -453,7 +453,7 @@
     "language": "English (Welsh)",
     "options": [
       {
-        "key": "Geraint",
+        "value": "Geraint",
         "displayName": "Geraint"
       }
     ]
@@ -462,7 +462,7 @@
     "language": "Filipino",
     "options": [
       {
-        "key": "fil-PH-Wavenet-A",
+        "value": "fil-PH-Wavenet-A",
         "displayName": "Tala"
       }
     ]
@@ -471,11 +471,11 @@
     "language": "Finnish",
     "options": [
       {
-        "key": "Heidi",
+        "value": "Heidi",
         "displayName": "Heidi"
       },
       {
-        "key": "fi-FI-Wavenet-A",
+        "value": "fi-FI-Wavenet-A",
         "displayName": "Marianne"
       }
     ]
@@ -484,11 +484,11 @@
     "language": "French",
     "options": [
       {
-        "key": "Celine",
+        "value": "Celine",
         "displayName": "Céline"
       },
       {
-        "key": "Mathieu",
+        "value": "Mathieu",
         "displayName": "Mathieu"
       }
     ]
@@ -497,27 +497,27 @@
     "language": "French (français)",
     "options": [
       {
-        "key": "fr-FR-Wavenet-C",
+        "value": "fr-FR-Wavenet-C",
         "displayName": "Brigitte"
       },
       {
-        "key": "fr-FR-Wavenet-A",
+        "value": "fr-FR-Wavenet-A",
         "displayName": "Emilie"
       },
       {
-        "key": "fr-FR-Standard-D",
+        "value": "fr-FR-Standard-D",
         "displayName": "Gaspard"
       },
       {
-        "key": "fr-FR-Wavenet-B",
+        "value": "fr-FR-Wavenet-B",
         "displayName": "Marcel"
       },
       {
-        "key": "fr-FR-Wavenet-D",
+        "value": "fr-FR-Wavenet-D",
         "displayName": "Simon"
       },
       {
-        "key": "fr-FR-Standard-C",
+        "value": "fr-FR-Standard-C",
         "displayName": "Yvonne"
       }
     ]
@@ -526,7 +526,7 @@
     "language": "French (Switzerland)",
     "options": [
       {
-        "key": "Guillaume",
+        "value": "Guillaume",
         "displayName": "Guillaume"
       }
     ]
@@ -535,39 +535,39 @@
     "language": "German",
     "options": [
       {
-        "key": "de-DE-Standard-B",
+        "value": "de-DE-Standard-B",
         "displayName": "Albert"
       },
       {
-        "key": "de-DE-Wavenet-A",
+        "value": "de-DE-Wavenet-A",
         "displayName": "Angelika"
       },
       {
-        "key": "Hans",
+        "value": "Hans",
         "displayName": "Hans"
       },
       {
-        "key": "de-DE-Standard-A",
+        "value": "de-DE-Standard-A",
         "displayName": "Karolina"
       },
       {
-        "key": "Marlene",
+        "value": "Marlene",
         "displayName": "Marlene"
       },
       {
-        "key": "de-DE-Wavenet-C",
+        "value": "de-DE-Wavenet-C",
         "displayName": "Nina"
       },
       {
-        "key": "de-DE-Wavenet-B",
+        "value": "de-DE-Wavenet-B",
         "displayName": "Oskar"
       },
       {
-        "key": "de-DE-Wavenet-D",
+        "value": "de-DE-Wavenet-D",
         "displayName": "Sebastian"
       },
       {
-        "key": "Vicki",
+        "value": "Vicki",
         "displayName": "Vicki"
       }
     ]
@@ -576,7 +576,7 @@
     "language": "German (Austria)",
     "options": [
       {
-        "key": "Michael",
+        "value": "Michael",
         "displayName": "Michael"
       }
     ]
@@ -585,7 +585,7 @@
     "language": "German (Switzerland)",
     "options": [
       {
-        "key": "Karsten",
+        "value": "Karsten",
         "displayName": "Karsten"
       }
     ]
@@ -594,11 +594,11 @@
     "language": "Greek",
     "options": [
       {
-        "key": "Stefanos",
+        "value": "Stefanos",
         "displayName": "Stefanos"
       },
       {
-        "key": "el-GR-Wavenet-A",
+        "value": "el-GR-Wavenet-A",
         "displayName": "Thalia"
       }
     ]
@@ -607,7 +607,7 @@
     "language": "Hebrew",
     "options": [
       {
-        "key": "Asaf",
+        "value": "Asaf",
         "displayName": "Doron"
       }
     ]
@@ -616,15 +616,15 @@
     "language": "Hindi",
     "options": [
       {
-        "key": "hi-IN-Wavenet-C",
+        "value": "hi-IN-Wavenet-C",
         "displayName": "Aadhav"
       },
       {
-        "key": "hi-IN-Wavenet-B",
+        "value": "hi-IN-Wavenet-B",
         "displayName": "Arnav"
       },
       {
-        "key": "hi-IN-Wavenet-A",
+        "value": "hi-IN-Wavenet-A",
         "displayName": "Sneha"
       }
     ]
@@ -633,11 +633,11 @@
     "language": "Hindi (India)",
     "options": [
       {
-        "key": "Hemant",
+        "value": "Hemant",
         "displayName": "Hemant"
       },
       {
-        "key": "Kalpana",
+        "value": "Kalpana",
         "displayName": "Kalpana"
       }
     ]
@@ -646,11 +646,11 @@
     "language": "Hong Kong (traditional characters)",
     "options": [
       {
-        "key": "Danny",
+        "value": "Danny",
         "displayName": "Danny"
       },
       {
-        "key": "Tracy",
+        "value": "Tracy",
         "displayName": "Tracy"
       }
     ]
@@ -659,11 +659,11 @@
     "language": "Hungarian",
     "options": [
       {
-        "key": "hu-HU-Wavenet-A",
+        "value": "hu-HU-Wavenet-A",
         "displayName": "Ishtevan"
       },
       {
-        "key": "Szabolcs",
+        "value": "Szabolcs",
         "displayName": "Szabolcs"
       }
     ]
@@ -672,15 +672,15 @@
     "language": "Icelandic",
     "options": [
       {
-        "key": "Dora",
+        "value": "Dora",
         "displayName": "Dóra"
       },
       {
-        "key": "is-is-Standard-A",
+        "value": "is-is-Standard-A",
         "displayName": "Helga NEW!"
       },
       {
-        "key": "Karl",
+        "value": "Karl",
         "displayName": "Karl"
       }
     ]
@@ -689,19 +689,19 @@
     "language": "Indonesian",
     "options": [
       {
-        "key": "Andika",
+        "value": "Andika",
         "displayName": "Andika"
       },
       {
-        "key": "id-ID-Wavenet-A",
+        "value": "id-ID-Wavenet-A",
         "displayName": "Anisa"
       },
       {
-        "key": "id-ID-Wavenet-C",
+        "value": "id-ID-Wavenet-C",
         "displayName": "Bayu"
       },
       {
-        "key": "id-ID-Wavenet-B",
+        "value": "id-ID-Wavenet-B",
         "displayName": "Budi"
       }
     ]
@@ -710,31 +710,31 @@
     "language": "Italian",
     "options": [
       {
-        "key": "it-IT-Wavenet-C",
+        "value": "it-IT-Wavenet-C",
         "displayName": "Alessandro"
       },
       {
-        "key": "Bianca",
+        "value": "Bianca",
         "displayName": "Bianca"
       },
       {
-        "key": "Carla",
+        "value": "Carla",
         "displayName": "Carla"
       },
       {
-        "key": "Giorgio",
+        "value": "Giorgio",
         "displayName": "Giorgio"
       },
       {
-        "key": "it-IT-Wavenet-D",
+        "value": "it-IT-Wavenet-D",
         "displayName": "Luca"
       },
       {
-        "key": "it-IT-Wavenet-B",
+        "value": "it-IT-Wavenet-B",
         "displayName": "Stella"
       },
       {
-        "key": "it-IT-Wavenet-A",
+        "value": "it-IT-Wavenet-A",
         "displayName": "Valentina"
       }
     ]
@@ -743,7 +743,7 @@
     "language": "Italian (italiano)",
     "options": [
       {
-        "key": "it-IT-Standard-A",
+        "value": "it-IT-Standard-A",
         "displayName": "Gianna"
       }
     ]
@@ -752,31 +752,31 @@
     "language": "Japanese",
     "options": [
       {
-        "key": "ja-JP-Wavenet-D",
+        "value": "ja-JP-Wavenet-D",
         "displayName": "Eichi"
       },
       {
-        "key": "ja-JP-Wavenet-B",
+        "value": "ja-JP-Wavenet-B",
         "displayName": "Eiko"
       },
       {
-        "key": "ja-JP-Wavenet-C",
+        "value": "ja-JP-Wavenet-C",
         "displayName": "Haruto"
       },
       {
-        "key": "ja-JP-Standard-A",
+        "value": "ja-JP-Standard-A",
         "displayName": "Koharu"
       },
       {
-        "key": "ja-JP-Wavenet-A",
+        "value": "ja-JP-Wavenet-A",
         "displayName": "Miho"
       },
       {
-        "key": "Mizuki",
+        "value": "Mizuki",
         "displayName": "Mizuki"
       },
       {
-        "key": "Takumi",
+        "value": "Takumi",
         "displayName": "Takumi"
       }
     ]
@@ -785,15 +785,15 @@
     "language": "Korean",
     "options": [
       {
-        "key": "ko-KR-Wavenet-A",
+        "value": "ko-KR-Wavenet-A",
         "displayName": "Grace"
       },
       {
-        "key": "ko-KR-Standard-A",
+        "value": "ko-KR-Standard-A",
         "displayName": "Heosu"
       },
       {
-        "key": "Seoyeon",
+        "value": "Seoyeon",
         "displayName": "Seoyeon"
       }
     ]
@@ -802,7 +802,7 @@
     "language": "Latvian",
     "options": [
       {
-        "key": "lv-lv-Standard-A",
+        "value": "lv-lv-Standard-A",
         "displayName": "Juris NEW!"
       }
     ]
@@ -811,7 +811,7 @@
     "language": "Malay",
     "options": [
       {
-        "key": "Rizwan",
+        "value": "Rizwan",
         "displayName": "Rizwan"
       }
     ]
@@ -820,19 +820,19 @@
     "language": "Mandarin Chinese",
     "options": [
       {
-        "key": "cmn-CN-Wavenet-C",
+        "value": "cmn-CN-Wavenet-C",
         "displayName": "Bai"
       },
       {
-        "key": "cmn-CN-Wavenet-A",
+        "value": "cmn-CN-Wavenet-A",
         "displayName": "Li Na"
       },
       {
-        "key": "cmn-CN-Wavenet-D",
+        "value": "cmn-CN-Wavenet-D",
         "displayName": "Mingli"
       },
       {
-        "key": "cmn-CN-Wavenet-B",
+        "value": "cmn-CN-Wavenet-B",
         "displayName": "Wang"
       }
     ]
@@ -841,7 +841,7 @@
     "language": "Mexican, Spanish",
     "options": [
       {
-        "key": "Mia",
+        "value": "Mia",
         "displayName": "Mia"
       }
     ]
@@ -850,27 +850,27 @@
     "language": "Norwegian",
     "options": [
       {
-        "key": "nb-no-Wavenet-D",
+        "value": "nb-no-Wavenet-D",
         "displayName": "Aksel"
       },
       {
-        "key": "nb-no-Wavenet-B",
+        "value": "nb-no-Wavenet-B",
         "displayName": "Jacob"
       },
       {
-        "key": "Liv",
+        "value": "Liv",
         "displayName": "Liv"
       },
       {
-        "key": "nb-no-Wavenet-A",
+        "value": "nb-no-Wavenet-A",
         "displayName": "Malena"
       },
       {
-        "key": "nb-no-Wavenet-E",
+        "value": "nb-no-Wavenet-E",
         "displayName": "Nora"
       },
       {
-        "key": "nb-no-Wavenet-C",
+        "value": "nb-no-Wavenet-C",
         "displayName": "Thea"
       }
     ]
@@ -879,19 +879,19 @@
     "language": "Polish",
     "options": [
       {
-        "key": "Ewa",
+        "value": "Ewa",
         "displayName": "Ewa"
       },
       {
-        "key": "Jacek",
+        "value": "Jacek",
         "displayName": "Jacek"
       },
       {
-        "key": "Jan",
+        "value": "Jan",
         "displayName": "Jan"
       },
       {
-        "key": "Maja",
+        "value": "Maja",
         "displayName": "Maja"
       }
     ]
@@ -900,19 +900,19 @@
     "language": "Polish (Poland)",
     "options": [
       {
-        "key": "pl-PL-Wavenet-A",
+        "value": "pl-PL-Wavenet-A",
         "displayName": "Amelia"
       },
       {
-        "key": "pl-PL-Wavenet-D",
+        "value": "pl-PL-Wavenet-D",
         "displayName": "Klaudia"
       },
       {
-        "key": "pl-PL-Wavenet-B",
+        "value": "pl-PL-Wavenet-B",
         "displayName": "Stanislaw"
       },
       {
-        "key": "pl-PL-Wavenet-C",
+        "value": "pl-PL-Wavenet-C",
         "displayName": "Tomasz"
       }
     ]
@@ -921,11 +921,11 @@
     "language": "Portuguese",
     "options": [
       {
-        "key": "Cristiano",
+        "value": "Cristiano",
         "displayName": "Cristiano"
       },
       {
-        "key": "Ines",
+        "value": "Ines",
         "displayName": "Inês"
       }
     ]
@@ -934,19 +934,19 @@
     "language": "Portuguese (Portugal)",
     "options": [
       {
-        "key": "pt-PT-Wavenet-A",
+        "value": "pt-PT-Wavenet-A",
         "displayName": "Beatriz"
       },
       {
-        "key": "pt-PT-Wavenet-D",
+        "value": "pt-PT-Wavenet-D",
         "displayName": "Carolina"
       },
       {
-        "key": "pt-PT-Wavenet-B",
+        "value": "pt-PT-Wavenet-B",
         "displayName": "Francisco"
       },
       {
-        "key": "pt-PT-Wavenet-C",
+        "value": "pt-PT-Wavenet-C",
         "displayName": "Lucas"
       }
     ]
@@ -955,7 +955,7 @@
     "language": "Romanian",
     "options": [
       {
-        "key": "Carmen",
+        "value": "Carmen",
         "displayName": "Carmen"
       }
     ]
@@ -964,11 +964,11 @@
     "language": "Russian",
     "options": [
       {
-        "key": "Maxim",
+        "value": "Maxim",
         "displayName": "Maxim"
       },
       {
-        "key": "Tatyana",
+        "value": "Tatyana",
         "displayName": "Tatyana"
       }
     ]
@@ -977,19 +977,19 @@
     "language": "Russian (Russia)",
     "options": [
       {
-        "key": "ru-RU-Wavenet-C",
+        "value": "ru-RU-Wavenet-C",
         "displayName": "Алёна (Alena)"
       },
       {
-        "key": "ru-RU-Wavenet-B",
+        "value": "ru-RU-Wavenet-B",
         "displayName": "Илья (Ilya)"
       },
       {
-        "key": "ru-RU-Wavenet-A",
+        "value": "ru-RU-Wavenet-A",
         "displayName": "Маша (Masha)"
       },
       {
-        "key": "ru-RU-Wavenet-D",
+        "value": "ru-RU-Wavenet-D",
         "displayName": "Пётр (Petr)"
       }
     ]
@@ -998,7 +998,7 @@
     "language": "Serbian",
     "options": [
       {
-        "key": "sr-rs-Standard-A",
+        "value": "sr-rs-Standard-A",
         "displayName": "Aleksandra NEW!"
       }
     ]
@@ -1007,7 +1007,7 @@
     "language": "Slovak",
     "options": [
       {
-        "key": "Filip",
+        "value": "Filip",
         "displayName": "Filip"
       }
     ]
@@ -1016,7 +1016,7 @@
     "language": "Slovak (Slovakia)",
     "options": [
       {
-        "key": "sk-SK-Wavenet-A",
+        "value": "sk-SK-Wavenet-A",
         "displayName": "Eliska"
       }
     ]
@@ -1025,7 +1025,7 @@
     "language": "Slovenian",
     "options": [
       {
-        "key": "Lado",
+        "value": "Lado",
         "displayName": "Lado"
       }
     ]
@@ -1034,11 +1034,11 @@
     "language": "Swedish",
     "options": [
       {
-        "key": "Astrid",
+        "value": "Astrid",
         "displayName": "Astrid"
       },
       {
-        "key": "sv-SE-Standard-A",
+        "value": "sv-SE-Standard-A",
         "displayName": "Elsa"
       }
     ]
@@ -1047,11 +1047,11 @@
     "language": "Taiwanese (traditional characters)",
     "options": [
       {
-        "key": "HanHan",
+        "value": "HanHan",
         "displayName": "HanHan"
       },
       {
-        "key": "Zhiwei",
+        "value": "Zhiwei",
         "displayName": "Zhiwei"
       }
     ]
@@ -1060,7 +1060,7 @@
     "language": "Tamil (India)",
     "options": [
       {
-        "key": "Valluvar",
+        "value": "Valluvar",
         "displayName": "Valluvar"
       }
     ]
@@ -1069,7 +1069,7 @@
     "language": "Thai",
     "options": [
       {
-        "key": "Pattara",
+        "value": "Pattara",
         "displayName": "Pattara"
       }
     ]
@@ -1078,36 +1078,36 @@
     "language": "Turkish",
     "options": [
       {
-        "key": "Filiz",
+        "value": "Filiz",
         "displayName": "Filiz"
       },
       {
-        "key": "tr-TR-Standard-A",
+        "value": "tr-TR-Standard-A",
         "displayName": "Zehra"
       }
     ]
   },
   {
-    "language": "Turkish (Turkey)",
+    "language": "Turkish (Turvalue)",
     "options": [
       {
-        "key": "tr-TR-Wavenet-D",
+        "value": "tr-TR-Wavenet-D",
         "displayName": "Elif"
       },
       {
-        "key": "tr-TR-Wavenet-E",
+        "value": "tr-TR-Wavenet-E",
         "displayName": "Enes"
       },
       {
-        "key": "tr-TR-Wavenet-B",
+        "value": "tr-TR-Wavenet-B",
         "displayName": "Mehmet"
       },
       {
-        "key": "tr-TR-Wavenet-C",
+        "value": "tr-TR-Wavenet-C",
         "displayName": "Miray"
       },
       {
-        "key": "tr-TR-Wavenet-A",
+        "value": "tr-TR-Wavenet-A",
         "displayName": "Yagmur"
       }
     ]
@@ -1116,7 +1116,7 @@
     "language": "Ukrainian (Ukraine)",
     "options": [
       {
-        "key": "uk-UA-Wavenet-A",
+        "value": "uk-UA-Wavenet-A",
         "displayName": "Vladislav"
       }
     ]
@@ -1125,11 +1125,11 @@
     "language": "US Spanish",
     "options": [
       {
-        "key": "Miguel",
+        "value": "Miguel",
         "displayName": "Miguel"
       },
       {
-        "key": "Penelope",
+        "value": "Penelope",
         "displayName": "Penélope"
       }
     ]
@@ -1138,23 +1138,23 @@
     "language": "Vietnamese",
     "options": [
       {
-        "key": "An",
+        "value": "An",
         "displayName": "An"
       },
       {
-        "key": "vi-VN-Wavenet-A",
+        "value": "vi-VN-Wavenet-A",
         "displayName": "Linh"
       },
       {
-        "key": "vi-VN-Wavenet-B",
+        "value": "vi-VN-Wavenet-B",
         "displayName": "Nguyen"
       },
       {
-        "key": "vi-VN-Wavenet-C",
+        "value": "vi-VN-Wavenet-C",
         "displayName": "phuong"
       },
       {
-        "key": "vi-VN-Wavenet-D",
+        "value": "vi-VN-Wavenet-D",
         "displayName": "Viet"
       }
     ]
@@ -1163,7 +1163,7 @@
     "language": "Welsh",
     "options": [
       {
-        "key": "Gwyneth",
+        "value": "Gwyneth",
         "displayName": "Gwyneth"
       }
     ]
