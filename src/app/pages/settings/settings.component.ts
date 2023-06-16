@@ -8,10 +8,17 @@ import { WindowsComponent } from './windows/windows.component';
 import { TtsMonsterComponent } from './tts-monster/tts-monster.component';
 import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
 import { StreamelementTtsComponent } from './streamelement-tts/streamelement-tts.component';
-import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { DeviceComponent } from './device/device.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
+import { TiktokComponent } from './tiktok/tiktok.component';
+
+interface TtsOption {
+  disabled?: boolean;
+  displayValue: string;
+  value: TtsType;
+}
 
 @Component({
   selector: 'app-settings',
@@ -22,16 +29,41 @@ import { InputComponent } from '../../shared/components/input/input.component';
     InputComponent,
     ButtonComponent,
     DeviceComponent,
-    NgIf,
+    CommonModule,
     StreamelementTtsComponent,
     AmazonPollyComponent,
     TtsMonsterComponent,
     WindowsComponent,
+    TiktokComponent,
   ],
 })
 export class SettingsComponent {
   ttsControl = nonNullFormControl('');
   selectedTts = nonNullFormControl<TtsType>('stream-elements');
+  ttsOptions: Array<TtsOption> = [
+    {
+      displayValue: 'StreamElements',
+      value: 'stream-elements',
+    },
+    {
+      displayValue: 'Amazon Polly',
+      value: 'amazon-polly',
+    },
+    {
+      displayValue: 'TikTok',
+      value: 'tiktok',
+    },
+    {
+      displayValue: 'Windows',
+      value: 'windows',
+      disabled: true,
+    },
+    {
+      displayValue: 'TTS Monster',
+      value: 'tts-monster',
+      disabled: true,
+    },
+  ];
 
   constructor(
     private readonly historyService: HistoryService,

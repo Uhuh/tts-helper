@@ -19,37 +19,12 @@
     <p>Decide which TTS service to use.</p>
     <div class="action-row flex-wrap">
       <app-button
-        (click)="selectTts('stream-elements')"
-        [style]="selectedTts.value === 'stream-elements' ? 'active' : 'primary'"
+        *ngFor="let option of ttsOptions"
+        (click)="selectTts(option.value)"
+        [ngClass]="{ disabled: option.disabled }"
+        [style]="selectedTts.value === option.value ? 'active' : 'primary'"
       >
-        StreamElements
-      </app-button>
-      <app-button
-        (click)="selectTts('amazon-polly')"
-        [style]="selectedTts.value === 'amazon-polly' ? 'active' : 'primary'"
-      >
-        Amazon Polly
-      </app-button>
-      <app-button
-        (click)="selectTts('windows')"
-        class="disabled"
-        [style]="selectedTts.value === 'windows' ? 'active' : 'primary'"
-      >
-        Windows
-      </app-button>
-      <app-button
-        (click)="selectTts('tiktok')"
-        class="disabled"
-        [style]="selectedTts.value === 'tiktok' ? 'active' : 'primary'"
-      >
-        TikTok
-      </app-button>
-      <app-button
-        (click)="selectTts('tts-monster')"
-        class="disabled"
-        [style]="selectedTts.value === 'tts-monster' ? 'active' : 'primary'"
-      >
-        TTS Monster
+        {{ option.displayValue }}
       </app-button>
     </div>
   </div>
@@ -60,5 +35,6 @@
 <app-amazon-polly
   *ngIf="selectedTts.value === 'amazon-polly'"
 ></app-amazon-polly>
+<app-tiktok *ngIf="selectedTts.value === 'tiktok'"></app-tiktok>
 <app-tts-monster *ngIf="selectedTts.value === 'tts-monster'"></app-tts-monster>
 <app-windows *ngIf="selectedTts.value === 'windows'"></app-windows>
