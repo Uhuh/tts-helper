@@ -1,300 +1,334 @@
-{
-  "tiktok": {
-    "english": [
+[
+  {
+    "language": "English",
+    "options": [
       {
-        "key": "en_us_001",
+        "value": "en_us_001",
         "displayName": "Female | US English"
       },
       {
-        "key": "en_us_006",
+        "value": "en_us_006",
         "displayName": "Male 1 | US English"
       },
       {
-        "key": "en_us_007",
+        "value": "en_us_007",
         "displayName": "Male 2 | US English"
       },
       {
-        "key": "en_us_009",
+        "value": "en_us_009",
         "displayName": "Male 3 | US English"
       },
       {
-        "key": "en_us_010",
+        "value": "en_us_010",
         "displayName": "Male 4 | US English"
       },
       {
-        "key": "en_uk_001",
+        "value": "en_uk_001",
         "displayName": "Male 1 | UK English"
       },
       {
-        "key": "en_uk_003",
+        "value": "en_uk_003",
         "displayName": "Male 2 | UK English"
       },
       {
-        "key": "en_au_001",
+        "value": "en_au_001",
         "displayName": "Female | AU English"
       },
       {
-        "key": "en_au_002",
+        "value": "en_au_002",
         "displayName": "Male | AU English"
       }
-    ],
-    "characters-english": [
+    ]
+  },
+  {
+    "language": "English Characters",
+    "options": [
       {
-        "key": "en_us_ghostface",
+        "value": "en_us_ghostface",
         "displayName": "Ghostface (Scream)"
       },
       {
-        "key": "en_us_chewbacca",
+        "value": "en_us_chewbacca",
         "displayName": "Chewbacca (Star Wars)"
       },
       {
-        "key": "en_us_c3po",
+        "value": "en_us_c3po",
         "displayName": "C3PO (Star Wars)"
       },
       {
-        "key": "en_us_stitch",
+        "value": "en_us_stitch",
         "displayName": "Stitch (Lilo & Stitch)"
       },
       {
-        "key": "en_us_stormtrooper",
+        "value": "en_us_stormtrooper",
         "displayName": "Stormtrooper (Star Wars)"
       },
       {
-        "key": "en_us_rocket",
+        "value": "en_us_rocket",
         "displayName": "Rocket (Guardians of the Galaxy)"
       }
-    ],
-    "singing-english": [
+    ]
+  },
+  {
+    "language": "English Singing",
+    "options": [
       {
-        "key": "en_female_f08_salut_damour",
+        "value": "en_female_f08_salut_damour",
         "displayName": "Alto"
       },
       {
-        "key": "en_male_m03_lobby",
+        "value": "en_male_m03_lobby",
         "displayName": "Tenor"
       },
       {
-        "key": "en_male_m03_sunshine_soon",
+        "value": "en_male_m03_sunshine_soon",
         "displayName": "Sunshine Soon"
       },
       {
-        "key": "en_female_f08_warmy_breeze",
+        "value": "en_female_f08_warmy_breeze",
         "displayName": "Warmy Breeze"
       },
       {
-        "key": "en_female_ht_f08_glorious",
+        "value": "en_female_ht_f08_glorious",
         "displayName": "Glorious"
       },
       {
-        "key": "en_male_sing_funny_it_goes_up",
+        "value": "en_male_sing_funny_it_goes_up",
         "displayName": "It Goes Up"
       },
       {
-        "key": "en_male_m2_xhxs_m03_silly",
+        "value": "en_male_m2_xhxs_m03_silly",
         "displayName": "Chipmunk"
       },
       {
-        "key": "en_female_ht_f08_wonderful_world",
+        "value": "en_female_ht_f08_wonderful_world",
         "displayName": "Dramatic"
       }
-    ],
-    "other-english": [
+    ]
+  },
+  {
+    "language": "English Other",
+    "options": [
       {
-        "key": "en_male_grinch",
+        "value": "en_male_grinch",
         "displayName": "Trickster"
       },
       {
-        "key": "en_male_wizard",
+        "value": "en_male_wizard",
         "displayName": "Magician"
       },
       {
-        "key": "en_female_ht_f08_halloween",
+        "value": "en_female_ht_f08_halloween",
         "displayName": "Opera"
       },
       {
-        "key": "en_female_madam_leota",
+        "value": "en_female_madam_leota",
         "displayName": "Madame Leota"
       },
       {
-        "key": "en_male_ghosthost",
+        "value": "en_male_ghosthost",
         "displayName": "Ghost Host"
       },
       {
-        "key": "en_male_pirate",
+        "value": "en_male_pirate",
         "displayName": "Pirate"
       },
       {
-        "key": "en_female_ht_f08_glorious",
+        "value": "en_female_ht_f08_glorious",
         "displayName": "Euphoric"
       },
       {
-        "key": "en_male_sing_funny_it_goes_up",
+        "value": "en_male_sing_funny_it_goes_up",
         "displayName": "Hypetrain"
       },
       {
-        "key": "en_female_samc",
+        "value": "en_female_samc",
         "displayName": "Empathetic"
       },
       {
-        "key": "en_male_cody",
+        "value": "en_male_cody",
         "displayName": "Serious"
       },
       {
-        "key": "en_female_ht_f08_wonderful_world",
+        "value": "en_female_ht_f08_wonderful_world",
         "displayName": "Melodrama"
       },
       {
-        "key": "en_male_m2_xhxs_m03_silly",
+        "value": "en_male_m2_xhxs_m03_silly",
         "displayName": "Quirky Time"
       },
       {
-        "key": "en_male_funny",
+        "value": "en_male_funny",
         "displayName": "Wacky"
       },
       {
-        "key": "en_female_emotional",
+        "value": "en_female_emotional",
         "displayName": "Peaceful"
       },
       {
-        "key": "en_male_m03_sunshine_soon",
+        "value": "en_male_m03_sunshine_soon",
         "displayName": "Toon Beat"
       },
       {
-        "key": "en_female_f08_warmy_breeze",
+        "value": "en_female_f08_warmy_breeze",
         "displayName": "Open Mic"
       },
       {
-        "key": "en_male_m03_lobby",
+        "value": "en_male_m03_lobby",
         "displayName": "Jingle"
       },
       {
-        "key": "en_female_f08_salut_damour",
+        "value": "en_female_f08_salut_damour",
         "displayName": "Cottagecore"
       },
       {
-        "key": "es_mx_002",
+        "value": "es_mx_002",
         "displayName": "Warm"
       },
       {
-        "key": "en_male_narration",
+        "value": "en_male_narration",
         "displayName": "Story Teller"
       },
       {
-        "key": "en_us_007",
+        "value": "en_us_007",
         "displayName": "Professor"
       },
       {
-        "key": "en_us_009",
+        "value": "en_us_009",
         "displayName": "Scientist"
       },
       {
-        "key": "en_us_010",
+        "value": "en_us_010",
         "displayName": "Confidence"
       },
       {
-        "key": "en_us_006",
+        "value": "en_us_006",
         "displayName": "Joey"
       },
       {
-        "key": "en_au_001",
+        "value": "en_au_001",
         "displayName": "Metro"
       },
       {
-        "key": "en_uk_001",
+        "value": "en_uk_001",
         "displayName": "Narrator"
       },
       {
-        "key": "en_us_002",
+        "value": "en_us_002",
         "displayName": "Jessie"
       },
       {
-        "key": "en_au_002",
+        "value": "en_au_002",
         "displayName": "Smooth"
       }
-    ],
-    "japanese": [
+    ]
+  },
+  {
+    "language": "Japanese",
+    "options": [
       {
-        "key": "jp_001",
+        "value": "jp_001",
         "displayName": "Female 1"
       },
       {
-        "key": "jp_003",
+        "value": "jp_003",
         "displayName": "Female 2"
       },
       {
-        "key": "jp_005",
+        "value": "jp_005",
         "displayName": "Female 3"
       },
       {
-        "key": "jp_006",
+        "value": "jp_006",
         "displayName": "Male"
       }
-    ],
-    "korean": [
+    ]
+  },
+  {
+    "language": "Korean",
+    "options": [
       {
-        "key": "kr_002",
+        "value": "kr_002",
         "displayName": "Male 1"
       },
       {
-        "key": "kr_004",
+        "value": "kr_004",
         "displayName": "Male 2"
       },
       {
-        "key": "kr_003",
+        "value": "kr_003",
         "displayName": "Female"
       }
-    ],
-    "french": [
+    ]
+  },
+  {
+    "language": "French",
+    "options": [
       {
-        "key": "fr_001",
+        "value": "fr_001",
         "displayName": "Male 1"
       },
       {
-        "key": "fr_002",
+        "value": "fr_002",
         "displayName": "Male 2"
       }
-    ],
-    "german": [
+    ]
+  },
+  {
+    "language": "German",
+    "options": [
       {
-        "key": "de_001",
+        "value": "de_001",
         "displayName": "Female"
       },
       {
-        "key": "de_002",
+        "value": "de_002",
         "displayName": "Male"
       }
-    ],
-    "spanish": [
+    ]
+  },
+  {
+    "language": "Spanish",
+    "options": [
       {
-        "key": "es_002",
+        "value": "es_002",
         "displayName": "Male"
       }
-    ],
-    "spanish-mx": [
+    ]
+  },
+  {
+    "language": "Spanish MX",
+    "options": [
       {
-        "key": "es_mx_002",
+        "value": "es_mx_002",
         "displayName": "Male"
       }
-    ],
-    "portuguese-br": [
+    ]
+  },
+  {
+    "language": "Portuguese Br",
+    "options": [
       {
-        "key": "br_003",
+        "value": "br_003",
         "displayName": "Female 2"
       },
       {
-        "key": "br_004",
+        "value": "br_004",
         "displayName": "Female 3"
       },
       {
-        "key": "br_005",
+        "value": "br_005",
         "displayName": "Male"
       }
-    ],
-    "indonesian": [
+    ]
+  },
+  {
+    "language": "Indonesian",
+    "options": [
       {
-        "key": "id_001",
+        "value": "id_001",
         "displayName": "Female"
       }
     ]
   }
-}
+]

@@ -28,10 +28,10 @@
     "me-central-1",
     "sa-east-1"
   ],
-  "voices": [
+  "options": [
     {
       "language": "Arabic",
-      "voices": [
+      "options": [
         {
           "displayName": "Zeina, Female",
           "value": "Zeina"
@@ -40,7 +40,7 @@
     },
     {
       "language": "Chinese, Mandarin",
-      "voices": [
+      "options": [
         {
           "displayName": "Zhiyu, Female",
           "value": "Zhiyu"
@@ -49,7 +49,7 @@
     },
     {
       "language": "Danish",
-      "voices": [
+      "options": [
         {
           "displayName": "Mads, Male",
           "value": "Mads"
@@ -62,7 +62,7 @@
     },
     {
       "language": "Dutch",
-      "voices": [
+      "options": [
         {
           "displayName": "Lotte, Female",
           "value": "Lotte"
@@ -75,7 +75,7 @@
     },
     {
       "language": "English, Australian",
-      "voices": [
+      "options": [
         {
           "displayName": "Nicole, Female",
           "value": "Nicole"
@@ -88,7 +88,7 @@
     },
     {
       "language": "English, British",
-      "voices": [
+      "options": [
         {
           "displayName": "Amy, Female",
           "value": "Amy"
@@ -105,7 +105,7 @@
     },
     {
       "language": "English, Indian",
-      "voices": [
+      "options": [
         {
           "displayName": "Aditi, Female",
           "value": "Aditi"
@@ -118,7 +118,7 @@
     },
     {
       "language": "English, US",
-      "voices": [
+      "options": [
         {
           "displayName": "Ivy, Female",
           "value": "Ivy"
@@ -155,7 +155,7 @@
     },
     {
       "language": "English, Welsh",
-      "voices": [
+      "options": [
         {
           "displayName": "Geraint, Male",
           "value": "Geraint"
@@ -164,7 +164,7 @@
     },
     {
       "language": "French",
-      "voices": [
+      "options": [
         {
           "displayName": "Céline, Female",
           "value": "Céline"
@@ -181,7 +181,7 @@
     },
     {
       "language": "French, Canadian",
-      "voices": [
+      "options": [
         {
           "displayName": "Chantal, Female",
           "value": "Chantal"
@@ -190,7 +190,7 @@
     },
     {
       "language": "German",
-      "voices": [
+      "options": [
         {
           "displayName": "Hans, Male",
           "value": "Hans"
@@ -207,7 +207,7 @@
     },
     {
       "language": "Hindi",
-      "voices": [
+      "options": [
         {
           "displayName": "Aditi, Female",
           "value": "Aditi"
@@ -216,7 +216,7 @@
     },
     {
       "language": "Icelandic",
-      "voices": [
+      "options": [
         {
           "displayName": "Dóra, Female",
           "value": "Dóra"
@@ -229,7 +229,7 @@
     },
     {
       "language": "Italian",
-      "voices": [
+      "options": [
         {
           "displayName": "Bianca, Female",
           "value": "Bianca"
@@ -246,7 +246,7 @@
     },
     {
       "language": "Japanese",
-      "voices": [
+      "options": [
         {
           "displayName": "Mizuki, Female",
           "value": "Mizuki"
@@ -259,7 +259,7 @@
     },
     {
       "language": "Korean",
-      "voices": [
+      "options": [
         {
           "displayName": "Seoyeon, Female",
           "value": "Seoyeon"
@@ -268,7 +268,7 @@
     },
     {
       "language": "Norwegian",
-      "voices": [
+      "options": [
         {
           "displayName": "Liv, Female",
           "value": "Liv"
@@ -277,7 +277,7 @@
     },
     {
       "language": "Polish",
-      "voices": [
+      "options": [
         {
           "displayName": "Ewa, Female",
           "value": "Ewa"
@@ -298,7 +298,7 @@
     },
     {
       "language": "Portuguese",
-      "voices": [
+      "options": [
         {
           "displayName": "Cristiano, Male",
           "value": "Cristiano"
@@ -311,7 +311,7 @@
     },
     {
       "language": "Portuguese, Brazilian",
-      "voices": [
+      "options": [
         {
           "displayName": "Camila, Female",
           "value": "Camila"
@@ -328,7 +328,7 @@
     },
     {
       "language": "Romanian",
-      "voices": [
+      "options": [
         {
           "displayName": "Carmen, Female",
           "value": "Carmen"
@@ -337,7 +337,7 @@
     },
     {
       "language": "Russian",
-      "voices": [
+      "options": [
         {
           "displayName": "Maxim, Male",
           "value": "Maxim"
@@ -350,7 +350,7 @@
     },
     {
       "language": "Spanish, Castilian",
-      "voices": [
+      "options": [
         {
           "displayName": "Conchita, Female",
           "value": "Conchita"
@@ -367,7 +367,7 @@
     },
     {
       "language": "Spanish, Mexican",
-      "voices": [
+      "options": [
         {
           "displayName": "Mia, Female",
           "value": "Mia"
@@ -376,7 +376,7 @@
     },
     {
       "language": "Spanish, US",
-      "voices": [
+      "options": [
         {
           "displayName": "Lupe, Female",
           "value": "Lupe"
@@ -393,7 +393,7 @@
     },
     {
       "language": "Swedish",
-      "voices": [
+      "options": [
         {
           "displayName": "Astrid, Female",
           "value": "Astrid"
@@ -402,7 +402,7 @@
     },
     {
       "language": "Turkish",
-      "voices": [
+      "options": [
         {
           "displayName": "Filiz, Female",
           "value": "Filiz"
@@ -411,7 +411,7 @@
     },
     {
       "language": "Welsh",
-      "voices": [
+      "options": [
         {
           "displayName": "Gwyneth, Female",
           "value": "Gwyneth"
