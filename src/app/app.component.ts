@@ -9,6 +9,7 @@ import { debounceTime } from 'rxjs';
 import { ConfigService } from './shared/services/config.service';
 import { ConfigState } from './shared/state/config/config.model';
 import { configInfo } from './shared/state/config/config.actions';
+import { PlaybackService } from './shared/services/playback.service';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,8 @@ export class AppComponent {
     private readonly twitchPubSub: TwitchPubSub,
     private readonly configService: ConfigService,
     private readonly twitchService: TwitchService,
-    private readonly storageService: StorageService
+    private readonly storageService: StorageService,
+    private readonly playbackService: PlaybackService
   ) {
     this.storageService
       .getFromStore<TwitchState>('.settings.json', 'twitch')

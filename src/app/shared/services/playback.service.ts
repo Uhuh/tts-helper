@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { invoke } from '@tauri-apps/api';
 import { listen } from '@tauri-apps/api/event';
-import { Subject } from 'rxjs';
+import { Subject, from, tap } from 'rxjs';
 import {
   AudioId,
   AudioState,
@@ -11,6 +11,7 @@ import {
   PlaybackState,
   WithId,
 } from './playback.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class PlaybackService {
@@ -25,15 +26,25 @@ export class PlaybackService {
   readonly audioFinished$ = new Subject<AudioId>();
 
   constructor() {
-    listen('playback::audio::started', (event) => {
-      const id = event.payload as AudioId;
-      this.audioStarted$.next(id);
-    });
+    from(
+      listen('playback::audio::start', (event) => {
+        const id = event.payload as AudioId;
+        this.audioStarted$.next(id);
+      })
+    ).pipe(
+      takeUntilDestroyed(),
+      tap((unlisten) => unlisten())
+    );
 
-    listen('playback::audio::finished', (event) => {
-      const id = event.payload as AudioId;
-      this.audioFinished$.next(id);
-    });
+    from(
+      listen('playback::audio::finish', (event) => {
+        const id = event.payload as AudioId;
+        this.audioFinished$.next(id);
+      })
+    ).pipe(
+      takeUntilDestroyed(),
+      tap((unlisten) => unlisten())
+    );
   }
 
   /**
