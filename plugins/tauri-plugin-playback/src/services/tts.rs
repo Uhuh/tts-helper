@@ -1,18 +1,21 @@
 use std::collections::HashMap;
 
 use bytes::Bytes;
+use serde::Deserialize;
+use serde_json::json;
 use tauri::{
-    api::http::{Client, HttpRequestBuilder},
+    api::http::{Client, HttpRequestBuilder, Body},
     http::{
         method::Method,
-        status::{InvalidStatusCode, StatusCode},
+        status::{InvalidStatusCode, StatusCode}, header::{HeaderValue},
     },
 };
 use thiserror::Error;
 
-use crate::models::requests::StreamElementsData;
+use crate::models::requests::{StreamElementsData, TikTokData};
 
 const STREAM_ELEMENTS_API: &str = "https://api.streamelements.com/kappa/v2/speech";
+const TIKTOK_API: &str = "https://tiktok-tts.weilnet.workers.dev/api/generation";
 
 macro_rules! hm {
     ($($key:expr => $value:expr),* $(,)?) => {{
@@ -28,12 +31,46 @@ pub struct TtsService {
     client: Client,
 }
 
+#[derive(Clone, Deserialize)]
+pub struct TikTokResponse {
+    pub success: String,
+    pub data: String,
+    pub error: String,
+}
+
 impl TtsService {
     /// Creates a new [`TtsService`] instance.
     #[inline]
     #[must_use]
     pub fn new(client: Client) -> Self {
         Self { client }
+    }
+
+    #[inline]
+    pub async fn tiktok(
+        &self,
+        data: TikTokData,
+    ) -> Result<Bytes, TtsRequestError> {
+
+        let req = HttpRequestBuilder::new(Method::POST.as_str(), TIKTOK_API)?
+        .header("Content-Type", HeaderValue::from_static("application/json"))?
+        .body(Body::Json(json!(
+            {
+                "voice": data.voice,
+                "text": data.text
+            }
+        )));
+
+        let res = self.client.send(req).await?.read().await?;
+        
+        let status = StatusCode::from_u16(res.status)?;
+        if status.is_client_error() || status.is_server_error() {
+            return Err(TtsRequestError::BadStatusCode(status));
+        }
+
+        let res: TikTokResponse = serde_json::from_value(res.data)?;
+
+        Ok(res.into())
     }
 
     /// Makes a request to StreamElements.

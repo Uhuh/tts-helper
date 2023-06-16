@@ -17,6 +17,8 @@ pub enum RequestAudioData {
     Raw(RawAudioData),
     /// StreamElements request data.
     StreamElements(StreamElementsData),
+    /// TikTok request data.
+    TikTok(TikTokData),
 }
 
 /// Raw audio data.
@@ -33,5 +35,14 @@ pub struct StreamElementsData {
     /// The text to speak.
     pub text: String,
     /// The voice to use.
+    pub voice: String,
+}
+
+/// TikTok request data.
+#[derive(Clone, Debug, Deserialize)]
+pub struct TikTokData {
+    /// The text to speak.
+    pub text: String,
+    /// The voice to use
     pub voice: String,
 }
