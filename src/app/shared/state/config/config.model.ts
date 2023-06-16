@@ -1,6 +1,7 @@
 import {
   AmazonPollyData,
   StreamElementsData,
+  TikTokData,
   TtsMonsterData,
   TtsType,
 } from './config.interface';
@@ -13,5 +14,6 @@ export interface ConfigState {
   streamElements: StreamElementsData;
   ttsMonster: TtsMonsterData;
   amazonPolly: AmazonPollyData;
+  tikTok: TikTokData;
   bannedWords: string[];
 }
