@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.0.0",
-    "@angular/cli": "~16.0.0",
+    "@angular/cli": "~16.1.0",
     "@angular/compiler-cli": "^16.0.0",
     "@tauri-apps/cli": "^1.4.0",
     "@types/jasmine": "~4.3.0",
