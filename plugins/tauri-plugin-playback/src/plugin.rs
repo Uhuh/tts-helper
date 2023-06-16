@@ -126,6 +126,9 @@ async fn play_audio(
         RequestAudioData::Raw(raw) => raw.data,
         RequestAudioData::StreamElements(stream_elements) => {
             tts_svc.stream_elements(stream_elements).await?
+        },
+        RequestAudioData::TikTok(tiktok) => {
+            tts_svc.tiktok(tiktok).await?
         }
     };
 
