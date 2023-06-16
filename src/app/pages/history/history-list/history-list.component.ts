@@ -22,11 +22,17 @@ export class HistoryListComponent {
     private readonly historyService: HistoryService,
     private readonly ref: ChangeDetectorRef
   ) {
+    /**
+     * Very annoyed with the detectChanges() being required here.
+     * Tauri is doing something funky or zone.js is not detecting the view properly.
+     * Am forced to have these here for whatever reason of they wont visually update.
+     */
+
     this.playbackService.audioStarted$
       .pipe(takeUntilDestroyed())
       .subscribe((id) => {
         this.currentlyPlaying.set(this.items().find((i) => i.id === id));
-        // It will absolutely not display in time without this.
+        this.ref.detectChanges();
       });
 
     this.playbackService.audioFinished$
@@ -34,12 +40,14 @@ export class HistoryListComponent {
       .subscribe((id) => {
         if (this.currentlyPlaying()?.id !== id) return;
         this.currentlyPlaying.set(undefined);
+        this.ref.detectChanges();
       });
 
     this.historyService.auditItems$
       .pipe(takeUntilDestroyed())
       .subscribe((items) => {
         this.items.set(items);
+        this.ref.detectChanges();
       });
   }
 }
