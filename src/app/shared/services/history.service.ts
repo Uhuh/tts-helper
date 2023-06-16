@@ -8,6 +8,7 @@ import {
 } from '../state/history/history-item.interface';
 import {
   addHistory,
+  removeHistory,
   updateHistoryStatus,
 } from '../state/history/history.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -88,15 +89,14 @@ export class HistoryService {
     /**
      * @TODO - Determine if not having a character limit on requeue is good or bad.
      */
-    this.playTts(audit.text, audit.username, audit.source, 1000, audit.id);
+    this.playTts(audit.text, audit.username, audit.source, 1000);
   }
 
   async playTts(
     text: string,
     username: string,
     source: AuditSource,
-    charLimit: number,
-    auditId?: number
+    charLimit: number
   ) {
     if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
       return;
@@ -113,14 +113,6 @@ export class HistoryService {
     this.playback
       .playAudio({ data })
       .then((id) => {
-        /**
-         * @TODO - Need to fix requeueing audio on the server side so skipping
-         * requeued audio works as expected
-         */
-        if (auditId) {
-          return this.updateHistory(auditId, AuditState.playing);
-        }
-
         this.addHistory({
           id,
           createdAt: new Date(),
@@ -231,6 +223,10 @@ export class HistoryService {
 
   addHistory(audit: AuditItem) {
     return this.store.dispatch(addHistory({ audit }));
+  }
+
+  removeHistory(auditId: number) {
+    return this.store.dispatch(removeHistory({ auditId }));
   }
 
   updateHistory(id: number, auditState: AuditState) {

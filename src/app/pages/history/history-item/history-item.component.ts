@@ -53,7 +53,7 @@ export class HistoryItemComponent {
   }
 
   requeue() {
-    this.historyService.updateHistory(this.audit.id, AuditState.playing);
+    this.historyService.removeHistory(this.audit.id);
 
     this.historyService.requeue(this.audit);
   }
