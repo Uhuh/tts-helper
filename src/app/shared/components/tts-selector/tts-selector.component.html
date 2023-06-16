@@ -1,0 +1,25 @@
+<div class="sub-header">
+  <label>Language</label>
+  <p>Select the desired spoken language.</p>
+  <mat-form-field>
+    <mat-select placeholder="Select a language" [formControl]="languageControl">
+      <mat-option *ngFor="let language of languageOptions()" [value]="language">
+        {{ language }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div class="sub-header">
+  <label>TTS Voice</label>
+  <p>Select which voice will speak.</p>
+  <mat-form-field>
+    <mat-select placeholder="Select a voice" [formControl]="voiceControl">
+      <mat-option
+        *ngFor="let voice of languageVoiceOptions()"
+        [value]="voice.value"
+      >
+        {{ voice.displayName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
