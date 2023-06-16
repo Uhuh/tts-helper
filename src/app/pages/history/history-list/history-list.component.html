@@ -2,18 +2,18 @@
   <div class="sub-header">
     <span>Currently playing</span>
     <app-history-item
-      *ngIf="currentlyPlaying"
-      [audit]="currentlyPlaying"
+      *ngIf="currentlyPlaying() as playing"
+      [audit]="playing"
       class="playing"
     ></app-history-item>
-    <div class="empty" *ngIf="!currentlyPlaying">
+    <div class="empty" *ngIf="!currentlyPlaying()">
       Nothing currently playing.
     </div>
     <hr />
   </div>
-  <div class="empty" *ngIf="!items.length">No history! Get to chatting.</div>
+  <div class="empty" *ngIf="!items().length">No history! Get to chatting.</div>
   <app-history-item
-    *ngFor="let item of items"
+    *ngFor="let item of items()"
     [audit]="item"
   ></app-history-item>
 </div>
