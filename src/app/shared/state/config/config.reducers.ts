@@ -5,6 +5,7 @@ import {
   streamElementsInfo,
   amazonPollyInfo,
   configInfo,
+  tikTokInfo,
 } from './config.actions';
 
 export const initialState: ConfigState = {
@@ -31,6 +32,10 @@ export const initialState: ConfigState = {
     language: '',
     poolId: '',
     region: '',
+  },
+  tikTok: {
+    voice: '',
+    language: '',
   },
 };
 
@@ -83,6 +88,20 @@ export const configReducer = createReducer(
     ...state,
     amazonPolly: {
       ...state.amazonPolly,
+      voice,
+    },
+  })),
+  on(tikTokInfo.language, (state, { language }) => ({
+    ...state,
+    tikTok: {
+      ...state.tikTok,
+      language,
+    },
+  })),
+  on(tikTokInfo.voice, (state, { voice }) => ({
+    ...state,
+    tikTok: {
+      ...state.tikTok,
       voice,
     },
   })),

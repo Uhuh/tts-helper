@@ -16,6 +16,7 @@ import { ConfigService } from './config.service';
 import {
   AmazonPollyData,
   StreamElementsData,
+  TikTokData,
   TtsMonsterData,
   TtsType,
 } from '../state/config/config.interface';
@@ -36,6 +37,7 @@ export class HistoryService {
   streamElements!: StreamElementsData;
   ttsMonster!: TtsMonsterData;
   amazonPolly!: AmazonPollyData;
+  tikTok!: TikTokData;
 
   constructor(
     private readonly store: Store,
@@ -74,6 +76,10 @@ export class HistoryService {
     this.configService.amazonPolly$
       .pipe(takeUntilDestroyed())
       .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
+
+    this.configService.tikTok$
+      .pipe(takeUntilDestroyed())
+      .subscribe((tikTok) => (this.tikTok = tikTok));
 
     this.playback.audioFinished$.pipe(takeUntilDestroyed()).subscribe((id) => {
       this.store.dispatch(
@@ -164,6 +170,12 @@ export class HistoryService {
         return {
           type: 'streamElements',
           voice: this.streamElements.voice,
+          text,
+        };
+      case 'tiktok':
+        return {
+          type: 'tikTok',
+          voice: this.tikTok.voice,
           text,
         };
       default:

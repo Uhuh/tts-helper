@@ -82,7 +82,6 @@ export class SettingsComponent {
     this.selectedTts.setValue(tts);
 
     this.configService.updateTts(tts);
-    this.configService.updateUrl(tts);
   }
 
   speak(): void {

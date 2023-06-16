@@ -33,6 +33,14 @@ export const streamElementsInfo = createActionGroup({
   },
 });
 
+export const tikTokInfo = createActionGroup({
+  source: 'TikTok',
+  events: {
+    Voice: props<{ voice: string }>(),
+    Language: props<{ language: string }>(),
+  },
+});
+
 export const updateTtsMonsterOverlayInfo = createAction(
   '[ ConfigState ] Updating tts monster overlay info',
   props<{ overlay: string; key: string; userId: string }>()

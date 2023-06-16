@@ -7,6 +7,7 @@ import {
   selectConfigState,
   selectDeviceVolume,
   selectStreamElements,
+  selectTikTok,
   selectTts,
   selectTtsMonster,
   selectUrl,
@@ -16,8 +17,9 @@ import {
   amazonPollyInfo,
   streamElementsInfo,
   updateTtsMonsterOverlayInfo,
+  tikTokInfo,
 } from '../state/config/config.actions';
-import { TtsType, TtsUrlMap } from '../state/config/config.interface';
+import { TtsType } from '../state/config/config.interface';
 import { initialState } from '../state/config/config.reducers';
 
 @Injectable()
@@ -26,6 +28,7 @@ export class ConfigService {
   public readonly streamElements$ = this.store.select(selectStreamElements);
   public readonly ttsMonster$ = this.store.select(selectTtsMonster);
   public readonly amazonPolly$ = this.store.select(selectAmazonPolly);
+  public readonly tikTok$ = this.store.select(selectTikTok);
   public readonly selectedDevice$ = this.store.select(selectAudioDevice);
   public readonly deviceVolume$ = this.store.select(selectDeviceVolume);
   public readonly configTts$ = this.store.select(selectTts);
@@ -67,6 +70,14 @@ export class ConfigService {
     this.store.dispatch(amazonPollyInfo.voice({ voice }));
   }
 
+  updateTikTokVoice(voice: string) {
+    this.store.dispatch(tikTokInfo.voice({ voice }));
+  }
+
+  updateTikTokLanguage(language: string) {
+    this.store.dispatch(tikTokInfo.language({ language }));
+  }
+
   updateTtsMonsterOverlayInfo(partial: {
     overlay: string;
     userId: string;
@@ -77,10 +88,6 @@ export class ConfigService {
 
   updateTts(tts: TtsType) {
     this.store.dispatch(configInfo.tts({ tts }));
-  }
-
-  updateUrl(tts: TtsType) {
-    this.store.dispatch(configInfo.url({ url: TtsUrlMap[tts] }));
   }
 
   updateSelectedDevice(audioDevice: string) {

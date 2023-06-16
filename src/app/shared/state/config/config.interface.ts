@@ -5,14 +5,6 @@ export type TtsType =
   | 'windows'
   | 'tiktok';
 
-export const TtsUrlMap = {
-  'stream-elements': 'https://api.streamelements.com/kappa/v2/speech',
-  tiktok: '',
-  'tts-monster': '',
-  'amazon-polly': '',
-  windows: '',
-} as const;
-
 export interface StreamElementsData {
   voice: string;
   language: string;
@@ -33,4 +25,9 @@ export interface TtsMonsterData {
   details: {
     provider: 'tts-helper';
   };
+}
+
+export interface TikTokData {
+  voice: string;
+  language: string;
 }

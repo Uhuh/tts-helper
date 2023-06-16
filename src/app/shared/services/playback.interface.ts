@@ -3,33 +3,35 @@ export type DeviceId = number;
 export type WithId<T, Id> = T & { id: Id };
 
 export interface DeviceInfo {
-    name: string;
-    isDefault: boolean;
+  name: string;
+  isDefault: boolean;
 }
 
 export interface OutputDeviceList {
-    outputDevices: WithId<DeviceInfo, DeviceId>[];
+  outputDevices: WithId<DeviceInfo, DeviceId>[];
 }
 
 export interface PlayAudioRequest {
-    data: RequestAudioData;
+  data: RequestAudioData;
 }
 
-export type RequestAudioData = {
-    type: "raw";
-    data: Uint8Array;
-} | {
-    type: "streamElements";
-    text: string;
-    voice: string;
-};
+export type RequestAudioData =
+  | {
+      type: 'raw';
+      data: Uint8Array;
+    }
+  | {
+      type: 'streamElements' | 'tikTok';
+      text: string;
+      voice: string;
+    };
 
 export interface PlaybackState {
-    /** End delay in milliseconds. */
-    endDelay: number;
-    paused: boolean;
+  /** End delay in milliseconds. */
+  endDelay: number;
+  paused: boolean;
 }
 
 export interface AudioState {
-    skipped: boolean;
+  skipped: boolean;
 }

@@ -24,6 +24,11 @@ export const selectAmazonPolly = createSelector(
   (state) => state.amazonPolly
 );
 
+export const selectTikTok = createSelector(
+  _selectConfigState,
+  (state) => state.tikTok
+);
+
 export const selectTts = createSelector(
   _selectConfigState,
   (state) => state.tts
