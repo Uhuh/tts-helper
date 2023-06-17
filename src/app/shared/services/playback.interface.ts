@@ -24,6 +24,10 @@ export type RequestAudioData =
       type: 'streamElements' | 'tikTok';
       text: string;
       voice: string;
+    }
+  | {
+      type: 'amazonPolly';
+      url?: string | null;
     };
 
 export interface PlaybackState {
