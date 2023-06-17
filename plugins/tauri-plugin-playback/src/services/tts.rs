@@ -11,7 +11,8 @@ use tauri::{
     },
 };
 use thiserror::Error;
-
+use tracing::{error};
+use base64::{Engine as _, engine::general_purpose};
 use crate::models::requests::{StreamElementsData, TikTokData};
 
 const STREAM_ELEMENTS_API: &str = "https://api.streamelements.com/kappa/v2/speech";
@@ -31,11 +32,11 @@ pub struct TtsService {
     client: Client,
 }
 
-#[derive(Clone, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct TikTokResponse {
-    pub success: String,
+    pub success: bool,
     pub data: String,
-    pub error: String,
+    pub error: Option<String>,
 }
 
 impl TtsService {
@@ -67,8 +68,9 @@ impl TtsService {
         if status.is_client_error() || status.is_server_error() {
             return Err(TtsRequestError::BadStatusCode(status));
         }
-
-        let res: TikTokResponse = serde_json::from_value(res.data)?;
+        
+        let res = serde_json::from_value::<TikTokResponse>(res.data)?;
+        let res = general_purpose::STANDARD_NO_PAD.decode(res.data).unwrap();
 
         Ok(res.into())
     }
@@ -110,4 +112,12 @@ pub enum TtsRequestError {
     /// The request returned an error status.
     #[error("TTS request returned an error status: {0}")]
     BadStatusCode(StatusCode),
+
+    /// The request failed to parse with serde 
+    #[error("Serde error returned: {0}")]
+    Error(#[from] serde_json::Error),
+
+    /// The request failed to decode the b64
+    #[error("Decoding error returned: {0}")]
+    DecodeError(#[from] base64::DecodeError)
 }

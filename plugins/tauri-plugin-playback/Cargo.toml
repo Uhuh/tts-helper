@@ -31,3 +31,4 @@ tracing = { workspace = true }
 # Util
 crossbeam = { workspace = true }
 static_assertions = { workspace = true }
+base64 = "0.21.0"
