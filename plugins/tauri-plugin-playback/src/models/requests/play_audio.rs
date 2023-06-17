@@ -19,6 +19,8 @@ pub enum RequestAudioData {
     StreamElements(StreamElementsData),
     /// TikTok request data.
     TikTok(TikTokData),
+    /// AmazonPolly request data.
+    AmazonPolly(AmazonPollyData),
 }
 
 /// Raw audio data.
@@ -45,4 +47,11 @@ pub struct TikTokData {
     pub text: String,
     /// The voice to use
     pub voice: String,
+}
+
+/// AmazonPolly request data.
+#[derive(Clone, Debug, Deserialize)]
+pub struct AmazonPollyData {
+    /// Possible AmazonPolly URL.
+    pub url: Option<String>,
 }

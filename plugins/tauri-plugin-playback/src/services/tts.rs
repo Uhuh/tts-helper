@@ -13,7 +13,7 @@ use tauri::{
 use thiserror::Error;
 use tracing::{error};
 use base64::{Engine as _, engine::general_purpose};
-use crate::models::requests::{StreamElementsData, TikTokData};
+use crate::models::requests::{StreamElementsData, TikTokData, AmazonPollyData};
 
 const STREAM_ELEMENTS_API: &str = "https://api.streamelements.com/kappa/v2/speech";
 const TIKTOK_API: &str = "https://tiktok-tts.weilnet.workers.dev/api/generation";
@@ -45,6 +45,24 @@ impl TtsService {
     #[must_use]
     pub fn new(client: Client) -> Self {
         Self { client }
+    }
+
+    #[inline]
+    pub async fn amazon_polly(
+        &self,
+        mut data: AmazonPollyData,
+    ) -> Result<Bytes, TtsRequestError> {
+        let req = HttpRequestBuilder::new(Method::GET.as_str(), data.url.get_or_insert(String::from("")))?;
+
+        let res = self.client.send(req).await?.bytes().await?;
+
+        // Check status code
+        let status = StatusCode::from_u16(res.status)?;
+        if status.is_client_error() || status.is_server_error() {
+            return Err(TtsRequestError::BadStatusCode(status));
+        }
+
+        Ok(res.data.into())
     }
 
     #[inline]
