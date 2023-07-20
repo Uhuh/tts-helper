@@ -1,24 +1,14 @@
 ﻿import { StaticAuthProvider } from '@twurple/auth';
 import { Injectable, OnDestroy } from '@angular/core';
 import { TwitchService } from './twitch.service';
-import { Subject, combineLatest, takeUntil } from 'rxjs';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient } from '@twurple/chat';
 import { HistoryService } from './history.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  TwitchCheer,
-  TwitchGiftSub,
-  TwitchRedeem,
-  TwitchSub,
-  TwitchSubMessage,
-} from './twitch-pubsub.interface';
-import {
-  TwitchBitState,
-  TwitchRedeemState,
-  TwitchSubState,
-} from '../state/twitch/twitch.model';
+import { TwitchCheer, TwitchGiftSub, TwitchRedeem, TwitchSub, TwitchSubMessage, } from './twitch-pubsub.interface';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
@@ -29,9 +19,9 @@ export class TwitchPubSub implements OnDestroy {
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
 
-  bitInfo: TwitchBitState | null = null;
-  redeemInfo: TwitchRedeemState | null = null;
-  subsInfo: TwitchSubState | null = null;
+  bitInfo = toSignal(this.twitchService.bitInfo$);
+  redeemInfo = toSignal(this.twitchService.redeemInfo$);
+  subsInfo = toSignal(this.twitchService.subsInfo$);
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
@@ -111,18 +101,6 @@ export class TwitchPubSub implements OnDestroy {
           this.onMessage(user, text)
         );
       });
-
-    this.twitchService.redeemInfo$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((redeemInfo) => (this.redeemInfo = redeemInfo));
-
-    this.twitchService.bitInfo$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((bitInfo) => (this.bitInfo = bitInfo));
-
-    this.twitchService.subsInfo$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((subsInfo) => (this.subsInfo = subsInfo));
   }
 
   onMessage(user: string, text: string) {
@@ -135,7 +113,7 @@ export class TwitchPubSub implements OnDestroy {
   }
 
   onSubMessage(message: TwitchSubMessage) {
-    if (!this.subsInfo?.enabled || !message.messageText) {
+    if (!this.subsInfo()?.enabled || !message.messageText || !this.subsInfo()) {
       return;
     }
 
@@ -143,21 +121,21 @@ export class TwitchPubSub implements OnDestroy {
       message.messageText,
       message.userDisplayName,
       'twitch',
-      this.subsInfo.subCharacterLimit
+      this.subsInfo()?.subCharacterLimit ?? 300
     );
   }
 
   onGiftSub(gift: TwitchGiftSub) {
-    if (!this.subsInfo?.enabled) {
+    if (!this.subsInfo()?.enabled) {
       return;
     }
 
-    const parsedInput = this.subsInfo.giftMessage
-      .replaceAll(/{username}/g, gift.gifterDisplayName)
-      .replaceAll(/{amount}/g, `${gift.amount}`);
+    const parsedInput = this.subsInfo()?.giftMessage
+                            .replaceAll(/{username}/g, gift.gifterDisplayName)
+                            .replaceAll(/{amount}/g, `${gift.amount}`);
 
     this.historyService.playTts(
-      parsedInput,
+      parsedInput ?? '',
       gift.gifterDisplayName,
       'twitch',
       999
@@ -172,7 +150,7 @@ export class TwitchPubSub implements OnDestroy {
     /**
      * Ignore users that received a gift sub
      */
-    if (!this.subsInfo?.enabled || sub.isGift) {
+    if (!this.subsInfo()?.enabled || sub.isGift) {
       return;
     }
 
@@ -186,9 +164,9 @@ export class TwitchPubSub implements OnDestroy {
 
   onBits(cheer: TwitchCheer) {
     if (
-      !this.bitInfo?.enabled ||
-      cheer.bits < this.bitInfo.minBits ||
-      (this.bitInfo.exact && cheer.bits !== this.bitInfo.minBits)
+      !this.bitInfo()?.enabled ||
+      cheer.bits < (this.bitInfo()?.minBits ?? 100) ||
+      (this.bitInfo()?.exact && cheer.bits !== this.bitInfo()?.minBits)
     ) {
       return;
     }
@@ -199,14 +177,14 @@ export class TwitchPubSub implements OnDestroy {
       cleanedInput,
       cheer.userDisplayName ?? '[ANONYMOUS]',
       'twitch',
-      this.bitInfo.bitsCharacterLimit
+      this.bitInfo()?.bitsCharacterLimit ?? 300
     );
   }
 
   onRedeem(redeem: TwitchRedeem) {
     if (
-      redeem.rewardId !== this.redeemInfo?.redeem ||
-      !this.redeemInfo.enabled
+      redeem.rewardId !== this.redeemInfo()?.redeem ||
+      !this.redeemInfo()?.enabled
     ) {
       return;
     }
@@ -215,7 +193,7 @@ export class TwitchPubSub implements OnDestroy {
       redeem.input,
       redeem.userDisplayName,
       'twitch',
-      this.redeemInfo.redeemCharacterLimit
+      this.redeemInfo()?.redeemCharacterLimit ?? 100
     );
   }
 

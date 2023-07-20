@@ -1,39 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {
-  selectAmazonPolly,
-  selectAudioDevice,
-  selectBannedWords,
-  selectConfigState,
-  selectDeviceVolume,
-  selectStreamElements,
-  selectTikTok,
-  selectTts,
-  selectTtsMonster,
-  selectUrl,
-} from '../state/config/config.selectors';
-import {
-  configInfo,
-  amazonPollyInfo,
-  streamElementsInfo,
-  updateTtsMonsterOverlayInfo,
-  tikTokInfo,
-} from '../state/config/config.actions';
-import { TtsType } from '../state/config/config.interface';
-import { initialState } from '../state/config/config.reducers';
+import { configFeature, TtsType } from '../state/config/config.feature';
+import { GlobalConfigActions } from '../state/config/config.actions';
 
 @Injectable()
 export class ConfigService {
-  public readonly configState$ = this.store.select(selectConfigState);
-  public readonly streamElements$ = this.store.select(selectStreamElements);
-  public readonly ttsMonster$ = this.store.select(selectTtsMonster);
-  public readonly amazonPolly$ = this.store.select(selectAmazonPolly);
-  public readonly tikTok$ = this.store.select(selectTikTok);
-  public readonly selectedDevice$ = this.store.select(selectAudioDevice);
-  public readonly deviceVolume$ = this.store.select(selectDeviceVolume);
-  public readonly configTts$ = this.store.select(selectTts);
-  public readonly configUrl$ = this.store.select(selectUrl);
-  public readonly bannedWords$ = this.store.select(selectBannedWords);
+  public readonly configState$ = this.store.select(configFeature.selectGlobalConfigState);
+  public readonly streamElements$ = this.store.select(configFeature.selectStreamElements);
+  public readonly ttsMonster$ = this.store.select(configFeature.selectTtsMonster);
+  public readonly amazonPolly$ = this.store.select(configFeature.selectAmazonPolly);
+  public readonly tikTok$ = this.store.select(configFeature.selectTikTok);
+  public readonly selectedDevice$ = this.store.select(configFeature.selectAudioDevice);
+  public readonly deviceVolume$ = this.store.select(configFeature.selectDeviceVolume);
+  public readonly configTts$ = this.store.select(configFeature.selectTts);
+  public readonly configUrl$ = this.store.select(configFeature.selectUrl);
+  public readonly bannedWords$ = this.store.select(configFeature.selectBannedWords);
 
   constructor(private readonly store: Store) {}
 
@@ -43,39 +24,39 @@ export class ConfigService {
       .filter((w) => !!w)
       .map((w) => w.trim());
 
-    this.store.dispatch(configInfo.bannedWords({ bannedWords: words }));
+    this.store.dispatch(GlobalConfigActions.updateBannedWords({ bannedWords: words }));
   }
 
   updateStreamElementsLanguage(language: string) {
-    this.store.dispatch(streamElementsInfo.language({ language }));
+    this.store.dispatch(GlobalConfigActions.updateStreamElementsLanguage({ language }));
   }
 
   updateVoice(voice: string) {
-    this.store.dispatch(streamElementsInfo.voice({ voice }));
+    this.store.dispatch(GlobalConfigActions.updateStreamElementsVoice({ voice }));
   }
 
   updateAmazonPollyLanguage(language: string) {
-    this.store.dispatch(amazonPollyInfo.language({ language }));
+    this.store.dispatch(GlobalConfigActions.updateAmazonPollyLanguage({ language }));
   }
 
   updateAmazonPollyRegion(region: string) {
-    this.store.dispatch(amazonPollyInfo.region({ region }));
+    this.store.dispatch(GlobalConfigActions.updateAmazonPollyRegion({ region }));
   }
 
   updateAmazonPollyPoolId(poolId: string) {
-    this.store.dispatch(amazonPollyInfo.poolId({ poolId }));
+    this.store.dispatch(GlobalConfigActions.updateAmazonPollyPoolId({ poolId }));
   }
 
   updateAmazonPollyVoice(voice: string) {
-    this.store.dispatch(amazonPollyInfo.voice({ voice }));
+    this.store.dispatch(GlobalConfigActions.updateAmazonPollyVoice({ voice }));
   }
 
   updateTikTokVoice(voice: string) {
-    this.store.dispatch(tikTokInfo.voice({ voice }));
+    this.store.dispatch(GlobalConfigActions.updateTikTokVoice({ voice }));
   }
 
   updateTikTokLanguage(language: string) {
-    this.store.dispatch(tikTokInfo.language({ language }));
+    this.store.dispatch(GlobalConfigActions.updateTikTokLanguage({ language }));
   }
 
   updateTtsMonsterOverlayInfo(partial: {
@@ -83,26 +64,22 @@ export class ConfigService {
     userId: string;
     key: string;
   }) {
-    this.store.dispatch(updateTtsMonsterOverlayInfo({ ...partial }));
+    this.store.dispatch(GlobalConfigActions.updateTtsMonsterOverlay({ ...partial }));
   }
 
   updateTts(tts: TtsType) {
-    this.store.dispatch(configInfo.tts({ tts }));
+    this.store.dispatch(GlobalConfigActions.updateSelectedTts({ tts }));
   }
 
-  updateSelectedDevice(audioDevice: string) {
-    this.store.dispatch(configInfo.audioDevice({ audioDevice }));
+  updateSelectedDevice(audioDevice: number) {
+    this.store.dispatch(GlobalConfigActions.updateSelectedAudioDevice({ audioDevice }));
   }
 
   updateDeviceVolume(deviceVolume: number) {
-    this.store.dispatch(configInfo.deviceVolume({ deviceVolume }));
+    this.store.dispatch(GlobalConfigActions.updateDeviceVolume({ deviceVolume }));
   }
 
   clearState() {
-    this.store.dispatch(
-      configInfo.configState({
-        configState: initialState,
-      })
-    );
+    this.store.dispatch(GlobalConfigActions.resetState());
   }
 }

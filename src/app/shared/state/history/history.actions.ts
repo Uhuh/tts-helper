@@ -1,17 +1,11 @@
-import { createAction, props } from '@ngrx/store';
-import { AuditItem, AuditState } from './history-item.interface';
+import { createActionGroup, props } from '@ngrx/store';
+import { AuditItem, AuditState } from './history.feature';
 
-export const updateHistoryStatus = createAction(
-  '[ HistoryState ] Updating history status',
-  props<{ id: number; auditState: AuditState }>()
-);
-
-export const addHistory = createAction(
-  '[ HistoryState ] Adding audit to history',
-  props<{ audit: AuditItem }>()
-);
-
-export const removeHistory = createAction(
-  '[ HistoryState ] Removing audit from history',
-  props<{ auditId: number }>()
-);
+export const HistoryActions = createActionGroup({
+  source: 'HistoryState',
+  events: {
+    'Update Audit State': props<{ id: number; auditState: AuditState }>(),
+    'Add Audit Item': props<{ audit: AuditItem }>(),
+    'Remove Audit Item': props<{ auditId: number }>(),
+  }
+});

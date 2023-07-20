@@ -1,40 +1,32 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectAuditItems } from '../state/history/history.selectors';
-import {
-  AuditItem,
-  AuditSource,
-  AuditState,
-} from '../state/history/history-item.interface';
-import {
-  addHistory,
-  removeHistory,
-  updateHistoryStatus,
-} from '../state/history/history.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigService } from './config.service';
+
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { PlaybackService } from './playback.service';
+import { RequestAudioData } from './playback.interface';
+
+import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
+import { PollyClient } from '@aws-sdk/client-polly';
+import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
+import { AuditItem, AuditSource, AuditState, historyFeature } from '../state/history/history.feature';
 import {
   AmazonPollyData,
   StreamElementsData,
   TikTokData,
   TtsMonsterData,
-  TtsType,
-} from '../state/config/config.interface';
-
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { PlaybackService } from './playback.service';
-import { RequestAudioData } from './playback.interface';
-import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
-import { PollyClient } from '@aws-sdk/client-polly';
-import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
+  TtsType
+} from '../state/config/config.feature';
+import { HistoryActions } from '../state/history/history.actions';
 
 @Injectable()
 export class HistoryService {
-  public readonly auditItems$ = this.store.select(selectAuditItems);
+  public readonly auditItems$ = this.store.select(historyFeature.selectAuditItems);
   bannedWords: string[] = [];
 
   tts: TtsType = 'stream-elements';
-  deviceId = '';
+  // deviceId = 0;
   deviceVolume = 100;
   streamElements!: StreamElementsData;
   ttsMonster!: TtsMonsterData;
@@ -48,40 +40,40 @@ export class HistoryService {
     private readonly playback: PlaybackService
   ) {
     this.configService.configTts$
-      .pipe(takeUntilDestroyed())
-      .subscribe((tts) => (this.tts = tts));
+        .pipe(takeUntilDestroyed())
+        .subscribe((tts) => (this.tts = tts));
 
     this.configService.deviceVolume$
-      .pipe(takeUntilDestroyed())
-      .subscribe((volume) => (this.deviceVolume = volume));
+        .pipe(takeUntilDestroyed())
+        .subscribe((volume) => (this.deviceVolume = volume));
 
-    this.configService.selectedDevice$
-      .pipe(takeUntilDestroyed())
-      .subscribe((device) => (this.deviceId = device));
+    // this.configService.selectedDevice$
+    //   .pipe(takeUntilDestroyed())
+    //   .subscribe((device) => (this.deviceId = device));
 
     this.configService.bannedWords$
-      .pipe(takeUntilDestroyed())
-      .subscribe((bannedWords) => (this.bannedWords = bannedWords));
+        .pipe(takeUntilDestroyed())
+        .subscribe((bannedWords) => (this.bannedWords = bannedWords));
 
     this.configService.streamElements$
-      .pipe(takeUntilDestroyed())
-      .subscribe((streamElements) => (this.streamElements = streamElements));
+        .pipe(takeUntilDestroyed())
+        .subscribe((streamElements) => (this.streamElements = streamElements));
 
     this.configService.ttsMonster$
-      .pipe(takeUntilDestroyed())
-      .subscribe((ttsMonster) => (this.ttsMonster = ttsMonster));
+        .pipe(takeUntilDestroyed())
+        .subscribe((ttsMonster) => (this.ttsMonster = ttsMonster));
 
     this.configService.amazonPolly$
-      .pipe(takeUntilDestroyed())
-      .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
+        .pipe(takeUntilDestroyed())
+        .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
 
     this.configService.tikTok$
-      .pipe(takeUntilDestroyed())
-      .subscribe((tikTok) => (this.tikTok = tikTok));
+        .pipe(takeUntilDestroyed())
+        .subscribe((tikTok) => (this.tikTok = tikTok));
 
     this.playback.audioFinished$.pipe(takeUntilDestroyed()).subscribe((id) => {
       this.store.dispatch(
-        updateHistoryStatus({
+        HistoryActions.updateAuditState({
           id,
           auditState: AuditState.finished,
         })
@@ -117,27 +109,27 @@ export class HistoryService {
     }
 
     this.playback
-      .playAudio({ data })
-      .then((id) => {
-        this.addHistory({
-          id,
-          createdAt: new Date(),
-          source,
-          text,
-          username,
-          state: AuditState.playing,
+        .playAudio({ data })
+        .then((id) => {
+          this.addHistory({
+            id,
+            createdAt: new Date(),
+            source,
+            text,
+            username,
+            state: AuditState.playing,
+          });
+        })
+        .catch((e) => {
+          console.error(`Error playing TTS`, e);
+          this.snackbar.open(
+            'Oops! We encountered an error while playing that.',
+            'Dismiss',
+            {
+              panelClass: 'notification-error',
+            }
+          );
         });
-      })
-      .catch((e) => {
-        console.error(`Error playing TTS`, e);
-        this.snackbar.open(
-          'Oops! We encountered an error while playing that.',
-          'Dismiss',
-          {
-            panelClass: 'notification-error',
-          }
-        );
-      });
   }
 
   private async getRequestData(text: string): Promise<RequestAudioData | null> {
@@ -215,14 +207,14 @@ export class HistoryService {
   }
 
   addHistory(audit: AuditItem) {
-    return this.store.dispatch(addHistory({ audit }));
+    return this.store.dispatch(HistoryActions.addAuditItem({ audit }));
   }
 
   removeHistory(auditId: number) {
-    return this.store.dispatch(removeHistory({ auditId }));
+    return this.store.dispatch(HistoryActions.removeAuditItem({ auditId }));
   }
 
   updateHistory(id: number, auditState: AuditState) {
-    return this.store.dispatch(updateHistoryStatus({ id, auditState }));
+    return this.store.dispatch(HistoryActions.updateAuditState({ id, auditState }));
   }
 }

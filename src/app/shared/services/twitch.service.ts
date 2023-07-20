@@ -1,39 +1,24 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {
-  selectIsTokenValid,
-  selectTwitchChannelInfo,
-  selectTwitchRedeems,
-  selectTwitchState,
-  selectTwitchToken,
-  selectRedeemInfo,
-  selectBitInfo,
-  selectSubInfo,
-} from '../state/twitch/twitch.selectors';
 import { TwitchApi } from '../api/twitch.api';
-import {
-  twitchBitsInfo,
-  twitchInfo,
-  twitchRedeemInfo,
-  twitchSubInfo,
-} from '../state/twitch/twitch.actions';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
-import { ValidUser } from '../state/twitch/twitch.interface';
+import { twitchFeature, ValidUser } from '../state/twitch/twitch.feature';
+import { TwitchStateActions } from '../state/twitch/twitch.actions';
 
 @Injectable()
 export class TwitchService implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  public readonly twitchState$ = this.store.select(selectTwitchState);
-  public readonly twitchToken$ = this.store.select(selectTwitchToken);
-  public readonly redeems$ = this.store.select(selectTwitchRedeems);
-  public readonly isTokenValid$ = this.store.select(selectIsTokenValid);
-  public readonly channelInfo$ = this.store.select(selectTwitchChannelInfo);
+  public readonly twitchState$ = this.store.select(twitchFeature.selectTwitchStateState);
+  public readonly twitchToken$ = this.store.select(twitchFeature.selectToken);
+  public readonly redeems$ = this.store.select(twitchFeature.selectRedeems);
+  public readonly isTokenValid$ = this.store.select(twitchFeature.selectIsTokenValid);
+  public readonly channelInfo$ = this.store.select(twitchFeature.selectChannelInfo);
 
-  public readonly subsInfo$ = this.store.select(selectSubInfo);
-  public readonly redeemInfo$ = this.store.select(selectRedeemInfo);
-  public readonly bitInfo$ = this.store.select(selectBitInfo);
+  public readonly subsInfo$ = this.store.select(twitchFeature.selectSubsInfo);
+  public readonly redeemInfo$ = this.store.select(twitchFeature.selectRedeemInfo);
+  public readonly bitInfo$ = this.store.select(twitchFeature.selectBitInfo);
 
   constructor(
     private readonly store: Store,
@@ -67,35 +52,7 @@ export class TwitchService implements OnDestroy {
   }
 
   clearState() {
-    this.store.dispatch(
-      twitchInfo.twitchState({
-        twitchState: {
-          isTokenValid: false,
-          token: null,
-          subsInfo: {
-            enabled: true,
-            giftMessage: '',
-            subCharacterLimit: 300,
-          },
-          redeemInfo: {
-            enabled: true,
-            redeem: null,
-            redeemCharacterLimit: 300,
-          },
-          bitInfo: {
-            enabled: true,
-            exact: false,
-            minBits: 100,
-            bitsCharacterLimit: 300,
-          },
-          channelInfo: {
-            channelId: '',
-            username: '',
-            redeems: [],
-          },
-        },
-      })
-    );
+    this.store.dispatch(TwitchStateActions.resetState());
   }
 
   signOut() {
@@ -104,81 +61,85 @@ export class TwitchService implements OnDestroy {
 
   signIn(token: string) {
     this.twitchApi
-      .validateToken(token)
-      .pipe(
-        takeUntil(this.destroyed$),
-        switchMap((user: ValidUser) => {
-          this.store.dispatch(twitchInfo.token({ token }));
-          this.store.dispatch(twitchInfo.isTokenValid({ isTokenValid: true }));
-          this.store.dispatch(
-            twitchInfo.channelInfo({
-              channelInfo: {
-                username: user.login,
-                channelId: user.user_id,
-                redeems: [],
-              },
-            })
-          );
+        .validateToken(token)
+        .pipe(
+          takeUntil(this.destroyed$),
+          switchMap((user: ValidUser) => {
+            this.store.dispatch(TwitchStateActions.updateToken({ token }));
+            this.store.dispatch(TwitchStateActions.updateIsTokenValid({ isTokenValid: true }));
+            this.store.dispatch(
+              TwitchStateActions.updateChannelInfo({
+                channelInfo: {
+                  username: user.login,
+                  channelId: user.user_id,
+                  redeems: [],
+                },
+              }),
+            );
 
-          return this.twitchApi.getChannelRedeemCommands(user.user_id, token);
-        })
-      )
-      .subscribe({
-        next: (data) => {
-          this.store.dispatch(
-            twitchInfo.redeems({
-              redeems: data.data.map((r) => ({
-                cost: r.cost,
-                id: r.id,
-                prompt: r.prompt,
-                title: r.title,
-              })),
-            })
-          );
-        },
-        error: (e) => console.error(e),
-      });
+            return this.twitchApi.getChannelRedeemCommands(user.user_id, token);
+          })
+        )
+        .subscribe({
+          next: (data) => {
+            this.store.dispatch(
+              TwitchStateActions.updateRedeems({
+                redeems: data.data.map((r) => ({
+                  cost: r.cost,
+                  id: r.id,
+                  prompt: r.prompt,
+                  title: r.title,
+                })),
+              })
+            );
+          },
+          error: (e) => {
+            // Token has most likely expired.
+            this.clearState();
+            console.error(`Failed to log user in.`, e)
+          },
+        });
   }
 
   updateRedeemEnabled(enabled: boolean) {
-    this.store.dispatch(twitchRedeemInfo.enabled({ enabled }));
+    this.store.dispatch(TwitchStateActions.updateRedeemEnabled({ enabled }));
   }
 
   updateSelectedRedeem(redeem: string | null) {
-    this.store.dispatch(twitchRedeemInfo.redeem({ redeem }));
+    this.store.dispatch(TwitchStateActions.updateSelectedRedeem({ redeem }));
   }
 
   updateRedeemCharLimit(redeemCharacterLimit: number) {
     this.store.dispatch(
-      twitchRedeemInfo.redeemCharLimit({ redeemCharacterLimit })
+      TwitchStateActions.updateRedeemCharLimit({ redeemCharacterLimit })
     );
   }
 
   updateMinBits(minBits: number) {
-    this.store.dispatch(twitchBitsInfo.minBits({ minBits }));
+    this.store.dispatch(TwitchStateActions.updateBitsMin({ minBits }));
   }
 
   updateBitsCharLimit(bitsCharacterLimit: number) {
-    this.store.dispatch(twitchBitsInfo.bitsCharLimit({ bitsCharacterLimit }));
+    this.store.dispatch(TwitchStateActions.updateBitsCharLimit({ bitsCharacterLimit }));
   }
 
   updateBitsEnabled(enabled: boolean) {
-    this.store.dispatch(twitchBitsInfo.enabled({ enabled }));
+    this.store.dispatch(TwitchStateActions.updateBitsEnabled({ enabled }));
   }
 
   updateBitsExact(exact: boolean) {
-    this.store.dispatch(twitchBitsInfo.exact({ exact }));
+    this.store.dispatch(TwitchStateActions.updateBitsExact({ exact }));
   }
 
   updateSubEnabled(enabled: boolean) {
-    this.store.dispatch(twitchSubInfo.enabled({ enabled }));
+    this.store.dispatch(TwitchStateActions.updateSubEnabled({ enabled }));
   }
 
   updateGiftMessage(giftMessage: string) {
-    this.store.dispatch(twitchSubInfo.giftMessage({ giftMessage }));
+    this.store.dispatch(TwitchStateActions.updateSubGiftMessage({ giftMessage }));
   }
 
   updateSubCharLimit(subCharacterLimit: number) {
-    this.store.dispatch(twitchSubInfo.subCharLimit({ subCharacterLimit }));
+    this.store.dispatch(TwitchStateActions.updateSubCharLimit({ subCharacterLimit }));
   }
 }

@@ -1,42 +1,24 @@
-﻿import { createAction, createActionGroup, props } from '@ngrx/store';
-import { TwitchChannelInfo, TwitchRedeemInfo } from './twitch.interface';
-import { TwitchState } from './twitch.model';
+﻿import { createActionGroup, emptyProps, props } from '@ngrx/store';
+import { TwitchChannelInfo, TwitchRedeemInfo, TwitchState } from './twitch.feature';
 
-export const twitchInfo = createActionGroup({
-  source: 'TwitchState - Twitch Info',
+export const TwitchStateActions = createActionGroup({
+  source: 'TwitchState',
   events: {
-    Token: props<{ token: string | null }>(),
-    Redeems: props<{ redeems: TwitchRedeemInfo[] }>(),
-    'Twitch State': props<{ twitchState: TwitchState }>(),
-    'Is Token Valid': props<{ isTokenValid: boolean }>(),
-    'Channel Info': props<{ channelInfo: TwitchChannelInfo }>(),
-  },
-});
-
-export const twitchSubInfo = createActionGroup({
-  source: 'TwitchState - Twitch Sub Info',
-  events: {
-    Enabled: props<{ enabled: boolean }>(),
-    'Sub Char Limit': props<{ subCharacterLimit: number }>(),
-    'Gift Message': props<{ giftMessage: string }>(),
-  },
-});
-
-export const twitchRedeemInfo = createActionGroup({
-  source: 'TwitchState - Twitch Redeem Info',
-  events: {
-    Enabled: props<{ enabled: boolean }>(),
-    Redeem: props<{ redeem: string | null }>(),
-    'Redeem Char Limit': props<{ redeemCharacterLimit: number }>(),
-  },
-});
-
-export const twitchBitsInfo = createActionGroup({
-  source: 'TwitchState - Twitch Bits Info',
-  events: {
-    Exact: props<{ exact: boolean }>(),
-    Enabled: props<{ enabled: boolean }>(),
-    'Min Bits': props<{ minBits: number }>(),
-    'Bits Char Limit': props<{ bitsCharacterLimit: number }>(),
-  },
+    'Update Token': props<{ token: string | null }>(),
+    'Update Redeems': props<{ redeems: TwitchRedeemInfo[] }>(),
+    'Update State': props<{ twitchState: TwitchState }>(),
+    'Update Is Token Valid': props<{ isTokenValid: boolean }>(),
+    'Update Channel Info': props<{ channelInfo: TwitchChannelInfo }>(),
+    'Update Sub Enabled': props<{ enabled: boolean }>(),
+    'Update Sub Char Limit': props<{ subCharacterLimit: number }>(),
+    'Update Sub Gift Message': props<{ giftMessage: string }>(),
+    'Update Redeem Enabled': props<{ enabled: boolean }>(),
+    'Update Selected Redeem': props<{ redeem: string | null }>(),
+    'Update Redeem Char Limit': props<{ redeemCharacterLimit: number }>(),
+    'Update Bits Enabled': props<{ enabled: boolean }>(),
+    'Update Bits Exact': props<{ exact: boolean }>(),
+    'Update Bits Min': props<{ minBits: number }>(),
+    'Update Bits Char Limit': props<{ bitsCharacterLimit: number }>(),
+    'Reset State': emptyProps(),
+  }
 });

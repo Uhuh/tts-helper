@@ -4,16 +4,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { StoreModule } from '@ngrx/store';
-import { historyReducer } from './shared/state/history/history.reducers';
+import { historyFeature } from './shared/state/history/history.feature';
 import { TwitchService } from './shared/services/twitch.service';
-import { twitchReducer } from './shared/state/twitch/twitch.reducers';
+import { twitchFeature } from './shared/state/twitch/twitch.feature';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TwitchApi } from './shared/api/twitch.api';
 import { HttpClientModule } from '@angular/common/http';
 import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { HistoryService } from './shared/services/history.service';
 import { ConfigService } from './shared/services/config.service';
-import { configReducer } from './shared/state/config/config.reducers';
+import { configFeature } from './shared/state/config/config.feature';
 import { StorageService } from './shared/services/storage.service';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NavComponent } from './shared/components/nav/nav.component';
@@ -25,11 +25,9 @@ import { PlaybackService } from './shared/services/playback.service';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    StoreModule.forRoot({
-      historyState: historyReducer,
-      twitchState: twitchReducer,
-      configState: configReducer,
-    }),
+    StoreModule.forFeature(historyFeature),
+    StoreModule.forFeature(twitchFeature),
+    StoreModule.forFeature(configFeature),
     BrowserAnimationsModule,
     MatSnackBarModule,
     NavComponent,
