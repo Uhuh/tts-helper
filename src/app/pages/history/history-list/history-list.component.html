@@ -2,13 +2,13 @@
   <div class="sub-header">
     <span>Currently playing</span>
     <app-history-item
-      *ngIf="currentlyPlaying() as playing"
+      *ngIf="currentlyPlaying() as playing; else quiet"
       [audit]="playing"
       class="playing"
     ></app-history-item>
-    <div class="empty" *ngIf="!currentlyPlaying()">
-      Nothing currently playing.
-    </div>
+    <ng-template #quiet>
+      <div class="empty">Nothing currently playing.</div>
+    </ng-template>
     <hr />
   </div>
   <div class="empty" *ngIf="!items().length">No history! Get to chatting.</div>

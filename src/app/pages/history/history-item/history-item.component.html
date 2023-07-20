@@ -2,11 +2,11 @@
   <div class="info">
     <span class="username">
       <span class="name">{{ audit.username }}</span>
-      <img [src]="svg" />
+      <img [src]="svg"/>
     </span>
     <span>{{ audit.createdAt | date : 'short' }}</span>
   </div>
-  <hr />
+  <hr/>
   <span class="text">{{ audit.text }}</span>
   <div class="action-row">
     <app-button
