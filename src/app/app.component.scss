@@ -7,9 +7,5 @@
   display: flex;
   width: 100%;
   max-width: 640px;
-  margin: 0 7rem;
-
-  @media (max-width: 900px) {
-    margin: 2rem;
-  }
+  margin: 0 2rem;
 }
