@@ -1,6 +1,6 @@
 <div class="wrapper">
   <a [routerLink]="['home']" (click)="close()">
-    <img class="icon" src="assets/tts-helper.svg" />
+    <img alt="tts-helper-logo" class="icon" src="assets/tts-helper.svg" />
   </a>
   <div class="nav-groups">
     <div class="nav-group">
@@ -11,7 +11,7 @@
         routerLinkActive="active"
         (click)="close()"
       >
-        <img src="assets/twitch.svg" />
+        <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21"/>
         <span>Twitch</span>
       </a>
       <a
@@ -20,7 +20,7 @@
         routerLinkActive="active"
         (click)="close()"
       >
-        <img src="assets/youtube.svg" />
+        <img alt="youtube-logo" ngSrc="assets/youtube.svg" height="17" width="24"/>
         <span>Youtube</span>
       </a>
     </div>
@@ -50,7 +50,7 @@
         routerLinkActive="active"
         (click)="close()"
       >
-        <img class="tts-icon" src="assets/history.svg" />
+        <img alt="history-logo" class="tts-icon" ngSrc="assets/history.svg" height="17" width="16"/>
         <span>History</span>
       </a>
       <a
@@ -59,7 +59,7 @@
         routerLinkActive="active"
         (click)="close()"
       >
-        <img class="tts-icon" src="assets/clock.svg" />
+        <img alt="queue-logo" class="tts-icon" ngSrc="assets/clock.svg" height="17" width="16"/>
         <span>Queue</span>
       </a>
     </div>
