@@ -10,7 +10,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
-import { DeviceId, DeviceInfo, OutputDeviceList, WithId } from 'src/app/shared/services/playback.interface';
+import {
+  DeviceId,
+  DeviceInfo,
+  WithId,
+} from 'src/app/shared/services/playback.interface';
 
 @Component({
   selector: 'app-device',
@@ -29,7 +33,7 @@ import { DeviceId, DeviceInfo, OutputDeviceList, WithId } from 'src/app/shared/s
 })
 export class DeviceComponent {
   devices = signal<WithId<DeviceInfo, DeviceId>[]>([]);
-  selectedDevice = nonNullFormControl('');
+  selectedDevice = nonNullFormControl(0);
   volume = nonNullFormControl(100);
 
   constructor(

@@ -5,7 +5,7 @@ import { NgClass, DatePipe } from '@angular/common';
 import {
   AuditItem,
   AuditState,
-} from '../../../shared/state/history/history-item.interface';
+} from '../../../shared/state/history/history.feature';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
 
@@ -31,12 +31,13 @@ export class HistoryItemComponent {
 
   get action() {
     switch (this.audit.state) {
-      case AuditState.finished:
-        return 'Finished';
       case AuditState.playing:
         return 'Skip';
       case AuditState.skipped:
         return 'Skipped';
+      case AuditState.finished:
+      default:
+        return 'Finished';
     }
   }
 

@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
-import { TwitchRedeemInfo } from 'src/app/shared/state/twitch/twitch.interface';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { MatOptionModule } from '@angular/material/core';
@@ -11,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 import { NgIf, NgFor } from '@angular/common';
+import { TwitchRedeemInfo } from '../../../shared/state/twitch/twitch.feature';
 
 @Component({
   selector: 'app-redeems',

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { HistoryService } from 'src/app/shared/services/history.service';
-import { TtsType } from 'src/app/shared/state/config/config.interface';
 import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { WindowsComponent } from './windows/windows.component';
 import { TtsMonsterComponent } from './tts-monster/tts-monster.component';
@@ -13,6 +12,7 @@ import { DeviceComponent } from './device/device.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { TiktokComponent } from './tiktok/tiktok.component';
+import { TtsType } from '../../shared/state/config/config.feature';
 
 interface TtsOption {
   disabled?: boolean;

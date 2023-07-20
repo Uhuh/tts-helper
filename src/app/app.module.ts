@@ -25,6 +25,8 @@ import { PlaybackService } from './shared/services/playback.service';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    // Inject reducer manager
+    StoreModule.forRoot({}),
     StoreModule.forFeature(historyFeature),
     StoreModule.forFeature(twitchFeature),
     StoreModule.forFeature(configFeature),

@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIf, NgFor } from '@angular/common';
-import { AuditItem } from '../../../shared/state/history/history-item.interface';
 import { HistoryService } from '../../../shared/services/history.service';
 import { PlaybackService } from '../../../shared/services/playback.service';
 import { HistoryItemComponent } from '../history-item/history-item.component';
+import { AuditItem } from '../../../shared/state/history/history.feature';
 
 @Component({
   selector: 'app-history-list',

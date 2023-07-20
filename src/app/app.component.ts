@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { StorageService } from './shared/services/storage.service';
-import { TwitchState } from './shared/state/twitch/twitch.model';
-import { twitchInfo } from './shared/state/twitch/twitch.actions';
 import { Store } from '@ngrx/store';
 import { TwitchService } from './shared/services/twitch.service';
 import { debounceTime } from 'rxjs';
 import { ConfigService } from './shared/services/config.service';
-import { ConfigState } from './shared/state/config/config.model';
-import { configInfo } from './shared/state/config/config.actions';
 import { PlaybackService } from './shared/services/playback.service';
+import { TwitchState } from './shared/state/twitch/twitch.feature';
+import { ConfigState } from './shared/state/config/config.feature';
+import { TwitchStateActions } from './shared/state/twitch/twitch.actions';
+import { GlobalConfigActions } from './shared/state/config/config.actions';
 
 @Component({
   selector: 'app-root',
@@ -37,7 +37,7 @@ export class AppComponent {
         }
 
         this.store.dispatch(
-          twitchInfo.twitchState({ twitchState: data.value })
+          TwitchStateActions.updateState({ twitchState: data.value })
         );
       });
 
@@ -49,7 +49,7 @@ export class AppComponent {
         }
 
         this.store.dispatch(
-          configInfo.configState({ configState: data.value })
+          GlobalConfigActions.updateState({ configState: data.value })
         );
       });
 
