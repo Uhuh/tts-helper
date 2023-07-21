@@ -35,11 +35,36 @@ export interface TikTokData {
   language: string;
 }
 
+/**
+ * TODO Support multiple TTS redeems that can be configured to different services.
+ */
+
+export interface ChatPermissions {
+  allUsers: boolean,
+  mods: boolean,
+  payingMembers: boolean,
+}
+
+interface ChatState {
+  enabled: boolean;
+  permissions: ChatPermissions;
+  cooldown: number;
+  command: string;
+}
+
+export interface GeneralChatState extends ChatState {
+}
+
+export interface GptChatState extends ChatState {
+}
+
 export interface ConfigState {
   tts: TtsType;
   url: string;
   audioDevice: number;
   deviceVolume: number;
+  generalChat: GeneralChatState;
+  gptChat: GptChatState;
   streamElements: StreamElementsData;
   ttsMonster: TtsMonsterData;
   amazonPolly: AmazonPollyData;
@@ -47,15 +72,34 @@ export interface ConfigState {
   bannedWords: string[];
 }
 
+const defaultChatPermissions: ChatPermissions = {
+  allUsers: false,
+  mods: false,
+  payingMembers: false,
+};
+
+const defaultChatState = {
+  command: '!say',
+  permissions: defaultChatPermissions,
+  cooldown: 0,
+  enabled: false,
+};
+
+const defaultTtsState = {
+  language: '',
+  voice: '',
+};
+
 export const initialState: ConfigState = {
   bannedWords: [],
   tts: 'stream-elements',
   url: 'https://api.streamelements.com/kappa/v2/speech',
   audioDevice: 0,
   deviceVolume: 100,
-  streamElements: {
-    language: '',
-    voice: '',
+  generalChat: defaultChatState,
+  gptChat: {
+    ...defaultChatState,
+    command: '!ask',
   },
   ttsMonster: {
     overlay: '',
@@ -67,24 +111,41 @@ export const initialState: ConfigState = {
     },
   },
   amazonPolly: {
-    voice: '',
-    language: '',
+    ...defaultTtsState,
     poolId: '',
     region: '',
   },
-  tikTok: {
-    voice: '',
-    language: '',
-  },
+  streamElements: defaultTtsState,
+  tikTok: defaultTtsState,
 };
 
-export const configFeature = createFeature({
+export const ConfigFeature = createFeature({
   name: 'GlobalConfig',
   reducer: createReducer(
     initialState,
     on(GlobalConfigActions.updateState, (state, { configState }) => ({
       ...state,
       ...configState,
+    })),
+    on(GlobalConfigActions.updateGPTChatPermissions, (state, { permissions }) => ({
+      ...state,
+      gptChat: {
+        ...state.gptChat,
+        permissions: {
+          ...state.gptChat.permissions,
+          ...permissions,
+        },
+      },
+    })),
+    on(GlobalConfigActions.updateGeneralChatPermissions, (state, { permissions }) => ({
+      ...state,
+      generalChat: {
+        ...state.generalChat,
+        permissions: {
+          ...state.generalChat.permissions,
+          ...permissions,
+        },
+      },
     })),
     on(GlobalConfigActions.updateBannedWords, (state, { bannedWords }) => ({
       ...state,

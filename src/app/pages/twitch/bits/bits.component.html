@@ -5,14 +5,14 @@
 <div class="sub-header">
   <label>Handle bits</label>
   <p>Enable or disable TTS events for bits.</p>
-  <app-toggle [control]="enabled"> Enabled </app-toggle>
+  <app-toggle [control]="enabled" />
 </div>
 
 <ng-container *ngIf="enabled.value">
   <div class="sub-header">
     <label>Exact bits amount</label>
     <p>Only trigger TTS on exact min bits amount.</p>
-    <app-toggle [control]="exact"> Enabled </app-toggle>
+    <app-toggle [control]="exact" />
   </div>
 
   <div class="sub-header">

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { HistoryService } from 'src/app/shared/services/history.service';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { WindowsComponent } from './windows/windows.component';
 import { TtsMonsterComponent } from './tts-monster/tts-monster.component';
 import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
@@ -13,6 +12,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { InputComponent } from '../../shared/components/input/input.component';
 import { TiktokComponent } from './tiktok/tiktok.component';
 import { TtsType } from '../../shared/state/config/config.feature';
+import { FormControl } from '@angular/forms';
 
 interface TtsOption {
   disabled?: boolean;
@@ -38,8 +38,8 @@ interface TtsOption {
   ],
 })
 export class SettingsComponent {
-  ttsControl = nonNullFormControl('');
-  selectedTts = nonNullFormControl<TtsType>('stream-elements');
+  ttsControl = new FormControl('', { nonNullable: true });
+  selectedTts = new FormControl<TtsType>('stream-elements', { nonNullable: true });
   ttsOptions: Array<TtsOption> = [
     {
       displayValue: 'StreamElements',
@@ -100,3 +100,5 @@ export class SettingsComponent {
     return this.ttsControl.value === '';
   }
 }
+
+export default SettingsComponent;

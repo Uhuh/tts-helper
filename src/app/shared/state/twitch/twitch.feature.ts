@@ -75,7 +75,7 @@ const initialState: TwitchState = {
   },
 };
 
-export const twitchFeature = createFeature({
+export const TwitchFeature = createFeature({
   name: 'TwitchState',
   reducer: createReducer(
     initialState,

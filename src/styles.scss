@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+
 @include mat.core();
 
 $my-app-accent: mat.define-palette(mat.$grey-palette, A200, A100, A400);
@@ -40,20 +41,20 @@ $my-app-warn: mat.define-palette(mat.$red-palette, 800);
 $my-app-primary: mat.define-palette($tts-helper-palette, 600);
 
 $my-app-theme: mat.define-dark-theme(
-  (
-    color: (
-      primary: $my-app-primary,
-      accent: $my-app-accent,
-      warn: $my-app-warn,
-    ),
-  )
+    (
+      color: (
+        primary: $my-app-primary,
+        accent: $my-app-accent,
+        warn: $my-app-warn,
+      ),
+    )
 );
 
 @include mat.all-component-themes($my-app-theme);
 
 :root {
-  --background: rgba(32, 30, 37, 1);
-  --sidebar: rgba(43, 41, 48, 1);
+  --background: #050718;
+  --sidebar: #12121e;
 
   --blue: rgba(0, 119, 255, 1);
   --blue-20: rgba(0, 119, 255, 0.2);
@@ -109,7 +110,7 @@ a {
 
 .mat-mdc-snack-bar-container .mdc-snackbar__label,
 .mat-mdc-snack-bar-container
-  .mat-mdc-button.mat-mdc-snack-bar-action:not(:disabled) {
+.mat-mdc-button.mat-mdc-snack-bar-action:not(:disabled) {
   color: var(--text) !important;
 }
 
@@ -143,7 +144,7 @@ a {
   flex-direction: column;
   gap: 12px;
   position: relative;
-  
+
   margin-bottom: 1.5rem;
 
   label {
@@ -156,7 +157,7 @@ a {
     font-size: 16px;
     color: var(--text-inactive);
   }
-  
+
   app-toggle {
     position: absolute;
     right: 0;
@@ -178,6 +179,7 @@ a {
 .warning {
   display: flex;
   flex-direction: column;
+  gap: 10px;
   padding: 15px;
   margin-bottom: 2rem;
   border-radius: 6px;
@@ -197,6 +199,7 @@ a {
   &::before {
     content: '{';
   }
+
   &::after {
     content: '}';
   }
@@ -234,21 +237,26 @@ textarea {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--text-inactive);
+  background: var(--blue-20);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--text-inactive);
+  background: var(--blue);
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-inactive);
+  background: var(--blue);
 }
 
 a {
   color: var(--text);
+}
+
+hr {
+  width: 100%;
+  border: 1px solid var(--white-5);
 }
 
 /* LOTS OF UGLY MATERIAL OVERRIDES PLEASE IGNORE */
@@ -274,10 +282,7 @@ a {
   height: 40px;
 }
 
-.mdc-text-field--no-label:not(.mdc-text-field--outlined):not(
-    .mdc-text-field--textarea
-  )
-  .mat-mdc-form-field-infix {
+.mdc-text-field--no-label:not(.mdc-text-field--outlined):not(.mdc-text-field--textarea) .mat-mdc-form-field-infix {
   padding: 10px;
 }
 
@@ -289,7 +294,6 @@ a {
   background-color: rgba(0, 0, 0, 0.6);
 }
 
-.mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-line-ripple::before {
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::before {
   border-bottom: unset !important;
 }

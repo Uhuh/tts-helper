@@ -25,7 +25,7 @@ const initialState: HistoryState = {
   auditItems: [],
 };
 
-export const historyFeature = createFeature({
+export const HistoryFeature = createFeature({
   name: 'HistoryState',
   reducer: createReducer(
     initialState,

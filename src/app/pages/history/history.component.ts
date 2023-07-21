@@ -23,3 +23,5 @@ export class HistoryComponent {
     });
   }
 }
+
+export default HistoryComponent;

@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { NgIf } from '@angular/common';
@@ -17,14 +16,16 @@ import { ToggleComponent } from '../../../shared/components/toggle/toggle.compon
   imports: [ToggleComponent, NgIf, InputComponent, MatFormFieldModule],
 })
 export class BitsComponent {
-  minBits = nonNullFormControl(0, {
+  minBits = new FormControl(0, {
+    nonNullable: true,
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
-  bitsCharLimit = nonNullFormControl(300, {
+  bitsCharLimit = new FormControl(300, {
+    nonNullable: true,
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
-  enabled = nonNullFormControl(true);
-  exact = nonNullFormControl(false);
+  enabled = new FormControl(true, { nonNullable: true });
+  exact = new FormControl(false, { nonNullable: true });
 
   constructor(private readonly twitchService: TwitchService) {
     this.twitchService.bitInfo$

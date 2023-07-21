@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { TwitchRedeemInfo } from '../../../shared/state/twitch/twitch.feature';
 
 @Component({
@@ -30,11 +29,12 @@ import { TwitchRedeemInfo } from '../../../shared/state/twitch/twitch.feature';
   ],
 })
 export class RedeemsComponent {
-  redeem = nonNullFormControl('');
-  redeemCharLimitControl = nonNullFormControl(300, {
+  redeem = new FormControl('', { nonNullable: true });
+  redeemCharLimitControl = new FormControl(300, {
+    nonNullable: true,
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
-  enabled = nonNullFormControl(true);
+  enabled = new FormControl(true, { nonNullable: true });
 
   redeems: TwitchRedeemInfo[] = [];
 

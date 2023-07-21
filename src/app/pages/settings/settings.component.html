@@ -5,8 +5,8 @@
   <div class="sub-header">
     <label>Play TTS locally.</label>
     <p>These show up in the history tab.</p>
-    <div class="action-row flex-wrap">
-      <app-input [control]="ttsControl" placeholder="Enter something to say." />
+    <div class="action-row">
+      <app-input type="text" [control]="ttsControl" placeholder="Enter something to say." />
       <app-button (click)="speak()" [disabled]="isDisabled">Send</app-button>
     </div>
   </div>

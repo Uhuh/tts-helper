@@ -10,7 +10,7 @@ import { RequestAudioData } from './playback.interface';
 import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
 import { PollyClient } from '@aws-sdk/client-polly';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
-import { AuditItem, AuditSource, AuditState, historyFeature } from '../state/history/history.feature';
+import { AuditItem, AuditSource, AuditState, HistoryFeature } from '../state/history/history.feature';
 import {
   AmazonPollyData,
   StreamElementsData,
@@ -22,7 +22,7 @@ import { HistoryActions } from '../state/history/history.actions';
 
 @Injectable()
 export class HistoryService {
-  public readonly auditItems$ = this.store.select(historyFeature.selectAuditItems);
+  public readonly auditItems$ = this.store.select(HistoryFeature.selectAuditItems);
   bannedWords: string[] = [];
 
   tts: TtsType = 'stream-elements';

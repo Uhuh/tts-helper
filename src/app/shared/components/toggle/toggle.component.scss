@@ -26,8 +26,8 @@
   right: 0;
   bottom: 0;
   background-color: var(--sidebar);
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
 }
 
 .slider:before {
@@ -38,8 +38,8 @@
   left: 4px;
   bottom: 4px;
   background-color: var(--blue-20);
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
 }
 
 input:checked + .slider:before {

@@ -12,3 +12,5 @@ import { AuthComponent } from './auth/auth.component';
   imports: [AuthComponent, RedeemsComponent, BitsComponent, SubsComponent],
 })
 export class TwitchComponent {}
+
+export default TwitchComponent;

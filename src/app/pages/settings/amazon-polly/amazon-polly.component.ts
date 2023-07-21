@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { ConfigService } from '../../../shared/services/config.service';
-import { nonNullFormControl } from '../../../shared/utils/form';
 import voices from '../../../shared/json/amazon-polly.json';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { MatOptionModule } from '@angular/material/core';
 import { NgFor } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TtsSelectorComponent } from '../../../shared/components/tts-selector/tts-selector.component';
@@ -31,10 +30,10 @@ export class AmazonPollyComponent {
   regions = [...voices.regions];
   readonly voices = voices.options;
 
-  regionControl = nonNullFormControl(this.regions[0]);
-  poolIdControl = nonNullFormControl('');
-  languageControl = nonNullFormControl('');
-  voiceControl = nonNullFormControl('');
+  regionControl = new FormControl(this.regions[0], { nonNullable: true });
+  poolIdControl = new FormControl('', { nonNullable: true });
+  languageControl = new FormControl('', { nonNullable: true });
+  voiceControl = new FormControl('', { nonNullable: true });
 
   constructor(private readonly configService: ConfigService) {
     this.configService.amazonPolly$

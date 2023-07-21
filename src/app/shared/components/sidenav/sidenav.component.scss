@@ -72,16 +72,20 @@
     border-left: 2px solid var(--text-inactive);
   }
 
-  img {
-    width: 20px;
-  }
-
   .tts-icon {
     width: 16px;
     height: 16px;
     font-size: 17px;
     display: flex;
     align-items: center;
+  }
+}
+
+.new-link {
+  &:after {
+    content: 'New!';
+    color: var(--blue);
+    margin-left: auto;
   }
 }
 

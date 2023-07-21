@@ -2,19 +2,14 @@ import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatOptionModule } from '@angular/material/core';
 import { NgFor } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
-import {
-  DeviceId,
-  DeviceInfo,
-  WithId,
-} from 'src/app/shared/services/playback.interface';
+import { DeviceId, DeviceInfo, WithId, } from 'src/app/shared/services/playback.interface';
 
 @Component({
   selector: 'app-device',
@@ -33,8 +28,8 @@ import {
 })
 export class DeviceComponent {
   devices = signal<WithId<DeviceInfo, DeviceId>[]>([]);
-  selectedDevice = nonNullFormControl(0);
-  volume = nonNullFormControl(100);
+  selectedDevice = new FormControl(0, { nonNullable: true });
+  volume = new FormControl(100, { nonNullable: true });
 
   constructor(
     private readonly configService: ConfigService,

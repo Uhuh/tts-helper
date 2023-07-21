@@ -1,10 +1,14 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { ConfigState, TtsType } from './config.feature';
+import { ChatPermissions, ConfigState, GeneralChatState, GptChatState, TtsType } from './config.feature';
 
 export const GlobalConfigActions = createActionGroup({
   source: 'GlobalConfig',
   events: {
     'Update State': props<{ configState: ConfigState }>(),
+    'Update GPT Chat': props<{ chatState: GptChatState }>(),
+    'Update GPT Chat Permissions': props<{ permissions: Partial<ChatPermissions> }>(),
+    'Update General Chat': props<{ chatState: GeneralChatState }>(),
+    'Update General Chat Permissions': props<{ permissions: Partial<ChatPermissions> }>(),
     'Update Selected Tts': props<{ tts: TtsType }>(),
     'Update Selected Tts Url': props<{ url: string }>(),
     'Update Selected Audio Device': props<{ audioDevice: number }>(),

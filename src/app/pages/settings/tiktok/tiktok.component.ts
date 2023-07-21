@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import voices from '../../../shared/json/tiktok.json';
 import { TtsSelectorComponent } from '../../../shared/components/tts-selector/tts-selector.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-tiktok',
@@ -15,8 +15,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class TiktokComponent {
   readonly voices = voices;
-  voiceControl = nonNullFormControl('');
-  languageControl = nonNullFormControl('');
+  voiceControl = new FormControl('', { nonNullable: true });
+  languageControl = new FormControl('', { nonNullable: true });
 
   constructor(private readonly configService: ConfigService) {
     this.configService.tikTok$

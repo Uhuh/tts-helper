@@ -8,8 +8,8 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule],
 })
-export class InputComponent {
+export class InputComponent<TKey extends string | number> {
   @Input() placeholder = 'Put something here...';
-  @Input() control!: FormControl<string | number>;
-  @Input() type = 'text';
+  @Input({ required: true }) control!: FormControl<TKey>;
+  @Input({ required: true }) type!: TKey extends string ? 'text' | 'password' : TKey extends number ? 'number' : never;
 }

@@ -4,34 +4,31 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: 'home',
-    loadComponent: () =>
-      import('./pages/home/home.component').then((m) => m.HomeComponent),
+    loadComponent: () => import('./pages/home/home.component'),
   },
   {
     path: 'twitch',
-    loadComponent: () =>
-      import('./pages/twitch/twitch.component').then((m) => m.TwitchComponent),
+    loadComponent: () => import('./pages/twitch/twitch.component'),
   },
   {
     path: 'history',
-    loadComponent: () =>
-      import('./pages/history/history.component').then(
-        (m) => m.HistoryComponent
-      ),
+    loadComponent: () => import('./pages/history/history.component'),
   },
   {
     path: 'moderation',
-    loadComponent: () =>
-      import('./pages/moderation/moderation.component').then(
-        (m) => m.ModerationComponent
-      ),
+    loadComponent: () => import('./pages/moderation/moderation.component'),
   },
   {
     path: 'settings',
-    loadComponent: () =>
-      import('./pages/settings/settings.component').then(
-        (m) => m.SettingsComponent
-      ),
+    loadComponent: () => import('./pages/settings/settings.component'),
+  },
+  {
+    path: 'chat-gpt',
+    loadComponent: () => import('./pages/chat-gpt/chat-gpt.component'),
+  },
+  {
+    path: 'chat-settings',
+    loadComponent: () => import('./pages/chat-settings/chat-settings.component'),
   },
   {
     path: '',
@@ -44,4 +41,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

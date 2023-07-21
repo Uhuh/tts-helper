@@ -3,26 +3,28 @@ import { Store } from '@ngrx/store';
 import { TwitchApi } from '../api/twitch.api';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
-import { twitchFeature, ValidUser } from '../state/twitch/twitch.feature';
+import { TwitchFeature, ValidUser } from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class TwitchService implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  public readonly twitchState$ = this.store.select(twitchFeature.selectTwitchStateState);
-  public readonly twitchToken$ = this.store.select(twitchFeature.selectToken);
-  public readonly redeems$ = this.store.select(twitchFeature.selectRedeems);
-  public readonly isTokenValid$ = this.store.select(twitchFeature.selectIsTokenValid);
-  public readonly channelInfo$ = this.store.select(twitchFeature.selectChannelInfo);
+  public readonly twitchState$ = this.store.select(TwitchFeature.selectTwitchStateState);
+  public readonly twitchToken$ = this.store.select(TwitchFeature.selectToken);
+  public readonly redeems$ = this.store.select(TwitchFeature.selectRedeems);
+  public readonly isTokenValid$ = this.store.select(TwitchFeature.selectIsTokenValid);
+  public readonly channelInfo$ = this.store.select(TwitchFeature.selectChannelInfo);
 
-  public readonly subsInfo$ = this.store.select(twitchFeature.selectSubsInfo);
-  public readonly redeemInfo$ = this.store.select(twitchFeature.selectRedeemInfo);
-  public readonly bitInfo$ = this.store.select(twitchFeature.selectBitInfo);
+  public readonly subsInfo$ = this.store.select(TwitchFeature.selectSubsInfo);
+  public readonly redeemInfo$ = this.store.select(TwitchFeature.selectRedeemInfo);
+  public readonly bitInfo$ = this.store.select(TwitchFeature.selectBitInfo);
 
   constructor(
     private readonly store: Store,
-    private readonly twitchApi: TwitchApi
+    private readonly twitchApi: TwitchApi,
+    private readonly snackbar: MatSnackBar,
   ) {
     this.twitchToken$.pipe(takeUntil(this.destroyed$)).subscribe((token) => {
       /**
@@ -61,44 +63,45 @@ export class TwitchService implements OnDestroy {
 
   signIn(token: string) {
     this.twitchApi
-        .validateToken(token)
-        .pipe(
-          takeUntil(this.destroyed$),
-          switchMap((user: ValidUser) => {
-            this.store.dispatch(TwitchStateActions.updateToken({ token }));
-            this.store.dispatch(TwitchStateActions.updateIsTokenValid({ isTokenValid: true }));
-            this.store.dispatch(
-              TwitchStateActions.updateChannelInfo({
-                channelInfo: {
-                  username: user.login,
-                  channelId: user.user_id,
-                  redeems: [],
-                },
-              }),
-            );
+      .validateToken(token)
+      .pipe(
+        takeUntil(this.destroyed$),
+        switchMap((user: ValidUser) => {
+          this.store.dispatch(TwitchStateActions.updateToken({ token }));
+          this.store.dispatch(TwitchStateActions.updateIsTokenValid({ isTokenValid: true }));
+          this.store.dispatch(
+            TwitchStateActions.updateChannelInfo({
+              channelInfo: {
+                username: user.login,
+                channelId: user.user_id,
+                redeems: [],
+              },
+            }),
+          );
 
-            return this.twitchApi.getChannelRedeemCommands(user.user_id, token);
-          })
-        )
-        .subscribe({
-          next: (data) => {
-            this.store.dispatch(
-              TwitchStateActions.updateRedeems({
-                redeems: data.data.map((r) => ({
-                  cost: r.cost,
-                  id: r.id,
-                  prompt: r.prompt,
-                  title: r.title,
-                })),
-              })
-            );
-          },
-          error: (e) => {
-            // Token has most likely expired.
-            this.clearState();
-            console.error(`Failed to log user in.`, e)
-          },
-        });
+          return this.twitchApi.getChannelRedeemCommands(user.user_id, token);
+        })
+      )
+      .subscribe({
+        next: (data) => {
+          this.store.dispatch(
+            TwitchStateActions.updateRedeems({
+              redeems: data.data.map((r) => ({
+                cost: r.cost,
+                id: r.id,
+                prompt: r.prompt,
+                title: r.title,
+              })),
+            })
+          );
+        },
+        error: (e) => {
+          this.snackbar.open('Twitch login has expired. Login again!', 'Dismiss');
+          // Token has most likely expired.
+          this.clearState();
+          console.error(`Failed to log user in.`, e);
+        },
+      });
   }
 
   updateRedeemEnabled(enabled: boolean) {

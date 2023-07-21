@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NgIf, NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { HistoryService } from '../../../shared/services/history.service';
 import { PlaybackService } from '../../../shared/services/playback.service';
 import { HistoryItemComponent } from '../history-item/history-item.component';
@@ -47,7 +47,7 @@ export class HistoryListComponent {
       .pipe(takeUntilDestroyed())
       .subscribe((items) => {
         this.items.set(items);
-        this.ref.detectChanges();
+        //this.ref.detectChanges();
       });
   }
 }

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { InputComponent } from '../../../shared/components/input/input.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-tts-monster',
@@ -12,8 +12,8 @@ import { InputComponent } from '../../../shared/components/input/input.component
   imports: [InputComponent],
 })
 export class TtsMonsterComponent {
-  overlay = nonNullFormControl('');
-  ai = nonNullFormControl(false);
+  overlay = new FormControl('', { nonNullable: true });
+  ai = new FormControl(false, { nonNullable: true });
 
   constructor(private readonly configService: ConfigService) {
     this.configService.ttsMonster$

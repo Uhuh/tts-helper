@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-windows',
@@ -14,7 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class WindowsComponent implements OnInit {
   windowsOptions = [];
-  voiceControl = nonNullFormControl('');
+  voiceControl = new FormControl('', { nonNullable: true });
 
   constructor(private readonly configService: ConfigService) {}
 

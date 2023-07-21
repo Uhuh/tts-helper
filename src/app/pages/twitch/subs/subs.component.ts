@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { GiftVariablesComponent } from './gift-variables/gift-variables.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputComponent } from '../../../shared/components/input/input.component';
@@ -26,11 +25,12 @@ import { ToggleComponent } from '../../../shared/components/toggle/toggle.compon
   ],
 })
 export class SubsComponent {
-  enabled = nonNullFormControl(true);
-  charLimit = nonNullFormControl(300, {
+  enabled = new FormControl(true, { nonNullable: true });
+  charLimit = new FormControl(300, {
+    nonNullable: true,
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
-  giftMessage = nonNullFormControl('');
+  giftMessage = new FormControl('', { nonNullable: true });
 
   constructor(private readonly twitchService: TwitchService) {
     this.twitchService.subsInfo$

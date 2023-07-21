@@ -2,10 +2,9 @@ import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import { nonNullFormControl } from 'src/app/shared/utils/form';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 import { NgClass } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-moderation',
@@ -16,8 +15,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class ModerationComponent {
   // Just to prevent streamers from showing bad words on stream
-  hideBannedWords = nonNullFormControl(true);
-  bannedWords = nonNullFormControl('');
+  hideBannedWords = new FormControl(true, { nonNullable: true });
+  bannedWords = new FormControl('', { nonNullable: true });
 
   constructor(private readonly configService: ConfigService) {
     this.configService.bannedWords$
@@ -35,3 +34,5 @@ export class ModerationComponent {
       });
   }
 }
+
+export default ModerationComponent;
