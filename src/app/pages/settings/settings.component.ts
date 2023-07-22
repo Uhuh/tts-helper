@@ -5,7 +5,7 @@ import { HistoryService } from 'src/app/shared/services/history.service';
 import { WindowsComponent } from './windows/windows.component';
 import { TtsMonsterComponent } from './tts-monster/tts-monster.component';
 import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
-import { StreamelementTtsComponent } from './streamelement-tts/streamelement-tts.component';
+import { StreamElementsComponent } from './streamelement-tts/stream-elements.component';
 import { CommonModule } from '@angular/common';
 import { DeviceComponent } from './device/device.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -30,7 +30,7 @@ interface TtsOption {
     ButtonComponent,
     DeviceComponent,
     CommonModule,
-    StreamelementTtsComponent,
+    StreamElementsComponent,
     AmazonPollyComponent,
     TtsMonsterComponent,
     WindowsComponent,
