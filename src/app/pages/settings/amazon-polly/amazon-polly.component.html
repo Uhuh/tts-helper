@@ -13,7 +13,7 @@
     <label>Region</label>
     <p>Select your Amazon Region.</p>
     <mat-form-field>
-      <mat-select placeholder="Select a region" [formControl]="regionControl">
+      <mat-select placeholder="Select a region" [formControl]="amazonPollyGroup.controls.region">
         <mat-option *ngFor="let region of regions" [value]="region">
           {{ region }}
         </mat-option>
@@ -25,14 +25,14 @@
     <p>This is your super secret ID.</p>
     <app-input
       placeholder="Place your Pool Id here."
-      [control]="poolIdControl"
+      [control]="amazonPollyGroup.controls.poolId"
       type="password"
     >
     </app-input>
   </div>
   <app-tts-selector
-    [languageControl]="languageControl"
-    [voiceControl]="voiceControl"
+    [languageControl]="amazonPollyGroup.controls.language"
+    [voiceControl]="amazonPollyGroup.controls.voice"
     [voices]="voices"
   />
 </div>
