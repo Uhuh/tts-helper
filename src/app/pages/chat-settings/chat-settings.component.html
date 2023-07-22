@@ -1,0 +1,55 @@
+<div class="header">
+  <span>Chat Command Settings</span>
+</div>
+<div class="section">
+  <div class="header">
+    <span>General Chat Settings</span>
+  </div>
+  
+  <div class="sub-header">
+    <label>Enabled</label>
+    <p>If enabled, users can use this command to use normal TTS.</p>
+    <app-toggle [control]="generalChatGroup.controls.enabled" />
+  </div>
+  
+
+  <div class="sub-header">
+    <label>Command</label>
+    <p>The command that triggers the TTS.</p>
+    <app-input [control]="generalChatGroup.controls.command" type="text" placeholder="!say"/>
+  </div>
+
+  <div class="sub-header">
+    <label>Cooldown</label>
+    <p>How often this command can be ran in seconds.</p>
+    <app-input [control]="generalChatGroup.controls.cooldown" type="number"/>
+  </div>
+
+  <app-user-perms [formGroup]="generalChatGroup.controls.permissions"/>
+
+  <hr>
+
+  <div class="header">
+    <span>ChatGPT Chat Settings</span>
+  </div>
+
+  <div class="sub-header">
+    <label>Enabled</label>
+    <p>If enabled, users can use this command to generate ChatGPT TTS.</p>
+    <app-toggle [control]="gptChatGroup.controls.enabled" />
+  </div>
+
+  <div class="sub-header">
+    <label>Command</label>
+    <p>Will prompt GPT to generate a response.</p>
+    <app-input [control]="gptChatGroup.controls.command" type="text" placeholder="!ask"/>
+  </div>
+
+  <div class="sub-header">
+    <label>Cooldown</label>
+    <p>How often this command can be ran in seconds.</p>
+    <app-input [control]="gptChatGroup.controls.cooldown" type="number"/>
+  </div>
+
+  <app-user-perms [formGroup]="gptChatGroup.controls.permissions"/>
+</div>
