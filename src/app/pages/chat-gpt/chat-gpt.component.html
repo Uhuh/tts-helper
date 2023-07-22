@@ -1,0 +1,26 @@
+<div class="header">
+  <span>ChatGPT Settings</span>
+</div>
+<div class="section">
+  <div class="warning">
+    <span>ChatGPT is an AI language model developed by OpenAI, we (TTS Helper) do not have control over what it generates or says.</span>
+    <span>OpenAI heavily moderates the content it returns. Despite this users can still "cheat" responses from it.</span>
+    <span>OpenAI charges your based on your usage. Set max spend limits and keep an eye on your usage as you utilize it.</span>
+    <span>Use at your own risk.</span>
+  </div>
+  <div class="header">
+    <span>General Settings</span>
+  </div>
+  <div class="sub-header">
+    <label>API Key</label>
+    <p>Generated API key. Never share this with anyone, and never expose it.</p>
+    <app-input [control]="apiKeyControl" placeholder="Enter API Key." type="password"/>
+  </div>
+  <div class="sub-header">
+    <label>Enable ChatGPT</label>
+    <p>If enabled, all TTS redeems will be forwarded to ChatGPT.</p>
+    <app-toggle [control]="enableGptControl"/>
+  </div>
+  
+  <app-gpt-personality [formGroup]="personalityGroup" />
+</div>
