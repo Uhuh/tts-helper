@@ -1,18 +1,27 @@
 ﻿import { StaticAuthProvider } from '@twurple/auth';
 import { Injectable, OnDestroy } from '@angular/core';
 import { TwitchService } from './twitch.service';
-import { combineLatest, Subject, takeUntil } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
-import { ChatClient } from '@twurple/chat';
+import { ChatClient, ChatUser } from '@twurple/chat';
 import { HistoryService } from './history.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TwitchCheer, TwitchGiftSub, TwitchRedeem, TwitchSub, TwitchSubMessage, } from './twitch-pubsub.interface';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ConfigService } from './config.service';
+import {
+  ChatPermissions,
+  GeneralChatState,
+  GptChatState,
+  GptPersonalityState,
+  GptSettingsState
+} from '../state/config/config.feature';
+import { Configuration, OpenAIApi } from 'openai';
+import { loreTemplateGenerator } from '../util/lore';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
   // TTS Helper client ID. This isn't a sensitive code.
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
 
@@ -22,6 +31,20 @@ export class TwitchPubSub implements OnDestroy {
   bitInfo = toSignal(this.twitchService.bitInfo$);
   redeemInfo = toSignal(this.twitchService.redeemInfo$);
   subsInfo = toSignal(this.twitchService.subsInfo$);
+
+  // Normal TTS chat command
+  generalChat?: GeneralChatState;
+  // ChatGPT Settings
+  gptChat?: GptChatState;
+  gptSettings?: GptSettingsState;
+  gptPersonality?: GptPersonalityState;
+
+  // Default empty api key.
+  apiKey = '';
+  chatLore: { role: 'system', content: string }[] = [];
+  chatGptConfig?: Configuration;
+  chatGptApi?: OpenAIApi;
+  gptHistory: { role: 'user' | 'assistant', content: string }[] = [];
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
@@ -36,13 +59,52 @@ export class TwitchPubSub implements OnDestroy {
   constructor(
     private readonly twitchService: TwitchService,
     private readonly historyService: HistoryService,
+    private readonly configService: ConfigService,
     private readonly snackbar: MatSnackBar
   ) {
+    this.configService.gptSettings$
+      .pipe(takeUntilDestroyed())
+      .subscribe(gptSettings => this.gptSettings = gptSettings);
+
+    this.configService.gptToken$
+      .pipe(takeUntilDestroyed())
+      .subscribe(apiKey => {
+        if (!apiKey) {
+          return console.info('Ignoring empty API key.');
+        }
+
+        this.apiKey = apiKey;
+
+        this.chatGptConfig = new Configuration({ apiKey });
+        this.chatGptApi = new OpenAIApi(this.chatGptConfig);
+      });
+
+    this.configService.gptPersonality$
+      .pipe(takeUntilDestroyed())
+      .subscribe(personality => {
+        this.chatLore = [{
+          role: 'system',
+          content: loreTemplateGenerator(personality),
+        }];
+      });
+
+    this.configService.generalChat$
+      .pipe(takeUntilDestroyed())
+      .subscribe(generalChat => this.generalChat = generalChat);
+
+    this.configService.gptChat$
+      .pipe(takeUntilDestroyed())
+      .subscribe(gptChat => this.gptChat = gptChat);
+
+    this.configService.gptPersonality$
+      .pipe(takeUntilDestroyed())
+      .subscribe(gptPersonality => this.gptPersonality = gptPersonality);
+
     combineLatest([
       this.twitchService.twitchToken$,
       this.twitchService.channelInfo$,
     ])
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed())
       .subscribe(([token, channelInfo]) => {
         this.cleanupListeners();
         if (!token || !channelInfo.channelId) {
@@ -97,18 +159,74 @@ export class TwitchPubSub implements OnDestroy {
           (message) => this.onSubMessage(message)
         );
 
-        this.onMessageListener = this.chat.onMessage((_, user, text) =>
-          this.onMessage(user, text)
+        this.onMessageListener = this.chat.onMessage((_, _username, text, msg) => {
+            this.onMessage(msg.userInfo, text);
+          }
         );
       });
   }
 
-  onMessage(user: string, text: string) {
-    /**
-     * @TODO - Setup state for global command and prefix.
-     */
-    if (text.startsWith('!say')) {
-      this.historyService.playTts(text.substring(4).trim(), user, 'twitch', 50);
+  hasChatCommandPermissions(user: ChatUser, permissions: ChatPermissions) {
+    if (permissions.allUsers) {
+      return true;
+    } else if (permissions.mods && user.badges.has('moderator')) {
+      return true;
+    } else if (permissions.payingMembers && user.isSubscriber) {
+      return true;
+    }
+
+    return false;
+  }
+
+  async onMessage(user: ChatUser, text: string) {
+    // If both chat commands are disabled ignore.
+    if (!this.generalChat?.enabled && !this.gptChat?.enabled) {
+      return;
+    }
+
+    if (this.generalChat?.enabled &&
+      text.startsWith(this.generalChat.command) &&
+      this.hasChatCommandPermissions(user, this.generalChat.permissions)
+    ) {
+      this.historyService.playTts(text.substring(this.generalChat.command.length).trim(), user.displayName, 'twitch', 300);
+    } else if (this.gptChat?.enabled &&
+      text.startsWith(this.gptChat.command) &&
+      this.hasChatCommandPermissions(user, this.gptChat.permissions) &&
+      this.chatGptApi
+    ) {
+      const trimmedText = text.substring(this.gptChat.command.length).trim();
+      const content = `${user.displayName} says "${trimmedText}"`;
+      try {
+        const response = await this.chatGptApi.createChatCompletion({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            ...this.chatLore,
+            ...this.gptHistory,
+            {
+              role: 'user',
+              content,
+            },
+          ],
+        });
+
+        const { message } = response.data.choices[0];
+
+        if (!message || !message.content) {
+          return console.info('OpenAI failed to respond.');
+        }
+
+        this.gptHistory.push({
+          role: 'user',
+          content,
+        }, {
+          role: 'assistant',
+          content: message.content,
+        });
+
+        this.historyService.playTts(message.content, 'ChatGPT', 'gpt', 900);
+      } catch (e) {
+        console.error(`Oopsies OpenAI died:`, e);
+      }
     }
   }
 
@@ -131,8 +249,8 @@ export class TwitchPubSub implements OnDestroy {
     }
 
     const parsedInput = this.subsInfo()?.giftMessage
-                            .replaceAll(/{username}/g, gift.gifterDisplayName)
-                            .replaceAll(/{amount}/g, `${gift.amount}`);
+      .replaceAll(/{username}/g, gift.gifterDisplayName)
+      .replaceAll(/{amount}/g, `${gift.amount}`);
 
     this.historyService.playTts(
       parsedInput ?? '',
@@ -209,7 +327,5 @@ export class TwitchPubSub implements OnDestroy {
 
   ngOnDestroy() {
     this.cleanupListeners();
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 }
