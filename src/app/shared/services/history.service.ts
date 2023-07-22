@@ -103,6 +103,13 @@ export class HistoryService {
     const data = await this.getRequestData(audioText);
 
     if (!data) {
+      this.snackbar.open(
+        'Hey! You tried playing audio to a TTS service we don\'t support!',
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        }
+      );
       return console.error(
         `Tried to get request data for invalid TTS: ${this.tts}`
       );
@@ -147,9 +154,16 @@ export class HistoryService {
           text,
         };
       case 'amazon-polly':
+        const url = await this.handleAmazonPolly(text);
+        
+        // If there was an issue getting the audio url.
+        if (!url) {
+          return null;
+        }
+        
         return {
           type: 'amazonPolly',
-          url: await this.handleAmazonPolly(text),
+          url,
         };
       default:
         return null;

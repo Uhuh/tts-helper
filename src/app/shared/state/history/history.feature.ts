@@ -11,7 +11,7 @@ export enum AuditState {
   finished,
 }
 
-export type AuditSource = 'youtube' | 'twitch' | 'tts-helper';
+export type AuditSource = 'youtube' | 'twitch' | 'tts-helper' | 'gpt';
 
 export interface AuditItem {
   id: number;
