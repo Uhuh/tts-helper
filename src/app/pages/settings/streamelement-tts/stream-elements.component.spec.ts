@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StreamelementTtsComponent } from './streamelement-tts.component';
+import { StreamElementsComponent } from './stream-elements.component';
 
 describe('StreamelementTtsComponent', () => {
-  let component: StreamelementTtsComponent;
-  let fixture: ComponentFixture<StreamelementTtsComponent>;
+  let component: StreamElementsComponent;
+  let fixture: ComponentFixture<StreamElementsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ StreamelementTtsComponent ]
+      declarations: [ StreamElementsComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(StreamelementTtsComponent);
+    fixture = TestBed.createComponent(StreamElementsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

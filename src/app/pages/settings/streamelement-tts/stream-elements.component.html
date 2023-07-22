@@ -3,8 +3,8 @@
     <span>StreamElements</span>
   </div>
   <app-tts-selector
-    [languageControl]="languageControl"
-    [voiceControl]="voiceControl"
+    [languageControl]="streamElementsGroup.controls.language"
+    [voiceControl]="streamElementsGroup.controls.voice"
     [voices]="voices"
   />
 </div>
