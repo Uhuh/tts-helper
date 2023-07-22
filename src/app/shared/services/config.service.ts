@@ -1,6 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ChatPermissions, ConfigFeature, TtsType } from '../state/config/config.feature';
+import {
+  AmazonPollyData,
+  ChatPermissions,
+  ConfigFeature,
+  GeneralChatState,
+  GptChatState,
+  GptPersonalityState,
+  GptSettingsState,
+  StreamElementsData,
+  TtsType
+} from '../state/config/config.feature';
 import { GlobalConfigActions } from '../state/config/config.actions';
 
 @Injectable()
@@ -17,7 +27,10 @@ export class ConfigService {
   public readonly bannedWords$ = this.store.select(ConfigFeature.selectBannedWords);
   public readonly generalChat$ = this.store.select(ConfigFeature.selectGeneralChat);
   public readonly gptChat$ = this.store.select(ConfigFeature.selectGptChat);
-  
+  public readonly gptPersonality$ = this.store.select(ConfigFeature.selectGptPersonality);
+  public readonly gptSettings$ = this.store.select(ConfigFeature.selectGptSettings);
+  public readonly gptToken$ = this.store.select(ConfigFeature.selectGptToken);
+
   constructor(private readonly store: Store) {}
 
   updateBannedWords(bannedWords: string) {
@@ -28,7 +41,23 @@ export class ConfigService {
 
     this.store.dispatch(GlobalConfigActions.updateBannedWords({ bannedWords: words }));
   }
-  
+
+  updateGptPersonality(gptPersonality: Partial<GptPersonalityState>) {
+    this.store.dispatch(GlobalConfigActions.updateGPTPersonality({ gptPersonality }));
+  }
+
+  updateGptSettings(gptSettings: Partial<GptSettingsState>) {
+    this.store.dispatch(GlobalConfigActions.updateGPTSettings({ gptSettings }));
+  }
+
+  updateGptChat(gptChat: Partial<GptChatState>) {
+    this.store.dispatch(GlobalConfigActions.updateGPTChat({ gptChat }));
+  }
+
+  updateGeneralChat(generalChat: Partial<GeneralChatState>) {
+    this.store.dispatch(GlobalConfigActions.updateGeneralChat({ generalChat }));
+  }
+
   updateChatPermissions(permissions: Partial<ChatPermissions>, system: 'gpt' | 'general') {
     if (system === 'gpt') {
       this.store.dispatch(GlobalConfigActions.updateGPTChatPermissions({ permissions }));
@@ -37,28 +66,12 @@ export class ConfigService {
     }
   }
 
-  updateStreamElementsLanguage(language: string) {
-    this.store.dispatch(GlobalConfigActions.updateStreamElementsLanguage({ language }));
+  updateStreamElements(streamElements: Partial<StreamElementsData>) {
+    this.store.dispatch(GlobalConfigActions.updateStreamElements({ streamElements }));
   }
 
-  updateVoice(voice: string) {
-    this.store.dispatch(GlobalConfigActions.updateStreamElementsVoice({ voice }));
-  }
-
-  updateAmazonPollyLanguage(language: string) {
-    this.store.dispatch(GlobalConfigActions.updateAmazonPollyLanguage({ language }));
-  }
-
-  updateAmazonPollyRegion(region: string) {
-    this.store.dispatch(GlobalConfigActions.updateAmazonPollyRegion({ region }));
-  }
-
-  updateAmazonPollyPoolId(poolId: string) {
-    this.store.dispatch(GlobalConfigActions.updateAmazonPollyPoolId({ poolId }));
-  }
-
-  updateAmazonPollyVoice(voice: string) {
-    this.store.dispatch(GlobalConfigActions.updateAmazonPollyVoice({ voice }));
+  updateAmazonPolly(amazonPolly: Partial<AmazonPollyData>) {
+    this.store.dispatch(GlobalConfigActions.updateAmazonPolly({ amazonPolly }));
   }
 
   updateTikTokVoice(voice: string) {

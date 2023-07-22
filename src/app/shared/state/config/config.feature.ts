@@ -58,6 +58,19 @@ export interface GeneralChatState extends ChatState {
 export interface GptChatState extends ChatState {
 }
 
+export interface GptPersonalityState {
+  streamersIdentity: string;
+  streamerModelRelation: string;
+  modelsIdentity: string;
+  modelsCoreIdentity: string;
+  modelsBackground: string;
+}
+
+export interface GptSettingsState {
+  apiToken: string;
+  enabled: boolean;
+}
+
 export interface ConfigState {
   tts: TtsType;
   url: string;
@@ -65,6 +78,8 @@ export interface ConfigState {
   deviceVolume: number;
   generalChat: GeneralChatState;
   gptChat: GptChatState;
+  gptPersonality: GptPersonalityState;
+  gptSettings: GptSettingsState;
   streamElements: StreamElementsData;
   ttsMonster: TtsMonsterData;
   amazonPolly: AmazonPollyData;
@@ -101,6 +116,17 @@ export const initialState: ConfigState = {
     ...defaultChatState,
     command: '!ask',
   },
+  gptPersonality: {
+    modelsBackground: '',
+    modelsCoreIdentity: '',
+    modelsIdentity: '',
+    streamerModelRelation: '',
+    streamersIdentity: '',
+  },
+  gptSettings: {
+    apiToken: '',
+    enabled: false,
+  },
   ttsMonster: {
     overlay: '',
     userId: '',
@@ -127,6 +153,27 @@ export const ConfigFeature = createFeature({
       ...state,
       ...configState,
     })),
+    on(GlobalConfigActions.updateGPTPersonality, (state, { gptPersonality }) => ({
+      ...state,
+      gptPersonality: {
+        ...state.gptPersonality,
+        ...gptPersonality,
+      },
+    })),
+    on(GlobalConfigActions.updateGPTSettings, (state, { gptSettings }) => ({
+      ...state,
+      gptSettings: {
+        ...state.gptSettings,
+        ...gptSettings,
+      },
+    })),
+    on(GlobalConfigActions.updateGPTChat, (state, { gptChat }) => ({
+      ...state,
+      gptChat: {
+        ...state.gptChat,
+        ...gptChat,
+      },
+    })),
     on(GlobalConfigActions.updateGPTChatPermissions, (state, { permissions }) => ({
       ...state,
       gptChat: {
@@ -147,50 +194,29 @@ export const ConfigFeature = createFeature({
         },
       },
     })),
+    on(GlobalConfigActions.updateGeneralChat, (state, { generalChat }) => ({
+      ...state,
+      generalChat: {
+        ...state.generalChat,
+        ...generalChat,
+      },
+    })),
     on(GlobalConfigActions.updateBannedWords, (state, { bannedWords }) => ({
       ...state,
       bannedWords,
     })),
-    on(GlobalConfigActions.updateStreamElementsLanguage, (state, { language }) => ({
+    on(GlobalConfigActions.updateStreamElements, (state, { streamElements }) => ({
       ...state,
       streamElements: {
         ...state.streamElements,
-        language,
+        ...streamElements,
       },
     })),
-    on(GlobalConfigActions.updateStreamElementsVoice, (state, { voice }) => ({
-      ...state,
-      streamElements: {
-        ...state.streamElements,
-        voice,
-      },
-    })),
-    on(GlobalConfigActions.updateAmazonPollyPoolId, (state, { poolId }) => ({
+    on(GlobalConfigActions.updateAmazonPolly, (state, { amazonPolly }) => ({
       ...state,
       amazonPolly: {
         ...state.amazonPolly,
-        poolId,
-      },
-    })),
-    on(GlobalConfigActions.updateAmazonPollyRegion, (state, { region }) => ({
-      ...state,
-      amazonPolly: {
-        ...state.amazonPolly,
-        region,
-      },
-    })),
-    on(GlobalConfigActions.updateAmazonPollyLanguage, (state, { language }) => ({
-      ...state,
-      amazonPolly: {
-        ...state.amazonPolly,
-        language,
-      },
-    })),
-    on(GlobalConfigActions.updateAmazonPollyVoice, (state, { voice }) => ({
-      ...state,
-      amazonPolly: {
-        ...state.amazonPolly,
-        voice,
+        ...amazonPolly,
       },
     })),
     on(GlobalConfigActions.updateTikTokLanguage, (state, { language }) => ({
@@ -238,10 +264,15 @@ export const ConfigFeature = createFeature({
   ),
   extraSelectors: ({
     selectBannedWords,
+    selectGptSettings,
   }) => ({
     selectBannedWordsLength: createSelector(
       selectBannedWords,
       (bannedWords) => bannedWords.length,
+    ),
+    selectGptToken: createSelector(
+      selectGptSettings,
+      (gptSettings) => gptSettings.apiToken,
     ),
   }),
 });
