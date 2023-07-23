@@ -46,7 +46,7 @@ export class ChatSettingsComponent {
     command: new FormControl('', { nonNullable: true }),
     cooldown: new FormControl(0, { nonNullable: true }),
     enabled: new FormControl(false, { nonNullable: true }),
-    charLimit: new FormControl(100, { nonNullable: true, validators: [Validators.min(0)] }),
+    charLimit: new FormControl(999, { nonNullable: true, validators: [Validators.min(0)] }),
   });
   
   gptPermissions = new FormGroup<ChatPermissionsFormGroup>({

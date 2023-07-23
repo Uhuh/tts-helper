@@ -118,6 +118,7 @@ export const initialState: ConfigState = {
   gptChat: {
     ...defaultChatState,
     command: '!ask',
+    charLimit: 999,
   },
   gptPersonality: {
     modelsBackground: '',
@@ -277,6 +278,10 @@ export const ConfigFeature = createFeature({
     selectGptToken: createSelector(
       selectGptSettings,
       (gptSettings) => gptSettings.apiToken,
+    ),
+    selectGptEnabled: createSelector(
+      selectGptSettings,
+      (gptSettings) => gptSettings.enabled,
     ),
   }),
 });
