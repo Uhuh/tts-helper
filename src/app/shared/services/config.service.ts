@@ -26,6 +26,7 @@ export class ConfigService {
   public readonly configUrl$ = this.store.select(ConfigFeature.selectUrl);
   public readonly bannedWords$ = this.store.select(ConfigFeature.selectBannedWords);
   public readonly generalChat$ = this.store.select(ConfigFeature.selectGeneralChat);
+  public readonly gptEnabled$ = this.store.select(ConfigFeature.selectGptEnabled);
   public readonly gptChat$ = this.store.select(ConfigFeature.selectGptChat);
   public readonly gptPersonality$ = this.store.select(ConfigFeature.selectGptPersonality);
   public readonly gptSettings$ = this.store.select(ConfigFeature.selectGptSettings);
