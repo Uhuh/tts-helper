@@ -23,7 +23,8 @@ export interface ValidUser {
 
 export interface TwitchRedeemState {
   enabled: boolean;
-  redeem: string | null;
+  redeem: string;
+  gptRedeem: string;
   redeemCharacterLimit: number;
 }
 
@@ -64,7 +65,8 @@ const initialState: TwitchState = {
   },
   redeemInfo: {
     enabled: true,
-    redeem: null,
+    redeem: '',
+    gptRedeem: '',
     redeemCharacterLimit: 300,
   },
   bitInfo: {
@@ -128,13 +130,6 @@ export const TwitchFeature = createFeature({
         giftMessage,
       },
     })),
-    on(TwitchStateActions.updateRedeemEnabled, (state, { enabled }) => ({
-      ...state,
-      redeemInfo: {
-        ...state.redeemInfo,
-        enabled,
-      },
-    })),
     on(TwitchStateActions.updateBitsEnabled, (state, { enabled }) => ({
       ...state,
       bitInfo: {
@@ -156,18 +151,11 @@ export const TwitchFeature = createFeature({
         bitsCharacterLimit,
       },
     })),
-    on(TwitchStateActions.updateSelectedRedeem, (state, { redeem }) => ({
+    on(TwitchStateActions.updateRedeemInfo, (state, { redeemInfo }) => ({
       ...state,
       redeemInfo: {
         ...state.redeemInfo,
-        redeem,
-      },
-    })),
-    on(TwitchStateActions.updateRedeemCharLimit, (state, { redeemCharacterLimit }) => ({
-      ...state,
-      redeemInfo: {
-        ...state.redeemInfo,
-        redeemCharacterLimit,
+        ...redeemInfo,
       },
     })),
     on(TwitchStateActions.resetState, () => ({
@@ -175,11 +163,11 @@ export const TwitchFeature = createFeature({
     })),
   ),
   extraSelectors: ({
-     selectRedeemInfo,
-     selectChannelInfo,
-     selectBitInfo,
-     selectSubsInfo,
-   }) => ({
+    selectRedeemInfo,
+    selectChannelInfo,
+    selectBitInfo,
+    selectSubsInfo,
+  }) => ({
     selectRedeems: createSelector(
       selectChannelInfo,
       (channelInfo) => channelInfo.redeems,

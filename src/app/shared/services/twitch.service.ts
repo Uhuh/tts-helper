@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { TwitchApi } from '../api/twitch.api';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
-import { TwitchFeature, ValidUser } from '../state/twitch/twitch.feature';
+import { TwitchFeature, TwitchRedeemState, ValidUser } from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -104,18 +104,8 @@ export class TwitchService implements OnDestroy {
       });
   }
 
-  updateRedeemEnabled(enabled: boolean) {
-    this.store.dispatch(TwitchStateActions.updateRedeemEnabled({ enabled }));
-  }
-
-  updateSelectedRedeem(redeem: string | null) {
-    this.store.dispatch(TwitchStateActions.updateSelectedRedeem({ redeem }));
-  }
-
-  updateRedeemCharLimit(redeemCharacterLimit: number) {
-    this.store.dispatch(
-      TwitchStateActions.updateRedeemCharLimit({ redeemCharacterLimit })
-    );
+  updateRedeemInfo(redeemInfo: Partial<TwitchRedeemState>) {
+    this.store.dispatch(TwitchStateActions.updateRedeemInfo({ redeemInfo }));
   }
 
   updateMinBits(minBits: number) {
