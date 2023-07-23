@@ -180,6 +180,51 @@ export class TwitchPubSub implements OnDestroy {
     return false;
   }
 
+  async gptHandler(user: string, text: string) {
+    if (
+      !this.gptChat ||
+      !this.chatGptApi
+    ) {
+      return;
+    }
+
+    const trimmedText = text.substring(this.gptChat.command.length).trim();
+    const content = `${user} says "${trimmedText}"`;
+    try {
+      const response = await this.chatGptApi.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          ...this.chatLore,
+          ...this.gptHistory,
+          {
+            role: 'user',
+            content,
+          },
+        ],
+      });
+
+      const { message } = response.data.choices[0];
+
+      if (!message || !message.content) {
+        return console.info('OpenAI failed to respond.');
+      }
+
+      this.gptHistory.push({
+        role: 'user',
+        content,
+      }, {
+        role: 'assistant',
+        content: message.content,
+      });
+
+      this.gptHistory = this.gptHistory.slice(-1 * (this.gptSettings?.historyLimit ?? 0));
+
+      this.historyService.playTts(message.content, 'ChatGPT', 'gpt', this.gptChat.charLimit);
+    } catch (e) {
+      console.error(`Oopsies OpenAI died:`, e);
+    }
+  }
+
   async onMessage(user: ChatUser, text: string) {
     // If both chat commands are disabled ignore.
     if (!this.generalChat?.enabled && !this.gptChat?.enabled) {
@@ -193,47 +238,21 @@ export class TwitchPubSub implements OnDestroy {
     ) {
       const trimmedText = text.substring(this.generalChat.command.length).trim();
       this.historyService.playTts(trimmedText, user.displayName, 'twitch', this.generalChat.charLimit);
+
+      // Handle cooldown if there is any.
+      this.generalOnCooldown = true;
+      setTimeout(() => this.generalOnCooldown = false, this.generalChat.cooldown * 1000);
     } else if (this.gptChat?.enabled &&
       text.startsWith(this.gptChat.command) &&
       this.hasChatCommandPermissions(user, this.gptChat.permissions) &&
-      this.chatGptApi &&
       !this.gptOnCooldown
     ) {
-      const trimmedText = text.substring(this.gptChat.command.length).trim();
-      const content = `${user.displayName} says "${trimmedText}"`;
-      try {
-        const response = await this.chatGptApi.createChatCompletion({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            ...this.chatLore,
-            ...this.gptHistory,
-            {
-              role: 'user',
-              content,
-            },
-          ],
-        });
+      this.gptHandler(user.displayName, text)
+        .catch(e => console.error(`Failed to handle GPT TTS.`, e));
 
-        const { message } = response.data.choices[0];
-
-        if (!message || !message.content) {
-          return console.info('OpenAI failed to respond.');
-        }
-
-        this.gptHistory.push({
-          role: 'user',
-          content,
-        }, {
-          role: 'assistant',
-          content: message.content,
-        });
-        
-        this.gptHistory = this.gptHistory.slice(-1 * (this.gptSettings?.historyLimit ?? 0));
-
-        this.historyService.playTts(message.content, 'ChatGPT', 'gpt', this.gptChat.charLimit);
-      } catch (e) {
-        console.error(`Oopsies OpenAI died:`, e);
-      }
+      // Handle cooldown if there is any.
+      this.gptOnCooldown = true;
+      setTimeout(() => this.gptOnCooldown = false, this.gptChat.cooldown * 1000);
     }
   }
 
@@ -271,7 +290,6 @@ export class TwitchPubSub implements OnDestroy {
    * @TODO - Figure out if on subs need to trigger TTS or have custom messages
    */
   onSub(sub: TwitchSub) {
-    return;
     /**
      * Ignore users that received a gift sub
      */
@@ -307,19 +325,26 @@ export class TwitchPubSub implements OnDestroy {
   }
 
   onRedeem(redeem: TwitchRedeem) {
+    const { rewardId, userDisplayName, input } = redeem;
+    
+    // Normal TTS.
     if (
-      redeem.rewardId !== this.redeemInfo()?.redeem ||
-      !this.redeemInfo()?.enabled
+      rewardId === this.redeemInfo()?.redeem &&
+      this.redeemInfo()?.enabled
     ) {
-      return;
+      this.historyService.playTts(
+        input || 'Haha! Someone forgot to say something.',
+        userDisplayName,
+        'twitch',
+        this.redeemInfo()?.redeemCharacterLimit ?? 100
+      );
     }
 
-    this.historyService.playTts(
-      redeem.input,
-      redeem.userDisplayName,
-      'twitch',
-      this.redeemInfo()?.redeemCharacterLimit ?? 100
-    );
+    // If the streamer has GPT enabled, forward all TTS to ChatGPT.
+    if (this.gptSettings?.enabled && this.redeemInfo()?.gptRedeem === rewardId) {
+      this.gptHandler(userDisplayName, input || 'Haha! Someone forgot to say something.')
+        .catch(e => console.error(`Failed to handle GPT redeem.`, e));
+    }
   }
 
   cleanupListeners() {
