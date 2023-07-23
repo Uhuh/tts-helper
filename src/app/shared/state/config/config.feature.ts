@@ -45,10 +45,11 @@ export interface ChatPermissions {
   payingMembers: boolean,
 }
 
-interface ChatState {
+export interface ChatState {
   enabled: boolean;
   permissions: ChatPermissions;
   cooldown: number;
+  charLimit: number;
   command: string;
 }
 
@@ -69,6 +70,7 @@ export interface GptPersonalityState {
 export interface GptSettingsState {
   apiToken: string;
   enabled: boolean;
+  historyLimit: number;
 }
 
 export interface ConfigState {
@@ -93,10 +95,11 @@ const defaultChatPermissions: ChatPermissions = {
   payingMembers: false,
 };
 
-const defaultChatState = {
+const defaultChatState: ChatState = {
   command: '!say',
   permissions: defaultChatPermissions,
   cooldown: 0,
+  charLimit: 300,
   enabled: false,
 };
 
@@ -126,6 +129,7 @@ export const initialState: ConfigState = {
   gptSettings: {
     apiToken: '',
     enabled: false,
+    historyLimit: 10,
   },
   ttsMonster: {
     overlay: '',

@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from '../../shared/components/input/input.component';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 import { GptPersonalityComponent } from './gpt-personality/gpt-personality.component';
 import { ConfigService } from '../../shared/services/config.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatInputModule } from '@angular/material/input';
+import { debounceTime } from 'rxjs';
 
 export interface GptPersonalityFormGroup {
   streamersIdentity: FormControl<string>;
@@ -18,13 +21,14 @@ export interface GptPersonalityFormGroup {
 @Component({
   selector: 'app-chat-gpt',
   standalone: true,
-  imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent],
+  imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent, MatInputModule, MatSliderModule, ReactiveFormsModule],
   templateUrl: './chat-gpt.component.html',
   styleUrls: ['./chat-gpt.component.scss']
 })
 export class ChatGptComponent {
   apiKeyControl = new FormControl('', { nonNullable: true });
   enableGptControl = new FormControl(false, { nonNullable: true });
+  historyControl = new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(20)] });
 
   /**
    * These are to make the ChatGPT model a little more personal.
@@ -48,6 +52,7 @@ export class ChatGptComponent {
       .subscribe(gptSettings => {
         this.apiKeyControl.setValue(gptSettings.apiToken, { emitEvent: false });
         this.enableGptControl.setValue(gptSettings.enabled, { emitEvent: false });
+        this.historyControl.setValue(gptSettings.historyLimit, { emitEvent: false });
       });
 
     this.personalityGroup.valueChanges
@@ -57,10 +62,18 @@ export class ChatGptComponent {
     this.enableGptControl.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(enabled => this.configService.updateGptSettings({ enabled }));
-    
+
     this.apiKeyControl.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(apiToken => this.configService.updateGptSettings({ apiToken }));
+
+    this.historyControl.valueChanges
+      .pipe(takeUntilDestroyed(), debounceTime(500))
+      .subscribe(historyLimit => {
+        if (this.historyControl.valid) {
+          this.configService.updateGptSettings({ historyLimit });
+        }
+      });
   }
 }
 

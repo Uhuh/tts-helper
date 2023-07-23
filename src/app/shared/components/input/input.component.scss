@@ -25,3 +25,7 @@ input {
     color: var(--text-inactive);
   }
 }
+
+.error, .error:focus {
+  border: 1px solid var(--red);
+}

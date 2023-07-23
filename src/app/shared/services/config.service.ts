@@ -3,9 +3,9 @@ import { Store } from '@ngrx/store';
 import {
   AmazonPollyData,
   ChatPermissions,
+  ChatState,
   ConfigFeature,
   GeneralChatState,
-  GptChatState,
   GptPersonalityState,
   GptSettingsState,
   StreamElementsData,
@@ -50,7 +50,7 @@ export class ConfigService {
     this.store.dispatch(GlobalConfigActions.updateGPTSettings({ gptSettings }));
   }
 
-  updateGptChat(gptChat: Partial<GptChatState>) {
+  updateGptChat(gptChat: Partial<ChatState>) {
     this.store.dispatch(GlobalConfigActions.updateGPTChat({ gptChat }));
   }
 

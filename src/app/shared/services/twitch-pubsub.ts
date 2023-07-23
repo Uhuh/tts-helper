@@ -45,6 +45,8 @@ export class TwitchPubSub implements OnDestroy {
   chatGptConfig?: Configuration;
   chatGptApi?: OpenAIApi;
   gptHistory: { role: 'user' | 'assistant', content: string }[] = [];
+  gptOnCooldown = false;
+  generalOnCooldown = false;
 
   // Twurple doesn't expose the listener type for some reason.
   onMessageListener?: any;
@@ -186,13 +188,16 @@ export class TwitchPubSub implements OnDestroy {
 
     if (this.generalChat?.enabled &&
       text.startsWith(this.generalChat.command) &&
-      this.hasChatCommandPermissions(user, this.generalChat.permissions)
+      this.hasChatCommandPermissions(user, this.generalChat.permissions) &&
+      !this.generalOnCooldown
     ) {
-      this.historyService.playTts(text.substring(this.generalChat.command.length).trim(), user.displayName, 'twitch', 300);
+      const trimmedText = text.substring(this.generalChat.command.length).trim();
+      this.historyService.playTts(trimmedText, user.displayName, 'twitch', this.generalChat.charLimit);
     } else if (this.gptChat?.enabled &&
       text.startsWith(this.gptChat.command) &&
       this.hasChatCommandPermissions(user, this.gptChat.permissions) &&
-      this.chatGptApi
+      this.chatGptApi &&
+      !this.gptOnCooldown
     ) {
       const trimmedText = text.substring(this.gptChat.command.length).trim();
       const content = `${user.displayName} says "${trimmedText}"`;
@@ -222,8 +227,10 @@ export class TwitchPubSub implements OnDestroy {
           role: 'assistant',
           content: message.content,
         });
+        
+        this.gptHistory = this.gptHistory.slice(-1 * (this.gptSettings?.historyLimit ?? 0));
 
-        this.historyService.playTts(message.content, 'ChatGPT', 'gpt', 900);
+        this.historyService.playTts(message.content, 'ChatGPT', 'gpt', this.gptChat.charLimit);
       } catch (e) {
         console.error(`Oopsies OpenAI died:`, e);
       }

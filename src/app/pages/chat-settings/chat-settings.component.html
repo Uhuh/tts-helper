@@ -9,23 +9,28 @@
   <div class="sub-header">
     <label>Enabled</label>
     <p>If enabled, users can use this command to use normal TTS.</p>
-    <app-toggle [control]="generalChatGroup.controls.enabled" />
+    <app-toggle [control]="generalChat.controls.enabled" />
   </div>
-  
 
   <div class="sub-header">
     <label>Command</label>
     <p>The command that triggers the TTS.</p>
-    <app-input [control]="generalChatGroup.controls.command" type="text" placeholder="!say"/>
+    <app-input [control]="generalChat.controls.command" type="text" placeholder="!say"/>
   </div>
 
   <div class="sub-header">
     <label>Cooldown</label>
     <p>How often this command can be ran in seconds.</p>
-    <app-input [control]="generalChatGroup.controls.cooldown" type="number"/>
+    <app-input [control]="generalChat.controls.cooldown" type="number"/>
   </div>
 
-  <app-user-perms [formGroup]="generalChatGroup.controls.permissions"/>
+  <div class="sub-header">
+    <label>Character Limit</label>
+    <p>How many characters that can be used in the chat message.</p>
+    <app-input [control]="generalChat.controls.charLimit" type="number"/>
+  </div>
+
+  <app-user-perms [formGroup]="generalPermissions"/>
 
   <hr>
 
@@ -36,20 +41,26 @@
   <div class="sub-header">
     <label>Enabled</label>
     <p>If enabled, users can use this command to generate ChatGPT TTS.</p>
-    <app-toggle [control]="gptChatGroup.controls.enabled" />
+    <app-toggle [control]="gptChat.controls.enabled" />
   </div>
 
   <div class="sub-header">
     <label>Command</label>
     <p>Will prompt GPT to generate a response.</p>
-    <app-input [control]="gptChatGroup.controls.command" type="text" placeholder="!ask"/>
+    <app-input [control]="gptChat.controls.command" type="text" placeholder="!ask"/>
   </div>
 
   <div class="sub-header">
     <label>Cooldown</label>
     <p>How often this command can be ran in seconds.</p>
-    <app-input [control]="gptChatGroup.controls.cooldown" type="number"/>
+    <app-input [control]="gptChat.controls.cooldown" type="number"/>
   </div>
 
-  <app-user-perms [formGroup]="gptChatGroup.controls.permissions"/>
+  <div class="sub-header">
+    <label>Character Limit</label>
+    <p>How many characters that can be used in the chat message.</p>
+    <app-input [control]="gptChat.controls.charLimit" type="number"/>
+  </div>
+
+  <app-user-perms [formGroup]="gptPermissions"/>
 </div>
