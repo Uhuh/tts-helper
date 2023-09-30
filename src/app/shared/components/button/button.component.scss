@@ -41,3 +41,13 @@ button {
   color: #121212 !important;
   background-color: var(--blue) !important;
 }
+
+.danger {
+  color: var(--red);
+  background-color: unset;
+  border: unset;
+  &:hover {
+    color: var(--off-red-bg);
+    background-color: unset;
+  }
+}

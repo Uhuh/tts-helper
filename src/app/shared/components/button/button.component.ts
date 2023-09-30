@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgClass } from '@angular/common';
 
-export type ButtonStyles = 'primary' | 'active' | 'outline';
+export type ButtonStyles = 'primary' | 'active' | 'outline' | 'danger';
 
 @Component({
   selector: 'app-button',
