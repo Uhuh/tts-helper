@@ -1,0 +1,21 @@
+<div class="header">
+  Logs for debugging
+</div>
+<div class="section">
+  <div class="logs-text">
+    <ng-container *ngIf="(logs$ | async) as logs; else empty">
+      <ng-container *ngIf="logs?.length; else empty">
+        <div class="log" *ngFor="let log of logs">
+          <span class="origin">[{{ log.createdAt | date: 'mediumTime' }}] [{{ log.origin }} : <span [class]="log.level">{{ log.level }}</span> ]</span> - {{ log.message }}
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #empty>
+      Logs are empty.
+    </ng-template>
+  </div>
+  <div class="action-row">
+    <app-button (click)="downloadLog()">Download</app-button>
+    <app-button [style]="'danger'">Delete all logs</app-button>
+  </div>
+</div>

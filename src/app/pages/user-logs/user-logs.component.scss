@@ -1,0 +1,40 @@
+:host {
+  width: 100%;
+}
+
+.section {
+  gap: 10px;
+}
+
+.logs-text {
+  display: flex;
+  flex-direction: column-reverse;
+  word-break: break-all;
+  width: 100%;
+  padding: 15px;
+  line-height: 1.2rem;
+  border: 2px solid var(--white-10);
+  border-radius: 6px;
+  font-family: monospace;
+}
+
+.log {
+  display: inline-block;
+}
+
+.origin {
+  color: var(--blue);
+}
+
+.action-row {
+  display: flex;
+  gap: 10px;
+}
+
+.error {
+  color: red !important;
+}
+
+.info {
+  color: yellow !important;;
+}

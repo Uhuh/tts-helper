@@ -31,6 +31,10 @@ const routes: Routes = [
     loadComponent: () => import('./pages/chat-settings/chat-settings.component'),
   },
   {
+    path: 'logs',
+    loadComponent: () => import('./pages/user-logs/user-logs.component')
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',

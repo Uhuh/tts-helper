@@ -18,6 +18,7 @@ import { StorageService } from './shared/services/storage.service';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { NavComponent } from './shared/components/nav/nav.component';
 import { PlaybackService } from './shared/services/playback.service';
+import { LogService } from './shared/services/logs.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,6 +44,7 @@ import { PlaybackService } from './shared/services/playback.service';
     ConfigService,
     HistoryService,
     PlaybackService,
+    LogService,
   ],
   bootstrap: [AppComponent],
 })
