@@ -19,6 +19,7 @@ import {
   TtsType
 } from '../state/config/config.feature';
 import { HistoryActions } from '../state/history/history.actions';
+import { LogService } from './logs.service';
 
 @Injectable()
 export class HistoryService {
@@ -37,39 +38,40 @@ export class HistoryService {
     private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly snackbar: MatSnackBar,
-    private readonly playback: PlaybackService
+    private readonly playback: PlaybackService,
+    private readonly logService: LogService,
   ) {
     this.configService.configTts$
-        .pipe(takeUntilDestroyed())
-        .subscribe((tts) => (this.tts = tts));
+      .pipe(takeUntilDestroyed())
+      .subscribe((tts) => (this.tts = tts));
 
     this.configService.deviceVolume$
-        .pipe(takeUntilDestroyed())
-        .subscribe((volume) => (this.deviceVolume = volume));
+      .pipe(takeUntilDestroyed())
+      .subscribe((volume) => (this.deviceVolume = volume));
 
     // this.configService.selectedDevice$
     //   .pipe(takeUntilDestroyed())
     //   .subscribe((device) => (this.deviceId = device));
 
     this.configService.bannedWords$
-        .pipe(takeUntilDestroyed())
-        .subscribe((bannedWords) => (this.bannedWords = bannedWords));
+      .pipe(takeUntilDestroyed())
+      .subscribe((bannedWords) => (this.bannedWords = bannedWords));
 
     this.configService.streamElements$
-        .pipe(takeUntilDestroyed())
-        .subscribe((streamElements) => (this.streamElements = streamElements));
+      .pipe(takeUntilDestroyed())
+      .subscribe((streamElements) => (this.streamElements = streamElements));
 
     this.configService.ttsMonster$
-        .pipe(takeUntilDestroyed())
-        .subscribe((ttsMonster) => (this.ttsMonster = ttsMonster));
+      .pipe(takeUntilDestroyed())
+      .subscribe((ttsMonster) => (this.ttsMonster = ttsMonster));
 
     this.configService.amazonPolly$
-        .pipe(takeUntilDestroyed())
-        .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
+      .pipe(takeUntilDestroyed())
+      .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
 
     this.configService.tikTok$
-        .pipe(takeUntilDestroyed())
-        .subscribe((tikTok) => (this.tikTok = tikTok));
+      .pipe(takeUntilDestroyed())
+      .subscribe((tikTok) => (this.tikTok = tikTok));
 
     this.playback.audioFinished$.pipe(takeUntilDestroyed()).subscribe((id) => {
       this.store.dispatch(
@@ -116,27 +118,35 @@ export class HistoryService {
     }
 
     this.playback
-        .playAudio({ data })
-        .then((id) => {
-          this.addHistory({
-            id,
-            createdAt: new Date(),
-            source,
-            text,
-            username,
-            state: AuditState.playing,
-          });
-        })
-        .catch((e) => {
-          console.error(`Error playing TTS`, e);
-          this.snackbar.open(
-            'Oops! We encountered an error while playing that.',
-            'Dismiss',
-            {
-              panelClass: 'notification-error',
-            }
-          );
+      .playAudio({ data })
+      .then((id) => {
+        this.logService.add(`Played TTS.\n${JSON.stringify({
+          ...data,
+          username,
+          audioText,
+          charLimit
+        }, null, 1)}`, 'info', 'HistoryService.playTts');
+        
+        this.addHistory({
+          id,
+          createdAt: new Date(),
+          source,
+          text,
+          username,
+          state: AuditState.playing,
         });
+      })
+      .catch((e) => {
+        this.logService.add(`Failed to play TTS. \n ${e}`, 'error', 'HistoryService.playTts');
+
+        this.snackbar.open(
+          'Oops! We encountered an error while playing that.',
+          'Dismiss',
+          {
+            panelClass: 'notification-error',
+          }
+        );
+      });
   }
 
   private async getRequestData(text: string): Promise<RequestAudioData | null> {
@@ -155,12 +165,12 @@ export class HistoryService {
         };
       case 'amazon-polly':
         const url = await this.handleAmazonPolly(text);
-        
+
         // If there was an issue getting the audio url.
         if (!url) {
           return null;
         }
-        
+
         return {
           type: 'amazonPolly',
           url,
