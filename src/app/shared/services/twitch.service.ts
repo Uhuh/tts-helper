@@ -1,11 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TwitchApi } from '../api/twitch.api';
-import { Subject, switchMap, takeUntil } from 'rxjs';
+import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
 import { TwitchFeature, TwitchRedeemState, ValidUser } from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LogService } from './logs.service';
 
 @Injectable()
 export class TwitchService implements OnDestroy {
@@ -25,6 +26,7 @@ export class TwitchService implements OnDestroy {
     private readonly store: Store,
     private readonly twitchApi: TwitchApi,
     private readonly snackbar: MatSnackBar,
+    private readonly logService: LogService,
   ) {
     this.twitchToken$.pipe(takeUntil(this.destroyed$)).subscribe((token) => {
       /**
@@ -33,6 +35,8 @@ export class TwitchService implements OnDestroy {
     });
 
     listen('access-token', (authData) => {
+      this.logService.add(`Attempting Twitch signin with access-token. ${JSON.stringify(authData, undefined, 2)}.`, 'info', 'TwitchService.constructor');
+
       const { token, provider } = authData.payload as {
         token: string;
         provider: 'twitch' | 'youtube';
@@ -44,7 +48,7 @@ export class TwitchService implements OnDestroy {
 
       this.signIn(token);
     }).catch((e) => {
-      console.error('Encountered issue getting access token.', e);
+      this.logService.add(`Failed to get access token from server.\n${e}`, 'error', 'TwitchService.constructor');
     });
   }
 
@@ -79,11 +83,29 @@ export class TwitchService implements OnDestroy {
             }),
           );
 
+          this.logService.add(`Successfully signed in with access token.`, 'info', 'TwitchService.constructor');
+
           return this.twitchApi.getChannelRedeemCommands(user.user_id, token);
-        })
+        }),
+        catchError(error => {
+          /**
+           * This will only return 403 if the user is NOT an affiliate and we try to get redeems they don't have.
+           */
+          if (error?.error?.status !== 403) {
+            this.clearState();
+            this.logService.add(`Failed to validate Twitch token.\n${JSON.stringify(error)}`, 'error', 'TwitchService.subscribe.catchError');
+            this.snackbar.open('Twitch login has failed.', 'Dismiss', {
+              panelClass: 'notification-error',
+            });
+          }
+
+          return of({ data: [] });
+        }),
       )
       .subscribe({
         next: (data) => {
+          this.logService.add(`Loading twitch redeems.\n${JSON.stringify(data.data)}`, 'info', 'TwitchService.signIn.subscribe.next');
+
           this.store.dispatch(
             TwitchStateActions.updateRedeems({
               redeems: data.data.map((r) => ({
@@ -96,7 +118,9 @@ export class TwitchService implements OnDestroy {
           );
         },
         error: (e) => {
-          this.snackbar.open('Twitch login has expired. Login again!', 'Dismiss');
+          this.snackbar.open('Twitch login has expired. Login again!', 'Dismiss', {
+            panelClass: 'notification-error',
+          });
           // Token has most likely expired.
           this.clearState();
           console.error(`Failed to log user in.`, e);
