@@ -30,6 +30,10 @@ export class UserLogsComponent {
       panelClass: 'notification-success',
     });
   }
+
+  deleteLogs() {
+    this.logService.deleteLogs();
+  }
 }
 
 export default UserLogsComponent;
