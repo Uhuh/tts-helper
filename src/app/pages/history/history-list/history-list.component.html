@@ -1,19 +1,23 @@
 <div class="wrapper">
   <div class="sub-header">
     <span>Currently playing</span>
-    <app-history-item
-      *ngIf="currentlyPlaying() as playing; else quiet"
-      [audit]="playing"
-      class="playing"
-    ></app-history-item>
+    <ng-container *ngIf="currentlyPlaying() as playing">
+      <app-history-item
+        *ngIf="playing; else quiet"
+        [audit]="playing"
+        class="playing"
+      />
+    </ng-container>
     <ng-template #quiet>
       <div class="empty">Nothing currently playing.</div>
     </ng-template>
     <hr />
   </div>
-  <div class="empty" *ngIf="!items().length">No history! Get to chatting.</div>
-  <app-history-item
-    *ngFor="let item of items()"
-    [audit]="item"
-  ></app-history-item>
+  <ng-container *ngIf="items() as items">
+    <div class="empty" *ngIf="!items.length">No history! Get to chatting.</div>
+    <app-history-item
+      *ngFor="let item of items"
+      [audit]="item"
+    />
+  </ng-container>
 </div>

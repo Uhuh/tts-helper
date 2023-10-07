@@ -12,6 +12,7 @@ import { AuditItem } from '../../../shared/state/history/history.feature';
   styleUrls: ['./history-list.component.scss'],
   standalone: true,
   imports: [NgIf, HistoryItemComponent, NgFor],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryListComponent {
   items = signal<AuditItem[]>([]);
@@ -38,7 +39,6 @@ export class HistoryListComponent {
     this.playbackService.audioFinished$
       .pipe(takeUntilDestroyed())
       .subscribe((id) => {
-        if (this.currentlyPlaying()?.id !== id) return;
         this.currentlyPlaying.set(undefined);
         this.ref.detectChanges();
       });
@@ -47,7 +47,7 @@ export class HistoryListComponent {
       .pipe(takeUntilDestroyed())
       .subscribe((items) => {
         this.items.set(items);
-        //this.ref.detectChanges();
+        this.ref.detectChanges();
       });
   }
 }
