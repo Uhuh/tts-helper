@@ -5,6 +5,7 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 import { NgClass } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LogService } from '../../shared/services/logs.service';
 
 @Component({
   selector: 'app-moderation',
@@ -18,7 +19,7 @@ export class ModerationComponent {
   hideBannedWords = new FormControl(true, { nonNullable: true });
   bannedWords = new FormControl('', { nonNullable: true });
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: ConfigService, private readonly logService: LogService) {
     this.configService.bannedWords$
       .pipe(takeUntilDestroyed())
       .subscribe((bannedWords) => {
@@ -30,6 +31,7 @@ export class ModerationComponent {
     this.bannedWords.valueChanges
       .pipe(takeUntilDestroyed(), debounceTime(1000))
       .subscribe((bannedWords) => {
+        this.logService.add(`Updating banned words list: ${bannedWords}`, 'info', 'ModerationComponent.bannedWords.valueChanges');
         this.configService.updateBannedWords(bannedWords.toLowerCase());
       });
   }
