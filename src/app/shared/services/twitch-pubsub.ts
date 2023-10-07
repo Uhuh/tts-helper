@@ -17,8 +17,8 @@ import {
   GptPersonalityState,
   GptSettingsState
 } from '../state/config/config.feature';
-import { Configuration, OpenAIApi } from 'openai';
-import { loreTemplateGenerator } from '../util/lore';
+import { LogService } from './logs.service';
+import { OpenaiService } from './openai.service';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
@@ -34,17 +34,12 @@ export class TwitchPubSub implements OnDestroy {
 
   // Normal TTS chat command
   generalChat?: GeneralChatState;
+
   // ChatGPT Settings
   gptChat?: GptChatState;
   gptSettings?: GptSettingsState;
   gptPersonality?: GptPersonalityState;
 
-  // Default empty api key.
-  apiKey = '';
-  chatLore: { role: 'system', content: string }[] = [];
-  chatGptConfig?: Configuration;
-  chatGptApi?: OpenAIApi;
-  gptHistory: { role: 'user' | 'assistant', content: string }[] = [];
   gptOnCooldown = false;
   generalOnCooldown = false;
 
@@ -62,33 +57,13 @@ export class TwitchPubSub implements OnDestroy {
     private readonly twitchService: TwitchService,
     private readonly historyService: HistoryService,
     private readonly configService: ConfigService,
-    private readonly snackbar: MatSnackBar
+    private readonly logService: LogService,
+    private readonly openaiService: OpenaiService,
+    private readonly snackbar: MatSnackBar,
   ) {
     this.configService.gptSettings$
       .pipe(takeUntilDestroyed())
       .subscribe(gptSettings => this.gptSettings = gptSettings);
-
-    this.configService.gptToken$
-      .pipe(takeUntilDestroyed())
-      .subscribe(apiKey => {
-        if (!apiKey) {
-          return console.info('Ignoring empty API key.');
-        }
-
-        this.apiKey = apiKey;
-
-        this.chatGptConfig = new Configuration({ apiKey });
-        this.chatGptApi = new OpenAIApi(this.chatGptConfig);
-      });
-
-    this.configService.gptPersonality$
-      .pipe(takeUntilDestroyed())
-      .subscribe(personality => {
-        this.chatLore = [{
-          role: 'system',
-          content: loreTemplateGenerator(personality),
-        }];
-      });
 
     this.configService.generalChat$
       .pipe(takeUntilDestroyed())
@@ -113,6 +88,8 @@ export class TwitchPubSub implements OnDestroy {
           return;
         }
 
+        this.logService.add(`Attempting to connect to Twitch chat.`, 'info', 'TwitchPubSub.constructor');
+
         const authProvider = new StaticAuthProvider(this.clientId, token);
         const apiClient = new ApiClient({ authProvider });
 
@@ -125,7 +102,7 @@ export class TwitchPubSub implements OnDestroy {
         });
 
         this.chat.connect().catch((e) => {
-          console.error(`Failed to connect to chat.`, channelInfo, e);
+          this.logService.add(`Failed to connect to Twitch chat.\n${e}`, 'error', 'TwitchPubSub.chat.connect');
 
           this.snackbar.open(
             'Oops! We encountered an error connecting to Twitch.',
@@ -180,51 +157,6 @@ export class TwitchPubSub implements OnDestroy {
     return false;
   }
 
-  async gptHandler(user: string, text: string) {
-    if (
-      !this.gptChat ||
-      !this.chatGptApi
-    ) {
-      return;
-    }
-
-    const trimmedText = text.substring(this.gptChat.command.length).trim();
-    const content = `${user} says "${trimmedText}"`;
-    try {
-      const response = await this.chatGptApi.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          ...this.chatLore,
-          ...this.gptHistory,
-          {
-            role: 'user',
-            content,
-          },
-        ],
-      });
-
-      const { message } = response.data.choices[0];
-
-      if (!message || !message.content) {
-        return console.info('OpenAI failed to respond.');
-      }
-
-      this.gptHistory.push({
-        role: 'user',
-        content,
-      }, {
-        role: 'assistant',
-        content: message.content,
-      });
-
-      this.gptHistory = this.gptHistory.slice(-1 * (this.gptSettings?.historyLimit ?? 0));
-
-      this.historyService.playTts(message.content, 'ChatGPT', 'gpt', this.gptChat.charLimit);
-    } catch (e) {
-      console.error(`Oopsies OpenAI died:`, e);
-    }
-  }
-
   async onMessage(user: ChatUser, text: string) {
     // If both chat commands are disabled ignore.
     if (!this.generalChat?.enabled && !this.gptChat?.enabled) {
@@ -247,8 +179,14 @@ export class TwitchPubSub implements OnDestroy {
       this.hasChatCommandPermissions(user, this.gptChat.permissions) &&
       !this.gptOnCooldown
     ) {
-      this.gptHandler(user.displayName, text)
-        .catch(e => console.error(`Failed to handle GPT TTS.`, e));
+      this.openaiService.gptHandler(user.displayName, text)
+        .catch(e => {
+          this.logService.add(
+            `Failed to handle GPT request { user: ${user.displayName}, text: '${text}' } \n ${e}`,
+            'error',
+            'TwitchPubSub.onMessage.gptHandler',
+          );
+        });
 
       // Handle cooldown if there is any.
       this.gptOnCooldown = true;
@@ -326,7 +264,7 @@ export class TwitchPubSub implements OnDestroy {
 
   onRedeem(redeem: TwitchRedeem) {
     const { rewardId, userDisplayName, input } = redeem;
-    
+
     // Normal TTS.
     if (
       rewardId === this.redeemInfo()?.redeem &&
@@ -342,8 +280,10 @@ export class TwitchPubSub implements OnDestroy {
 
     // If the streamer has GPT enabled, forward all TTS to ChatGPT.
     if (this.gptSettings?.enabled && this.redeemInfo()?.gptRedeem === rewardId) {
-      this.gptHandler(userDisplayName, input || 'Haha! Someone forgot to say something.')
-        .catch(e => console.error(`Failed to handle GPT redeem.`, e));
+      this.openaiService.gptHandler(userDisplayName, input || 'Haha! Someone forgot to say something.')
+        .catch(e => {
+          this.logService.add(`Failed to generate OpenAI response for Twitch redeem.\n${e}`, 'error', 'TwitchPubSub.onRedeem');
+        });
     }
   }
 
