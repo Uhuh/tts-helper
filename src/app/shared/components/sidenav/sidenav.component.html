@@ -81,6 +81,18 @@
         <span>Queue</span>
       </a>
     </div>
+    <div class="nav-group">
+      <span class="nav-header">Misc</span>
+      <a
+        class="nav-link"
+        [routerLink]="['logs']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
+        <mat-icon class="tts-icon">description</mat-icon>
+        <span>Logs</span>
+      </a>
+    </div>
   </div>
   <div class="version">v{{ appVersion }}</div>
 </div>
