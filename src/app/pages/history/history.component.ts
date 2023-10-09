@@ -12,15 +12,15 @@ import { LogService } from '../../shared/services/logs.service';
   imports: [ButtonComponent, HistoryListComponent],
 })
 export class HistoryComponent {
-  isPaused = signal(false);
+  isPaused = false;
 
   constructor(private readonly logService: LogService) {}
   
   togglePause() {
-    this.isPaused.set(!this.isPaused());
+    this.isPaused = !this.isPaused;
 
     invoke('set_tts_paused', {
-      paused: this.isPaused(),
+      paused: this.isPaused,
     }).catch((e) => {
       this.logService.add(`Failed to pause audio.\n${e}`, 'error', 'History.togglePause');
     });

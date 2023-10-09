@@ -5,6 +5,7 @@ import { HistoryService } from '../../../shared/services/history.service';
 import { PlaybackService } from '../../../shared/services/playback.service';
 import { HistoryItemComponent } from '../history-item/history-item.component';
 import { AuditItem } from '../../../shared/state/history/history.feature';
+import { LogService } from '../../../shared/services/logs.service';
 
 @Component({
   selector: 'app-history-list',
@@ -15,12 +16,13 @@ import { AuditItem } from '../../../shared/state/history/history.feature';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryListComponent {
-  items = signal<AuditItem[]>([]);
-  currentlyPlaying = signal<AuditItem | undefined>(undefined);
+  items: AuditItem[] = [];
+  currentlyPlaying?: AuditItem;
 
   constructor(
     private readonly playbackService: PlaybackService,
     private readonly historyService: HistoryService,
+    private readonly logService: LogService,
     private readonly ref: ChangeDetectorRef
   ) {
     /**
@@ -32,22 +34,37 @@ export class HistoryListComponent {
     this.playbackService.audioStarted$
       .pipe(takeUntilDestroyed())
       .subscribe((id) => {
-        this.currentlyPlaying.set(this.items().find((i) => i.id === id));
+        this.currentlyPlaying = this.items.find(i => i.id === id);
         this.ref.detectChanges();
       });
 
     this.playbackService.audioFinished$
       .pipe(takeUntilDestroyed())
       .subscribe((id) => {
-        this.currentlyPlaying.set(undefined);
+        this.currentlyPlaying = undefined;
         this.ref.detectChanges();
       });
 
     this.historyService.auditItems$
       .pipe(takeUntilDestroyed())
       .subscribe((items) => {
-        this.items.set(items);
-        this.ref.detectChanges();
+        this.items = [...items];
+        // this.ref.detectChanges();
       });
+  }
+  
+  skipped(id: number) {
+    if (this.currentlyPlaying?.id !== id) {
+      return;
+    }
+
+    const item = this.items.find(i => i.id === id);
+    this.logService.add(`Skipped audio: ${JSON.stringify(item)}`, 'info', 'HistoryListComponent.audioFinished$');
+    
+    this.currentlyPlaying = undefined;
+  }
+
+  trackBy(index: number, item: AuditItem) {
+    return item.id;
   }
 }

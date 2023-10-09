@@ -2,9 +2,9 @@
   <span>Redemption history</span>
   <app-button
     (click)="togglePause()"
-    [style]="isPaused() ? 'active' : 'primary'"
+    [style]="isPaused ? 'active' : 'primary'"
   >
-    {{ isPaused() ? 'Unpause' : 'Pause' }}
+    {{ isPaused ? 'Unpause' : 'Pause' }}
   </app-button>
 </div>
 <app-history-list></app-history-list>

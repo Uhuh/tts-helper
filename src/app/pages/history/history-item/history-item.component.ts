@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HistoryService } from 'src/app/shared/services/history.service';
 import { DatePipe, NgClass } from '@angular/common';
@@ -17,6 +17,7 @@ import { LogService } from '../../../shared/services/logs.service';
 })
 export class HistoryItemComponent {
   @Input({ required: true }) audit!: AuditItem;
+  @Output() itemSkipped = new EventEmitter<number>();
 
   constructor(
     private readonly historyService: HistoryService,
@@ -42,17 +43,14 @@ export class HistoryItemComponent {
   }
 
   get playing() {
-    this.logService.add(`Playing audio: ${JSON.stringify(this.audit)}`, 'info', 'HistoryItemComponent.playing');
     return this.audit.state === AuditState.playing;
   }
 
   get finished() {
-    this.logService.add(`Finished audio: ${JSON.stringify(this.audit)}`, 'info', 'HistoryItemComponent.finished');
     return this.audit.state === AuditState.finished;
   }
 
   get skipped() {
-    this.logService.add(`Skipped audio: ${JSON.stringify(this.audit)}`, 'info', 'HistoryItemComponent.skipped');
     return this.audit.state === AuditState.skipped;
   }
 
@@ -66,8 +64,10 @@ export class HistoryItemComponent {
   skip() {
     this.playbackService
       .setAudioState({ id: this.audit.id, skipped: true })
-      .then(() =>
-        this.historyService.updateHistory(this.audit.id, AuditState.skipped)
+      .then(() => {
+          this.itemSkipped.emit(this.audit.id);
+          this.historyService.updateHistory(this.audit.id, AuditState.skipped);
+        }
       )
       .catch((e) => {
         this.logService.add(`Failed to skip audio. Most likely already finished / skipped.\n${JSON.stringify(e, undefined, 2)}`, 'error', 'HistoryItem.skip');
