@@ -10,11 +10,15 @@ import { TwitchState } from './shared/state/twitch/twitch.feature';
 import { ConfigState } from './shared/state/config/config.feature';
 import { TwitchStateActions } from './shared/state/twitch/twitch.actions';
 import { GlobalConfigActions } from './shared/state/config/config.actions';
+import { RouterOutlet } from '@angular/router';
+import { NavComponent } from './shared/components/nav/nav.component';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: true,
+    imports: [NavComponent, RouterOutlet],
 })
 export class AppComponent {
   /**
