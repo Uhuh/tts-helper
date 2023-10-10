@@ -5,7 +5,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NgIf, NgClass } from '@angular/common';
+import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { ButtonComponent } from '../button/button.component';
+import { PlaybackService } from '../../services/playback.service';
 
 @Component({
   selector: 'app-nav',
@@ -20,16 +22,28 @@ import { NgIf, NgClass } from '@angular/common';
     MatSidenavModule,
     SidenavComponent,
     NgClass,
+    ButtonComponent,
+    AsyncPipe,
   ],
 })
 export class NavComponent implements OnInit {
   isMobile = false;
+  playbackState$ = this.playbackService.playbackState$;
 
-  constructor(private readonly breakpoint: BreakpointObserver) {}
+  constructor(
+    private readonly breakpoint: BreakpointObserver,
+    private readonly playbackService: PlaybackService,
+  ) {}
 
   ngOnInit(): void {
     this.breakpoint.observe(['(max-width: 900px)']).subscribe((state) => {
       this.isMobile = state.matches;
+    });
+  }
+
+  unpause() {
+    this.playbackService.setPlaybackState({
+      paused: false,
     });
   }
 }

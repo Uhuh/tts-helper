@@ -10,7 +10,26 @@
 
   .content {
     display: flex;
+    flex-direction: column;
     transition: scale 0.3s;
+  }
+  
+  .global-banner {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--background);
+    
+    .banner-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      gap: 20px;
+      width: 100%;
+      background-color: var(--blue-5);
+      border-bottom: 2px solid var(--blue);
+    }
   }
 
   .app-logo {

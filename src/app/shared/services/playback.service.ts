@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { invoke } from '@tauri-apps/api';
 import { listen } from '@tauri-apps/api/event';
-import { Subject, from, tap } from 'rxjs';
+import { Subject, from, tap, BehaviorSubject } from 'rxjs';
 import {
   AudioId,
   AudioState,
@@ -24,6 +24,11 @@ export class PlaybackService {
    * Emits when an audio source finishes playing.
    */
   readonly audioFinished$ = new Subject<AudioId>();
+
+  /**
+   * Emits when an audio playback state changes.
+   */
+  readonly playbackState$ = new BehaviorSubject<PlaybackState | undefined>(undefined);
 
   constructor() {
     from(
@@ -79,7 +84,8 @@ export class PlaybackService {
    * @param state The playback state to set.
    */
   async setPlaybackState(state: Partial<PlaybackState>): Promise<void> {
-    await invoke('plugin:playback|set_playback_state', { state });
+    const newState = await invoke('plugin:playback|set_playback_state', { state });
+    this.playbackState$.next(newState as PlaybackState);
   }
 
   /**
