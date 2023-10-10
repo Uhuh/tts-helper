@@ -1,9 +1,17 @@
 use std::time::Duration;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DurationMilliSeconds};
 
 use crate::services::playback::PlaybackController;
+
+#[serde_as]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PlaybackState {
+    paused: bool,
+    end_delay: Duration,
+}
 
 /// Sets the global playback state.
 #[serde_as]
@@ -30,6 +38,14 @@ impl SetPlaybackState {
 
         if let Some(paused) = self.paused {
             controller.set_paused(paused);
+        }
+    }
+    
+    #[inline]
+    pub fn state(controller: &PlaybackController) -> PlaybackState {
+        PlaybackState {
+            paused: controller.paused(),
+            end_delay: controller.end_delay(),
         }
     }
 }

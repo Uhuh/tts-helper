@@ -24,6 +24,7 @@ use crate::{
         tts::TtsService,
     },
 };
+use crate::models::requests::PlaybackState;
 
 /// Initializes the plugin.
 pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
@@ -168,8 +169,11 @@ async fn play_audio(
 /// Sets the global playback state.
 #[tauri::command(async)]
 #[instrument(skip_all)]
-fn set_playback_state(state: SetPlaybackState, playback_controller: State<'_, PlaybackController>) {
+fn set_playback_state(state: SetPlaybackState, playback_controller: State<'_, PlaybackController>) -> ApiResult<PlaybackState> {
     state.apply(playback_controller.inner());
+    let playback_state = SetPlaybackState::state(playback_controller.inner());
+    
+    Ok(playback_state)
 }
 
 /// Sets the state of an audio source.
