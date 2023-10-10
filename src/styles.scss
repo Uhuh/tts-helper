@@ -136,7 +136,12 @@ a {
   font-weight: 400;
   font-size: 28px;
   margin: 2rem 0;
-
+  
+  span {
+    text-decoration: underline;
+    text-decoration-color: var(--blue);
+  }
+  
   @media (max-width: 900px) {
     margin: 0;
     margin-bottom: 2rem;
