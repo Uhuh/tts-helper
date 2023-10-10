@@ -1,4 +1,4 @@
-<ng-container *ngIf="redeems.length">
+<ng-container *ngIf="redeems.length; else empty">
   <div class="header">
     <span>Redeem Settings</span>
   </div>
@@ -51,3 +51,10 @@
     </div>
   </ng-container>
 </ng-container>
+<ng-template #empty>
+  <div class="warning">
+    <span>Detected no Twitch redeems.</span>
+    <span>If you're a Twitch affiliate with redeems, try signing out and signing in again.</span>
+    <span>If this continues to be an issue please join the <a href="https://discord.gg/jNDjNVeuJp" target="_blank">support server</a>.</span>
+  </div>
+</ng-template>
