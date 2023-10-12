@@ -54,6 +54,8 @@ pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
             set_output_device,
             play_audio,
             set_playback_state,
+            set_output_volume,
+            toggle_pause,
             set_audio_state,
             list_audio,
         ])
@@ -107,9 +109,29 @@ fn set_output_device(
     let device = device_svc
         .output_device(device_id)
         .ok_or_else(|| ApiError::new("unrecognized device ID"))?;
+
     playback_svc.set_device(device);
 
     Ok(())
+}
+
+
+/// Sets the output volume for the device.
+#[tauri::command(async)]
+#[instrument(skip_all)]
+fn set_output_volume(volume_level: f32, playback_svc: State<'_, PlaybackService>) -> ApiResult<()> {
+    playback_svc.set_volume(volume_level);
+
+    Ok(())
+}
+
+/// Toggles the audio queue
+#[tauri::command(async)]
+#[instrument(skip_all)]
+fn toggle_pause(playback_svc: State<'_, PlaybackService>) -> ApiResult<bool> {
+    let paused = playback_svc.toggle_pause();
+
+    Ok(paused)
 }
 
 /// Enqueues audio to be played.
@@ -127,10 +149,10 @@ async fn play_audio(
         RequestAudioData::Raw(raw) => raw.data,
         RequestAudioData::StreamElements(stream_elements) => {
             tts_svc.stream_elements(stream_elements).await?
-        },
+        }
         RequestAudioData::TikTok(tiktok) => {
             tts_svc.tiktok(tiktok).await?
-        },
+        }
         RequestAudioData::AmazonPolly(amazon_polly) => {
             tts_svc.amazon_polly(amazon_polly).await?
         }
@@ -172,7 +194,7 @@ async fn play_audio(
 fn set_playback_state(state: SetPlaybackState, playback_controller: State<'_, PlaybackController>) -> ApiResult<PlaybackState> {
     state.apply(playback_controller.inner());
     let playback_state = SetPlaybackState::state(playback_controller.inner());
-    
+
     Ok(playback_state)
 }
 
