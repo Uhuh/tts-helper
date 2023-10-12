@@ -106,7 +106,7 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
             AudioEvent::SetVolume {
                 volume
             } => {
-                let Some(_sink) = sink.as_mut() else {
+                let Some(sink) = sink.as_mut() else {
                     trace!("no audio device set, skipping audio");
                     continue;
                 };
