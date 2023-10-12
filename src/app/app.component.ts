@@ -52,6 +52,10 @@ export class AppComponent {
           return;
         }
 
+        // Setup user audio device and volume on startup.
+        this.playbackService.setOutputDevice(data.value.audioDevice);
+        this.playbackService.setVolumeLevel(data.value.deviceVolume);
+
         this.store.dispatch(
           GlobalConfigActions.updateState({ configState: data.value })
         );
