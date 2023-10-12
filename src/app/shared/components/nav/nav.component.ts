@@ -28,7 +28,7 @@ import { PlaybackService } from '../../services/playback.service';
 })
 export class NavComponent implements OnInit {
   isMobile = false;
-  playbackState$ = this.playbackService.playbackState$;
+  isPaused$ = this.playbackService.isPaused$;
 
   constructor(
     private readonly breakpoint: BreakpointObserver,
@@ -42,8 +42,6 @@ export class NavComponent implements OnInit {
   }
 
   unpause() {
-    this.playbackService.setPlaybackState({
-      paused: false,
-    });
+    this.playbackService.togglePause();
   }
 }

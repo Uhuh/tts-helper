@@ -30,6 +30,8 @@ export class PlaybackService {
    */
   readonly playbackState$ = new BehaviorSubject<PlaybackState | undefined>(undefined);
 
+  readonly isPaused$ = new BehaviorSubject<boolean>(false);
+
   constructor() {
     from(
       listen('playback::audio::start', (event) => {
@@ -68,6 +70,11 @@ export class PlaybackService {
   async setOutputDevice(deviceId: DeviceId): Promise<void> {
     await invoke('plugin:playback|set_output_device', { deviceId });
   }
+  
+  async setVolumeLevel(volumeLevel: number): Promise<void> {
+    // Rodio takes the volume range from 0 -> 1
+    await invoke('plugin:playback|set_output_volume', { volumeLevel: volumeLevel / 100 });
+  }
 
   /**
    * Enqueues the given audio data to be played. This does not wait for the audio to finish
@@ -77,6 +84,12 @@ export class PlaybackService {
   async playAudio(request: PlayAudioRequest): Promise<AudioId> {
     const id = await invoke('plugin:playback|play_audio', { request });
     return id as AudioId;
+  }
+
+  async togglePause() {
+    const isPaused = await invoke('plugin:playback|toggle_pause');
+
+    this.isPaused$.next(isPaused as boolean);
   }
 
   /**

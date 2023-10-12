@@ -13,7 +13,7 @@
     [ngClass]="{ openedMobile: isMobile && nav.opened }"
   >
     <!-- Eventually figure out a smarter, global component for more than pauses. -->
-    <div class="global-banner" *ngIf="(playbackState$ | async)?.paused">
+    <div class="global-banner" *ngIf="(isPaused$ | async)">
       <div class="banner-content">
         <span>Your queue is currently paused.</span>
         <app-button [style]="'outline'" (click)="unpause()">Unpause</app-button>
