@@ -1,13 +1,13 @@
 <div class="wrapper">
   <div class="info">
     <span class="username">
-      <span class="name">{{ audit.username }}</span>
+      <span class="name">{{ audio.username }}</span>
       <img [src]="svg"/>
     </span>
-    <span>{{ audit.createdAt | date : 'short' }}</span>
+    <span>{{ audio.createdAt | date : 'short' }}</span>
   </div>
   <hr/>
-  <span class="text">{{ audit.text }}</span>
+  <span class="text">{{ audio.text }}</span>
   <div class="action-row">
     <app-button
       class="requeue"

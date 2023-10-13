@@ -10,7 +10,7 @@ import { RequestAudioData } from './playback.interface';
 import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
 import { PollyClient } from '@aws-sdk/client-polly';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
-import { AuditItem, AuditSource, AuditState, HistoryFeature } from '../state/history/history.feature';
+import { AudioFeature, AudioItem, AudioSource, AudioStatus } from '../state/audio/audio.feature';
 import {
   AmazonPollyData,
   StreamElementsData,
@@ -18,17 +18,19 @@ import {
   TtsMonsterData,
   TtsType
 } from '../state/config/config.feature';
-import { HistoryActions } from '../state/history/history.actions';
+import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
+import { combineLatest, map } from 'rxjs';
 
 @Injectable()
-export class HistoryService {
-  public readonly auditItems$ = this.store.select(HistoryFeature.selectAuditItems);
+export class AudioService {
+  public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
+  public readonly queuedItems$ = this.audioItems$
+    .pipe(map(items => items.filter(i => i.state === AudioStatus.queued)));
+
   bannedWords: string[] = [];
 
   tts: TtsType = 'stream-elements';
-  // deviceId = 0;
-  deviceVolume = 100;
   streamElements!: StreamElementsData;
   ttsMonster!: TtsMonsterData;
   amazonPolly!: AmazonPollyData;
@@ -41,59 +43,44 @@ export class HistoryService {
     private readonly playback: PlaybackService,
     private readonly logService: LogService,
   ) {
-    this.configService.configTts$
+
+    combineLatest([
+      this.configService.configTts$,
+      this.configService.bannedWords$,
+      this.configService.streamElements$,
+      this.configService.ttsMonster$,
+      this.configService.amazonPolly$,
+      this.configService.tikTok$,
+    ]).pipe(takeUntilDestroyed())
+      .subscribe(([tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok]) => {
+        this.tts = tts;
+        this.bannedWords = bannedWords;
+        this.streamElements = streamElements;
+        this.ttsMonster = ttsMonster;
+        this.amazonPolly = amazonPolly;
+        this.tikTok = tikTok;
+      });
+
+    this.playback.audioStarted$
       .pipe(takeUntilDestroyed())
-      .subscribe((tts) => (this.tts = tts));
+      .subscribe(id => this.store.dispatch(AudioActions.updateAudioState({ id, audioState: AudioStatus.playing })));
 
-    this.configService.deviceVolume$
+    this.playback.audioFinished$
       .pipe(takeUntilDestroyed())
-      .subscribe((volume) => (this.deviceVolume = volume));
-
-    // this.configService.selectedDevice$
-    //   .pipe(takeUntilDestroyed())
-    //   .subscribe((device) => (this.deviceId = device));
-
-    this.configService.bannedWords$
-      .pipe(takeUntilDestroyed())
-      .subscribe((bannedWords) => (this.bannedWords = bannedWords));
-
-    this.configService.streamElements$
-      .pipe(takeUntilDestroyed())
-      .subscribe((streamElements) => (this.streamElements = streamElements));
-
-    this.configService.ttsMonster$
-      .pipe(takeUntilDestroyed())
-      .subscribe((ttsMonster) => (this.ttsMonster = ttsMonster));
-
-    this.configService.amazonPolly$
-      .pipe(takeUntilDestroyed())
-      .subscribe((amazonPolly) => (this.amazonPolly = amazonPolly));
-
-    this.configService.tikTok$
-      .pipe(takeUntilDestroyed())
-      .subscribe((tikTok) => (this.tikTok = tikTok));
-
-    this.playback.audioFinished$.pipe(takeUntilDestroyed()).subscribe((id) => {
-      this.store.dispatch(
-        HistoryActions.updateAuditState({
-          id,
-          auditState: AuditState.finished,
-        })
-      );
-    });
+      .subscribe(id => this.store.dispatch(AudioActions.updateAudioState({ id, audioState: AudioStatus.finished })));
   }
 
-  requeue(audit: AuditItem) {
+  requeue(audio: AudioItem) {
     /**
      * @TODO - Determine if not having a character limit on requeue is good or bad.
      */
-    this.playTts(audit.text, audit.username, audit.source, 1000);
+    this.playTts(audio.text, audio.username, audio.source, 1000);
   }
 
   async playTts(
     text: string,
     username: string,
-    source: AuditSource,
+    source: AudioSource,
     charLimit: number
   ) {
     if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
@@ -126,14 +113,14 @@ export class HistoryService {
           audioText,
           charLimit
         }, null, 1)}`, 'info', 'HistoryService.playTts');
-        
-        this.addHistory({
+
+        this.addAudio({
           id,
           createdAt: new Date(),
           source,
           text,
           username,
-          state: AuditState.playing,
+          state: AudioStatus.queued,
         });
       })
       .catch((e) => {
@@ -230,15 +217,15 @@ export class HistoryService {
     }
   }
 
-  addHistory(audit: AuditItem) {
-    return this.store.dispatch(HistoryActions.addAuditItem({ audit }));
+  addAudio(audio: AudioItem) {
+    return this.store.dispatch(AudioActions.addAudioItem({ audio }));
   }
 
-  removeHistory(auditId: number) {
-    return this.store.dispatch(HistoryActions.removeAuditItem({ auditId }));
+  removeAudio(audioId: number) {
+    return this.store.dispatch(AudioActions.removeAudioItem({ audioId }));
   }
 
-  updateHistory(id: number, auditState: AuditState) {
-    return this.store.dispatch(HistoryActions.updateAuditState({ id, auditState }));
+  updateAudio(id: number, audioState: AudioStatus) {
+    return this.store.dispatch(AudioActions.updateAudioState({ id, audioState }));
   }
 }

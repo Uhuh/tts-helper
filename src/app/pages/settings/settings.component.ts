@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import { HistoryService } from 'src/app/shared/services/history.service';
+import { AudioService } from 'src/app/shared/services/audio.service';
 import { WindowsComponent } from './windows/windows.component';
 import { TtsMonsterComponent } from './tts-monster/tts-monster.component';
 import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
@@ -66,7 +66,7 @@ export class SettingsComponent {
   ];
 
   constructor(
-    private readonly historyService: HistoryService,
+    private readonly historyService: AudioService,
     private readonly configService: ConfigService
   ) {
     this.configService.configTts$

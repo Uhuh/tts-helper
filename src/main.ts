@@ -5,13 +5,13 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ConfigFeature } from './app/shared/state/config/config.feature';
 import { TwitchFeature } from './app/shared/state/twitch/twitch.feature';
-import { HistoryFeature } from './app/shared/state/history/history.feature';
+import { AudioFeature } from './app/shared/state/audio/audio.feature';
 import { StoreModule } from '@ngrx/store';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
 import { LogService } from './app/shared/services/logs.service';
 import { PlaybackService } from './app/shared/services/playback.service';
-import { HistoryService } from './app/shared/services/history.service';
+import { AudioService } from './app/shared/services/audio.service';
 import { ConfigService } from './app/shared/services/config.service';
 import { StorageService } from './app/shared/services/storage.service';
 import { TwitchPubSub } from './app/shared/services/twitch-pubsub';
@@ -25,7 +25,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(BrowserModule,
       // Inject reducer manager
       StoreModule.forRoot({}),
-      StoreModule.forFeature(HistoryFeature),
+      StoreModule.forFeature(AudioFeature),
       StoreModule.forFeature(TwitchFeature),
       StoreModule.forFeature(ConfigFeature),
       MatSnackBarModule,
@@ -38,7 +38,7 @@ bootstrapApplication(AppComponent, {
     TwitchPubSub,
     StorageService,
     ConfigService,
-    HistoryService,
+    AudioService,
     PlaybackService,
     LogService,
     provideHttpClient(withInterceptorsFromDi()),

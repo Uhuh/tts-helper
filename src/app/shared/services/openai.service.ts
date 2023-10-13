@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { HistoryService } from './history.service';
+import { AudioService } from './audio.service';
 import { ConfigService } from './config.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GptChatState, GptPersonalityState, GptSettingsState } from '../state/config/config.feature';
@@ -22,7 +22,7 @@ export class OpenaiService {
   chatGptApi?: OpenAIApi;
   
   constructor(
-    private readonly historyService: HistoryService,
+    private readonly audioService: AudioService,
     private readonly configService: ConfigService,
     private readonly logService: LogService,
   ) {
@@ -103,7 +103,7 @@ export class OpenaiService {
       // Continue to slice the history to save the user tokens when making request.
       this.gptHistory = this.gptHistory.slice(-1 * (this.gptSettings?.historyLimit ?? 0));
 
-      this.historyService.playTts(message.content, 'ChatGPT', 'gpt', this.gptChat.charLimit);
+      this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.gptChat.charLimit);
     } catch (e) {
       this.logService.add(`OpenAI failed to respond.\n${e}`, 'error', 'TwitchPubSub.gptHandler');
     }

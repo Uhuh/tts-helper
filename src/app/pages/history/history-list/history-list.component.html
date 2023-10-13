@@ -2,9 +2,8 @@
   <div class="sub-header">
     <span>Currently playing</span>
     <app-history-item
-      *ngIf="currentlyPlaying; else quiet"
-      [audit]="currentlyPlaying"
-      (itemSkipped)="skipped($event)"
+      *ngIf="(currentlyPlaying$ | async) as current; else quiet"
+      [audio]="current"
       class="playing"
     />
     <ng-template #quiet>
@@ -12,10 +11,10 @@
     </ng-template>
     <hr/>
   </div>
-  <div class="empty" *ngIf="!items.length">No history! Get to chatting.</div>
+  <div class="empty" *ngIf="!(audioItems$ | async)?.length">No history! Get to chatting.</div>
   <app-history-item
-    *ngFor="let item of items; trackBy: trackBy"
-    [audit]="item"
-    (itemSkipped)="skipped($event)"
+    *ngFor="let audio of (audioItems$ | async) ?? []; trackBy: trackBy"
+    [audio]="audio"
+    [ngClass]="{ queued: audio.state === AudioState.queued }"
   />
 </div>

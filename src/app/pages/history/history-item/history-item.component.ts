@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { HistoryService } from 'src/app/shared/services/history.service';
+import { AudioService } from 'src/app/shared/services/audio.service';
 import { DatePipe, NgClass } from '@angular/common';
-import { AuditItem, AuditState, } from '../../../shared/state/history/history.feature';
+import { AudioItem, AudioStatus, } from '../../../shared/state/audio/audio.feature';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
 import { LogService } from '../../../shared/services/logs.service';
@@ -16,59 +16,58 @@ import { LogService } from '../../../shared/services/logs.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryItemComponent {
-  @Input({ required: true }) audit!: AuditItem;
+  @Input({ required: true }) audio!: AudioItem;
   @Output() itemSkipped = new EventEmitter<number>();
 
+  readonly AudioState = AudioStatus;
+  
   constructor(
-    private readonly historyService: HistoryService,
+    private readonly audioService: AudioService,
     private readonly playbackService: PlaybackService,
     private readonly logService: LogService,
     private readonly snackbar: MatSnackBar
   ) {}
 
   get svg() {
-    return `assets/${this.audit.source.toLowerCase()}.svg`;
+    return `assets/${this.audio.source.toLowerCase()}.svg`;
   }
 
   get action() {
-    switch (this.audit.state) {
-      case AuditState.playing:
+    switch (this.audio.state) {
+      case AudioStatus.queued:
+      case AudioStatus.playing:
         return 'Skip';
-      case AuditState.skipped:
+      case AudioStatus.skipped:
         return 'Skipped';
-      case AuditState.finished:
+      case AudioStatus.finished:
       default:
         return 'Finished';
     }
   }
 
   get playing() {
-    return this.audit.state === AuditState.playing;
+    return this.audio.state === AudioStatus.playing;
   }
 
   get finished() {
-    return this.audit.state === AuditState.finished;
+    return this.audio.state === AudioStatus.finished;
   }
 
   get skipped() {
-    return this.audit.state === AuditState.skipped;
+    return this.audio.state === AudioStatus.skipped;
   }
 
   requeue() {
-    this.logService.add(`Requeueing audio: ${JSON.stringify(this.audit)}`, 'info', 'HistoryItemComponent.requeue');
-    this.historyService.removeHistory(this.audit.id);
+    this.logService.add(`Requeueing audio: ${JSON.stringify(this.audio)}`, 'info', 'HistoryItemComponent.requeue');
+    this.audioService.removeAudio(this.audio.id);
 
-    this.historyService.requeue(this.audit);
+    this.audioService.requeue(this.audio);
   }
 
   skip() {
     this.playbackService
-      .setAudioState({ id: this.audit.id, skipped: true })
-      .then(() => {
-          this.itemSkipped.emit(this.audit.id);
-          this.historyService.updateHistory(this.audit.id, AuditState.skipped);
-        }
-      )
+      .setAudioState({ id: this.audio.id, skipped: true })
+      .then(() => this.audioService.updateAudio(this.audio.id, AudioStatus.skipped))
       .catch((e) => {
         this.logService.add(`Failed to skip audio. Most likely already finished / skipped.\n${JSON.stringify(e, undefined, 2)}`, 'error', 'HistoryItem.skip');
 

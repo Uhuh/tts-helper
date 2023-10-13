@@ -5,7 +5,7 @@ import { combineLatest } from 'rxjs';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient, ChatUser } from '@twurple/chat';
-import { HistoryService } from './history.service';
+import { AudioService } from './audio.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TwitchCheer, TwitchGiftSub, TwitchRedeem, TwitchSub, TwitchSubMessage, } from './twitch-pubsub.interface';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -55,7 +55,7 @@ export class TwitchPubSub implements OnDestroy {
 
   constructor(
     private readonly twitchService: TwitchService,
-    private readonly historyService: HistoryService,
+    private readonly historyService: AudioService,
     private readonly configService: ConfigService,
     private readonly logService: LogService,
     private readonly openaiService: OpenaiService,
