@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
@@ -13,6 +12,10 @@ export const routes: Routes = [
   {
     path: 'history',
     loadComponent: () => import('./pages/history/history.component'),
+  },
+  {
+    path: 'queue',
+    loadComponent: () => import('./pages/live-queue/live-queue.component'),
   },
   {
     path: 'moderation',
