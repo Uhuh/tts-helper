@@ -2,51 +2,41 @@
   <span>Subscription Settings</span>
 </div>
 
-<div class="sub-header">
-  <label>Handle subscriptions</label>
-  <p>Enable or disable TTS for all sub events.</p>
-  <app-toggle [control]="enabled" />
-</div>
+<app-label-block>
+  <div header>Handle subscriptions</div>
+  <div sub-text>Enable or disable TTS for all sub events.</div>
+  <app-toggle [control]="enabled"/>
+</app-label-block>
 
-<div class="section" *ngIf="enabled.value">
-  <div class="sub-header">
-    <label>Subs character limit</label>
-    <p>The max allowed characters we'll play for a sub event!</p>
-    <app-input
-      placeholder="Enter a character limit"
-      type="number"
-      [control]="charLimit"
-    ></app-input>
+<ng-container *ngIf="enabled.value">
+  <app-label-block>
+    <div header>Subs character limit</div>
+    <div sub-text>The max allowed characters we'll play for a sub event!</div>
+    <app-input placeholder="Enter a character limit" type="number" [control]="charLimit"/>
     <mat-error *ngIf="charLimit.hasError('min')">
       Minimum characters allowed is 0.
     </mat-error>
     <mat-error *ngIf="charLimit.hasError('pattern')">
       Character limit must be a whole number.
     </mat-error>
-  </div>
+  </app-label-block>
 
-  <div class="sub-header">
-    <label>Gift subs message</label>
-    <p>Customize what your TTS says when a user gifts subs!</p>
+  <app-label-block>
+    <div header>Gift subs message</div>
+    <div sub-text>Customize what your TTS says when a user gifts subs!</div>
     <div class="warning">
       <app-gift-variables></app-gift-variables>
       <div class="example">
         Example:
         <span class="example-text">
-          Thanks
-          <span class="var">username</span>
-          for the
-          <span class="var">amount</span>
-          subs!
+          Thanks <span class="var">username</span> for the <span class="var">amount</span> subs!
         </span>
-        Will turn into:
-        <i class="example-text">Thanks Mei for the 2 subs!</i>
+        Will turn into: <i class="example-text">Thanks Mei for the 2 subs!</i>
       </div>
     </div>
-    <div class="var-buttons"></div>
     <textarea
       placeholder="Thanks {username} for the {amount} subs!"
       [formControl]="giftMessage"
     ></textarea>
-  </div>
-</div>
+  </app-label-block>
+</ng-container>

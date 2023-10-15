@@ -1,9 +1,13 @@
+:host {
+  width: 100%;
+}
+
 .hide {
   transition: filter 0.15s;
   filter: blur(4px);
 }
 
-.unhide {
+.show {
   transition: filter 0.15s;
   filter: unset;
 }

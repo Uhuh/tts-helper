@@ -1,54 +1,51 @@
-<ng-container *ngIf="redeems.length; else empty">
+<ng-container *ngIf="(redeems | async)?.length; else empty">
   <div class="header">
     <span>Redeem Settings</span>
   </div>
 
-  <div class="sub-header">
-    <label>Handle redeems</label>
-    <p>Enable or disable TTS events for redeems.</p>
+  <app-label-block>
+    <div header></div>
+    <div sub-text></div>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Handle redeems</div>
+    <div sub-text>Enable or disable TTS events for redeems.</div>
     <app-toggle [control]="redeemInfo.controls.enabled" />
-  </div>
+  </app-label-block>
 
   <ng-container *ngIf="redeemInfo.controls.enabled.value">
-    <div class="sub-header">
-      <label>Redeem</label>
-      <p>This redeem will trigger TTS with user input.</p>
-      <mat-form-field>
-        <mat-select placeholder="Select a redeem option" [formControl]="redeemInfo.controls.redeem">
-          <mat-option *ngFor="let redeem of redeems" [value]="redeem.id">
-            {{ redeem.title }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <app-label-block>
+      <div header>Redeem</div>
+      <div sub-text>This redeem will trigger TTS with user input.</div>
+      <app-selector placeholder="Select a redeem option" [control]="redeemInfo.controls.redeem" [options]="(redeemOptions | async) ?? []" />
+    </app-label-block>
 
-    <div *ngIf="gptEnabled()" class="sub-header">
-      <label>ChatGPT Redeem</label>
-      <p>This redeem will trigger a ChatGPT response.</p>
-      <mat-form-field>
-        <mat-select placeholder="Select a redeem option" [formControl]="redeemInfo.controls.gptRedeem">
-          <mat-option *ngFor="let redeem of redeems" [value]="redeem.id">
-            {{ redeem.title }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <app-label-block>
+      <div header>ChatGPT Redeem</div>
+      <div sub-text>This redeem will trigger a ChatGPT response.</div>
+      <app-selector placeholder="Select a redeem option" [control]="redeemInfo.controls.gptRedeem" [options]="(redeemOptions | async) ?? []" />
+    </app-label-block>
 
-    <div class="sub-header">
-      <label>Redeem character limit</label>
-      <p>The max allowed characters we'll play for the redeem.</p>
-      <app-input
-        placeholder="Set min bits"
-        type="number"
-        [control]="redeemInfo.controls.redeemCharacterLimit"
-      ></app-input>
+    <ng-container *ngIf="gptEnabled()">
+      <app-label-block>
+        <div header>ChatGPT Redeem</div>
+        <div sub-text>This redeem will trigger a ChatGPT response.</div>
+        <app-selector placeholder="Select a redeem option" [control]="redeemInfo.controls.gptRedeem" [options]="(redeemOptions | async) ?? []" />
+      </app-label-block>
+    </ng-container>
+
+    <app-label-block>
+      <div header>Redeem character limit</div>
+      <div sub-text>The max allowed characters we'll play for the redeem.</div>
+      <app-input placeholder="Set min bits" type="number" [control]="redeemInfo.controls.redeemCharacterLimit"/>
       <mat-error *ngIf="redeemInfo.controls.redeemCharacterLimit.hasError('min')">
         Minimum characters allowed is 0.
       </mat-error>
       <mat-error *ngIf="redeemInfo.controls.redeemCharacterLimit.hasError('pattern')">
         Character limit must be a whole number.
       </mat-error>
-    </div>
+    </app-label-block>
   </ng-container>
 </ng-container>
 <ng-template #empty>

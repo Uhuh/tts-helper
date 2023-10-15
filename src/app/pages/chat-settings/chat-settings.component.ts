@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from '../../shared/services/config.service';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
+import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 
 export interface ChatPermissionsFormGroup {
   allUsers: FormControl<boolean>;
@@ -23,7 +24,7 @@ export interface ChatSettingsFormGroup {
 @Component({
   selector: 'app-chat-settings',
   standalone: true,
-  imports: [CommonModule, InputComponent, UserPermsComponent, ToggleComponent],
+  imports: [CommonModule, InputComponent, UserPermsComponent, ToggleComponent, LabelBlockComponent],
   templateUrl: './chat-settings.component.html',
   styleUrls: ['./chat-settings.component.scss']
 })

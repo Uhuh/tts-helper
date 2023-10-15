@@ -9,6 +9,8 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TtsSelectorComponent } from '../../../shared/components/tts-selector/tts-selector.component';
+import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
+import { SelectorComponent } from '../../../shared/components/selector/selector.component';
 
 @Component({
   selector: 'app-amazon-polly',
@@ -24,14 +26,16 @@ import { TtsSelectorComponent } from '../../../shared/components/tts-selector/tt
     MatOptionModule,
     InputComponent,
     TtsSelectorComponent,
+    LabelBlockComponent,
+    SelectorComponent,
   ],
 })
 export class AmazonPollyComponent {
-  regions = [...voices.regions];
+  regions = voices.regions.map<{ value: string, displayName: string }>(r => ({ value: r, displayName: r }));
   readonly voices = voices.options;
 
   amazonPollyGroup = new FormGroup({
-    region: new FormControl(this.regions[0], { nonNullable: true }),
+    region: new FormControl<string>(this.regions[0].value, { nonNullable: true }),
     poolId: new FormControl('', { nonNullable: true }),
     language: new FormControl('', { nonNullable: true }),
     voice: new FormControl('', { nonNullable: true }),

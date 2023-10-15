@@ -9,6 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
 import { debounceTime } from 'rxjs';
+import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 
 export interface GptPersonalityFormGroup {
   streamersIdentity: FormControl<string>;
@@ -21,7 +22,7 @@ export interface GptPersonalityFormGroup {
 @Component({
   selector: 'app-chat-gpt',
   standalone: true,
-  imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent, MatInputModule, MatSliderModule, ReactiveFormsModule],
+  imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent, MatInputModule, MatSliderModule, ReactiveFormsModule, LabelBlockComponent],
   templateUrl: './chat-gpt.component.html',
   styleUrls: ['./chat-gpt.component.scss']
 })

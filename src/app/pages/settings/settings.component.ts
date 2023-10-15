@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { AudioService } from 'src/app/shared/services/audio.service';
-import { WindowsComponent } from './windows/windows.component';
 import { TtsMonsterComponent } from './tts-monster/tts-monster.component';
 import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
 import { StreamElementsComponent } from './streamelement-tts/stream-elements.component';
@@ -13,6 +12,7 @@ import { InputComponent } from '../../shared/components/input/input.component';
 import { TiktokComponent } from './tiktok/tiktok.component';
 import { TtsType } from '../../shared/state/config/config.feature';
 import { FormControl } from '@angular/forms';
+import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 
 interface TtsOption {
   disabled?: boolean;
@@ -33,8 +33,8 @@ interface TtsOption {
     StreamElementsComponent,
     AmazonPollyComponent,
     TtsMonsterComponent,
-    WindowsComponent,
     TiktokComponent,
+    LabelBlockComponent,
   ],
 })
 export class SettingsComponent {
@@ -52,11 +52,6 @@ export class SettingsComponent {
     {
       displayValue: 'TikTok',
       value: 'tiktok',
-    },
-    {
-      displayValue: 'Windows',
-      value: 'windows',
-      disabled: true,
     },
     {
       displayValue: 'TTS Monster',

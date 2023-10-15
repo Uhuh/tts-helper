@@ -1,38 +1,37 @@
-<div class="section">
-  <div class="header">
-    <span>Amazon Polly</span>
-  </div>
-  <div class="warning">
-    <span>
-      Amazon Polly requires a little bit of elbow grease to get started.
-    </span>
-    <span>It requires creating an account through Amazon's AWS.</span>
-    <span>Video soon to come...</span>
-  </div>
-  <div class="sub-header">
-    <label>Region</label>
-    <p>Select your Amazon Region.</p>
-    <mat-form-field>
-      <mat-select placeholder="Select a region" [formControl]="amazonPollyGroup.controls.region">
-        <mat-option *ngFor="let region of regions" [value]="region">
-          {{ region }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div class="sub-header">
-    <label>Pool ID</label>
-    <p>This is your super secret ID.</p>
-    <app-input
-      placeholder="Place your Pool Id here."
-      [control]="amazonPollyGroup.controls.poolId"
-      type="password"
-    >
-    </app-input>
-  </div>
-  <app-tts-selector
-    [languageControl]="amazonPollyGroup.controls.language"
-    [voiceControl]="amazonPollyGroup.controls.voice"
-    [voices]="voices"
-  />
+<div class="header">
+  <span>Amazon Polly</span>
 </div>
+
+<div class="warning">
+  <span>
+    Amazon Polly requires a little bit of elbow grease to get started.
+  </span>
+  <span>It requires creating an account through Amazon's AWS.</span>
+  <span>Video soon to come...</span>
+</div>
+
+<app-label-block>
+  <div header>Region</div>
+  <div sub-text>Select your Amazon Region.</div>
+  <app-selector
+    placeholder="Select a region"
+    [control]="amazonPollyGroup.controls.region"
+    [options]="regions"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Pool ID</div>
+  <div sub-text>This is your super secret ID.</div>
+  <app-input
+    placeholder="Place your Pool Id here."
+    [control]="amazonPollyGroup.controls.poolId"
+    type="password"
+  />
+</app-label-block>
+
+<app-tts-selector
+  [languageControl]="amazonPollyGroup.controls.language"
+  [voiceControl]="amazonPollyGroup.controls.voice"
+  [voices]="voices"
+/>

@@ -7,13 +7,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { NgIf } from '@angular/common';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
+import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 @Component({
   selector: 'app-bits',
   templateUrl: './bits.component.html',
   styleUrls: ['./bits.component.scss'],
   standalone: true,
-  imports: [ToggleComponent, NgIf, InputComponent, MatFormFieldModule],
+  imports: [ToggleComponent, NgIf, InputComponent, MatFormFieldModule, LabelBlockComponent],
 })
 export class BitsComponent {
   minBits = new FormControl(0, {

@@ -1,41 +1,39 @@
-<hr>
-
 <div class="header">
   <span>AI Personality</span>
 </div>
 
-<div class="sub-header">
-  <label>Your name</label>
-  <p>How your want ChatGPT to refer to you.</p>
+<app-label-block>
+  <div header>Your name</div>
+  <div sub-text>How your want ChatGPT to refer to you.</div>
   <app-input [control]="formGroup.controls.streamersIdentity" type="text" placeholder="Panku"/>
-</div>
+</app-label-block>
 
-<div class="sub-header">
-  <label>ChatGPT's name</label>
-  <p>You can make ChatGPT change how it refers to itself.</p>
+<app-label-block>
+  <div header>ChatGPT's name</div>
+  <div sub-text>You can make ChatGPT change how it refers to itself.</div>
   <app-input [control]="formGroup.controls.modelsIdentity" type="text" placeholder="Alphyx"/>
-</div>
+</app-label-block>
 
-<div class="sub-header">
-  <label>What should ChatGPT act like?</label>
-  <p>A short description, example "The embodiment of chat".</p>
+<app-label-block>
+  <div header>What should ChatGPT act like?</div>
+  <div sub-text>A short description, example "The embodiment of chat".</div>
   <app-input [control]="formGroup.controls.modelsCoreIdentity" type="text" placeholder="An annoyance"/>
-</div>
+</app-label-block>
 
-<div class="sub-header">
-  <label>How does ChatGPT see you?</label>
-  <p>Create a "connection" between you and ChatGPT.</p>
+<app-label-block>
+  <div header>How does ChatGPT see you?</div>
+  <div sub-text>Create a "connection" between you and ChatGPT.</div>
   <textarea
     placeholder="[ChatGPT name] thinks I'm stinky, silly and dumb!"
     [formControl]="formGroup.controls.streamerModelRelation"
   ></textarea>
-</div>
+</app-label-block>
 
-<div class="sub-header">
-  <label>Give ChatGPT a background</label>
-  <p>Give ChatGPT a background / history / story. Customize it! Be as detailed as possible.</p>
+<app-label-block>
+  <div header>Give ChatGPT a background</div>
+  <div sub-text>Give ChatGPT a background / history / story. Customize it! Be as detailed as possible.</div>
   <textarea
     placeholder="[ChatGPT's name] is a goofy sidekick that loves to play tricks."
     [formControl]="formGroup.controls.modelsBackground"
   ></textarea>
-</div>
+</app-label-block>

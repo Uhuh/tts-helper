@@ -10,6 +10,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
 import { DeviceId, DeviceInfo, WithId, } from 'src/app/shared/services/playback.interface';
+import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
+import { SelectorComponent } from '../../../shared/components/selector/selector.component';
+import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.component';
 
 @Component({
   selector: 'app-device',
@@ -24,10 +27,13 @@ import { DeviceId, DeviceInfo, WithId, } from 'src/app/shared/services/playback.
     NgFor,
     MatOptionModule,
     MatSliderModule,
+    LabelBlockComponent,
+    SelectorComponent,
   ],
 })
 export class DeviceComponent {
   devices = signal<WithId<DeviceInfo, DeviceId>[]>([]);
+  deviceOptions: TTSOption[] = [];
   selectedDevice = new FormControl(0, { nonNullable: true });
   volume = new FormControl(100, { nonNullable: true });
 
@@ -37,6 +43,7 @@ export class DeviceComponent {
   ) {
     this.playbackService.listOutputDevices().then((devices) => {
       this.devices.set(devices.outputDevices);
+      this.deviceOptions = devices.outputDevices.map(d => ({ displayName: d.name, value: d.id }));
     });
 
     this.configService.selectedDevice$

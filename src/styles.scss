@@ -135,53 +135,29 @@ a {
 .header {
   font-weight: 400;
   font-size: 28px;
-  margin: 2rem 0;
+  padding-bottom: 2rem;
   
   span {
     text-decoration: underline;
     text-decoration-color: var(--blue);
   }
-  
-  @media (max-width: 900px) {
-    margin: 0;
-    margin-bottom: 2rem;
-  }
 }
 
-.sub-header {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
-
-  margin-bottom: 1.5rem;
-
-  label {
-    font-size: 20px;
-    color: var(--header);
-  }
-
-  p {
-    margin: 0;
-    font-size: 16px;
-    color: var(--text-inactive);
-  }
-
-  app-toggle {
-    position: absolute;
-    right: 0;
-  }
+app-toggle {
+  position: absolute;
+  right: 0;
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
+  gap: 1.2rem;
+  width: 100%;
 
   .header {
-    margin-top: 1rem;
     color: var(--header);
     font-size: 24px;
+    padding-bottom: 1rem;
   }
 }
 
@@ -190,7 +166,6 @@ a {
   flex-direction: column;
   gap: 10px;
   padding: 15px;
-  margin-bottom: 2rem;
   border-radius: 6px;
   background-color: var(--blue-5);
   border: 1px solid var(--blue);

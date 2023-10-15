@@ -1,6 +1,7 @@
 <div class="header">
   <span>ChatGPT Settings</span>
 </div>
+
 <div class="section">
   <div class="warning">
     <span>ChatGPT is an AI language model developed by OpenAI, we (TTS Helper) do not have control over what it generates or says.</span>
@@ -8,29 +9,32 @@
     <span>OpenAI charges your based on your usage. Set max spend limits and keep an eye on your usage as you utilize it.</span>
     <span>Use at your own risk.</span>
   </div>
+  
   <div class="header">
     <span>General Settings</span>
   </div>
   
-  <div class="sub-header">
-    <label>Enable ChatGPT</label>
-    <p>If enabled, users can use chat commands and a redeem to trigger ChatGPT.</p>
+  <app-label-block>
+    <div header>Enable ChatGPT</div>
+    <div sub-text>If enabled, users can use chat commands and a redeem to trigger ChatGPT.</div>
     <app-toggle [control]="enableGptControl"/>
-  </div>
-  
-  <div class="sub-header">
-    <label>API Key</label>
-    <p>Generated API key. Never share this with anyone, and never expose it.</p>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>API Key</div>
+    <div sub-text>Generated API key. Never share this with anyone, and never expose it.</div>
     <app-input [control]="apiKeyControl" placeholder="Enter API Key." type="password"/>
-  </div>
-  
-  <div class="sub-header">
-    <label>Message History</label>
-    <p>Helps ChatGPT respond better by using previous messages.</p>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Message History</div>
+    <div sub-text>Helps ChatGPT respond better by using previous messages.</div>
     <app-input [control]="historyControl" type="number" [hasError]="historyControl.errors !== null" />
     <mat-error *ngIf="historyControl.hasError('min')">Cannot have a negative history count.</mat-error>
     <mat-error *ngIf="historyControl.hasError('max')">Currently we recommend 20 messages in history at max.</mat-error>
-  </div>
+  </app-label-block>
+  
+  <hr/>
   
   <app-gpt-personality [formGroup]="personalityGroup" />
 </div>

@@ -1,21 +1,21 @@
 <div class="header">
   <span>Device Settings</span>
 </div>
-<div class="sub-header">
-  <label>Select Audio Device</label>
-  <p>Select where you want sound to come out of.</p>
-  <mat-form-field>
-    <mat-select placeholder="Select a device" [formControl]="selectedDevice">
-      <mat-option *ngFor="let device of devices()" [value]="device.id">
-        {{ device.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
-<div class="sub-header">
-  <label>Output Volume</label>
-  <p>Set the output volume to the selected device.</p>
+
+<app-label-block>
+  <div header>Select Audio Device</div>
+  <div sub-text>Select where you want sound to come out of.</div>
+  <app-selector
+    placeholder="Select a device"
+    [control]="selectedDevice"
+    [options]="deviceOptions"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Output Volume</div>
+  <div sub-text>Set the output volume to the selected device.</div>
   <mat-slider min="0" max="100" step="1" discrete color="primary">
-    <input matSliderThumb [formControl]="volume" />
+    <input matSliderThumb [formControl]="volume"/>
   </mat-slider>
-</div>
+</app-label-block>

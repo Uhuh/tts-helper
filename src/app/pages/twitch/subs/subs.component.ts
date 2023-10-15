@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { NgIf } from '@angular/common';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
+import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 @Component({
   selector: 'app-subs',
@@ -22,6 +23,7 @@ import { ToggleComponent } from '../../../shared/components/toggle/toggle.compon
     GiftVariablesComponent,
     FormsModule,
     ReactiveFormsModule,
+    LabelBlockComponent,
   ],
 })
 export class SubsComponent {

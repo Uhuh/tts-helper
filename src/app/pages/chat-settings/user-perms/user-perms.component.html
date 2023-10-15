@@ -2,20 +2,20 @@
   <span>User Permissions</span>
 </div>
 
-<div class="section">
-  <div class="sub-header">
-    <label>All Users</label>
-    <p>Everyone can run these commands.</p>
-    <app-toggle [control]="formGroup.controls.allUsers" />
-  </div>
-  <div class="sub-header">
-    <label>Mods</label>
-    <p>Allows your channel mods to run commands.</p>
-    <app-toggle [control]="formGroup.controls.mods" />
-  </div>
-  <div class="sub-header">
-    <label>Paying Users</label>
-    <p>Twitch subs / YouTube members.</p>
-    <app-toggle [control]="formGroup.controls.payingMembers" />
-  </div>
-</div>
+<app-label-block>
+  <div header>All Users</div>
+  <div sub-text>Everyone can run these commands.</div>
+  <app-toggle [control]="formGroup.controls.allUsers"/>
+</app-label-block>
+
+<app-label-block>
+  <div header>Mods</div>
+  <div sub-text>Allows your channel mods to run commands.</div>
+  <app-toggle [control]="formGroup.controls.mods"/>
+</app-label-block>
+
+<app-label-block>
+  <div header>Paying Users</div>
+  <div sub-text>Twitch subs / YouTube members.</div>
+  <app-toggle [control]="formGroup.controls.payingMembers"/>
+</app-label-block>

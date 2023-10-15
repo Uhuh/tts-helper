@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { NgClass, NgIf } from '@angular/common';
+import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
 
@@ -11,7 +12,7 @@ export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss'],
   standalone: true,
-  imports: [NgClass, NgIf],
+  imports: [NgClass, NgIf, LabelBlockComponent],
 })
 export class AuthComponent {
   // Rust server running so we can auth in the users browser

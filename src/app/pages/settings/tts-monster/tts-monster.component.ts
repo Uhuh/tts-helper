@@ -3,13 +3,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { FormControl } from '@angular/forms';
+import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 @Component({
   selector: 'app-tts-monster',
   templateUrl: './tts-monster.component.html',
   styleUrls: ['./tts-monster.component.scss'],
   standalone: true,
-  imports: [InputComponent],
+  imports: [InputComponent, LabelBlockComponent],
 })
 export class TtsMonsterComponent {
   overlay = new FormControl('', { nonNullable: true });

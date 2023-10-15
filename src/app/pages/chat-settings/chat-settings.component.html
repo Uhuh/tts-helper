@@ -2,40 +2,40 @@
   <span>Chat Command Settings</span>
 </div>
 
-<div class="warning">
-  <span>Chat commands are good for Twitch streamers that haven't reached affiliate yet.</span>
-  <span>Use the permission toggles to customize who can use the chat commands.</span>
-</div>
-
 <div class="section">
+  <div class="warning">
+    <span>Chat commands are good for Twitch streamers that haven't reached affiliate yet.</span>
+    <span>Use the permission toggles to customize who can use the chat commands.</span>
+  </div>
+  
   <div class="header">
     <span>General Chat Settings</span>
   </div>
   
-  <div class="sub-header">
-    <label>Enabled</label>
-    <p>If enabled, users can use this command to use normal TTS.</p>
-    <app-toggle [control]="generalChat.controls.enabled" />
-  </div>
+  <app-label-block>
+    <div header>Enabled</div>
+    <div sub-text>If enabled, users can use this command to use normal TTS.</div>
+    <app-toggle [control]="generalChat.controls.enabled"/>
+  </app-label-block>
 
-  <div class="sub-header">
-    <label>Command</label>
-    <p>The command that triggers the TTS.</p>
+  <app-label-block>
+    <div header>Command</div>
+    <div sub-text>The command that triggers the TTS.</div>
     <app-input [control]="generalChat.controls.command" type="text" placeholder="!say"/>
-  </div>
+  </app-label-block>
 
-  <div class="sub-header">
-    <label>Cooldown</label>
-    <p>How often this command can be ran in seconds.</p>
+  <app-label-block>
+    <div header>Cooldown</div>
+    <div sub-text>How often this command can be ran in seconds.</div>
     <app-input [control]="generalChat.controls.cooldown" type="number"/>
-  </div>
+  </app-label-block>
 
-  <div class="sub-header">
-    <label>Character Limit</label>
-    <p>How many characters that can be used in the chat message.</p>
+  <app-label-block>
+    <div header>Character Limit</div>
+    <div sub-text>How many characters that can be used in the chat message.</div>
     <app-input [control]="generalChat.controls.charLimit" type="number"/>
-  </div>
-
+  </app-label-block>
+  
   <app-user-perms [formGroup]="generalPermissions"/>
 
   <hr>
@@ -43,24 +43,24 @@
   <div class="header">
     <span>ChatGPT Chat Settings</span>
   </div>
+  
+  <app-label-block>
+    <div header>Enabled</div>
+    <div sub-text>If enabled, users can use this command to generate ChatGPT TTS.</div>
+    <app-toggle [control]="gptChat.controls.enabled"/>
+  </app-label-block>
 
-  <div class="sub-header">
-    <label>Enabled</label>
-    <p>If enabled, users can use this command to generate ChatGPT TTS.</p>
-    <app-toggle [control]="gptChat.controls.enabled" />
-  </div>
-
-  <div class="sub-header">
-    <label>Command</label>
-    <p>Will prompt GPT to generate a response.</p>
+  <app-label-block>
+    <div header>Command</div>
+    <div sub-text>Will prompt GPT to generate a response.</div>
     <app-input [control]="gptChat.controls.command" type="text" placeholder="!ask"/>
-  </div>
+  </app-label-block>
 
-  <div class="sub-header">
-    <label>Cooldown</label>
-    <p>How often this command can be ran in seconds.</p>
+  <app-label-block>
+    <div header>Cooldown</div>
+    <div sub-text>How often this command can be ran in seconds.</div>
     <app-input [control]="gptChat.controls.cooldown" type="number"/>
-  </div>
+  </app-label-block>
 
   <app-user-perms [formGroup]="gptPermissions"/>
 </div>

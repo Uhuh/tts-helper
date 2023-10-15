@@ -11,9 +11,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LabelBlockComponent } from '../input-block/label-block.component';
+import { SelectorComponent } from '../selector/selector.component';
 
 export interface TTSOption {
-  value: string;
+  value: string | number;
   displayName: string;
 }
 
@@ -30,6 +32,8 @@ export interface Voices {
     MatFormFieldModule,
     MatSelectModule,
     ReactiveFormsModule,
+    LabelBlockComponent,
+    SelectorComponent,
   ],
   templateUrl: './tts-selector.component.html',
   styleUrls: ['./tts-selector.component.scss'],
@@ -41,7 +45,7 @@ export class TtsSelectorComponent implements OnChanges {
 
   languageVoiceMap = new Map<string, TTSOption[]>();
   languageVoiceOptions = signal<TTSOption[]>([]);
-  languageOptions = signal<string[]>([]);
+  languageOptions = signal<TTSOption[]>([]);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -50,7 +54,10 @@ export class TtsSelectorComponent implements OnChanges {
       this.languageVoiceMap.set(voice.language, voice.options);
     }
 
-    this.languageOptions.set([...this.languageVoiceMap.keys()]);
+    this.languageOptions.set(
+      [...this.languageVoiceMap.keys()]
+        .map(l => ({ value: l, displayName: l }))
+    );
 
     this.languageVoiceOptions.set(
       this.languageVoiceMap.get(this.languageControl.value) ?? []
@@ -64,7 +71,7 @@ export class TtsSelectorComponent implements OnChanges {
         );
 
         this.voiceControl.patchValue(
-          this.languageVoiceOptions()[0].value ?? ''
+          `${this.languageVoiceOptions()[0].value}` ?? ''
         );
       });
   }

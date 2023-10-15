@@ -2,17 +2,15 @@
   <span>Moderation Settings</span>
 </div>
 <div class="section">
-  <div class="sub-header">
-    <span>Banned words</span>
-    <p>
-      Put words separated by commas. Messages that contain any of these will be
-      ignored entirely.
-    </p>
-  </div>
-  <textarea
-    [formControl]="bannedWords"
-    class="banned-words hide"
-    [ngClass]="{ unhide: !hideBannedWords.value }"
-  ></textarea>
-  <app-toggle [control]="hideBannedWords" text="Blur banned words" />
+  <app-label-block>
+    <div header>Banned words</div>
+    <div sub-text>Put words separated by commas.</div>
+    <div sub-text>Messages that contain any of these will be ignored entirely.</div>
+    <app-toggle [control]="hideBannedWords" text="Blur" />
+    <textarea
+      [formControl]="bannedWords"
+      class="banned-words hide"
+      [ngClass]="{ show: !hideBannedWords.value }"
+    ></textarea>
+  </app-label-block>
 </div>

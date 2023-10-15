@@ -2,23 +2,28 @@
   <span>Main Settings</span>
 </div>
 <div class="section">
-  <div class="sub-header">
-    <label>Play TTS locally.</label>
-    <p>These show up in the history tab.</p>
+  <app-label-block>
+    <div header>Play TTS locally</div>
+    <div sub-text>These show up in the history tab.</div>
     <div class="action-row">
       <app-input type="text" [control]="ttsControl" placeholder="Enter something to say." />
       <app-button (click)="speak()" [disabled]="isDisabled">Send</app-button>
     </div>
-  </div>
+  </app-label-block>
+  
+  <hr/>
   <app-device></app-device>
+  <hr/>
+  
   <div class="header">
     <span>TTS Settings</span>
   </div>
-  <div class="sub-header">
-    <label>Select TTS service</label>
-    <p>Decide which TTS service to use.</p>
+  
+  <app-label-block>
+    <div header>Select TTS service</div>
+    <div sub-text>Decide which TTS service to use.</div>
     <div class="action-row flex-wrap">
-      <app-button
+      <app-button 
         *ngFor="let option of ttsOptions"
         (click)="selectTts(option.value)"
         [ngClass]="{ disabled: option.disabled }"
@@ -27,14 +32,18 @@
         {{ option.displayValue }}
       </app-button>
     </div>
-  </div>
+  </app-label-block>
+  
+  <hr/>
+  
+  <app-stream-elements
+    *ngIf="selectedTts.value === 'stream-elements'"
+  ></app-stream-elements>
+  <app-amazon-polly
+    *ngIf="selectedTts.value === 'amazon-polly'"
+  ></app-amazon-polly>
+  <app-tiktok *ngIf="selectedTts.value === 'tiktok'"></app-tiktok>
+  <app-tts-monster *ngIf="selectedTts.value === 'tts-monster'"></app-tts-monster>
 </div>
-<app-stream-elements
-  *ngIf="selectedTts.value === 'stream-elements'"
-></app-stream-elements>
-<app-amazon-polly
-  *ngIf="selectedTts.value === 'amazon-polly'"
-></app-amazon-polly>
-<app-tiktok *ngIf="selectedTts.value === 'tiktok'"></app-tiktok>
-<app-tts-monster *ngIf="selectedTts.value === 'tts-monster'"></app-tts-monster>
-<app-windows *ngIf="selectedTts.value === 'windows'"></app-windows>
+
+

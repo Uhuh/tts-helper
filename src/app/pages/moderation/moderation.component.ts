@@ -6,13 +6,14 @@ import { ToggleComponent } from '../../shared/components/toggle/toggle.component
 import { NgClass } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LogService } from '../../shared/services/logs.service';
+import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 
 @Component({
   selector: 'app-moderation',
   templateUrl: './moderation.component.html',
   styleUrls: ['./moderation.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgClass, ToggleComponent],
+  imports: [FormsModule, ReactiveFormsModule, NgClass, ToggleComponent, LabelBlockComponent],
 })
 export class ModerationComponent {
   // Just to prevent streamers from showing bad words on stream
