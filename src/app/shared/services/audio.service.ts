@@ -124,7 +124,7 @@ export class AudioService {
         });
       })
       .catch((e) => {
-        this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'HistoryService.playTts');
+        this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
 
         this.snackbar.open(
           'Oops! We encountered an error while playing that.',

@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HistoryListComponent } from './history-list.component';
+import { AudioListComponent } from './audio-list.component';
 
 describe('HistoryListComponent', () => {
-  let component: HistoryListComponent;
-  let fixture: ComponentFixture<HistoryListComponent>;
+  let component: AudioListComponent;
+  let fixture: ComponentFixture<AudioListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HistoryListComponent],
+      declarations: [AudioListComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HistoryListComponent);
+    fixture = TestBed.createComponent(AudioListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

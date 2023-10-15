@@ -1,21 +1,21 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ApplicationRef, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AudioService } from 'src/app/shared/services/audio.service';
 import { DatePipe, NgClass } from '@angular/common';
-import { AudioItem, AudioStatus, } from '../../../shared/state/audio/audio.feature';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
-import { LogService } from '../../../shared/services/logs.service';
+import { AudioItem, AudioStatus } from '../../state/audio/audio.feature';
+import { LogService } from '../../services/logs.service';
+import { ButtonComponent } from '../button/button.component';
 
 @Component({
-  selector: 'app-history-item',
-  templateUrl: './history-item.component.html',
-  styleUrls: ['./history-item.component.scss'],
+  selector: 'app-audio-item',
+  templateUrl: './audio-item.component.html',
+  styleUrls: ['./audio-item.component.scss'],
   standalone: true,
   imports: [ButtonComponent, NgClass, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HistoryItemComponent {
+export class AudioItemComponent {
   @Input({ required: true }) audio!: AudioItem;
   @Output() itemSkipped = new EventEmitter<number>();
 
@@ -24,6 +24,7 @@ export class HistoryItemComponent {
   constructor(
     private readonly audioService: AudioService,
     private readonly playbackService: PlaybackService,
+    private readonly ref: ApplicationRef,
     private readonly logService: LogService,
     private readonly snackbar: MatSnackBar
   ) {}
@@ -58,7 +59,7 @@ export class HistoryItemComponent {
   }
 
   requeue() {
-    this.logService.add(`Requeueing audio: ${JSON.stringify(this.audio)}`, 'info', 'HistoryItemComponent.requeue');
+    this.logService.add(`Requeueing audio: ${JSON.stringify(this.audio)}`, 'info', 'AudioItemComponent.requeue');
     this.audioService.removeAudio(this.audio.id);
 
     this.audioService.requeue(this.audio);
@@ -67,7 +68,10 @@ export class HistoryItemComponent {
   skip() {
     this.playbackService
       .setAudioState({ id: this.audio.id, skipped: true })
-      .then(() => this.audioService.updateAudio(this.audio.id, AudioStatus.skipped))
+      .then(() => {
+        this.audioService.updateAudio(this.audio.id, AudioStatus.skipped);
+        this.ref.tick();
+      })
       .catch((e) => {
         this.logService.add(`Failed to skip audio. Most likely already finished / skipped.\n${JSON.stringify(e, undefined, 2)}`, 'error', 'HistoryItem.skip');
 

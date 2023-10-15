@@ -1,0 +1,18 @@
+<div class="wrapper">
+  <app-label-block>
+    <div header>Currently playing</div>
+    <app-audio-item *ngIf="(currentlyPlaying$ | async) as current; else quiet" [audio]="current" class="playing"/>
+    <ng-template #quiet>
+      <div class="empty">Nothing currently playing.</div>
+    </ng-template>
+  </app-label-block>
+  
+  <hr/>
+  
+  <div class="empty" *ngIf="!(audioItems$ | async)?.length">Nothing redeemed.</div>
+  <app-audio-item
+    *ngFor="let audio of (audioItems$ | async) ?? []; trackBy: trackBy"
+    [audio]="audio"
+    [ngClass]="{ queued: audio.state === AudioState.queued }"
+  />
+</div>

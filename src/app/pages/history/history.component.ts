@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
 import { ButtonComponent } from '../../shared/components/button/button.component';
-import { HistoryListComponent } from './history-list/history-list.component';
 import { LogService } from '../../shared/services/logs.service';
 import { PlaybackService } from '../../shared/services/playback.service';
 import { AsyncPipe } from '@angular/common';
+import { AudioListComponent } from '../../shared/components/audio-list/audio-list.component';
+import { AudioStatus } from '../../shared/state/audio/audio.feature';
 
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
   standalone: true,
-  imports: [ButtonComponent, HistoryListComponent, AsyncPipe],
+  imports: [ButtonComponent, AudioListComponent, AsyncPipe],
 })
 export class HistoryComponent {
+  protected readonly AudioStatus = AudioStatus;
   isPaused$ = this.playbackService.isPaused$;
 
   constructor(private readonly logService: LogService, private readonly playbackService: PlaybackService) {}
