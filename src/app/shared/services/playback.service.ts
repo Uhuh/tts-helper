@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ApplicationRef, Injectable } from '@angular/core';
 import { invoke } from '@tauri-apps/api';
 import { listen } from '@tauri-apps/api/event';
 import { Subject, from, tap, BehaviorSubject } from 'rxjs';
@@ -32,11 +32,14 @@ export class PlaybackService {
 
   readonly isPaused$ = new BehaviorSubject<boolean>(false);
 
-  constructor() {
+  // The Application ref helps make the history / queue view update once an item is finished/started/skipped etc.
+  constructor(private readonly ref: ApplicationRef) {
     from(
       listen('playback::audio::start', (event) => {
         const id = event.payload as AudioId;
         this.audioStarted$.next(id);
+        
+        this.ref.tick();
       })
     ).pipe(
       takeUntilDestroyed(),
@@ -47,6 +50,8 @@ export class PlaybackService {
       listen('playback::audio::finish', (event) => {
         const id = event.payload as AudioId;
         this.audioFinished$.next(id);
+
+        this.ref.tick();
       })
     ).pipe(
       takeUntilDestroyed(),
