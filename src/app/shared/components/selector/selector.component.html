@@ -1,0 +1,10 @@
+<mat-form-field>
+  <mat-select [placeholder]="placeholder" [formControl]="control">
+    <mat-option
+      *ngFor="let voice of options"
+      [value]="voice.value"
+    >
+      {{ voice.displayName }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
