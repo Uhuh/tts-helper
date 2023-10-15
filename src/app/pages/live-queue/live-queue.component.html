@@ -1,0 +1,10 @@
+<div class="header">
+  <span>Live audio queue</span>
+  <app-button
+    (click)="togglePause()"
+    [style]="(isPaused$ | async) ? 'active' : 'primary'"
+  >
+    {{ (isPaused$ | async) ? 'Unpause queue' : 'Pause queue' }}
+  </app-button>
+</div>
+<app-audio-list [filters]="[AudioStatus.queued]" />
