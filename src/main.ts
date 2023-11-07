@@ -19,6 +19,7 @@ import { TwitchApi } from './app/shared/api/twitch.api';
 import { TwitchService } from './app/shared/services/twitch.service';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
+import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -41,6 +42,7 @@ bootstrapApplication(AppComponent, {
     AudioService,
     PlaybackService,
     LogService,
+    VTubeStudioService,
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideRouter(routes)

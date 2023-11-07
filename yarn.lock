@@ -3608,6 +3608,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/uuid@^9.0.5":
+  version "9.0.5"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.5.tgz#25a71eb73eba95ac0e559ff3dd018fc08294acf6"
+  integrity sha512-xfHdwa1FMJ082prjSJpoEI57GZITiQz10r3vEJCHa2khEFQjKy91aWKz6+zybzssCvXUwE1LQWgWVwZ4nYUvHQ==
+
 "@types/ws@^8.5.1", "@types/ws@^8.5.4":
   version "8.5.5"
   resolved "https://registry.yarnpkg.com/@types/ws/-/ws-8.5.5.tgz#af587964aa06682702ee6dcbc7be41a80e4b28eb"
@@ -8241,6 +8246,11 @@ uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+uuid@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
+  integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
 
 validate-npm-package-license@^3.0.4:
   version "3.0.4"

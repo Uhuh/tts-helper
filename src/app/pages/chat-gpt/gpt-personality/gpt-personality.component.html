@@ -17,7 +17,16 @@
 <app-label-block>
   <div header>What should ChatGPT act like?</div>
   <div sub-text>A short description, example "The embodiment of chat".</div>
-  <app-input [control]="formGroup.controls.modelsCoreIdentity" type="text" placeholder="An annoyance"/>
+  <app-input [control]="formGroup.controls.modelsCoreIdentity" type="text" placeholder="Chat"/>
+</app-label-block>
+
+<app-label-block>
+  <div header>What do you think of your pet?</div>
+  <div sub-text>A zany animal who loves to spread chaos.</div>
+  <textarea
+    placeholder="An annoyance"
+    [formControl]="formGroup.controls.streamersThoughtsOnModel"
+  ></textarea>
 </app-label-block>
 
 <app-label-block>

@@ -47,8 +47,8 @@ export class RedeemsComponent {
 
   gptEnabled = toSignal(this.configService.gptEnabled$);
 
-  redeems = this.twitchService.redeems$;
-  redeemOptions = this.twitchService.redeems$
+  redeems$ = this.twitchService.redeems$;
+  redeemOptions$ = this.twitchService.redeems$
     .pipe(
       takeUntilDestroyed(),
       map(redeems => redeems.map<TTSOption>(r => ({ displayName: r.title, value: r.id })))

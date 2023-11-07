@@ -12,6 +12,7 @@ import { TwitchStateActions } from './shared/state/twitch/twitch.actions';
 import { GlobalConfigActions } from './shared/state/config/config.actions';
 import { RouterOutlet } from '@angular/router';
 import { NavComponent } from './shared/components/nav/nav.component';
+import { VTubeStudioService } from './shared/services/vtubestudio.service';
 
 @Component({
     selector: 'app-root',
@@ -31,7 +32,8 @@ export class AppComponent {
     private readonly configService: ConfigService,
     private readonly twitchService: TwitchService,
     private readonly storageService: StorageService,
-    private readonly playbackService: PlaybackService
+    private readonly playbackService: PlaybackService,
+    private readonly vtubeStudioService: VTubeStudioService,
   ) {
     this.storageService
       .getFromStore<TwitchState>('.settings.json', 'twitch')

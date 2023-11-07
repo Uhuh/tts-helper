@@ -12,7 +12,7 @@ import {
   TtsType
 } from '../state/config/config.feature';
 import { GlobalConfigActions } from '../state/config/config.actions';
-;import { PlaybackService } from './playback.service';
+import { PlaybackService } from './playback.service';
 
 @Injectable()
 export class ConfigService {
@@ -32,11 +32,16 @@ export class ConfigService {
   public readonly gptPersonality$ = this.store.select(ConfigFeature.selectGptPersonality);
   public readonly gptSettings$ = this.store.select(ConfigFeature.selectGptSettings);
   public readonly gptToken$ = this.store.select(ConfigFeature.selectGptToken);
+  public readonly authTokens$ = this.store.select(ConfigFeature.selectAuthTokens);
 
   constructor(
     private readonly store: Store,
     private readonly playbackService: PlaybackService,
   ) {}
+
+  updateVTSToken(vtsAuthToken: string) {
+    this.store.dispatch(GlobalConfigActions.updateTokens({ tokens: { vtsAuthToken } }));
+  }
 
   updateBannedWords(bannedWords: string) {
     const words = bannedWords
@@ -101,13 +106,13 @@ export class ConfigService {
 
   updateSelectedDevice(audioDevice: number) {
     this.playbackService.setOutputDevice(audioDevice);
-    
+
     this.store.dispatch(GlobalConfigActions.updateSelectedAudioDevice({ audioDevice }));
   }
 
   updateDeviceVolume(deviceVolume: number) {
     this.playbackService.setVolumeLevel(deviceVolume);
-    
+
     this.store.dispatch(GlobalConfigActions.updateDeviceVolume({ deviceVolume }));
   }
 

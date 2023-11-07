@@ -62,6 +62,7 @@ export interface GptChatState extends ChatState {
 export interface GptPersonalityState {
   streamersIdentity: string;
   streamerModelRelation: string;
+  streamersThoughtsOnModel: string;
   modelsIdentity: string;
   modelsCoreIdentity: string;
   modelsBackground: string;
@@ -73,9 +74,14 @@ export interface GptSettingsState {
   historyLimit: number;
 }
 
+export type AuthTokens = {
+  vtsAuthToken: string;
+}
+
 export interface ConfigState {
   tts: TtsType;
   url: string;
+  authTokens: AuthTokens;
   audioDevice: number;
   deviceVolume: number;
   generalChat: GeneralChatState;
@@ -114,6 +120,9 @@ export const initialState: ConfigState = {
   url: 'https://api.streamelements.com/kappa/v2/speech',
   audioDevice: 0,
   deviceVolume: 100,
+  authTokens: {
+    vtsAuthToken: '',
+  },
   generalChat: defaultChatState,
   gptChat: {
     ...defaultChatState,
@@ -123,6 +132,7 @@ export const initialState: ConfigState = {
   gptPersonality: {
     modelsBackground: '',
     modelsCoreIdentity: '',
+    streamersThoughtsOnModel: '',
     modelsIdentity: '',
     streamerModelRelation: '',
     streamersIdentity: '',
@@ -154,6 +164,13 @@ export const ConfigFeature = createFeature({
   name: 'GlobalConfig',
   reducer: createReducer(
     initialState,
+    on(GlobalConfigActions.updateTokens, (state, { tokens }) => ({
+      ...state,
+      authTokens: {
+        ...state.authTokens,
+        ...tokens
+      }
+    })),
     on(GlobalConfigActions.updateState, (state, { configState }) => ({
       ...state,
       ...configState,

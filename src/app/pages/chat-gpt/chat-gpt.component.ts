@@ -14,6 +14,7 @@ import { LabelBlockComponent } from '../../shared/components/input-block/label-b
 export interface GptPersonalityFormGroup {
   streamersIdentity: FormControl<string>;
   streamerModelRelation: FormControl<string>;
+  streamersThoughtsOnModel: FormControl<string>;
   modelsIdentity: FormControl<string>;
   modelsCoreIdentity: FormControl<string>;
   modelsBackground: FormControl<string>;
@@ -38,6 +39,7 @@ export class ChatGptComponent {
   personalityGroup = new FormGroup<GptPersonalityFormGroup>({
     streamersIdentity: new FormControl('', { nonNullable: true }),
     streamerModelRelation: new FormControl('', { nonNullable: true }),
+    streamersThoughtsOnModel: new FormControl('', { nonNullable: true }),
     modelsIdentity: new FormControl('', { nonNullable: true }),
     modelsCoreIdentity: new FormControl('', { nonNullable: true }),
     modelsBackground: new FormControl('', { nonNullable: true }),

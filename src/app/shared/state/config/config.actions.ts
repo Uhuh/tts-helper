@@ -1,6 +1,7 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
   AmazonPollyData,
+  AuthTokens,
   ChatPermissions,
   ConfigState,
   GeneralChatState,
@@ -13,6 +14,7 @@ export const GlobalConfigActions = createActionGroup({
   source: 'GlobalConfig',
   events: {
     'Update State': props<{ configState: ConfigState }>(),
+    'Update Tokens': props<{ tokens: Partial<AuthTokens> }>(),
     'Update GPT Personality': props<{ gptPersonality: Partial<GptPersonalityState> }>(),
     'Update GPT Settings': props<{ gptSettings: Partial<GptSettingsState> }>(),
     'Update GPT Chat': props<{ gptChat: Partial<GptChatState> }>(),
