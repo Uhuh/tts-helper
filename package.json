@@ -32,6 +32,7 @@
     "@twurple/eventsub-ws": "^6.1.1",
     "@twurple/pubsub": "^6.1.1",
     "klona": "^2.0.6",
+    "microsoft-cognitiveservices-speech-sdk": "^1.33.0",
     "openai": "^3.3.0",
     "rxjs": "~7.8.0",
     "tauri-plugin-store-api": "https://github.com/tauri-apps/tauri-plugin-store",
