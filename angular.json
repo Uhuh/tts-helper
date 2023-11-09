@@ -71,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "tts-helper:build:production"
+              "buildTarget": "tts-helper:build:production"
             },
             "development": {
-              "browserTarget": "tts-helper:build:development"
+              "buildTarget": "tts-helper:build:development"
             }
           },
           "defaultConfiguration": "development"
