@@ -30,8 +30,13 @@
     <div header>Message History</div>
     <div sub-text>Helps ChatGPT respond better by using previous messages.</div>
     <app-input [control]="historyControl" type="number" [hasError]="historyControl.errors !== null" />
-    <mat-error *ngIf="historyControl.hasError('min')">Cannot have a negative history count.</mat-error>
-    <mat-error *ngIf="historyControl.hasError('max')">Currently we recommend 20 messages in history at max.</mat-error>
+    <mat-error>
+      @if (historyControl.hasError('min')) {
+        Cannot have a negative history count.
+      } @else if (historyControl.hasError('max')) {
+        Currently we recommend 20 messages in history at max.
+      }
+    </mat-error>
   </app-label-block>
   
   <hr/>

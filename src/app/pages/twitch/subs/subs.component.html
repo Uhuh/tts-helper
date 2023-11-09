@@ -8,16 +8,17 @@
   <app-toggle [control]="enabled"/>
 </app-label-block>
 
-<ng-container *ngIf="enabled.value">
+@if (enabled.value) {
   <app-label-block>
     <div header>Subs character limit</div>
     <div sub-text>The max allowed characters we'll play for a sub event!</div>
     <app-input placeholder="Enter a character limit" type="number" [control]="charLimit"/>
-    <mat-error *ngIf="charLimit.hasError('min')">
-      Minimum characters allowed is 0.
-    </mat-error>
-    <mat-error *ngIf="charLimit.hasError('pattern')">
-      Character limit must be a whole number.
+    <mat-error>
+      @if (charLimit.hasError('min')) {
+        Minimum characters allowed is 0.
+      } @else if (charLimit.hasError('pattern')) {
+        Character limit must be a whole number.
+      }
     </mat-error>
   </app-label-block>
 
@@ -39,4 +40,4 @@
       [formControl]="giftMessage"
     ></textarea>
   </app-label-block>
-</ng-container>
+}

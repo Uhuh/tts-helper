@@ -2,6 +2,8 @@
   <input type="checkbox" [formControl]="control" />
   <span class="slider round"></span>
 </label>
-<span class="disabled" [ngClass]="{ enabled: control.value }" *ngIf="text">
-  {{ text }}
-</span>
+@if (text) {
+  <span class="disabled" [ngClass]="{ enabled: control.value }">
+    {{ text }}
+  </span>
+}

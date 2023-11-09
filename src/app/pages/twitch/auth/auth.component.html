@@ -5,17 +5,16 @@
     <span class="twitch-status" [ngClass]="{ valid: (isTokenValid$ | async) }">
       {{ connectionStatus() }}
     </span>
-    <a
-      target="_blank"
-      [href]="loginUrl"
-      class="twitch-auth"
-      *ngIf="!(isTokenValid$ | async)"
-    >
-      authorize
-    </a>
-    <div class="twitch-auth" *ngIf="(isTokenValid$ | async)" (click)="signOut()">
-      sign-out
-    </div>
+    
+    @if (isTokenValid$ | async) {
+      <div class="twitch-auth" (click)="signOut()">
+        sign-out
+      </div>
+    } @else {
+      <a target="_blank" [href]="loginUrl" class="twitch-auth">
+        authorize
+      </a>
+    }
   </div>
 </app-label-block>
 

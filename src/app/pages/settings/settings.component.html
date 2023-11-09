@@ -23,27 +23,34 @@
     <div header>Select TTS service</div>
     <div sub-text>Decide which TTS service to use.</div>
     <div class="action-row flex-wrap">
-      <app-button 
-        *ngFor="let option of ttsOptions"
-        (click)="selectTts(option.value)"
-        [ngClass]="{ disabled: option.disabled }"
-        [style]="selectedTts.value === option.value ? 'active' : 'primary'"
-      >
-        {{ option.displayValue }}
-      </app-button>
+      @for (option of ttsOptions; track option.value) {
+        <app-button 
+          (click)="selectTts(option.value)"
+          [ngClass]="{ disabled: option.disabled }"
+          [style]="selectedTts.value === option.value ? 'active' : 'primary'"
+        >
+          {{ option.displayValue }}
+        </app-button>
+      }
     </div>
   </app-label-block>
   
   <hr/>
-  
-  <app-stream-elements
-    *ngIf="selectedTts.value === 'stream-elements'"
-  ></app-stream-elements>
-  <app-amazon-polly
-    *ngIf="selectedTts.value === 'amazon-polly'"
-  ></app-amazon-polly>
-  <app-tiktok *ngIf="selectedTts.value === 'tiktok'"></app-tiktok>
-  <app-tts-monster *ngIf="selectedTts.value === 'tts-monster'"></app-tts-monster>
+
+  @switch (selectedTts.value) {
+    @case ('stream-elements') {
+      <app-stream-elements/>
+    }
+    @case ('amazon-polly') {
+      <app-amazon-polly/>
+    }
+    @case ('tiktok') {
+      <app-tiktok/>
+    }
+    @case ('tts-monster') {
+      <app-tts-monster/>
+    }
+  }
 </div>
 
 

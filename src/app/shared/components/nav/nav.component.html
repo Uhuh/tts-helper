@@ -1,9 +1,11 @@
-<mat-toolbar class="toolbar" *ngIf="isMobile">
-  <button mat-icon-button (click)="nav.toggle()">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <img class="app-logo" src="assets/tts-helper.svg" />
-</mat-toolbar>
+@if (isMobile) {
+  <mat-toolbar class="toolbar">
+    <button mat-icon-button (click)="nav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <img class="app-logo" src="assets/tts-helper.svg" />
+  </mat-toolbar>
+}
 <mat-sidenav-container class="container">
   <mat-sidenav #nav [mode]="isMobile ? 'over' : 'side'" [opened]="!isMobile">
     <app-sidenav [isMobile]="isMobile" [nav]="nav"></app-sidenav>
@@ -13,12 +15,14 @@
     [ngClass]="{ openedMobile: isMobile && nav.opened }"
   >
     <!-- Eventually figure out a smarter, global component for more than pauses. -->
-    <div class="global-banner" *ngIf="(isPaused$ | async)">
-      <div class="banner-content">
-        <span>Your queue is currently paused.</span>
-        <app-button [style]="'outline'" (click)="unpause()">Unpause</app-button>
+    @if (isPaused$ | async) {
+      <div class="global-banner">
+        <div class="banner-content">
+          <span>Your queue is currently paused.</span>
+          <app-button [style]="'outline'" (click)="unpause()">Unpause</app-button>
+        </div>
       </div>
-    </div>
+    }
     <ng-content></ng-content>
   </mat-sidenav-content>
 </mat-sidenav-container>

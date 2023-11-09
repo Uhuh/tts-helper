@@ -1,4 +1,4 @@
-<ng-container *ngIf="(redeems$ | async)?.length; else empty">
+@if((redeems$ | async)?.length) {
   <div class="header">
     <span>Redeem Settings</span>
   </div>
@@ -14,38 +14,38 @@
     <app-toggle [control]="redeemInfo.controls.enabled" />
   </app-label-block>
 
-  <ng-container *ngIf="redeemInfo.controls.enabled.value">
+  @if (redeemInfo.controls.enabled.value) {
     <app-label-block>
       <div header>Redeem</div>
       <div sub-text>This redeem will trigger TTS with user input.</div>
       <app-selector placeholder="Select a redeem option" [control]="redeemInfo.controls.redeem" [options]="(redeemOptions$ | async) ?? []" />
     </app-label-block>
 
-    <ng-container *ngIf="gptEnabled()">
+    @if (gptEnabled()) {
       <app-label-block>
         <div header>ChatGPT Redeem</div>
         <div sub-text>This redeem will trigger a ChatGPT response.</div>
         <app-selector placeholder="Select a redeem option" [control]="redeemInfo.controls.gptRedeem" [options]="(redeemOptions$ | async) ?? []" />
       </app-label-block>
-    </ng-container>
+    }
 
     <app-label-block>
       <div header>Redeem character limit</div>
       <div sub-text>The max allowed characters we'll play for the redeem.</div>
       <app-input placeholder="Set min bits" type="number" [control]="redeemInfo.controls.redeemCharacterLimit"/>
-      <mat-error *ngIf="redeemInfo.controls.redeemCharacterLimit.hasError('min')">
-        Minimum characters allowed is 0.
-      </mat-error>
-      <mat-error *ngIf="redeemInfo.controls.redeemCharacterLimit.hasError('pattern')">
-        Character limit must be a whole number.
+      <mat-error>
+        @if (redeemInfo.controls.redeemCharacterLimit.hasError('min')) {
+          Minimum characters allowed is 0.
+        } @else if (redeemInfo.controls.redeemCharacterLimit.hasError('pattern')) {
+          Character limit must be a whole number.
+        }
       </mat-error>
     </app-label-block>
-  </ng-container>
-</ng-container>
-<ng-template #empty>
+  }
+} @else {
   <div class="warning">
     <span>Detected no Twitch redeems.</span>
     <span>If you're a Twitch affiliate with redeems, try signing out and signing in again.</span>
     <span>If this continues to be an issue please join the <a href="https://discord.gg/jNDjNVeuJp" target="_blank">support server</a>.</span>
   </div>
-</ng-template>
+}
