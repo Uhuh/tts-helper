@@ -246,7 +246,7 @@ hr {
 /* LOTS OF UGLY MATERIAL OVERRIDES PLEASE IGNORE */
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-  background-color: var(--white-5);
+  background-color: var(--white-5) !important;
   border: 1px solid transparent;
   border-radius: 5px;
   padding: 0;
