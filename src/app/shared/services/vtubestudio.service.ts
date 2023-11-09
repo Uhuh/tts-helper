@@ -221,7 +221,7 @@ export class VTubeStudioService {
   }
   
   private randomMouth(enabled: boolean) {
-    if (!enabled) {
+    if (!enabled || this.socket.CLOSED || this.socket.CLOSING ) {
       return clearInterval(this.randomMouthInterval);
     }
     
