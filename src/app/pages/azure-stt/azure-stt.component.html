@@ -1,1 +1,14 @@
-<p>azure-stt works!</p>
+<div class="header">
+  <span>Azure Speech to Text</span>
+</div>
+<div class="section">
+  <app-label-block>
+    <div header>Speech Key</div>
+    <div sub-text>This is your super secret ID.</div>
+    <app-input
+      placeholder="Place your Speech Key here."
+      [control]="azureSettings.controls.apiKey"
+      type="password"
+    />
+  </app-label-block>
+</div>

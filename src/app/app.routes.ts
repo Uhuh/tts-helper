@@ -34,6 +34,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/chat-settings/chat-settings.component'),
   },
   {
+    path: 'azure-settings',
+    loadComponent: () => import('./pages/azure-stt/azure-stt.component'),
+  },
+  {
     path: 'logs',
     loadComponent: () => import('./pages/user-logs/user-logs.component')
   },

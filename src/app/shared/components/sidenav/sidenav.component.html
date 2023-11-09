@@ -82,6 +82,18 @@
       </a>
     </div>
     <div class="nav-group">
+      <span class="nav-header">Speech to Text</span>
+      <a
+        class="nav-link"
+        [routerLink]="['azure-settings']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
+        <mat-icon class="tts-icon">campaign</mat-icon>
+        <span>Settings</span>
+      </a>
+    </div>
+    <div class="nav-group">
       <span class="nav-header">Misc</span>
       <a
         class="nav-link"
