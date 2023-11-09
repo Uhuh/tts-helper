@@ -84,7 +84,7 @@ export class AudioService {
     charLimit: number
   ) {
     if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
-      return;
+      return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
     }
 
     // Trim played audio down, but keep full message in case stream wants to requeue it.
@@ -99,11 +99,10 @@ export class AudioService {
           panelClass: 'notification-error',
         }
       );
-      return console.error(
-        `Tried to get request data for invalid TTS: ${this.tts}`
-      );
+      
+      return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
     }
-
+    
     this.playback
       .playAudio({ data })
       .then((id) => {
