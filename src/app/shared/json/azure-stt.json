@@ -1,0 +1,694 @@
+﻿{
+  "languages": [
+    {
+      "value": "af-ZA",
+      "displayName": "Afrikaans (South Africa)"
+    },
+    {
+      "value": "am-ET",
+      "displayName": "Amharic (Ethiopia)"
+    },
+    {
+      "value": "ar-AE",
+      "displayName": "Arabic (United Arab Emirates)"
+    },
+    {
+      "value": "ar-BH",
+      "displayName": "Arabic (Bahrain)"
+    },
+    {
+      "value": "ar-DZ",
+      "displayName": "Arabic (Algeria)"
+    },
+    {
+      "value": "ar-EG",
+      "displayName": "Arabic (Egypt)"
+    },
+    {
+      "value": "ar-IL",
+      "displayName": "Arabic (Israel)"
+    },
+    {
+      "value": "ar-IQ",
+      "displayName": "Arabic (Iraq)"
+    },
+    {
+      "value": "ar-JO",
+      "displayName": "Arabic (Jordan)"
+    },
+    {
+      "value": "ar-KW",
+      "displayName": "Arabic (Kuwait)"
+    },
+    {
+      "value": "ar-LB",
+      "displayName": "Arabic (Lebanon)"
+    },
+    {
+      "value": "ar-LY",
+      "displayName": "Arabic (Libya)"
+    },
+    {
+      "value": "ar-MA",
+      "displayName": "Arabic (Morocco)"
+    },
+    {
+      "value": "ar-OM",
+      "displayName": "Arabic (Oman)"
+    },
+    {
+      "value": "ar-PS",
+      "displayName": "Arabic (Palestinian Authority)"
+    },
+    {
+      "value": "ar-QA",
+      "displayName": "Arabic (Qatar)"
+    },
+    {
+      "value": "ar-SA",
+      "displayName": "Arabic (Saudi Arabia)"
+    },
+    {
+      "value": "ar-SY",
+      "displayName": "Arabic (Syria)"
+    },
+    {
+      "value": "ar-TN",
+      "displayName": "Arabic (Tunisia)"
+    },
+    {
+      "value": "ar-YE",
+      "displayName": "Arabic (Yemen)"
+    },
+    {
+      "value": "az-AZ",
+      "displayName": "Azerbaijani (Latin, Azerbaijan)"
+    },
+    {
+      "value": "bg-BG",
+      "displayName": "Bulgarian (Bulgaria)"
+    },
+    {
+      "value": "bn-IN",
+      "displayName": "Bengali (India)"
+    },
+    {
+      "value": "bs-BA",
+      "displayName": "Bosnian (Bosnia and Herzegovina)"
+    },
+    {
+      "value": "ca-ES",
+      "displayName": "Catalan"
+    },
+    {
+      "value": "cs-CZ",
+      "displayName": "Czech (Czechia)"
+    },
+    {
+      "value": "cy-GB",
+      "displayName": "Welsh (United Kingdom)"
+    },
+    {
+      "value": "da-DK",
+      "displayName": "Danish (Denmark)"
+    },
+    {
+      "value": "de-AT",
+      "displayName": "German (Austria)"
+    },
+    {
+      "value": "de-CH",
+      "displayName": "German (Switzerland)"
+    },
+    {
+      "value": "de-DE",
+      "displayName": "German (Germany)"
+    },
+    {
+      "value": "el-GR",
+      "displayName": "Greek (Greece)"
+    },
+    {
+      "value": "en-AU",
+      "displayName": "English (Australia)"
+    },
+    {
+      "value": "en-CA",
+      "displayName": "English (Canada)"
+    },
+    {
+      "value": "en-GB",
+      "displayName": "English (United Kingdom)"
+    },
+    {
+      "value": "en-GH",
+      "displayName": "English (Ghana)"
+    },
+    {
+      "value": "en-HK",
+      "displayName": "English (Hong Kong SAR)"
+    },
+    {
+      "value": "en-IE",
+      "displayName": "English (Ireland)"
+    },
+    {
+      "value": "en-IN",
+      "displayName": "English (India)"
+    },
+    {
+      "value": "en-KE",
+      "displayName": "English (Kenya)"
+    },
+    {
+      "value": "en-NG",
+      "displayName": "English (Nigeria)"
+    },
+    {
+      "value": "en-NZ",
+      "displayName": "English (New Zealand)"
+    },
+    {
+      "value": "en-PH",
+      "displayName": "English (Philippines)"
+    },
+    {
+      "value": "en-SG",
+      "displayName": "English (Singapore)"
+    },
+    {
+      "value": "en-TZ",
+      "displayName": "English (Tanzania)"
+    },
+    {
+      "value": "en-US",
+      "displayName": "English (United States)"
+    },
+    {
+      "value": "en-ZA",
+      "displayName": "English (South Africa)"
+    },
+    {
+      "value": "es-AR",
+      "displayName": "Spanish (Argentina)"
+    },
+    {
+      "value": "es-BO",
+      "displayName": "Spanish (Bolivia)"
+    },
+    {
+      "value": "es-CL",
+      "displayName": "Spanish (Chile)"
+    },
+    {
+      "value": "es-CO",
+      "displayName": "Spanish (Colombia)"
+    },
+    {
+      "value": "es-CR",
+      "displayName": "Spanish (Costa Rica)"
+    },
+    {
+      "value": "es-CU",
+      "displayName": "Spanish (Cuba)"
+    },
+    {
+      "value": "es-DO",
+      "displayName": "Spanish (Dominican Republic)"
+    },
+    {
+      "value": "es-EC",
+      "displayName": "Spanish (Ecuador)"
+    },
+    {
+      "value": "es-ES",
+      "displayName": "Spanish (Spain)"
+    },
+    {
+      "value": "es-GQ",
+      "displayName": "Spanish (Equatorial Guinea)"
+    },
+    {
+      "value": "es-GT",
+      "displayName": "Spanish (Guatemala)"
+    },
+    {
+      "value": "es-HN",
+      "displayName": "Spanish (Honduras)"
+    },
+    {
+      "value": "es-MX",
+      "displayName": "Spanish (Mexico)"
+    },
+    {
+      "value": "es-NI",
+      "displayName": "Spanish (Nicaragua)"
+    },
+    {
+      "value": "es-PA",
+      "displayName": "Spanish (Panama)"
+    },
+    {
+      "value": "es-PE",
+      "displayName": "Spanish (Peru)"
+    },
+    {
+      "value": "es-PR",
+      "displayName": "Spanish (Puerto Rico)"
+    },
+    {
+      "value": "es-PY",
+      "displayName": "Spanish (Paraguay)"
+    },
+    {
+      "value": "es-SV",
+      "displayName": "Spanish (El Salvador)"
+    },
+    {
+      "value": "es-US",
+      "displayName": "Spanish (United States)"
+    },
+    {
+      "value": "es-UY",
+      "displayName": "Spanish (Uruguay)"
+    },
+    {
+      "value": "es-VE",
+      "displayName": "Spanish (Venezuela)"
+    },
+    {
+      "value": "et-EE",
+      "displayName": "Estonian (Estonia)"
+    },
+    {
+      "value": "eu-ES",
+      "displayName": "Basque"
+    },
+    {
+      "value": "fa-IR",
+      "displayName": "Persian (Iran)"
+    },
+    {
+      "value": "fi-FI",
+      "displayName": "Finnish (Finland)"
+    },
+    {
+      "value": "fil-PH",
+      "displayName": "Filipino (Philippines)"
+    },
+    {
+      "value": "fr-BE",
+      "displayName": "French (Belgium)"
+    },
+    {
+      "value": "fr-CA",
+      "displayName": "French (Canada)"
+    },
+    {
+      "value": "fr-CH",
+      "displayName": "French (Switzerland)"
+    },
+    {
+      "value": "fr-FR",
+      "displayName": "French (France)"
+    },
+    {
+      "value": "ga-IE",
+      "displayName": "Irish (Ireland)"
+    },
+    {
+      "value": "gl-ES",
+      "displayName": "Galician"
+    },
+    {
+      "value": "gu-IN",
+      "displayName": "Gujarati (India)"
+    },
+    {
+      "value": "he-IL",
+      "displayName": "Hebrew (Israel)"
+    },
+    {
+      "value": "hi-IN",
+      "displayName": "Hindi (India)"
+    },
+    {
+      "value": "hr-HR",
+      "displayName": "Croatian (Croatia)"
+    },
+    {
+      "value": "hu-HU",
+      "displayName": "Hungarian (Hungary)"
+    },
+    {
+      "value": "hy-AM",
+      "displayName": "Armenian (Armenia)"
+    },
+    {
+      "value": "id-ID",
+      "displayName": "Indonesian (Indonesia)"
+    },
+    {
+      "value": "is-IS",
+      "displayName": "Icelandic (Iceland)"
+    },
+    {
+      "value": "it-CH",
+      "displayName": "Italian (Switzerland)"
+    },
+    {
+      "value": "it-IT",
+      "displayName": "Italian (Italy)"
+    },
+    {
+      "value": "ja-JP",
+      "displayName": "Japanese (Japan)"
+    },
+    {
+      "value": "jv-ID",
+      "displayName": "Javanese (Latin, Indonesia)"
+    },
+    {
+      "value": "ka-GE",
+      "displayName": "Georgian (Georgia)"
+    },
+    {
+      "value": "kk-KZ",
+      "displayName": "Kazakh (Kazakhstan)"
+    },
+    {
+      "value": "km-KH",
+      "displayName": "Khmer (Cambodia)"
+    },
+    {
+      "value": "kn-IN",
+      "displayName": "Kannada (India)"
+    },
+    {
+      "value": "ko-KR",
+      "displayName": "Korean (Korea)"
+    },
+    {
+      "value": "lo-LA",
+      "displayName": "Lao (Laos)"
+    },
+    {
+      "value": "lt-LT",
+      "displayName": "Lithuanian (Lithuania)"
+    },
+    {
+      "value": "lv-LV",
+      "displayName": "Latvian (Latvia)"
+    },
+    {
+      "value": "mk-MK",
+      "displayName": "Macedonian (North Macedonia)"
+    },
+    {
+      "value": "ml-IN",
+      "displayName": "Malayalam (India)"
+    },
+    {
+      "value": "mn-MN",
+      "displayName": "Mongolian (Mongolia)"
+    },
+    {
+      "value": "mr-IN",
+      "displayName": "Marathi (India)"
+    },
+    {
+      "value": "ms-MY",
+      "displayName": "Malay (Malaysia)"
+    },
+    {
+      "value": "mt-MT",
+      "displayName": "Maltese (Malta)"
+    },
+    {
+      "value": "my-MM",
+      "displayName": "Burmese (Myanmar)"
+    },
+    {
+      "value": "nb-NO",
+      "displayName": "Norwegian Bokmål (Norway)"
+    },
+    {
+      "value": "ne-NP",
+      "displayName": "Nepali (Nepal)"
+    },
+    {
+      "value": "nl-BE",
+      "displayName": "Dutch (Belgium)"
+    },
+    {
+      "value": "nl-NL",
+      "displayName": "Dutch (Netherlands)"
+    },
+    {
+      "value": "pa-IN",
+      "displayName": "Punjabi (India)"
+    },
+    {
+      "value": "pl-PL",
+      "displayName": "Polish (Poland)"
+    },
+    {
+      "value": "ps-AF",
+      "displayName": "Pashto (Afghanistan)"
+    },
+    {
+      "value": "pt-BR",
+      "displayName": "Portuguese (Brazil)"
+    },
+    {
+      "value": "pt-PT",
+      "displayName": "Portuguese (Portugal)"
+    },
+    {
+      "value": "ro-RO",
+      "displayName": "Romanian (Romania)"
+    },
+    {
+      "value": "ru-RU",
+      "displayName": "Russian (Russia)"
+    },
+    {
+      "value": "si-LK",
+      "displayName": "Sinhala (Sri Lanka)"
+    },
+    {
+      "value": "sk-SK",
+      "displayName": "Slovak (Slovakia)"
+    },
+    {
+      "value": "sl-SI",
+      "displayName": "Slovenian (Slovenia)"
+    },
+    {
+      "value": "so-SO",
+      "displayName": "Somali (Somalia)"
+    },
+    {
+      "value": "sq-AL",
+      "displayName": "Albanian (Albania)"
+    },
+    {
+      "value": "sr-RS",
+      "displayName": "Serbian (Cyrillic, Serbia)"
+    },
+    {
+      "value": "sv-SE",
+      "displayName": "Swedish (Sweden)"
+    },
+    {
+      "value": "sw-KE",
+      "displayName": "Swahili (Kenya)"
+    },
+    {
+      "value": "sw-TZ",
+      "displayName": "Swahili (Tanzania)"
+    },
+    {
+      "value": "ta-IN",
+      "displayName": "Tamil (India)"
+    },
+    {
+      "value": "te-IN",
+      "displayName": "Telugu (India)"
+    },
+    {
+      "value": "th-TH",
+      "displayName": "Thai (Thailand)"
+    },
+    {
+      "value": "tr-TR",
+      "displayName": "Turkish (Türkiye)"
+    },
+    {
+      "value": "uk-UA",
+      "displayName": "Ukrainian (Ukraine)"
+    },
+    {
+      "value": "ur-IN",
+      "displayName": "Urdu (India)"
+    },
+    {
+      "value": "uz-UZ",
+      "displayName": "Uzbek (Latin, Uzbekistan)"
+    },
+    {
+      "value": "vi-VN",
+      "displayName": "Vietnamese (Vietnam)"
+    },
+    {
+      "value": "wuu-CN",
+      "displayName": "Chinese (Wu, Simplified)"
+    },
+    {
+      "value": "yue-CN",
+      "displayName": "Chinese (Cantonese, Simplified)"
+    },
+    {
+      "value": "zh-CN",
+      "displayName": "Chinese (Mandarin, Simplified)"
+    },
+    {
+      "value": "zh-CN-shandong",
+      "displayName": "Chinese (Jilu Mandarin, Simplified)"
+    },
+    {
+      "value": "zh-CN-sichuan",
+      "displayName": "Chinese (Southwestern Mandarin, Simplified)"
+    },
+    {
+      "value": "zh-HK",
+      "displayName": "Chinese (Cantonese, Traditional)"
+    },
+    {
+      "value": "zh-TW",
+      "displayName": "Chinese (Taiwanese Mandarin, Traditional)"
+    },
+    {
+      "value": "zu-ZA",
+      "displayName": "Zulu (South Africa)"
+    }
+  ],
+  "regions": [
+    {
+      "displayName": "Australia East",
+      "value": "australiaeast"
+    },
+    {
+      "displayName": "Brazil South",
+      "value": "brazilsouth"
+    },
+    {
+      "displayName": "Canada Central",
+      "value": "canadacentral"
+    },
+    {
+      "displayName": "Central India",
+      "value": "centralindia"
+    },
+    {
+      "displayName": "Central US",
+      "value": "centralus"
+    },
+    {
+      "displayName": "East Asia",
+      "value": "eastasia"
+    },
+    {
+      "displayName": "East US",
+      "value": "eastus"
+    },
+    {
+      "displayName": "East US 2",
+      "value": "eastus2"
+    },
+    {
+      "displayName": "France Central",
+      "value": "francecentral"
+    },
+    {
+      "displayName": "Germany West Central",
+      "value": "germanywestcentral"
+    },
+    {
+      "displayName": "Japan East",
+      "value": "japaneast"
+    },
+    {
+      "displayName": "Japan West",
+      "value": "japanwest"
+    },
+    {
+      "displayName": "Korea Central",
+      "value": "koreacentral"
+    },
+    {
+      "displayName": "North Central US",
+      "value": "northcentralus"
+    },
+    {
+      "displayName": "North Europe",
+      "value": "northeurope"
+    },
+    {
+      "displayName": "Norway East",
+      "value": "norwayeast"
+    },
+    {
+      "displayName": "South Africa North",
+      "value": "southafricanorth"
+    },
+    {
+      "displayName": "South Central US",
+      "value": "southcentralus"
+    },
+    {
+      "displayName": "Southeast Asia",
+      "value": "southeastasia"
+    },
+    {
+      "displayName": "Sweden Central",
+      "value": "swedentcentral"
+    },
+    {
+      "displayName": "Switzerland North",
+      "value": "switzerlandnorth"
+    },
+    {
+      "displayName": "Switzerland West",
+      "value": "switzerlandwest"
+    },
+    {
+      "displayName": "UAE North",
+      "value": "uaenorth"
+    },
+    {
+      "displayName": "UK South",
+      "value": "uksouth"
+    },
+    {
+      "displayName": "West Central US",
+      "value": "westcentralus"
+    },
+    {
+      "displayName": "West Europe",
+      "value": "westeurope"
+    },
+    {
+      "displayName": "West US",
+      "value": "westus"
+    },
+    {
+      "displayName": "West US 2",
+      "value": "westus2"
+    },
+    {
+      "displayName": "West US 3",
+      "value": "westus3"
+    }
+  ]
+}
