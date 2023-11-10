@@ -11,4 +11,26 @@
       type="password"
     />
   </app-label-block>
+
+  <app-label-block>
+    <div header>Region</div>
+    <div sub-text>Select your Azure Region.</div>
+    <app-selector
+      placeholder="Select a region"
+      [control]="azureSettings.controls.region"
+      [options]="regions"
+    />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Language</div>
+    <div sub-text>Select the language you'll speak in.</div>
+    <app-selector
+      placeholder="Select a language"
+      [control]="azureSettings.controls.language"
+      [options]="languages"
+    />
+  </app-label-block>
 </div>
+
+<audio controls></audio>
