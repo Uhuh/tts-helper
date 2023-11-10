@@ -16,7 +16,7 @@ import {
   StreamElementsData,
   TikTokData,
   TtsMonsterData,
-  TtsType
+  TtsType,
 } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
@@ -81,7 +81,7 @@ export class AudioService {
     text: string,
     username: string,
     source: AudioSource,
-    charLimit: number
+    charLimit: number,
   ) {
     if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
       return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
@@ -97,12 +97,12 @@ export class AudioService {
         'Dismiss',
         {
           panelClass: 'notification-error',
-        }
+        },
       );
-      
+
       return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
     }
-    
+
     this.playback
       .playAudio({ data })
       .then((id) => {
@@ -110,7 +110,7 @@ export class AudioService {
           ...data,
           username,
           audioText,
-          charLimit
+          charLimit,
         }, null, 1)}`, 'info', 'HistoryService.playTts');
 
         this.addAudio({
@@ -130,7 +130,7 @@ export class AudioService {
           'Dismiss',
           {
             panelClass: 'notification-error',
-          }
+          },
         );
       });
   }
@@ -173,7 +173,7 @@ export class AudioService {
         'Dismiss',
         {
           panelClass: 'notification-error',
-        }
+        },
       );
       return;
     }
@@ -207,7 +207,7 @@ export class AudioService {
         'Dismiss',
         {
           panelClass: 'notification-error',
-        }
+        },
       );
 
       console.error('Failed to get Amazon Polly url', e);
