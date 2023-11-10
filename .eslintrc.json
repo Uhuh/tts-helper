@@ -24,7 +24,6 @@
         "@typescript-eslint/object-curly-spacing": ["error", "always"],
         
         "no-multiple-empty-lines": "error",
-        "no-unused-vars": "error",
         "no-empty": "error",
         "no-trailing-spaces": "error",
         
