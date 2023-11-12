@@ -13,13 +13,17 @@ import { GlobalConfigActions } from './shared/state/config/config.actions';
 import { RouterOutlet } from '@angular/router';
 import { NavComponent } from './shared/components/nav/nav.component';
 import { VTubeStudioService } from './shared/services/vtubestudio.service';
+import { AzureSttService } from './shared/services/azure-stt.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AzureState } from './shared/state/azure/azure.feature';
+import { AzureActions } from './shared/state/azure/azure.actions';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: true,
-    imports: [NavComponent, RouterOutlet],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [NavComponent, RouterOutlet],
 })
 export class AppComponent {
   /**
@@ -28,6 +32,7 @@ export class AppComponent {
    */
   constructor(
     private readonly store: Store,
+    private readonly azureService: AzureSttService,
     private readonly twitchPubSub: TwitchPubSub,
     private readonly configService: ConfigService,
     private readonly twitchService: TwitchService,
@@ -37,18 +42,20 @@ export class AppComponent {
   ) {
     this.storageService
       .getFromStore<TwitchState>('.settings.json', 'twitch')
+      .pipe(takeUntilDestroyed())
       .subscribe((data) => {
         if (!data || !data.value) {
           return this.twitchService.clearState();
         }
 
         this.store.dispatch(
-          TwitchStateActions.updateState({ twitchState: data.value })
+          TwitchStateActions.updateState({ twitchState: data.value }),
         );
       });
 
     this.storageService
       .getFromStore<ConfigState>('.settings.json', 'config')
+      .pipe(takeUntilDestroyed())
       .subscribe((data) => {
         if (!data || !data.value) {
           return;
@@ -59,7 +66,20 @@ export class AppComponent {
         this.playbackService.setVolumeLevel(data.value.deviceVolume);
 
         this.store.dispatch(
-          GlobalConfigActions.updateState({ configState: data.value })
+          GlobalConfigActions.updateState({ configState: data.value }),
+        );
+      });
+
+    this.storageService
+      .getFromStore<AzureState>('.settings.json', 'azure')
+      .pipe(takeUntilDestroyed())
+      .subscribe((data) => {
+        if (!data || !data.value) {
+          return;
+        }
+
+        this.store.dispatch(
+          AzureActions.updateAzureState({ partialState: data.value }),
         );
       });
 
@@ -69,15 +89,21 @@ export class AppComponent {
      */
 
     this.configService.configState$
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe((state) => {
         this.storageService.saveToStore('.settings.json', 'config', state);
       });
 
     this.twitchService.twitchState$
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe((state) => {
         this.storageService.saveToStore('.settings.json', 'twitch', state);
+      });
+
+    this.azureService.state$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => {
+        this.storageService.saveToStore('.settings.json', 'azure', state);
       });
   }
 }
