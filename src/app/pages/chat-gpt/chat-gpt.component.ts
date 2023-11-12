@@ -25,12 +25,13 @@ export interface GptPersonalityFormGroup {
   standalone: true,
   imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent, MatInputModule, MatSliderModule, ReactiveFormsModule, LabelBlockComponent],
   templateUrl: './chat-gpt.component.html',
-  styleUrls: ['./chat-gpt.component.scss']
+  styleUrls: ['./chat-gpt.component.scss'],
 })
 export class ChatGptComponent {
   apiKeyControl = new FormControl('', { nonNullable: true });
   enableGptControl = new FormControl(false, { nonNullable: true });
   historyControl = new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(20)] });
+  charLimitControl = new FormControl(300, { nonNullable: true, validators: [Validators.min(0)] });
 
   /**
    * These are to make the ChatGPT model a little more personal.
@@ -58,6 +59,12 @@ export class ChatGptComponent {
         this.historyControl.setValue(gptSettings.historyLimit, { emitEvent: false });
       });
 
+    this.configService.gptChat$
+      .pipe(takeUntilDestroyed())
+      .subscribe(chat => {
+        this.charLimitControl.setValue(chat.charLimit, { emitEvent: false });
+      });
+
     this.personalityGroup.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(personality => this.configService.updateGptPersonality(personality));
@@ -69,6 +76,14 @@ export class ChatGptComponent {
     this.apiKeyControl.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(apiToken => this.configService.updateGptSettings({ apiToken }));
+
+    this.charLimitControl.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(charLimit => {
+        if (this.charLimitControl.valid) {
+          this.configService.updateGptChat({ charLimit });
+        }
+      });
 
     this.historyControl.valueChanges
       .pipe(takeUntilDestroyed(), debounceTime(500))
