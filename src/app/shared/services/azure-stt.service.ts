@@ -12,10 +12,11 @@ import { LogService } from './logs.service';
 import { Store } from '@ngrx/store';
 import { AzureFeature, AzureState } from '../state/azure/azure.feature';
 import { AzureActions } from '../state/azure/azure.actions';
-import { combineLatest, filter } from 'rxjs';
+import { combineLatest, filter, skip } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OpenaiService } from './openai.service';
+import { TwitchService } from './twitch.service';
 
 @Injectable()
 export class AzureSttService {
@@ -23,22 +24,26 @@ export class AzureSttService {
   public readonly region$ = this.store.select(AzureFeature.selectRegion);
   public readonly hotkey$ = this.store.select(AzureFeature.selectHotkey);
   public readonly thirdPartyUrl$ = this.store.select(AzureFeature.selectThirdPartyUrl);
+  public readonly enabled$ = this.store.select(AzureFeature.selectEnabled);
   public readonly language$ = this.store.select(AzureFeature.selectLanguage);
   public readonly state$ = this.store.select(AzureFeature.selectAzureStateState);
 
   speechConfig?: SpeechConfig;
+  isEnabled = false;
+  twitchUsername = '';
 
   constructor(
     private readonly store: Store,
     private readonly openaiService: OpenaiService,
     private readonly logService: LogService,
+    private readonly twitchService: TwitchService,
     private readonly snackbar: MatSnackBar,
   ) {
     combineLatest([
       this.subscriptionKey$,
       this.region$,
       this.language$,
-    ]).pipe(takeUntilDestroyed())
+    ]).pipe(takeUntilDestroyed(), skip(3))
       .subscribe(([key, region, language]) => {
         if (!key || !region || !language) {
           this.logService.add(`Missing required values for speechConfig. ${JSON.stringify({
@@ -60,6 +65,14 @@ export class AzureSttService {
         this.speechConfig = SpeechConfig.fromSubscription(key, region);
         this.speechConfig.speechRecognitionLanguage = language;
       });
+
+    this.enabled$
+      .pipe(takeUntilDestroyed())
+      .subscribe(enabled => this.isEnabled = enabled);
+
+    this.twitchService.channelInfo$
+      .pipe(takeUntilDestroyed())
+      .subscribe(channelInfo => this.twitchUsername = channelInfo.username);
 
     this.hotkey$
       .pipe(takeUntilDestroyed(), filter(hotkey => hotkey !== ''))
@@ -86,6 +99,14 @@ export class AzureSttService {
   }
 
   captureSpeech() {
+    if (!this.isEnabled) {
+      return this.logService.add(
+        `HotKey triggered but Azure STT is currently not enabled.`,
+        'info',
+        'AzureStt.captureSpeech',
+      );
+    }
+
     if (!this.speechConfig) {
       this.logService.add(
         `Even though hotkey is registered, the Azure speechConfig is not initialized.`,
@@ -169,6 +190,6 @@ export class AzureSttService {
 
   private sendRecognizedText(text: string) {
     // @TODO - Get the users actual name.
-    this.openaiService.gptHandler('Panku', text);
+    this.openaiService.gptHandler(this.twitchUsername, text);
   }
 }
