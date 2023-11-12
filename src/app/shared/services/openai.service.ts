@@ -8,7 +8,7 @@ import { loreTemplateGenerator } from '../util/lore';
 import { LogService } from './logs.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OpenaiService {
   gptChat?: GptChatState;
@@ -20,7 +20,7 @@ export class OpenaiService {
   chatLore: { role: 'system', content: string }[] = [];
   chatGptConfig?: Configuration;
   chatGptApi?: OpenAIApi;
-  
+
   constructor(
     private readonly audioService: AudioService,
     private readonly configService: ConfigService,
@@ -29,7 +29,7 @@ export class OpenaiService {
     this.configService.gptChat$
       .pipe(takeUntilDestroyed())
       .subscribe(gptChat => this.gptChat = gptChat);
-    
+
     this.configService.gptPersonality$
       .pipe(takeUntilDestroyed())
       .subscribe(gptPersonality => this.gptPersonality = gptPersonality);
@@ -58,7 +58,7 @@ export class OpenaiService {
 
         this.chatGptConfig = new Configuration({ apiKey });
         this.chatGptApi = new OpenAIApi(this.chatGptConfig);
-        
+
         this.logService.add('Configuring OpenAI API', 'info', 'OpenAIService.constructor');
       });
   }
@@ -89,6 +89,7 @@ export class OpenaiService {
       const { message } = response.data.choices[0];
 
       if (!message || !message.content) {
+        this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(message, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
         return console.info('OpenAI failed to respond.');
       }
 
@@ -105,7 +106,10 @@ export class OpenaiService {
 
       this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.gptChat.charLimit);
     } catch (e) {
-      this.logService.add(`OpenAI failed to respond.\n${e}`, 'error', 'TwitchPubSub.gptHandler');
+      this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(e, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
+
+      // Anytime OpenAI might have API issues just respond with this.
+      this.audioService.playTts('My brain is all fuzzy...', 'ChatGPT', 'gpt', this.gptChat.charLimit);
     }
   }
 }
