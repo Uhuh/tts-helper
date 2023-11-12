@@ -1,56 +1,95 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { SelectorComponent } from '../../shared/components/selector/selector.component';
 import azureTts from '../../shared/json/azure-stt.json';
-import RecordRTC from 'recordrtc';
+import { AzureSttService } from '../../shared/services/azure-stt.service';
+import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { DisplayLabelComponent } from '../../shared/components/display-label/display-label.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-azure-stt',
   standalone: true,
-  imports: [CommonModule, LabelBlockComponent, InputComponent, SelectorComponent],
+  imports: [CommonModule, LabelBlockComponent, InputComponent, SelectorComponent, ToggleComponent, ButtonComponent, DisplayLabelComponent, RouterLink],
   templateUrl: './azure-stt.component.html',
   styleUrls: ['./azure-stt.component.scss'],
 })
 export class AzureSttComponent {
   regions = azureTts.regions;
   languages = azureTts.languages;
-  stream?: MediaStream;
 
   azureSettings = new FormGroup({
-    apiKey: new FormControl('', { nonNullable: true }),
-    region: new FormControl('', { nonNullable: true }),
+    enabled: new FormControl(false, { nonNullable: true }),
+    subscriptionKey: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    region: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     language: new FormControl('', { nonNullable: true }),
+    hotkey: new FormControl('', { nonNullable: true }),
+    thirdPartyUrl: new FormControl('', { nonNullable: true }),
   });
 
-  constructor() {
-    // Prompt user for mic access
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(stream => this.handleStream(stream));
+  isSettingHotKey = false;
+  hotkey = '';
+
+  @HostListener('window:keydown', ['$event'])
+  hotkeyBinding(event: KeyboardEvent) {
+    if (!this.isSettingHotKey) {
+      return;
+    }
+
+    const modifiers = [];
+
+    if (event.ctrlKey) {
+      modifiers.push('Control');
+    }
+
+    if (event.shiftKey) {
+      modifiers.push('Shift');
+    }
+
+    if (event.altKey) {
+      modifiers.push('Alt');
+    }
+
+    const key = modifiers.includes(event.key) ? '' : event.key;
+
+    this.hotkey = (modifiers.length ? modifiers.join('+') + '+' : '') + key;
   }
 
-  async handleStream(stream: MediaStream) {
-    const recorder = new RecordRTC.StereoAudioRecorder(stream, {
-      type: 'audio',
-      mimeType: 'audio/wav',
-    });
+  constructor(private readonly azureService: AzureSttService) {
+    this.azureSettings.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(settings => {
+        this.azureService.updateAzureState(settings);
+      });
 
-    recorder.record();
+    this.azureService.state$
+      .pipe(takeUntilDestroyed())
+      .subscribe(state => {
+        this.hotkey = state.hotkey ?? 'No hotkey set.';
 
-    const sleep = (m: number) => new Promise(r => setTimeout(r, m));
-    await sleep(5000);
+        this.azureSettings.setValue(state, {
+          emitEvent: false,
+        });
+      });
+  }
 
-    // For now while figuring out azure, just display the recorded audio in dom.
-    recorder.stop((blob) => {
-      console.log(blob);
-      const url = URL.createObjectURL(blob);
-      // All junk, will be removed later.
-      document.querySelector('audio')!.src = url;
-      document.querySelector('audio')!.muted = false;
-      document.querySelector('audio')!.click();
-    });
+  toggleHotkey() {
+    this.isSettingHotKey = !this.isSettingHotKey;
+
+    if (this.isSettingHotKey) {
+      return;
+    }
+
+    this.azureService.updateGlobalHotKey(this.hotkey);
+  }
+
+  clearHotKey() {
+    this.azureService.clearGlobalHotKoy(this.hotkey);
   }
 }
 

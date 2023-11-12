@@ -4,3 +4,13 @@
   gap: 10px;
   width: 100%;
 }
+
+.hotkey, .actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hotkey {
+  justify-content: space-between;
+}
