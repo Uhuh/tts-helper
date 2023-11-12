@@ -20,6 +20,8 @@ import { TwitchService } from './app/shared/services/twitch.service';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
+import { AzureFeature } from './app/shared/state/azure/azure.feature';
+import { AzureSttService } from './app/shared/services/azure-stt.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -27,13 +29,15 @@ bootstrapApplication(AppComponent, {
       // Inject reducer manager
       StoreModule.forRoot({}),
       StoreModule.forFeature(AudioFeature),
+      StoreModule.forFeature(AzureFeature),
       StoreModule.forFeature(TwitchFeature),
       StoreModule.forFeature(ConfigFeature),
       MatSnackBarModule,
       StoreDevtoolsModule.instrument({
         maxAge: 25,
-        logOnly: !isDevMode()
+        logOnly: !isDevMode(),
       })),
+    AzureSttService,
     TwitchService,
     TwitchApi,
     TwitchPubSub,
@@ -45,7 +49,7 @@ bootstrapApplication(AppComponent, {
     VTubeStudioService,
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
-    provideRouter(routes)
-  ]
+    provideRouter(routes),
+  ],
 })
   .catch((err) => console.error(err));
