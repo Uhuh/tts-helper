@@ -13,7 +13,7 @@ export enum AudioStatus {
   finished,
 }
 
-export type AudioSource = 'youtube' | 'twitch' | 'tts-helper' | 'gpt';
+export type AudioSource = 'youtube' | 'twitch' | 'tts-helper' | 'gpt' | 'azure';
 
 export interface AudioItem {
   id: number;
@@ -35,7 +35,7 @@ export const AudioFeature = createFeature({
     on(AudioActions.updateAudioState, (state, { id, audioState }) => {
       const item = state.audioItems.find((a) => a.id === id);
       const items = klona(state.audioItems);
-      
+
       if (!item) {
         return state;
       }
@@ -55,7 +55,7 @@ export const AudioFeature = createFeature({
     on(AudioActions.removeAudioItem, (state, { audioId }) => {
       const item = state.audioItems.find((a) => a.id === audioId);
       const items = klona(state.audioItems);
-      
+
       if (!item) {
         return state;
       }
@@ -67,6 +67,6 @@ export const AudioFeature = createFeature({
         ...state,
         audioItems: [...items],
       };
-    })
+    }),
   ),
 });
