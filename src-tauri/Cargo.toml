@@ -13,7 +13,7 @@ tauri-build = { workspace = true, features = [] }
 
 [dependencies]
 # Tauri
-tauri = { workspace = true, features = ["shell-open", "updater"] }
+tauri = { workspace = true, features = ["shell-open", "updater", "global-shortcut-all"] }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
 tauri-plugin-playback = { path = "../plugins/tauri-plugin-playback" }
