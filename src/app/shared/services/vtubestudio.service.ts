@@ -36,7 +36,10 @@ export class VTubeStudioService {
   vtsAuthToken = '';
   authenticationRequestUUID = uuid();
 
-  randomMouthInterval?: any = undefined;
+  /**
+   * @TODO - When audio is skipped this never gets cleared since AudioFinished never fires
+   */
+  randomMouthInterval?: NodeJS.Timer = undefined;
 
   constructor(
     private readonly logService: LogService,
@@ -158,7 +161,7 @@ export class VTubeStudioService {
         'VTubeStudioService.handleAuthResponse',
       );
 
-      this.vtsAuthToken = '';
+      this.configService.updateVTSToken('');
 
       return this.snackbar.open(
         `Could not authenticate token with VTS. Reason: ${data.reason}`,
@@ -226,7 +229,7 @@ export class VTubeStudioService {
       return clearInterval(this.randomMouthInterval);
     }
 
-    this.randomMouthInterval = setInterval(() => this.sendRandomMouthParams(), 75);
+    this.randomMouthInterval = setInterval(() => this.sendRandomMouthParams(), 150);
   }
 
   private sendRandomMouthParams() {
