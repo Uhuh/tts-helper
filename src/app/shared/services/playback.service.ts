@@ -1,7 +1,7 @@
 import { ApplicationRef, Injectable } from '@angular/core';
 import { invoke } from '@tauri-apps/api';
 import { listen } from '@tauri-apps/api/event';
-import { Subject, from, tap, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, from, Subject, tap } from 'rxjs';
 import {
   AudioId,
   AudioState,
@@ -38,12 +38,12 @@ export class PlaybackService {
       listen('playback::audio::start', (event) => {
         const id = event.payload as AudioId;
         this.audioStarted$.next(id);
-        
+
         this.ref.tick();
-      })
+      }),
     ).pipe(
       takeUntilDestroyed(),
-      tap((unlisten) => unlisten())
+      tap((unlisten) => unlisten()),
     );
 
     from(
@@ -52,10 +52,10 @@ export class PlaybackService {
         this.audioFinished$.next(id);
 
         this.ref.tick();
-      })
+      }),
     ).pipe(
       takeUntilDestroyed(),
-      tap((unlisten) => unlisten())
+      tap((unlisten) => unlisten()),
     );
   }
 
@@ -75,7 +75,7 @@ export class PlaybackService {
   async setOutputDevice(deviceId: DeviceId): Promise<void> {
     await invoke('plugin:playback|set_output_device', { deviceId });
   }
-  
+
   async setVolumeLevel(volumeLevel: number): Promise<void> {
     // Rodio takes the volume range from 0 -> 1
     await invoke('plugin:playback|set_output_volume', { volumeLevel: volumeLevel / 100 });
@@ -111,7 +111,7 @@ export class PlaybackService {
    * @returns The current playback state.
    */
   async setAudioState(
-    state: WithId<Partial<AudioState>, AudioId>
+    state: WithId<Partial<AudioState>, AudioId>,
   ): Promise<void> {
     await invoke('plugin:playback|set_audio_state', { state });
   }
