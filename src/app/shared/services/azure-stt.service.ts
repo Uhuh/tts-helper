@@ -1,8 +1,174 @@
-﻿import { Injectable } from '@angular/core';
-import sdk from 'microsoft-cognitiveservices-speech-sdk';
-import { ConfigService } from './config.service';
+﻿import { Injectable, isDevMode } from '@angular/core';
+import {
+  AudioConfig,
+  CancellationDetails,
+  CancellationReason,
+  ResultReason,
+  SpeechConfig,
+  SpeechRecognizer,
+} from 'microsoft-cognitiveservices-speech-sdk';
+import { isRegistered, register, unregister, unregisterAll } from '@tauri-apps/api/globalShortcut';
+import { LogService } from './logs.service';
+import { Store } from '@ngrx/store';
+import { AzureFeature, AzureState } from '../state/azure/azure.feature';
+import { AzureActions } from '../state/azure/azure.actions';
+import { combineLatest, filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { OpenaiService } from './openai.service';
 
 @Injectable()
 export class AzureSttService {
-  constructor(private readonly configService: ConfigService) {}
+  public readonly subscriptionKey$ = this.store.select(AzureFeature.selectSubscriptionKey);
+  public readonly region$ = this.store.select(AzureFeature.selectRegion);
+  public readonly hotkey$ = this.store.select(AzureFeature.selectHotkey);
+  public readonly thirdPartyUrl$ = this.store.select(AzureFeature.selectThirdPartyUrl);
+  public readonly language$ = this.store.select(AzureFeature.selectLanguage);
+  public readonly state$ = this.store.select(AzureFeature.selectAzureStateState);
+
+  speechConfig?: SpeechConfig;
+
+  constructor(
+    private readonly store: Store,
+    private readonly openaiService: OpenaiService,
+    private readonly logService: LogService,
+    private readonly snackbar: MatSnackBar,
+  ) {
+    combineLatest([
+      this.subscriptionKey$,
+      this.region$,
+      this.language$,
+    ]).pipe(takeUntilDestroyed())
+      .subscribe(([key, region, language]) => {
+        if (!key || !region || !language) {
+          this.logService.add(`Missing required values for speechConfig. ${JSON.stringify({
+            key,
+            region,
+            language,
+          })}`, 'error', 'AzureStt.constructor');
+
+          return this.snackbar.open(
+            `Missing required values for Azure STT.`,
+            'Dismiss',
+            {
+              panelClass: 'notification-error',
+            },
+          );
+        }
+
+        this.snackbar.dismiss();
+        this.speechConfig = SpeechConfig.fromSubscription(key, region);
+        this.speechConfig.speechRecognitionLanguage = language;
+      });
+
+    this.hotkey$
+      .pipe(takeUntilDestroyed(), filter(hotkey => hotkey !== ''))
+      .subscribe(hotkey => this.checkHotKey(hotkey));
+  }
+
+  async checkHotKey(hotkey: string) {
+    // When in devmode, hotkeys are forgotten due to the chunk files changing so much.
+    // So remove all keys and just re-register them.
+    if (isDevMode()) {
+      console.info(`Unregistering shortcuts, going to register: ${hotkey}`);
+      await unregisterAll();
+    }
+
+    const registered = await isRegistered(hotkey);
+
+    if (registered) {
+      return console.info(`Shortcut is already registered: ${hotkey}`);
+    }
+
+    await register(hotkey, () => {
+      this.captureSpeech();
+    });
+  }
+
+  captureSpeech() {
+    if (!this.speechConfig) {
+      this.logService.add(
+        `Even though hotkey is registered, the Azure speechConfig is not initialized.`,
+        'error',
+        'AzureStt.captureSpeech',
+      );
+
+      return this.snackbar.open(
+        `Missing required values for Azure STT.`,
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        },
+      );
+    }
+
+    const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
+    const speechRecognizer = new SpeechRecognizer(this.speechConfig, audioConfig);
+
+    speechRecognizer.recognizeOnceAsync(result => {
+      switch (result.reason) {
+        case ResultReason.RecognizedSpeech: {
+          const { text } = result;
+          this.logService.add(`Recognized speech: Text => ${text}`, 'info', 'AzureStt.captureSpeech');
+
+          this.sendRecognizedText(text);
+          break;
+        }
+        case ResultReason.NoMatch: {
+          this.logService.add(`Speech could not be recognized`, 'info', 'AzureStt.captureSpeech');
+          break;
+        }
+        case ResultReason.Canceled: {
+          const cancellation = CancellationDetails.fromResult(result);
+          this.logService.add(`Speech canceled. Reason => ${cancellation.reason}`, 'info', 'AzureStt.captureSpeech');
+
+          if (cancellation.reason == CancellationReason.Error) {
+            this.logService.add(
+              `Encountered an error, did you set the speech resource key and region values?.\n${JSON.stringify(cancellation, undefined, 2)}`,
+              'error',
+              'AzureStt.captureSpeech',
+            );
+          }
+          break;
+        }
+      }
+
+      // Close this immediately to prevent any running audio charges.
+      speechRecognizer.close();
+    });
+  }
+
+  updateAzureState(partialState: Partial<AzureState>) {
+    this.store.dispatch(AzureActions.updateAzureState({ partialState }));
+  }
+
+  async updateGlobalHotKey(hotkey: string) {
+    const isHotkeyRegistered = await isRegistered(hotkey);
+
+    if (isHotkeyRegistered) {
+      return this.logService.add(`Hotkey ${hotkey} is already registered.`, 'info', 'AzureStt.updateGlobalHotKey');
+    }
+
+    return await register(hotkey, () => this.captureSpeech())
+      .then(() => {
+        this.logService.add(`Successfully registered hotkey ${hotkey}`, 'info', 'AzureStt.updateGlobalHotKey');
+        this.store.dispatch(AzureActions.updateAzureState({
+          partialState: {
+            hotkey,
+          },
+        }));
+      })
+      .catch((error) => this.logService.add(`Failed to register hotkey ${hotkey} due to error.\n${JSON.stringify(error, undefined, 2)}`, 'error', 'AzureStt.updateGlobalHotKey'));
+  }
+
+  async clearGlobalHotKoy(hotkey: string) {
+    await unregister(hotkey);
+
+    this.updateAzureState({ hotkey: '' });
+  }
+
+  private sendRecognizedText(text: string) {
+    // @TODO - Get the users actual name.
+    this.openaiService.gptHandler('Panku', text);
+  }
 }
