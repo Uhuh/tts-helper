@@ -6,6 +6,7 @@ export type TtsType =
   | 'tts-monster'
   | 'amazon-polly'
   | 'windows'
+  | 'eleven-labs'
   | 'tiktok';
 
 export interface StreamElementsData {
