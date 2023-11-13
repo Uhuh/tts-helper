@@ -28,9 +28,10 @@ export class AzureSttService {
   public readonly language$ = this.store.select(AzureFeature.selectLanguage);
   public readonly state$ = this.store.select(AzureFeature.selectAzureStateState);
 
+  twitchUsername = '';
   speechConfig?: SpeechConfig;
   isEnabled = false;
-  twitchUsername = '';
+  isCurrentlyListening = false;
 
   constructor(
     private readonly store: Store,
@@ -107,6 +108,14 @@ export class AzureSttService {
       );
     }
 
+    if (this.isCurrentlyListening) {
+      return this.logService.add(
+        `Ignoring hotkey trigger, already listening to user.`,
+        'info',
+        'AzureStt.captureSpeech',
+      );
+    }
+
     if (!this.speechConfig) {
       this.logService.add(
         `Even though hotkey is registered, the Azure speechConfig is not initialized.`,
@@ -126,6 +135,8 @@ export class AzureSttService {
     const audioConfig = AudioConfig.fromDefaultMicrophoneInput();
     const speechRecognizer = new SpeechRecognizer(this.speechConfig, audioConfig);
 
+    // We're listening to the user.
+    this.isCurrentlyListening = true;
     speechRecognizer.recognizeOnceAsync(result => {
       switch (result.reason) {
         case ResultReason.RecognizedSpeech: {
@@ -156,6 +167,7 @@ export class AzureSttService {
 
       // Close this immediately to prevent any running audio charges.
       speechRecognizer.close();
+      this.isCurrentlyListening = false;
     });
   }
 

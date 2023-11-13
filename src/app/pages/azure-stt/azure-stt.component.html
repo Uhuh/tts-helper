@@ -16,7 +16,6 @@
   </app-label-block>
 
   @if (azureSettings.controls.enabled.value) {
-    
     <div class="warning">
       <span>As of right now this feature only supports using your systems DEFAULT input device. (Microphone)</span>
       <span>There is also no way to currently increase the 1 second timer before ending the stream.</span>
@@ -52,6 +51,10 @@
       />
     </app-label-block>
 
+    <div class="warning">
+      <span>Using this global hotkey will consume the input, thus if the hotkey is supposed to trigger something else, this will prevent it.</span>
+    </div>
+    
     <app-label-block>
       <div header>Global hotkey</div>
       <div sub-text>This is a global hotkey used for activating speech to text.</div>
