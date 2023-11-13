@@ -1,12 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { TwitchApi } from '../api/twitch.api';
 import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
 import { TwitchFeature, TwitchRedeemState, ValidUser } from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LogService } from './logs.service';
+import { TwitchApi } from '../api/twitch/twitch.api';
 
 @Injectable()
 export class TwitchService implements OnDestroy {
@@ -114,7 +114,7 @@ export class TwitchService implements OnDestroy {
                 prompt: r.prompt,
                 title: r.title,
               })),
-            })
+            }),
           );
         },
         error: (e) => {
