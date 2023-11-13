@@ -3,7 +3,7 @@ import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { StorageService } from './shared/services/storage.service';
 import { Store } from '@ngrx/store';
 import { TwitchService } from './shared/services/twitch.service';
-import { debounceTime } from 'rxjs';
+import { combineLatest, debounceTime } from 'rxjs';
 import { ConfigService } from './shared/services/config.service';
 import { PlaybackService } from './shared/services/playback.service';
 import { TwitchState } from './shared/state/twitch/twitch.feature';
@@ -17,6 +17,9 @@ import { AzureSttService } from './shared/services/azure-stt.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AzureState } from './shared/state/azure/azure.feature';
 import { AzureActions } from './shared/state/azure/azure.actions';
+import { ElevenLabsService } from './shared/services/eleven-labs.service';
+import { ElevenLabsState } from './shared/state/eleven-labs/eleven-labs.feature';
+import { ElevenLabsActions } from './shared/state/eleven-labs/eleven-labs.actions';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +29,8 @@ import { AzureActions } from './shared/state/azure/azure.actions';
   imports: [NavComponent, RouterOutlet],
 })
 export class AppComponent {
+  private readonly settingsLocation = '.settings.json';
+
   /**
    * @TODO - Figure out a better way to have the service come alive that isn't
    * just injecting it into the root of the app.
@@ -33,6 +38,7 @@ export class AppComponent {
   constructor(
     private readonly store: Store,
     private readonly azureService: AzureSttService,
+    private readonly elevenLabsService: ElevenLabsService,
     private readonly twitchPubSub: TwitchPubSub,
     private readonly configService: ConfigService,
     private readonly twitchService: TwitchService,
@@ -40,47 +46,18 @@ export class AppComponent {
     private readonly playbackService: PlaybackService,
     private readonly vtubeStudioService: VTubeStudioService,
   ) {
-    this.storageService
-      .getFromStore<TwitchState>('.settings.json', 'twitch')
+    combineLatest([
+      this.storageService.getFromStore<ConfigState>(this.settingsLocation, 'config'),
+      this.storageService.getFromStore<TwitchState>(this.settingsLocation, 'twitch'),
+      this.storageService.getFromStore<AzureState>(this.settingsLocation, 'azure'),
+      this.storageService.getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs'),
+    ])
       .pipe(takeUntilDestroyed())
-      .subscribe((data) => {
-        if (!data || !data.value) {
-          return this.twitchService.clearState();
-        }
-
-        this.store.dispatch(
-          TwitchStateActions.updateState({ twitchState: data.value }),
-        );
-      });
-
-    this.storageService
-      .getFromStore<ConfigState>('.settings.json', 'config')
-      .pipe(takeUntilDestroyed())
-      .subscribe((data) => {
-        if (!data || !data.value) {
-          return;
-        }
-
-        // Setup user audio device and volume on startup.
-        this.playbackService.setOutputDevice(data.value.audioDevice);
-        this.playbackService.setVolumeLevel(data.value.deviceVolume);
-
-        this.store.dispatch(
-          GlobalConfigActions.updateState({ configState: data.value }),
-        );
-      });
-
-    this.storageService
-      .getFromStore<AzureState>('.settings.json', 'azure')
-      .pipe(takeUntilDestroyed())
-      .subscribe((data) => {
-        if (!data || !data.value) {
-          return;
-        }
-
-        this.store.dispatch(
-          AzureActions.updateAzureState({ partialState: data.value }),
-        );
+      .subscribe(([config, twitch, azure, elevenLabs]) => {
+        this.handleGlobalData(config);
+        this.handleTwitchData(twitch);
+        this.handleAzureData(azure);
+        this.handleElevenLabsData(elevenLabs);
       });
 
     /**
@@ -91,19 +68,69 @@ export class AppComponent {
     this.configService.configState$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe((state) => {
-        this.storageService.saveToStore('.settings.json', 'config', state);
+        this.storageService.saveToStore(this.settingsLocation, 'config', state);
       });
 
     this.twitchService.twitchState$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe((state) => {
-        this.storageService.saveToStore('.settings.json', 'twitch', state);
+        this.storageService.saveToStore(this.settingsLocation, 'twitch', state);
       });
 
     this.azureService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe(state => {
-        this.storageService.saveToStore('.settings.json', 'azure', state);
+        this.storageService.saveToStore(this.settingsLocation, 'azure', state);
       });
+
+    this.elevenLabsService.state$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => {
+        this.storageService.saveToStore(this.settingsLocation, 'eleven-labs', state);
+      });
+  }
+
+  handleGlobalData(data: { value: ConfigState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    // Setup user audio device and volume on startup.
+    this.playbackService.setOutputDevice(data.value.audioDevice);
+    this.playbackService.setVolumeLevel(data.value.deviceVolume);
+
+    this.store.dispatch(
+      GlobalConfigActions.updateState({ configState: data.value }),
+    );
+  }
+
+  handleTwitchData(data: { value: TwitchState } | null) {
+    if (!data || !data.value) {
+      return this.twitchService.clearState();
+    }
+
+    this.store.dispatch(
+      TwitchStateActions.updateState({ twitchState: data.value }),
+    );
+  }
+
+  handleAzureData(data: { value: AzureState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.store.dispatch(
+      AzureActions.updateAzureState({ partialState: data.value }),
+    );
+  }
+
+  handleElevenLabsData(data: { value: ElevenLabsState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.store.dispatch(
+      ElevenLabsActions.updateState({ partialState: data.value }),
+    );
   }
 }

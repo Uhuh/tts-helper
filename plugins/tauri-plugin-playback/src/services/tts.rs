@@ -1,19 +1,20 @@
 use std::collections::HashMap;
 
+use base64::{Engine as _, engine::general_purpose};
 use bytes::Bytes;
 use serde::Deserialize;
 use serde_json::json;
 use tauri::{
-    api::http::{Client, HttpRequestBuilder, Body},
+    api::http::{Body, Client, HttpRequestBuilder},
     http::{
-        method::Method,
-        status::{InvalidStatusCode, StatusCode}, header::{HeaderValue},
+        header::HeaderValue,
+        method::Method, status::{InvalidStatusCode, StatusCode},
     },
 };
 use thiserror::Error;
-use tracing::{error};
-use base64::{Engine as _, engine::general_purpose};
-use crate::models::requests::{StreamElementsData, TikTokData, AmazonPollyData};
+use tracing::error;
+
+use crate::models::requests::{AmazonPollyData, ElevenLabsData, StreamElementsData, TikTokData};
 
 const STREAM_ELEMENTS_API: &str = "https://api.streamelements.com/kappa/v2/speech";
 const TIKTOK_API: &str = "https://tiktok-tts.weilnet.workers.dev/api/generation";
@@ -48,6 +49,36 @@ impl TtsService {
     }
 
     #[inline]
+    pub async fn eleven_labs(
+        &self,
+        data: ElevenLabsData,
+    ) -> Result<Bytes, TtsRequestError> {
+        let req = HttpRequestBuilder::new(Method::POST.as_str(), data.url)?
+            .header("Content-Type", HeaderValue::from_static("application/json"))?
+            .header("xi-api-key", data.api_key)?
+            .body(Body::Json(json!(
+            {
+                "text": data.text,
+                "model_id": data.model_id,
+                "voice_settings": {
+                    "stability": data.stability,
+                    "similarity_boost": data.similarity_boost, 
+                }
+            }
+        )));
+
+        let res = self.client.send(req).await?.bytes().await?;
+
+        // Check status code
+        let status = StatusCode::from_u16(res.status)?;
+        if status.is_client_error() || status.is_server_error() {
+            return Err(TtsRequestError::BadStatusCode(status));
+        }
+
+        Ok(res.data.into())
+    }
+
+    #[inline]
     pub async fn amazon_polly(
         &self,
         mut data: AmazonPollyData,
@@ -70,10 +101,9 @@ impl TtsService {
         &self,
         data: TikTokData,
     ) -> Result<Bytes, TtsRequestError> {
-
         let req = HttpRequestBuilder::new(Method::POST.as_str(), TIKTOK_API)?
-        .header("Content-Type", HeaderValue::from_static("application/json"))?
-        .body(Body::Json(json!(
+            .header("Content-Type", HeaderValue::from_static("application/json"))?
+            .body(Body::Json(json!(
             {
                 "voice": data.voice,
                 "text": data.text
@@ -81,12 +111,12 @@ impl TtsService {
         )));
 
         let res = self.client.send(req).await?.read().await?;
-        
+
         let status = StatusCode::from_u16(res.status)?;
         if status.is_client_error() || status.is_server_error() {
             return Err(TtsRequestError::BadStatusCode(status));
         }
-        
+
         let res = serde_json::from_value::<TikTokResponse>(res.data)?;
         let res = general_purpose::STANDARD_NO_PAD.decode(res.data).unwrap();
 
@@ -137,5 +167,5 @@ pub enum TtsRequestError {
 
     /// The request failed to decode the b64
     #[error("Decoding error returned: {0}")]
-    DecodeError(#[from] base64::DecodeError)
+    DecodeError(#[from] base64::DecodeError),
 }

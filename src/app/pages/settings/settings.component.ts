@@ -13,6 +13,7 @@ import { TiktokComponent } from './tiktok/tiktok.component';
 import { TtsType } from '../../shared/state/config/config.feature';
 import { FormControl } from '@angular/forms';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
+import { ElevenLabsComponent } from './eleven-labs/eleven-labs.component';
 
 interface TtsOption {
   disabled?: boolean;
@@ -35,6 +36,7 @@ interface TtsOption {
     TtsMonsterComponent,
     TiktokComponent,
     LabelBlockComponent,
+    ElevenLabsComponent,
   ],
 })
 export class SettingsComponent {
@@ -54,6 +56,10 @@ export class SettingsComponent {
       value: 'tiktok',
     },
     {
+      displayValue: 'ElevenLabs',
+      value: 'eleven-labs',
+    },
+    {
       displayValue: 'TTS Monster',
       value: 'tts-monster',
       disabled: true,
@@ -62,7 +68,7 @@ export class SettingsComponent {
 
   constructor(
     private readonly historyService: AudioService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
     this.configService.configTts$
       .pipe(takeUntilDestroyed())
@@ -87,7 +93,7 @@ export class SettingsComponent {
       value ?? 'Oops no rizz!',
       '',
       'tts-helper',
-      1000
+      1000,
     );
   }
 

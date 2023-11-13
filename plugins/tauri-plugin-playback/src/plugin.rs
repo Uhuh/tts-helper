@@ -156,6 +156,9 @@ async fn play_audio(
         RequestAudioData::AmazonPolly(amazon_polly) => {
             tts_svc.amazon_polly(amazon_polly).await?
         }
+        RequestAudioData::ElevenLabs(eleven_labs) => {
+            tts_svc.eleven_labs(eleven_labs).await?
+        }
     };
 
     // Decode source data

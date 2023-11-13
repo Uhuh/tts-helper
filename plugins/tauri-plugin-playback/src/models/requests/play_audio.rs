@@ -21,6 +21,8 @@ pub enum RequestAudioData {
     TikTok(TikTokData),
     /// AmazonPolly request data.
     AmazonPolly(AmazonPollyData),
+    /// ElevenLabs request data.
+    ElevenLabs(ElevenLabsData),
 }
 
 /// Raw audio data.
@@ -54,4 +56,21 @@ pub struct TikTokData {
 pub struct AmazonPollyData {
     /// Possible AmazonPolly URL.
     pub url: Option<String>,
+}
+
+/// ElevenLabs request data
+#[derive(Clone, Debug, Deserialize)]
+pub struct ElevenLabsData {
+    /// The TTS URL
+    pub url: String,
+    /// The users API key
+    pub api_key: String,
+    /// The text to speak
+    pub text: String,
+    /// The model type
+    pub model_id: String,
+    /// Voice stability
+    pub stability: f32,
+    /// Voice similarity
+    pub similarity_boost: f32,
 }

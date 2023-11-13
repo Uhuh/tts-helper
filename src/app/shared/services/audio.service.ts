@@ -21,6 +21,8 @@ import {
 import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
 import { combineLatest, map } from 'rxjs';
+import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
+import { ElevenLabsService } from './eleven-labs.service';
 
 @Injectable()
 export class AudioService {
@@ -35,12 +37,14 @@ export class AudioService {
   ttsMonster!: TtsMonsterData;
   amazonPolly!: AmazonPollyData;
   tikTok!: TikTokData;
+  elevenLabs!: ElevenLabsState;
 
   constructor(
     private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly snackbar: MatSnackBar,
     private readonly playback: PlaybackService,
+    private readonly elevenLabsService: ElevenLabsService,
     private readonly logService: LogService,
   ) {
 
@@ -60,6 +64,10 @@ export class AudioService {
         this.amazonPolly = amazonPolly;
         this.tikTok = tikTok;
       });
+
+    this.elevenLabsService.state$
+      .pipe(takeUntilDestroyed())
+      .subscribe(elevenLabs => this.elevenLabs = elevenLabs);
 
     this.playback.audioStarted$
       .pipe(takeUntilDestroyed())
@@ -149,7 +157,7 @@ export class AudioService {
           voice: this.tikTok.voice,
           text,
         };
-      case 'amazon-polly':
+      case 'amazon-polly': {
         const url = await this.handleAmazonPolly(text);
 
         // If there was an issue getting the audio url.
@@ -161,6 +169,21 @@ export class AudioService {
           type: 'amazonPolly',
           url,
         };
+      }
+      case 'eleven-labs': {
+        const url = `${this.elevenLabsService.apiUrl}/text-to-speech/${this.elevenLabs.voiceId}`;
+
+        return {
+          type: 'elevenLabs',
+          url,
+          text,
+          api_key: this.elevenLabs.apiKey,
+          model_id: this.elevenLabs.modelId,
+          // default values
+          stability: 0.5,
+          similarity_boost: 0.5,
+        };
+      }
       default:
         return null;
     }

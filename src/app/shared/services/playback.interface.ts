@@ -17,18 +17,27 @@ export interface PlayAudioRequest {
 
 export type RequestAudioData =
   | {
-      type: 'raw';
-      data: Uint8Array;
-    }
+  type: 'raw';
+  data: Uint8Array;
+}
   | {
-      type: 'streamElements' | 'tikTok';
-      text: string;
-      voice: string;
-    }
+  type: 'streamElements' | 'tikTok';
+  text: string;
+  voice: string;
+}
   | {
-      type: 'amazonPolly';
-      url?: string | null;
-    };
+  type: 'amazonPolly';
+  url?: string | null;
+}
+  | {
+  type: 'elevenLabs';
+  url: string;
+  api_key: string;
+  text: string;
+  model_id: string;
+  stability: number;
+  similarity_boost: number;
+};
 
 export interface PlaybackState {
   /** End delay in milliseconds. */
