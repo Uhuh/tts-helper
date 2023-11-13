@@ -1,10 +1,8 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { TwitchRedeem } from './twitch.interface';
-import { OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
 
 @Injectable()
 export class TwitchApi implements OnDestroy {
@@ -22,12 +20,13 @@ export class TwitchApi implements OnDestroy {
 
   /**
    * Get channels possible redeems so they can configure TTS for each redeem.
-   * @param broadcasterId
+   * @param broadcaster_id Users channel id
+   * @param token Users auth token from accepting TTS Helper
    * @returns Array of redeems that belong to the broadcaster id.
    */
   getChannelRedeemCommands(
     broadcaster_id: string,
-    token: string
+    token: string,
   ): Observable<{ data: TwitchRedeem[] }> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -42,7 +41,7 @@ export class TwitchApi implements OnDestroy {
         params: {
           broadcaster_id,
         },
-      }
+      },
     );
   }
 
