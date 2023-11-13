@@ -1,6 +1,12 @@
 {
   "name": "tts-helper",
-  "version": "1.0.5",
+  "version": "1.0.6",
+  "author": {
+    "email": "dylanwarren19@gmail.com",
+    "name": "Dylan Warren",
+    "url": "https://panku.io"
+  },
+  "license": "LGPL-3.0-or-later",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
