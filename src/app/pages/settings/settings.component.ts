@@ -67,7 +67,7 @@ export class SettingsComponent {
   ];
 
   constructor(
-    private readonly historyService: AudioService,
+    private readonly audioService: AudioService,
     private readonly configService: ConfigService,
   ) {
     this.configService.configTts$
@@ -89,7 +89,7 @@ export class SettingsComponent {
     const { value } = this.ttsControl;
     this.ttsControl.setValue('');
 
-    this.historyService.playTts(
+    this.audioService.playTts(
       value ?? 'Oops no rizz!',
       '',
       'tts-helper',

@@ -55,7 +55,7 @@ export class TwitchPubSub implements OnDestroy {
 
   constructor(
     private readonly twitchService: TwitchService,
-    private readonly historyService: AudioService,
+    private readonly audioService: AudioService,
     private readonly configService: ConfigService,
     private readonly logService: LogService,
     private readonly openaiService: OpenaiService,
@@ -169,7 +169,7 @@ export class TwitchPubSub implements OnDestroy {
       !this.generalOnCooldown
     ) {
       const trimmedText = text.substring(this.generalChat.command.length).trim();
-      this.historyService.playTts(trimmedText, user.displayName, 'twitch', this.generalChat.charLimit);
+      this.audioService.playTts(trimmedText, user.displayName, 'twitch', this.generalChat.charLimit);
 
       // Handle cooldown if there is any.
       this.generalOnCooldown = true;
@@ -199,7 +199,7 @@ export class TwitchPubSub implements OnDestroy {
       return;
     }
 
-    this.historyService.playTts(
+    this.audioService.playTts(
       message.messageText,
       message.userDisplayName,
       'twitch',
@@ -216,7 +216,7 @@ export class TwitchPubSub implements OnDestroy {
       .replaceAll(/{username}/g, gift.gifterDisplayName)
       .replaceAll(/{amount}/g, `${gift.amount}`);
 
-    this.historyService.playTts(
+    this.audioService.playTts(
       parsedInput ?? '',
       gift.gifterDisplayName,
       'twitch',
@@ -235,7 +235,7 @@ export class TwitchPubSub implements OnDestroy {
       return;
     }
 
-    this.historyService.playTts(
+    this.audioService.playTts(
       'Thanks for the sub',
       sub.userDisplayName,
       'twitch',
@@ -254,7 +254,7 @@ export class TwitchPubSub implements OnDestroy {
 
     const cleanedInput = cheer.message.replaceAll(/Cheer[0-9]+/g, '');
 
-    this.historyService.playTts(
+    this.audioService.playTts(
       cleanedInput,
       cheer.userDisplayName ?? '[ANONYMOUS]',
       'twitch',
@@ -270,7 +270,7 @@ export class TwitchPubSub implements OnDestroy {
       rewardId === this.redeemInfo()?.redeem &&
       this.redeemInfo()?.enabled
     ) {
-      this.historyService.playTts(
+      this.audioService.playTts(
         input || 'Haha! Someone forgot to say something.',
         userDisplayName,
         'twitch',

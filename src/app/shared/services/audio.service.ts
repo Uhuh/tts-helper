@@ -119,7 +119,7 @@ export class AudioService {
           username,
           audioText,
           charLimit,
-        }, null, 1)}`, 'info', 'HistoryService.playTts');
+        }, null, 1)}`, 'info', 'AudioService.playTts');
 
         this.addAudio({
           id,
