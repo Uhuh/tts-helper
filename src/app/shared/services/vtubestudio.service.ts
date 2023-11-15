@@ -8,7 +8,7 @@ import {
   AuthResponse,
   TTSHelperParameterNames,
   TTSHelperParameters,
-  VTubeStudioMessageType
+  VTubeStudioMessageType,
 } from './vtubestudio.interface';
 import { ConfigService } from './config.service';
 import { PlaybackService } from './playback.service';
@@ -36,20 +36,23 @@ export class VTubeStudioService {
   vtsAuthToken = '';
   authenticationRequestUUID = uuid();
 
-  randomMouthInterval?: any = undefined;
-  
+  /**
+   * @TODO - When audio is skipped this never gets cleared since AudioFinished never fires
+   */
+  randomMouthInterval?: NodeJS.Timer = undefined;
+
   constructor(
     private readonly logService: LogService,
     private readonly playbackService: PlaybackService,
     private readonly configService: ConfigService,
-    private readonly snackbar: MatSnackBar
+    private readonly snackbar: MatSnackBar,
   ) {
     this.port$.pipe(takeUntilDestroyed())
       .subscribe(port => {
         this.logService.add(
           `Attempting to connect to VTS on port ${port}`,
           'info',
-          'VTubeStudioService'
+          'VTubeStudioService',
         );
 
         this.socket = new WebSocket(`ws://localhost:${port}`);
@@ -65,9 +68,8 @@ export class VTubeStudioService {
     this.playbackService.audioFinished$
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.randomMouth(false));
-    
-    this.socket.addEventListener('open', (event) => {
 
+    this.socket.addEventListener('open', (event) => {
       // Check if VTS is already authenticated.
       if (!this.vtsAuthToken) {
         this.requestUserAuth();
@@ -79,7 +81,7 @@ export class VTubeStudioService {
       this.logService.add(
         `VTS WS connection opened. \n${JSON.stringify(event, undefined, 2)}`,
         'info',
-        'VTubeStudioService'
+        'VTubeStudioService',
       );
     });
 
@@ -105,7 +107,7 @@ export class VTubeStudioService {
       this.logService.add(
         `Message received. \n${JSON.stringify(data, undefined, 2)}`,
         'info',
-        'VTubeStudioService'
+        'VTubeStudioService',
       );
     });
 
@@ -114,10 +116,10 @@ export class VTubeStudioService {
         `Issue connecting to VTube Studio websocket.\n${JSON.stringify(
           event,
           undefined,
-          2
+          2,
         )}`,
         'error',
-        'VTubeStudioService'
+        'VTubeStudioService',
       );
     });
   }
@@ -136,7 +138,7 @@ export class VTubeStudioService {
       data: {
         ...this.pluginInfo,
         authenticationToken,
-      }
+      },
     }));
   }
 
@@ -147,7 +149,7 @@ export class VTubeStudioService {
         requestID: this.authenticationRequestUUID,
         messageType: VTubeStudioMessageType.AuthenticationTokenRequest,
         data: this.pluginInfo,
-      })
+      }),
     );
   }
 
@@ -156,17 +158,17 @@ export class VTubeStudioService {
       this.logService.add(
         `Auth response not authenticated. \n${JSON.stringify(data, undefined, 2)}`,
         'info',
-        'VTubeStudioService.handleAuthResponse'
+        'VTubeStudioService.handleAuthResponse',
       );
 
-      this.vtsAuthToken = '';
+      this.configService.updateVTSToken('');
 
       return this.snackbar.open(
         `Could not authenticate token with VTS. Reason: ${data.reason}`,
         'Dismiss',
         {
           panelClass: 'notification-error',
-        }
+        },
       );
     }
 
@@ -174,10 +176,10 @@ export class VTubeStudioService {
       `Authenticated token with VTS.\n${JSON.stringify(
         data,
         undefined,
-        2
+        2,
       )}`,
       'info',
-      'VTubeStudioService'
+      'VTubeStudioService',
     );
 
     this.snackbar.open(
@@ -186,9 +188,9 @@ export class VTubeStudioService {
       {
         duration: 3000,
         panelClass: 'notification-success',
-      }
+      },
     );
-    
+
     this.getParameterValues();
 
     this.configService.updateVTSToken(this.vtsAuthToken);
@@ -198,7 +200,7 @@ export class VTubeStudioService {
     this.logService.add(
       `API Error. \n${JSON.stringify(data, undefined, 2)}`,
       'error',
-      'VTubeStudioService.handleAPIError'
+      'VTubeStudioService.handleAPIError',
     );
 
     return this.snackbar.open(
@@ -206,7 +208,7 @@ export class VTubeStudioService {
       'Dismiss',
       {
         panelClass: 'notification-error',
-      }
+      },
     );
   }
 
@@ -219,18 +221,20 @@ export class VTubeStudioService {
       }));
     }
   }
-  
+
   private randomMouth(enabled: boolean) {
-    if (!enabled || this.socket.CLOSED || this.socket.CLOSING ) {
+    const { readyState, CLOSED, CLOSING } = this.socket;
+
+    if (!enabled || readyState === CLOSED || readyState === CLOSING) {
       return clearInterval(this.randomMouthInterval);
     }
-    
-    this.randomMouthInterval = setInterval(() => this.sendRandomMouthParams(), 75);
+
+    this.randomMouthInterval = setInterval(() => this.sendRandomMouthParams(), 150);
   }
-  
+
   private sendRandomMouthParams() {
     const mouthOpen = Math.random();
-    const mouthForm = Math.random()*2 - 1;
+    const mouthForm = Math.random() * 2 - 1;
 
     this.socket.send(JSON.stringify({
       ...this.vtsBasics,
@@ -242,9 +246,9 @@ export class VTubeStudioService {
           {
             id: TTSHelperParameterNames.TTSHelperMouthOpen,
             value: mouthOpen,
-          }
-        ]
-      }
+          },
+        ],
+      },
     }));
 
     this.socket.send(JSON.stringify({
@@ -257,12 +261,12 @@ export class VTubeStudioService {
           {
             id: TTSHelperParameterNames.TTSHelperMouthForm,
             value: mouthForm,
-          }
-        ]
-      }
+          },
+        ],
+      },
     }));
   }
-  
+
   updatePort(port: number) {
     this.port$.next(port);
   }

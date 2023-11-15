@@ -6,6 +6,7 @@ export type TtsType =
   | 'tts-monster'
   | 'amazon-polly'
   | 'windows'
+  | 'eleven-labs'
   | 'tiktok';
 
 export interface StreamElementsData {
@@ -76,7 +77,7 @@ export interface GptSettingsState {
 
 export type AuthTokens = {
   vtsAuthToken: string;
-}
+};
 
 export interface ConfigState {
   tts: TtsType;
@@ -168,8 +169,8 @@ export const ConfigFeature = createFeature({
       ...state,
       authTokens: {
         ...state.authTokens,
-        ...tokens
-      }
+        ...tokens,
+      },
     })),
     on(GlobalConfigActions.updateState, (state, { configState }) => ({
       ...state,

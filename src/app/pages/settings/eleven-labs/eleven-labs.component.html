@@ -1,0 +1,33 @@
+<div class="header">
+  <span>Eleven Labs</span>
+</div>
+
+<app-label-block>
+  <div header>API Key</div>
+  <div sub-text>Super Secret API Key.</div>
+  <app-input
+    placeholder="Place your API key here."
+    [control]="elevenLabs.controls.apiKey"
+    type="password"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Voice</div>
+  <div sub-text>Select which voice will be used for TTS.</div>
+  <app-selector
+    placeholder="Select a voice"
+    [control]="elevenLabs.controls.voiceId"
+    [options]="voiceOptions"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Model</div>
+  <div sub-text>Select which voice model we'll be using.</div>
+  <app-selector
+    placeholder="Select a model"
+    [control]="elevenLabs.controls.modelId"
+    [options]="modelOptions"
+  />
+</app-label-block>

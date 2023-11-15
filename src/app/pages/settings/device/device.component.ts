@@ -9,7 +9,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
-import { DeviceId, DeviceInfo, WithId, } from 'src/app/shared/services/playback.interface';
+import { DeviceId, DeviceInfo, WithId } from 'src/app/shared/services/playback.interface';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { SelectorComponent } from '../../../shared/components/selector/selector.component';
 import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.component';
@@ -39,7 +39,7 @@ export class DeviceComponent {
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly playbackService: PlaybackService
+    private readonly playbackService: PlaybackService,
   ) {
     this.playbackService.listOutputDevices().then((devices) => {
       this.devices.set(devices.outputDevices);
@@ -49,13 +49,13 @@ export class DeviceComponent {
     this.configService.selectedDevice$
       .pipe(takeUntilDestroyed())
       .subscribe((device) =>
-        this.selectedDevice.patchValue(device, { emitEvent: false })
+        this.selectedDevice.patchValue(device, { emitEvent: false }),
       );
 
     this.configService.deviceVolume$
       .pipe(takeUntilDestroyed())
       .subscribe((volume) =>
-        this.volume.patchValue(volume, { emitEvent: false })
+        this.volume.patchValue(volume, { emitEvent: false }),
       );
 
     this.selectedDevice.valueChanges

@@ -9,7 +9,7 @@ import {
   GptPersonalityState,
   GptSettingsState,
   StreamElementsData,
-  TtsType
+  TtsType,
 } from '../state/config/config.feature';
 import { GlobalConfigActions } from '../state/config/config.actions';
 import { PlaybackService } from './playback.service';

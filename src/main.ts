@@ -15,11 +15,16 @@ import { AudioService } from './app/shared/services/audio.service';
 import { ConfigService } from './app/shared/services/config.service';
 import { StorageService } from './app/shared/services/storage.service';
 import { TwitchPubSub } from './app/shared/services/twitch-pubsub';
-import { TwitchApi } from './app/shared/api/twitch.api';
 import { TwitchService } from './app/shared/services/twitch.service';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
+import { AzureFeature } from './app/shared/state/azure/azure.feature';
+import { AzureSttService } from './app/shared/services/azure-stt.service';
+import { ElevenLabsService } from './app/shared/services/eleven-labs.service';
+import { ElevenLabsFeature } from './app/shared/state/eleven-labs/eleven-labs.feature';
+import { TwitchApi } from './app/shared/api/twitch/twitch.api';
+import { ElevenLabsApi } from './app/shared/api/eleven-labs/eleven-labs.api';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -27,25 +32,30 @@ bootstrapApplication(AppComponent, {
       // Inject reducer manager
       StoreModule.forRoot({}),
       StoreModule.forFeature(AudioFeature),
+      StoreModule.forFeature(AzureFeature),
+      StoreModule.forFeature(ElevenLabsFeature),
       StoreModule.forFeature(TwitchFeature),
       StoreModule.forFeature(ConfigFeature),
       MatSnackBarModule,
       StoreDevtoolsModule.instrument({
         maxAge: 25,
-        logOnly: !isDevMode()
+        logOnly: !isDevMode(),
       })),
+    AudioService,
+    AzureSttService,
+    ConfigService,
+    ElevenLabsApi,
+    ElevenLabsService,
+    LogService,
     TwitchService,
+    PlaybackService,
+    StorageService,
     TwitchApi,
     TwitchPubSub,
-    StorageService,
-    ConfigService,
-    AudioService,
-    PlaybackService,
-    LogService,
     VTubeStudioService,
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
-    provideRouter(routes)
-  ]
+    provideRouter(routes),
+  ],
 })
   .catch((err) => console.error(err));

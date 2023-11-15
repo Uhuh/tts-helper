@@ -7,5 +7,5 @@ export const AudioActions = createActionGroup({
     'Update Audio State': props<{ id: number; audioState: AudioStatus }>(),
     'Add Audio Item': props<{ audio: AudioItem }>(),
     'Remove Audio Item': props<{ audioId: number }>(),
-  }
+  },
 });

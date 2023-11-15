@@ -27,6 +27,12 @@
   </app-label-block>
 
   <app-label-block>
+    <div header>Character Limit</div>
+    <div sub-text>The max amount of characters that will be converted into audio.</div>
+    <app-input [control]="charLimitControl" placeholder="Enter character limit." type="number"/>
+  </app-label-block>
+
+  <app-label-block>
     <div header>Message History</div>
     <div sub-text>Helps ChatGPT respond better by using previous messages.</div>
     <app-input [control]="historyControl" type="number" [hasError]="historyControl.errors !== null" />

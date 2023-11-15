@@ -16,11 +16,13 @@ import {
   StreamElementsData,
   TikTokData,
   TtsMonsterData,
-  TtsType
+  TtsType,
 } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
 import { combineLatest, map } from 'rxjs';
+import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
+import { ElevenLabsService } from './eleven-labs.service';
 
 @Injectable()
 export class AudioService {
@@ -35,12 +37,14 @@ export class AudioService {
   ttsMonster!: TtsMonsterData;
   amazonPolly!: AmazonPollyData;
   tikTok!: TikTokData;
+  elevenLabs!: ElevenLabsState;
 
   constructor(
     private readonly store: Store,
     private readonly configService: ConfigService,
     private readonly snackbar: MatSnackBar,
     private readonly playback: PlaybackService,
+    private readonly elevenLabsService: ElevenLabsService,
     private readonly logService: LogService,
   ) {
 
@@ -60,6 +64,10 @@ export class AudioService {
         this.amazonPolly = amazonPolly;
         this.tikTok = tikTok;
       });
+
+    this.elevenLabsService.state$
+      .pipe(takeUntilDestroyed())
+      .subscribe(elevenLabs => this.elevenLabs = elevenLabs);
 
     this.playback.audioStarted$
       .pipe(takeUntilDestroyed())
@@ -81,7 +89,7 @@ export class AudioService {
     text: string,
     username: string,
     source: AudioSource,
-    charLimit: number
+    charLimit: number,
   ) {
     if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
       return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
@@ -97,12 +105,12 @@ export class AudioService {
         'Dismiss',
         {
           panelClass: 'notification-error',
-        }
+        },
       );
-      
+
       return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
     }
-    
+
     this.playback
       .playAudio({ data })
       .then((id) => {
@@ -110,7 +118,7 @@ export class AudioService {
           ...data,
           username,
           audioText,
-          charLimit
+          charLimit,
         }, null, 1)}`, 'info', 'HistoryService.playTts');
 
         this.addAudio({
@@ -130,7 +138,7 @@ export class AudioService {
           'Dismiss',
           {
             panelClass: 'notification-error',
-          }
+          },
         );
       });
   }
@@ -149,7 +157,7 @@ export class AudioService {
           voice: this.tikTok.voice,
           text,
         };
-      case 'amazon-polly':
+      case 'amazon-polly': {
         const url = await this.handleAmazonPolly(text);
 
         // If there was an issue getting the audio url.
@@ -161,6 +169,21 @@ export class AudioService {
           type: 'amazonPolly',
           url,
         };
+      }
+      case 'eleven-labs': {
+        const url = `${this.elevenLabsService.apiUrl}/text-to-speech/${this.elevenLabs.voiceId}`;
+
+        return {
+          type: 'elevenLabs',
+          url,
+          text,
+          api_key: this.elevenLabs.apiKey,
+          model_id: this.elevenLabs.modelId,
+          // default values
+          stability: 0.5,
+          similarity_boost: 0.5,
+        };
+      }
       default:
         return null;
     }
@@ -173,7 +196,7 @@ export class AudioService {
         'Dismiss',
         {
           panelClass: 'notification-error',
-        }
+        },
       );
       return;
     }
@@ -207,7 +230,7 @@ export class AudioService {
         'Dismiss',
         {
           panelClass: 'notification-error',
-        }
+        },
       );
 
       console.error('Failed to get Amazon Polly url', e);

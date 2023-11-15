@@ -6,8 +6,10 @@ import {
   ConfigState,
   GeneralChatState,
   GptChatState,
-  GptPersonalityState, GptSettingsState, StreamElementsData,
-  TtsType
+  GptPersonalityState,
+  GptSettingsState,
+  StreamElementsData,
+  TtsType,
 } from './config.feature';
 
 export const GlobalConfigActions = createActionGroup({
@@ -32,5 +34,5 @@ export const GlobalConfigActions = createActionGroup({
     'Update Tik Tok Language': props<{ language: string }>(),
     'Update Tts Monster Overlay': props<{ overlay: string; key: string; userId: string }>(),
     'Reset State': emptyProps(),
-  }
+  },
 });

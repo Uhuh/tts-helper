@@ -7,7 +7,7 @@ import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient, ChatUser } from '@twurple/chat';
 import { AudioService } from './audio.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TwitchCheer, TwitchGiftSub, TwitchRedeem, TwitchSub, TwitchSubMessage, } from './twitch-pubsub.interface';
+import { TwitchCheer, TwitchGiftSub, TwitchRedeem, TwitchSub, TwitchSubMessage } from './twitch-pubsub.interface';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ConfigService } from './config.service';
 import {
@@ -15,7 +15,7 @@ import {
   GeneralChatState,
   GptChatState,
   GptPersonalityState,
-  GptSettingsState
+  GptSettingsState,
 } from '../state/config/config.feature';
 import { LogService } from './logs.service';
 import { OpenaiService } from './openai.service';
@@ -109,38 +109,38 @@ export class TwitchPubSub implements OnDestroy {
             'Dismiss',
             {
               panelClass: 'notification-error',
-            }
+            },
           );
         });
 
         this.redeemListener = this.listener.onChannelRedemptionAdd(
           channelInfo.channelId ?? '',
-          (c) => this.onRedeem(c)
+          (c) => this.onRedeem(c),
         );
 
         this.bitsListener = this.listener.onChannelCheer(
           channelInfo.channelId ?? '',
-          (cheer) => this.onBits(cheer)
+          (cheer) => this.onBits(cheer),
         );
 
         this.subsListener = this.listener.onChannelSubscription(
           channelInfo.channelId ?? '',
-          (sub) => this.onSub(sub)
+          (sub) => this.onSub(sub),
         );
 
         this.giftSubListener = this.listener.onChannelSubscriptionGift(
           channelInfo.channelId ?? '',
-          (gift) => this.onGiftSub(gift)
+          (gift) => this.onGiftSub(gift),
         );
 
         this.subMessageListener = this.listener.onChannelSubscriptionMessage(
           channelInfo.channelId ?? '',
-          (message) => this.onSubMessage(message)
+          (message) => this.onSubMessage(message),
         );
 
         this.onMessageListener = this.chat.onMessage((_, _username, text, msg) => {
             this.onMessage(msg.userInfo, text);
-          }
+          },
         );
       });
   }
@@ -203,7 +203,7 @@ export class TwitchPubSub implements OnDestroy {
       message.messageText,
       message.userDisplayName,
       'twitch',
-      this.subsInfo()?.subCharacterLimit ?? 300
+      this.subsInfo()?.subCharacterLimit ?? 300,
     );
   }
 
@@ -220,7 +220,7 @@ export class TwitchPubSub implements OnDestroy {
       parsedInput ?? '',
       gift.gifterDisplayName,
       'twitch',
-      999
+      999,
     );
   }
 
@@ -239,7 +239,7 @@ export class TwitchPubSub implements OnDestroy {
       'Thanks for the sub',
       sub.userDisplayName,
       'twitch',
-      999
+      999,
     );
   }
 
@@ -258,7 +258,7 @@ export class TwitchPubSub implements OnDestroy {
       cleanedInput,
       cheer.userDisplayName ?? '[ANONYMOUS]',
       'twitch',
-      this.bitInfo()?.bitsCharacterLimit ?? 300
+      this.bitInfo()?.bitsCharacterLimit ?? 300,
     );
   }
 
@@ -274,7 +274,7 @@ export class TwitchPubSub implements OnDestroy {
         input || 'Haha! Someone forgot to say something.',
         userDisplayName,
         'twitch',
-        this.redeemInfo()?.redeemCharacterLimit ?? 100
+        this.redeemInfo()?.redeemCharacterLimit ?? 100,
       );
     }
 
