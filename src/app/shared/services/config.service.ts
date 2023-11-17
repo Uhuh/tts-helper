@@ -69,10 +69,13 @@ export class ConfigService {
   }
 
   updateChatPermissions(permissions: Partial<ChatPermissions>, system: 'gpt' | 'general') {
-    if (system === 'gpt') {
-      this.store.dispatch(GlobalConfigActions.updateGPTChatPermissions({ permissions }));
-    } else if (system === 'general') {
-      this.store.dispatch(GlobalConfigActions.updateGeneralChatPermissions({ permissions }));
+    switch (system) {
+      case 'gpt':
+        this.store.dispatch(GlobalConfigActions.updateGPTChatPermissions({ permissions }));
+        break;
+      case 'general':
+        this.store.dispatch(GlobalConfigActions.updateGeneralChatPermissions({ permissions }));
+        break;
     }
   }
 
