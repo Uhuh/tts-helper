@@ -26,6 +26,7 @@ import { ElevenLabsFeature } from './app/shared/state/eleven-labs/eleven-labs.fe
 import { TwitchApi } from './app/shared/api/twitch/twitch.api';
 import { ElevenLabsApi } from './app/shared/api/eleven-labs/eleven-labs.api';
 import { webSocket } from 'rxjs/webSocket';
+import { VTubeStudioFeature } from './app/shared/state/vtubestudio/vtubestudio.feature.';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -34,9 +35,10 @@ bootstrapApplication(AppComponent, {
       StoreModule.forRoot({}),
       StoreModule.forFeature(AudioFeature),
       StoreModule.forFeature(AzureFeature),
+      StoreModule.forFeature(ConfigFeature),
       StoreModule.forFeature(ElevenLabsFeature),
       StoreModule.forFeature(TwitchFeature),
-      StoreModule.forFeature(ConfigFeature),
+      StoreModule.forFeature(VTubeStudioFeature),
       MatSnackBarModule,
       StoreDevtoolsModule.instrument({
         maxAge: 25,
