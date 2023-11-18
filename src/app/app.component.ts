@@ -20,6 +20,8 @@ import { AzureActions } from './shared/state/azure/azure.actions';
 import { ElevenLabsService } from './shared/services/eleven-labs.service';
 import { ElevenLabsState } from './shared/state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsActions } from './shared/state/eleven-labs/eleven-labs.actions';
+import { VTubeStudioState } from './shared/state/vtubestudio/vtubestudio.feature.';
+import { VTubeStudioActions } from './shared/state/vtubestudio/vtubestudio.actions';
 
 @Component({
   selector: 'app-root',
@@ -51,13 +53,15 @@ export class AppComponent {
       this.storageService.getFromStore<TwitchState>(this.settingsLocation, 'twitch'),
       this.storageService.getFromStore<AzureState>(this.settingsLocation, 'azure'),
       this.storageService.getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs'),
+      this.storageService.getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio'),
     ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([config, twitch, azure, elevenLabs]) => {
+      .subscribe(([config, twitch, azure, elevenLabs, vtubeStudio]) => {
         this.handleGlobalData(config);
         this.handleTwitchData(twitch);
         this.handleAzureData(azure);
         this.handleElevenLabsData(elevenLabs);
+        this.handleVTubeStudioData(vtubeStudio);
       });
 
     /**
@@ -87,6 +91,12 @@ export class AppComponent {
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'eleven-labs', state);
+      });
+
+    this.vtubeStudioService.state$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => {
+        this.storageService.saveToStore(this.settingsLocation, 'vtube-studio', state);
       });
   }
 
@@ -131,6 +141,16 @@ export class AppComponent {
 
     this.store.dispatch(
       ElevenLabsActions.updateState({ partialState: data.value }),
+    );
+  }
+
+  handleVTubeStudioData(data: { value: VTubeStudioState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.store.dispatch(
+      VTubeStudioActions.updateState({ partialState: data.value }),
     );
   }
 }
