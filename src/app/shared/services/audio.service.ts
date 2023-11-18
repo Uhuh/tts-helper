@@ -101,7 +101,7 @@ export class AudioService {
 
     if (!data) {
       this.snackbar.open(
-        'Hey! You tried playing audio to a TTS service we don\'t support!',
+        `Failed to grab the requried data for TTS service: ${this.tts}!`,
         'Dismiss',
         {
           panelClass: 'notification-error',
@@ -233,7 +233,7 @@ export class AudioService {
         },
       );
 
-      console.error('Failed to get Amazon Polly url', e);
+      this.logService.add(`Failed to get Amazon Polly url.\n${JSON.stringify(e)}`, 'error', 'AudioService.handleAmazonPolly');
 
       return null;
     }
