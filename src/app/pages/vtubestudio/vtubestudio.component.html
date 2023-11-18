@@ -1,0 +1,25 @@
+<div class="header">
+  <span>VTubeStudio Settings</span>
+</div>
+
+<div class="section">
+  <app-label-block>
+    <div header>API Port</div>
+    <div sub-text>The port that's set in your VTS Plugin API settings.</div>
+    <app-input [control]="settings.controls.port" type="number" placeholder="VTS port"/>
+  </app-label-block>
+  
+  <app-label-block>
+    <div header>Mirror Mouth Form</div>
+    <div sub-text>If enabled your pet will mirror your mouth form when there's no TTS.</div>
+    <app-toggle [control]="settings.controls.isMirrorMouthFormEnabled"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Mirror Mouth Open</div>
+    <div sub-text>If enabled your pet will mirror your mouth open when there's no TTS.</div>
+    <app-toggle [control]="settings.controls.isMirrorMouthOpenEnabled"/>
+  </app-label-block>
+</div>
+
+
