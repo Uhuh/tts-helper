@@ -25,6 +25,7 @@ import { ElevenLabsService } from './app/shared/services/eleven-labs.service';
 import { ElevenLabsFeature } from './app/shared/state/eleven-labs/eleven-labs.feature';
 import { TwitchApi } from './app/shared/api/twitch/twitch.api';
 import { ElevenLabsApi } from './app/shared/api/eleven-labs/eleven-labs.api';
+import { webSocket } from 'rxjs/webSocket';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -59,3 +60,13 @@ bootstrapApplication(AppComponent, {
   ],
 })
   .catch((err) => console.error(err));
+
+const subject = webSocket('ws://localhost:12683/ws');
+
+subject.next({ data: 'hello world' });
+
+subject.subscribe({
+  next: msg => console.log(`hello: `, msg),
+  error: err => console.error(err),
+  complete: () => console.info('closed'),
+});
