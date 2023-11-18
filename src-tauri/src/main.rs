@@ -5,7 +5,7 @@ mod models;
 mod services;
 
 use anyhow::Context;
-use services::run_websocket_server;
+// use services::run_websocket_server;
 
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Registry};
 use crate::services::run_auth_server;
@@ -28,7 +28,7 @@ fn main() -> anyhow::Result<()> {
             // Run auth server
             let handle = app.handle();
             std::thread::spawn(move || run_auth_server(handle));
-            std::thread::spawn(move || run_websocket_server());
+            //std::thread::spawn(move || run_websocket_server());
 
             Ok(())
         })
