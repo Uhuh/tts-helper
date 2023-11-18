@@ -19,3 +19,13 @@
     <input matSliderThumb [formControl]="volume"/>
   </mat-slider>
 </app-label-block>
+
+<app-label-block>
+  <div header>Delay between audio</div>
+  <div sub-text>The "silence" in seconds between audio playing.</div>
+  <app-input
+    placeholder="Delay in seconds"
+    [control]="audioDelay"
+    type="number"
+  />
+</app-label-block>

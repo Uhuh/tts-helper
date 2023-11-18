@@ -27,6 +27,7 @@ export const GlobalConfigActions = createActionGroup({
     'Update Selected Tts Url': props<{ url: string }>(),
     'Update Selected Audio Device': props<{ audioDevice: number }>(),
     'Update Device Volume': props<{ deviceVolume: number }>(),
+    'Update Audio Delay': props<{ audioDelay: number }>(),
     'Update Banned Words': props<{ bannedWords: string[] }>(),
     'Update Amazon Polly': props<{ amazonPolly: Partial<AmazonPollyData> }>(),
     'Update Stream Elements': props<{ streamElements: Partial<StreamElementsData> }>(),

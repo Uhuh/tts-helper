@@ -85,6 +85,8 @@ export interface ConfigState {
   authTokens: AuthTokens;
   audioDevice: number;
   deviceVolume: number;
+  // The delay in SECONDS. This will be converted to miliseconds when sent to rust.
+  audioDelay: number;
   generalChat: GeneralChatState;
   gptChat: GptChatState;
   gptPersonality: GptPersonalityState;
@@ -121,6 +123,7 @@ export const initialState: ConfigState = {
   url: 'https://api.streamelements.com/kappa/v2/speech',
   audioDevice: 0,
   deviceVolume: 100,
+  audioDelay: 1,
   authTokens: {
     vtsAuthToken: '',
   },
@@ -283,6 +286,10 @@ export const ConfigFeature = createFeature({
     })),
     on(GlobalConfigActions.resetState, () => ({
       ...initialState,
+    })),
+    on(GlobalConfigActions.updateAudioDelay, (state, { audioDelay }) => ({
+      ...state,
+      audioDelay,
     })),
   ),
   extraSelectors: ({

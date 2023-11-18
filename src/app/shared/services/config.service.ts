@@ -33,6 +33,7 @@ export class ConfigService {
   public readonly gptSettings$ = this.store.select(ConfigFeature.selectGptSettings);
   public readonly gptToken$ = this.store.select(ConfigFeature.selectGptToken);
   public readonly authTokens$ = this.store.select(ConfigFeature.selectAuthTokens);
+  public readonly audioDelay$ = this.store.select(ConfigFeature.selectAudioDelay);
 
   constructor(
     private readonly store: Store,
@@ -117,6 +118,12 @@ export class ConfigService {
     this.playbackService.setVolumeLevel(deviceVolume);
 
     this.store.dispatch(GlobalConfigActions.updateDeviceVolume({ deviceVolume }));
+  }
+
+  updateAudioDelay(audioDelay: number) {
+    this.playbackService.setPlaybackState({ endDelay: audioDelay * 1000 });
+
+    this.store.dispatch(GlobalConfigActions.updateAudioDelay({ audioDelay }));
   }
 
   clearState() {
