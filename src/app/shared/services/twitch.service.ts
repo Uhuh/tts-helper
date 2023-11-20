@@ -12,7 +12,7 @@ import { TwitchApi } from '../api/twitch/twitch.api';
 export class TwitchService implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  public readonly twitchState$ = this.store.select(TwitchFeature.selectTwitchStateState);
+  public readonly state$ = this.store.select(TwitchFeature.selectTwitchStateState);
   public readonly twitchToken$ = this.store.select(TwitchFeature.selectToken);
   public readonly redeems$ = this.store.select(TwitchFeature.selectRedeems);
   public readonly isTokenValid$ = this.store.select(TwitchFeature.selectIsTokenValid);
