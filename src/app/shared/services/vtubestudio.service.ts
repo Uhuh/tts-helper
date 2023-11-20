@@ -14,6 +14,7 @@ import { PlaybackService } from './playback.service';
 import { Store } from '@ngrx/store';
 import { VTubeStudioFeature, VTubeStudioState } from '../state/vtubestudio/vtubestudio.feature.';
 import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
+import { interval } from 'rxjs';
 
 @Injectable()
 export class VTubeStudioService {
@@ -44,6 +45,17 @@ export class VTubeStudioService {
   private authenticationRequestUUID = uuid();
 
   /**
+   * These intervals are for constantly requesting user mouth shape info so it can be sent to their model
+   * 60 is an arbitrary number for now.
+   *
+   * Initialize the variable for 1 tick, due to laziness. It'll be destroyed and assigned over and over as
+   * users toggle settings and the 1hour interval keeping watch of it.
+   */
+  private mouthTrackingInterval = setInterval(() => {
+    console.info('Initial interval for types sake. :)');
+  }, 60);
+
+  /**
    * @TODO - When audio is skipped this never gets cleared since AudioFinished never fires
    */
   randomMouthInterval?: NodeJS.Timer = undefined;
@@ -70,10 +82,26 @@ export class VTubeStudioService {
       });
 
     this.isMouthOpenEnabled$.pipe(takeUntilDestroyed())
-      .subscribe(isMouthOpenEnabled => this.isMouthOpenEnabled = isMouthOpenEnabled);
+      .subscribe(isMouthOpenEnabled => {
+        // Destroy mouth tracking, use the change as a way to cleanup memory
+        clearInterval(this.mouthTrackingInterval);
+        this.isMouthOpenEnabled = isMouthOpenEnabled;
+
+        if (this.isTracking) {
+          this.mouthTrackingInterval = this.createMouthTrackingInterval();
+        }
+      });
 
     this.isMouthFormEnabled$.pipe(takeUntilDestroyed())
-      .subscribe(isMouthFormEnabled => this.isMouthFormEnabled = isMouthFormEnabled);
+      .subscribe(isMouthFormEnabled => {
+        // Destroy mouth tracking, use the change as a way to cleanup memory
+        clearInterval(this.mouthTrackingInterval);
+        this.isMouthFormEnabled = isMouthFormEnabled;
+
+        if (this.isTracking) {
+          this.mouthTrackingInterval = this.createMouthTrackingInterval();
+        }
+      });
 
     this.configService.authTokens$.pipe(takeUntilDestroyed())
       .subscribe((tokens) => this.vtsAuthToken = tokens.vtsAuthToken);
@@ -87,6 +115,33 @@ export class VTubeStudioService {
       .subscribe(() => this.randomMouth(false));
 
     this.setupSocketHandlers();
+
+    /**
+     * @TODO - Use the Rust tick alternative solution.
+     * This is a temporary hack. Due to the memory issues caused by unused references from intervals
+     * this will be the watchman killing the 60ms interval used for tracking users mouth data.
+     */
+    interval(3_600_000)
+      .subscribe(() => {
+        clearInterval(this.mouthTrackingInterval);
+
+        this.mouthTrackingInterval = this.createMouthTrackingInterval();
+      });
+  }
+
+  private get isTracking() {
+    return this.isMouthOpenEnabled || this.isMouthFormEnabled;
+  }
+
+  private createMouthTrackingInterval() {
+    return setInterval(() => {
+      if (this.isMouthFormEnabled) {
+        this.requestUserMouthInfo(VTubeStudioMessageType.MouthSmile);
+      }
+      if (this.isMouthOpenEnabled) {
+        this.requestUserMouthInfo(VTubeStudioMessageType.MouthOpen);
+      }
+    }, 60);
   }
 
   private setupSocketHandlers() {
@@ -154,6 +209,11 @@ export class VTubeStudioService {
    * @private
    */
   private handleDefaultParams(data: { name: string, value: number }) {
+    // If TTS is playing ignore users mouth movement.
+    if (this.randomMouthInterval) {
+      return;
+    }
+
     const { name, value } = data;
 
     // We currently only care about default parameters.
@@ -227,12 +287,6 @@ export class VTubeStudioService {
       return;
     }
 
-    if (name === VTubeStudioMessageType.MouthSmile && !this.isMouthFormEnabled) {
-      return;
-    } else if (name === VTubeStudioMessageType.MouthOpen && !this.isMouthOpenEnabled) {
-      return;
-    }
-
     this.socket.send(
       JSON.stringify({
         ...this.vtsBasics,
@@ -284,13 +338,6 @@ export class VTubeStudioService {
 
     this.getParameterValues();
 
-    /**
-     * These intervals are for constantly requesting user mouth shape info so it can be sent to their model
-     * 60 is an arbitrary number for now.
-     */
-    setInterval(() => this.requestUserMouthInfo(VTubeStudioMessageType.MouthSmile), 60);
-    setInterval(() => this.requestUserMouthInfo(VTubeStudioMessageType.MouthOpen), 60);
-
     this.configService.updateVTSToken(this.vtsAuthToken);
   }
 
@@ -334,7 +381,9 @@ export class VTubeStudioService {
     const { readyState, CLOSED, CLOSING } = this.socket;
 
     if (!enabled || readyState === CLOSED || readyState === CLOSING) {
-      return clearInterval(this.randomMouthInterval);
+      clearInterval(this.randomMouthInterval);
+
+      return this.randomMouthInterval = undefined;
     }
 
     this.randomMouthInterval = setInterval(() => this.sendRandomMouthParams(), 150);
@@ -342,7 +391,7 @@ export class VTubeStudioService {
 
   private sendRandomMouthParams() {
     const mouthOpen = Math.random();
-    const mouthForm = Math.random() * 2 - 1;
+    const mouthForm = Math.random() * 1.5 - 1;
 
     this.socket.send(JSON.stringify({
       ...this.vtsBasics,
