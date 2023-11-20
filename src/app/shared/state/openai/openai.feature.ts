@@ -18,6 +18,10 @@ export interface GptSettingsState {
   apiToken: string;
   enabled: boolean;
   historyLimit: number;
+  temperature: number;
+  presencePenalty: number;
+  frequencyPenalty: number;
+  maxTokens: number;
 }
 
 export interface OpenAIState {
@@ -50,6 +54,10 @@ const initialState: OpenAIState = {
     apiToken: '',
     enabled: false,
     historyLimit: 10,
+    frequencyPenalty: 0,
+    presencePenalty: 0,
+    maxTokens: 100,
+    temperature: 1,
   },
 };
 

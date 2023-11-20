@@ -77,7 +77,6 @@ export class OpenAIService {
   }
 
   updatePersonality(personality: Partial<GptPersonalityState>) {
-    console.log(personality)
     this.store.dispatch(OpenAIActions.updatePersonality({ personality }));
   }
 
@@ -91,6 +90,7 @@ export class OpenAIService {
 
   async generateOpenAIResponse(user: string, text: string) {
     if (
+      !this.settings ||
       !this.chatSettings ||
       !this.openAIApi
     ) {
@@ -102,10 +102,10 @@ export class OpenAIService {
     try {
       const response = await this.openAIApi.createChatCompletion({
         model: 'gpt-3.5-turbo',
-        temperature: 1,
-        presence_penalty: 1,
-        frequency_penalty: 1,
-        max_tokens: 90,
+        temperature: this.settings.temperature,
+        presence_penalty: this.settings.presencePenalty,
+        frequency_penalty: this.settings.frequencyPenalty,
+        max_tokens: this.settings.maxTokens,
         messages: [
           ...this.systemLorePrompt,
           ...this.gptHistory,

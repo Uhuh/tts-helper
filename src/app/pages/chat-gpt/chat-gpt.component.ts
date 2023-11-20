@@ -28,10 +28,17 @@ export interface GptPersonalityFormGroup {
   styleUrls: ['./chat-gpt.component.scss'],
 })
 export class ChatGptComponent {
-  apiKey = new FormControl('', { nonNullable: true });
-  enable = new FormControl(false, { nonNullable: true });
-  history = new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(20)] });
   charLimit = new FormControl(300, { nonNullable: true, validators: [Validators.min(0)] });
+
+  settingsGroup = new FormGroup({
+    apiToken: new FormControl('', { nonNullable: true }),
+    enabled: new FormControl(false, { nonNullable: true }),
+    historyLimit: new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(20)] }),
+    presencePenalty: new FormControl(0, { nonNullable: true, validators: [Validators.min(-2), Validators.max(2)] }),
+    frequencyPenalty: new FormControl(0, { nonNullable: true, validators: [Validators.min(-2), Validators.max(2)] }),
+    maxTokens: new FormControl(100, { nonNullable: true, validators: [Validators.min(0)] }),
+    temperature: new FormControl(1, { nonNullable: true }),
+  });
 
   /**
    * These are to make the ChatGPT model a little more personal.
@@ -54,9 +61,7 @@ export class ChatGptComponent {
     this.openAIService.settings$
       .pipe(takeUntilDestroyed(), take(1))
       .subscribe(settings => {
-        this.apiKey.setValue(settings.apiToken, { emitEvent: false });
-        this.enable.setValue(settings.enabled, { emitEvent: false });
-        this.history.setValue(settings.historyLimit, { emitEvent: false });
+        this.settingsGroup.setValue(settings, { emitEvent: false });
       });
 
     this.openAIService.chatSettings$
@@ -69,21 +74,13 @@ export class ChatGptComponent {
       .pipe(takeUntilDestroyed())
       .subscribe(personality => this.openAIService.updatePersonality(personality));
 
-    this.enable.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(enabled => this.openAIService.updateSettings({ enabled }));
-
-    this.apiKey.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(apiToken => this.openAIService.updateSettings({ apiToken }));
+    this.settingsGroup.valueChanges
+      .pipe(takeUntilDestroyed(), filter(() => this.settingsGroup.valid))
+      .subscribe(settings => this.openAIService.updateSettings(settings));
 
     this.charLimit.valueChanges
       .pipe(takeUntilDestroyed(), filter(() => this.charLimit.valid))
       .subscribe(charLimit => this.openAIService.updateChatSettings({ charLimit }));
-
-    this.history.valueChanges
-      .pipe(takeUntilDestroyed(), filter(() => this.history.valid))
-      .subscribe(historyLimit => this.openAIService.updateSettings({ historyLimit }));
   }
 }
 

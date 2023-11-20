@@ -9,21 +9,21 @@
     <span>OpenAI charges your based on your usage. Set max spend limits and keep an eye on your usage as you utilize it.</span>
     <span>Use at your own risk.</span>
   </div>
-  
+
   <div class="header">
     <span>General Settings</span>
   </div>
-  
+
   <app-label-block>
     <div header>Enable ChatGPT</div>
     <div sub-text>If enabled, users can use chat commands and a redeem to trigger ChatGPT.</div>
-    <app-toggle [control]="enable"/>
+    <app-toggle [control]="settingsGroup.controls.enabled"/>
   </app-label-block>
 
   <app-label-block>
     <div header>API Key</div>
     <div sub-text>Generated API key. Never share this with anyone, and never expose it.</div>
-    <app-input [control]="apiKey" placeholder="Enter API Key." type="password"/>
+    <app-input [control]="settingsGroup.controls.apiToken" placeholder="Enter API Key." type="password"/>
   </app-label-block>
 
   <app-label-block>
@@ -35,17 +35,108 @@
   <app-label-block>
     <div header>Message History</div>
     <div sub-text>Helps ChatGPT respond better by using previous messages.</div>
-    <app-input [control]="history" type="number" [hasError]="history.errors !== null" />
+    <app-input [control]="settingsGroup.controls.historyLimit" type="number"
+               [hasError]="settingsGroup.controls.historyLimit.errors !== null"/>
     <mat-error>
-      @if (history.hasError('min')) {
+      @if (settingsGroup.controls.historyLimit.hasError('min')) {
         Cannot have a negative history count.
-      } @else if (history.hasError('max')) {
+      } @else if (settingsGroup.controls.historyLimit.hasError('max')) {
         Currently we recommend 20 messages in history at max.
       }
     </mat-error>
   </app-label-block>
-  
+
   <hr/>
+
+  <div class="header">
+    <span>Advanced Settings</span>
+  </div>
   
-  <app-gpt-personality [formGroup]="personalityGroup" />
+  <div class="warning">
+    <span>Tweaking these can result in unexpected generations.</span>
+    <span>Tweak the numbers and test it out!</span>
+  </div>
+
+  <app-label-block>
+    <div header>Frequency Penalty</div>
+    <div sub-text>Range of [-2.0, 2.0]. Positive values decrease the models likelihood to repeat the same line.</div>
+    <div sub-text>The recommended range is between [0.1, 1].</div>
+    <app-input
+      type="number"
+      placeholder="Enter a number between -2.0 and 2.0"
+      [control]="settingsGroup.controls.frequencyPenalty" 
+      [hasError]="settingsGroup.controls.frequencyPenalty.errors !== null"
+    />
+    <mat-error>
+      @if (settingsGroup.controls.frequencyPenalty.hasError('min')) {
+        Frequency penalty cannot be below -2.0
+      } @else if (settingsGroup.controls.frequencyPenalty.hasError('max')) {
+        Frequency penalty cannot be above 2.0
+      }
+    </mat-error>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Presence Penalty</div>
+    <div sub-text>Range of [-2.0, 2.0]. Positive values increase the models likelihood to talk about new topics.</div>
+    <app-input
+      type="number"
+      placeholder="Enter a number between -2.0 and 2.0"
+      [control]="settingsGroup.controls.presencePenalty"
+      [hasError]="settingsGroup.controls.presencePenalty.errors !== null"
+    />
+    <mat-error>
+      @if (settingsGroup.controls.presencePenalty.hasError('min')) {
+        Presence penalty cannot be below -2.0
+      } @else if (settingsGroup.controls.presencePenalty.hasError('max')) {
+        Presence penalty cannot be above 2.0
+      }
+    </mat-error>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Temperature</div>
+    <div sub-text>Range of [0, 2.0].</div>
+    <div sub-text>Higher values like 0.8 will make the output more random.</div>
+    <div sub-text>Lower values like 0.2 will make the output more focused and deterministic.</div>
+    <app-input
+      type="number"
+      placeholder="Enter a number between 0 and 2.0"
+      [control]="settingsGroup.controls.temperature"
+      [hasError]="settingsGroup.controls.temperature.errors !== null"
+    />
+    <mat-error>
+      @if (settingsGroup.controls.temperature.hasError('min')) {
+        Temperature cannot be below 0
+      } @else if (settingsGroup.controls.temperature.hasError('max')) {
+        Temperature cannot be above 2.0
+      }
+    </mat-error>
+  </app-label-block>
+
+  <div class="warning">
+    <span>OpenAI can and will generate text up to a limit and cut off if it reaches the max.</span>
+    <span>This can cause unnatural sounding cut offs.</span>
+  </div>
+  
+  <app-label-block>
+    <div header>Max Tokens</div>
+    <div sub-text>On average 1 token = 4 characters.</div>
+    <div sub-text>This can be a good way to limit responses size.</div>
+    <app-input
+      type="number"
+      placeholder="Enter how many tokens you wish to use in generation."
+      [control]="settingsGroup.controls.maxTokens"
+      [hasError]="settingsGroup.controls.maxTokens.errors !== null"
+    />
+    <mat-error>
+      @if (settingsGroup.controls.maxTokens.hasError('min')) {
+        You can't have negative max tokens.
+      }
+    </mat-error>
+  </app-label-block>
+
+  <hr/>
+
+  <app-gpt-personality [formGroup]="personalityGroup"/>
 </div>
