@@ -57,24 +57,6 @@ export interface ChatState {
 export interface GeneralChatState extends ChatState {
 }
 
-export interface GptChatState extends ChatState {
-}
-
-export interface GptPersonalityState {
-  streamersIdentity: string;
-  streamerModelRelation: string;
-  streamersThoughtsOnModel: string;
-  modelsIdentity: string;
-  modelsCoreIdentity: string;
-  modelsBackground: string;
-}
-
-export interface GptSettingsState {
-  apiToken: string;
-  enabled: boolean;
-  historyLimit: number;
-}
-
 export type AuthTokens = {
   vtsAuthToken: string;
 };
@@ -88,9 +70,6 @@ export interface ConfigState {
   // The delay in SECONDS. This will be converted to miliseconds when sent to rust.
   audioDelay: number;
   generalChat: GeneralChatState;
-  gptChat: GptChatState;
-  gptPersonality: GptPersonalityState;
-  gptSettings: GptSettingsState;
   streamElements: StreamElementsData;
   ttsMonster: TtsMonsterData;
   amazonPolly: AmazonPollyData;
@@ -128,24 +107,6 @@ export const initialState: ConfigState = {
     vtsAuthToken: '',
   },
   generalChat: defaultChatState,
-  gptChat: {
-    ...defaultChatState,
-    command: '!ask',
-    charLimit: 999,
-  },
-  gptPersonality: {
-    modelsBackground: '',
-    modelsCoreIdentity: '',
-    streamersThoughtsOnModel: '',
-    modelsIdentity: '',
-    streamerModelRelation: '',
-    streamersIdentity: '',
-  },
-  gptSettings: {
-    apiToken: '',
-    enabled: false,
-    historyLimit: 10,
-  },
   ttsMonster: {
     overlay: '',
     userId: '',
@@ -178,37 +139,6 @@ export const ConfigFeature = createFeature({
     on(GlobalConfigActions.updateState, (state, { configState }) => ({
       ...state,
       ...configState,
-    })),
-    on(GlobalConfigActions.updateGPTPersonality, (state, { gptPersonality }) => ({
-      ...state,
-      gptPersonality: {
-        ...state.gptPersonality,
-        ...gptPersonality,
-      },
-    })),
-    on(GlobalConfigActions.updateGPTSettings, (state, { gptSettings }) => ({
-      ...state,
-      gptSettings: {
-        ...state.gptSettings,
-        ...gptSettings,
-      },
-    })),
-    on(GlobalConfigActions.updateGPTChat, (state, { gptChat }) => ({
-      ...state,
-      gptChat: {
-        ...state.gptChat,
-        ...gptChat,
-      },
-    })),
-    on(GlobalConfigActions.updateGPTChatPermissions, (state, { permissions }) => ({
-      ...state,
-      gptChat: {
-        ...state.gptChat,
-        permissions: {
-          ...state.gptChat.permissions,
-          ...permissions,
-        },
-      },
     })),
     on(GlobalConfigActions.updateGeneralChatPermissions, (state, { permissions }) => ({
       ...state,
@@ -294,19 +224,10 @@ export const ConfigFeature = createFeature({
   ),
   extraSelectors: ({
     selectBannedWords,
-    selectGptSettings,
   }) => ({
     selectBannedWordsLength: createSelector(
       selectBannedWords,
       (bannedWords) => bannedWords.length,
-    ),
-    selectGptToken: createSelector(
-      selectGptSettings,
-      (gptSettings) => gptSettings.apiToken,
-    ),
-    selectGptEnabled: createSelector(
-      selectGptSettings,
-      (gptSettings) => gptSettings.enabled,
     ),
   }),
 });

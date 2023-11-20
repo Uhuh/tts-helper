@@ -1,53 +1,62 @@
 ﻿import { Injectable } from '@angular/core';
 import { AudioService } from './audio.service';
-import { ConfigService } from './config.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { GptChatState, GptPersonalityState, GptSettingsState } from '../state/config/config.feature';
 import { Configuration, OpenAIApi } from 'openai';
 import { loreTemplateGenerator } from '../util/lore';
 import { LogService } from './logs.service';
+import { Store } from '@ngrx/store';
+import { GptChatState, GptPersonalityState, GptSettingsState, OpenAIFeature } from '../state/openai/openai.feature';
+import { ChatPermissions } from '../state/config/config.feature';
+import { OpenAIActions } from '../state/openai/openai.actions';
 
 @Injectable({
   providedIn: 'root',
 })
-export class OpenaiService {
-  gptChat?: GptChatState;
-  gptSettings?: GptSettingsState;
-  gptPersonality?: GptPersonalityState;
+export class OpenAIService {
+  public readonly state$ = this.store.select(OpenAIFeature.selectOpenAIFeatureState);
+  public readonly chatSettings$ = this.store.select(OpenAIFeature.selectChatSettings);
+  public readonly settings$ = this.store.select(OpenAIFeature.selectSettings);
+  public readonly personality$ = this.store.select(OpenAIFeature.selectPersonality);
+  public readonly token$ = this.store.select(OpenAIFeature.selectToken);
+  public readonly enabled$ = this.store.select(OpenAIFeature.selectEnabled);
+
+  chatSettings?: GptChatState;
+  settings?: GptSettingsState;
+  personality?: GptPersonalityState;
   gptHistory: { role: 'user' | 'assistant', content: string }[] = [];
 
   apiKey = '';
-  chatLore: { role: 'system', content: string }[] = [];
+  systemLorePrompt: { role: 'system', content: string }[] = [];
   chatGptConfig?: Configuration;
-  chatGptApi?: OpenAIApi;
+  openAIApi?: OpenAIApi;
 
   constructor(
+    private readonly store: Store,
     private readonly audioService: AudioService,
-    private readonly configService: ConfigService,
     private readonly logService: LogService,
   ) {
-    this.configService.gptChat$
+    this.chatSettings$
       .pipe(takeUntilDestroyed())
-      .subscribe(gptChat => this.gptChat = gptChat);
+      .subscribe(chatSettings => this.chatSettings = chatSettings);
 
-    this.configService.gptPersonality$
+    this.personality$
       .pipe(takeUntilDestroyed())
-      .subscribe(gptPersonality => this.gptPersonality = gptPersonality);
+      .subscribe(personality => this.personality = personality);
 
-    this.configService.gptSettings$
+    this.settings$
       .pipe(takeUntilDestroyed())
-      .subscribe(gptSettings => this.gptSettings = gptSettings);
+      .subscribe(settings => this.settings = settings);
 
-    this.configService.gptPersonality$
+    this.personality$
       .pipe(takeUntilDestroyed())
       .subscribe(personality => {
-        this.chatLore = [{
+        this.systemLorePrompt = [{
           role: 'system',
           content: loreTemplateGenerator(personality),
         }];
       });
 
-    this.configService.gptToken$
+    this.token$
       .pipe(takeUntilDestroyed())
       .subscribe(apiKey => {
         if (!apiKey) {
@@ -57,27 +66,48 @@ export class OpenaiService {
         this.apiKey = apiKey;
 
         this.chatGptConfig = new Configuration({ apiKey });
-        this.chatGptApi = new OpenAIApi(this.chatGptConfig);
+        this.openAIApi = new OpenAIApi(this.chatGptConfig);
 
         this.logService.add('Configuring OpenAI API', 'info', 'OpenAIService.constructor');
       });
   }
 
-  async gptHandler(user: string, text: string) {
+  updateChatPermissions(permissions: Partial<ChatPermissions>) {
+    this.store.dispatch(OpenAIActions.updateChatPermissions({ permissions }));
+  }
+
+  updatePersonality(personality: Partial<GptPersonalityState>) {
+    console.log(personality)
+    this.store.dispatch(OpenAIActions.updatePersonality({ personality }));
+  }
+
+  updateSettings(settings: Partial<GptSettingsState>) {
+    this.store.dispatch(OpenAIActions.updateSettings({ settings }));
+  }
+
+  updateChatSettings(chatSettings: Partial<GptChatState>) {
+    this.store.dispatch(OpenAIActions.updateChatSettings({ chatSettings }));
+  }
+
+  async generateOpenAIResponse(user: string, text: string) {
     if (
-      !this.gptChat ||
-      !this.chatGptApi
+      !this.chatSettings ||
+      !this.openAIApi
     ) {
       return;
     }
 
-    const trimmedText = text.substring(this.gptChat.command.length).trim();
+    const trimmedText = text.substring(this.chatSettings.command.length).trim();
     const content = `${user} says "${trimmedText}"`;
     try {
-      const response = await this.chatGptApi.createChatCompletion({
+      const response = await this.openAIApi.createChatCompletion({
         model: 'gpt-3.5-turbo',
+        temperature: 1,
+        presence_penalty: 1,
+        frequency_penalty: 1,
+        max_tokens: 90,
         messages: [
-          ...this.chatLore,
+          ...this.systemLorePrompt,
           ...this.gptHistory,
           {
             role: 'user',
@@ -102,14 +132,14 @@ export class OpenaiService {
       });
 
       // Continue to slice the history to save the user tokens when making request.
-      this.gptHistory = this.gptHistory.slice(-1 * (this.gptSettings?.historyLimit ?? 0));
+      this.gptHistory = this.gptHistory.slice(-1 * (this.settings?.historyLimit ?? 0));
 
-      this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.gptChat.charLimit);
+      this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.chatSettings.charLimit);
     } catch (e) {
       this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(e, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
 
       // Anytime OpenAI might have API issues just respond with this.
-      this.audioService.playTts('My brain is all fuzzy...', 'ChatGPT', 'gpt', this.gptChat.charLimit);
+      this.audioService.playTts('My brain is all fuzzy...', 'ChatGPT', 'gpt', this.chatSettings.charLimit);
     }
   }
 }

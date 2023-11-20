@@ -5,12 +5,12 @@ import { debounceTime, map } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
-import { ConfigService } from '../../../shared/services/config.service';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { SelectorComponent } from '../../../shared/components/selector/selector.component';
 import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.component';
 import { AsyncPipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
+import { OpenAIService } from '../../../shared/services/openai.service';
 
 @Component({
   selector: 'app-redeems',
@@ -37,7 +37,7 @@ export class RedeemsComponent {
     }),
   });
 
-  gptEnabled = toSignal(this.configService.gptEnabled$);
+  gptEnabled = toSignal(this.openAIService.enabled$);
 
   redeems$ = this.twitchService.redeems$;
   redeemOptions$ = this.twitchService.redeems$
@@ -46,7 +46,7 @@ export class RedeemsComponent {
       map(redeems => redeems.map<TTSOption>(r => ({ displayName: r.title, value: r.id })))
     );
 
-  constructor(private readonly twitchService: TwitchService, private readonly configService: ConfigService) {
+  constructor(private readonly twitchService: TwitchService, private readonly openAIService: OpenAIService) {
     this.twitchService.redeemInfo$
       .pipe(takeUntilDestroyed())
       .subscribe((redeemInfo) => {

@@ -27,6 +27,7 @@ import { TwitchApi } from './app/shared/api/twitch/twitch.api';
 import { ElevenLabsApi } from './app/shared/api/eleven-labs/eleven-labs.api';
 import { webSocket } from 'rxjs/webSocket';
 import { VTubeStudioFeature } from './app/shared/state/vtubestudio/vtubestudio.feature.';
+import { OpenAIFeature } from './app/shared/state/openai/openai.feature';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -37,6 +38,7 @@ bootstrapApplication(AppComponent, {
       StoreModule.forFeature(AzureFeature),
       StoreModule.forFeature(ConfigFeature),
       StoreModule.forFeature(ElevenLabsFeature),
+      StoreModule.forFeature(OpenAIFeature),
       StoreModule.forFeature(TwitchFeature),
       StoreModule.forFeature(VTubeStudioFeature),
       MatSnackBarModule,

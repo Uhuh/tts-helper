@@ -3,11 +3,8 @@ import { Store } from '@ngrx/store';
 import {
   AmazonPollyData,
   ChatPermissions,
-  ChatState,
   ConfigFeature,
   GeneralChatState,
-  GptPersonalityState,
-  GptSettingsState,
   StreamElementsData,
   TtsType,
 } from '../state/config/config.feature';
@@ -16,7 +13,7 @@ import { PlaybackService } from './playback.service';
 
 @Injectable()
 export class ConfigService {
-  public readonly configState$ = this.store.select(ConfigFeature.selectGlobalConfigState);
+  public readonly state$ = this.store.select(ConfigFeature.selectGlobalConfigState);
   public readonly streamElements$ = this.store.select(ConfigFeature.selectStreamElements);
   public readonly ttsMonster$ = this.store.select(ConfigFeature.selectTtsMonster);
   public readonly amazonPolly$ = this.store.select(ConfigFeature.selectAmazonPolly);
@@ -27,11 +24,6 @@ export class ConfigService {
   public readonly configUrl$ = this.store.select(ConfigFeature.selectUrl);
   public readonly bannedWords$ = this.store.select(ConfigFeature.selectBannedWords);
   public readonly generalChat$ = this.store.select(ConfigFeature.selectGeneralChat);
-  public readonly gptEnabled$ = this.store.select(ConfigFeature.selectGptEnabled);
-  public readonly gptChat$ = this.store.select(ConfigFeature.selectGptChat);
-  public readonly gptPersonality$ = this.store.select(ConfigFeature.selectGptPersonality);
-  public readonly gptSettings$ = this.store.select(ConfigFeature.selectGptSettings);
-  public readonly gptToken$ = this.store.select(ConfigFeature.selectGptToken);
   public readonly authTokens$ = this.store.select(ConfigFeature.selectAuthTokens);
   public readonly audioDelay$ = this.store.select(ConfigFeature.selectAudioDelay);
 
@@ -53,31 +45,12 @@ export class ConfigService {
     this.store.dispatch(GlobalConfigActions.updateBannedWords({ bannedWords: words }));
   }
 
-  updateGptPersonality(gptPersonality: Partial<GptPersonalityState>) {
-    this.store.dispatch(GlobalConfigActions.updateGPTPersonality({ gptPersonality }));
-  }
-
-  updateGptSettings(gptSettings: Partial<GptSettingsState>) {
-    this.store.dispatch(GlobalConfigActions.updateGPTSettings({ gptSettings }));
-  }
-
-  updateGptChat(gptChat: Partial<ChatState>) {
-    this.store.dispatch(GlobalConfigActions.updateGPTChat({ gptChat }));
-  }
-
   updateGeneralChat(generalChat: Partial<GeneralChatState>) {
     this.store.dispatch(GlobalConfigActions.updateGeneralChat({ generalChat }));
   }
 
-  updateChatPermissions(permissions: Partial<ChatPermissions>, system: 'gpt' | 'general') {
-    switch (system) {
-      case 'gpt':
-        this.store.dispatch(GlobalConfigActions.updateGPTChatPermissions({ permissions }));
-        break;
-      case 'general':
-        this.store.dispatch(GlobalConfigActions.updateGeneralChatPermissions({ permissions }));
-        break;
-    }
+  updateChatPermissions(permissions: Partial<ChatPermissions>) {
+    this.store.dispatch(GlobalConfigActions.updateGeneralChatPermissions({ permissions }));
   }
 
   updateStreamElements(streamElements: Partial<StreamElementsData>) {

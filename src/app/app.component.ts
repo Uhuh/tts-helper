@@ -22,6 +22,9 @@ import { ElevenLabsState } from './shared/state/eleven-labs/eleven-labs.feature'
 import { ElevenLabsActions } from './shared/state/eleven-labs/eleven-labs.actions';
 import { VTubeStudioState } from './shared/state/vtubestudio/vtubestudio.feature.';
 import { VTubeStudioActions } from './shared/state/vtubestudio/vtubestudio.actions';
+import { OpenAIService } from './shared/services/openai.service';
+import { OpenAIState } from './shared/state/openai/openai.feature';
+import { OpenAIActions } from './shared/state/openai/openai.actions';
 
 @Component({
   selector: 'app-root',
@@ -41,23 +44,26 @@ export class AppComponent {
     private readonly store: Store,
     private readonly azureService: AzureSttService,
     private readonly elevenLabsService: ElevenLabsService,
-    private readonly twitchPubSub: TwitchPubSub,
     private readonly configService: ConfigService,
-    private readonly twitchService: TwitchService,
-    private readonly storageService: StorageService,
+    private readonly openAIService: OpenAIService,
     private readonly playbackService: PlaybackService,
+    private readonly storageService: StorageService,
+    private readonly twitchPubSub: TwitchPubSub,
+    private readonly twitchService: TwitchService,
     private readonly vtubeStudioService: VTubeStudioService,
   ) {
     combineLatest([
       this.storageService.getFromStore<ConfigState>(this.settingsLocation, 'config'),
+      this.storageService.getFromStore<OpenAIState>(this.settingsLocation, 'openai'),
       this.storageService.getFromStore<TwitchState>(this.settingsLocation, 'twitch'),
       this.storageService.getFromStore<AzureState>(this.settingsLocation, 'azure'),
       this.storageService.getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs'),
       this.storageService.getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio'),
     ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([config, twitch, azure, elevenLabs, vtubeStudio]) => {
+      .subscribe(([config, openai, twitch, azure, elevenLabs, vtubeStudio]) => {
         this.handleGlobalData(config);
+        this.handleOpenAIData(openai);
         this.handleTwitchData(twitch);
         this.handleAzureData(azure);
         this.handleElevenLabsData(elevenLabs);
@@ -69,13 +75,13 @@ export class AppComponent {
      * Debounce to ignore multi updates so it can save "less" times than needed
      */
 
-    this.configService.configState$
+    this.configService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe((state) => {
         this.storageService.saveToStore(this.settingsLocation, 'config', state);
       });
 
-    this.twitchService.twitchState$
+    this.twitchService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe((state) => {
         this.storageService.saveToStore(this.settingsLocation, 'twitch', state);
@@ -98,6 +104,12 @@ export class AppComponent {
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'vtube-studio', state);
       });
+
+    this.openAIService.state$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => {
+        this.storageService.saveToStore(this.settingsLocation, 'openai', state);
+      });
   }
 
   handleGlobalData(data: { value: ConfigState } | null) {
@@ -111,6 +123,16 @@ export class AppComponent {
 
     this.store.dispatch(
       GlobalConfigActions.updateState({ configState: data.value }),
+    );
+  }
+
+  handleOpenAIData(data: { value: OpenAIState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.store.dispatch(
+      OpenAIActions.updateState({ openAIState: data.value }),
     );
   }
 

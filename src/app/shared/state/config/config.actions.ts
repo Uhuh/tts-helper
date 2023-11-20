@@ -5,9 +5,6 @@ import {
   ChatPermissions,
   ConfigState,
   GeneralChatState,
-  GptChatState,
-  GptPersonalityState,
-  GptSettingsState,
   StreamElementsData,
   TtsType,
 } from './config.feature';
@@ -17,9 +14,6 @@ export const GlobalConfigActions = createActionGroup({
   events: {
     'Update State': props<{ configState: ConfigState }>(),
     'Update Tokens': props<{ tokens: Partial<AuthTokens> }>(),
-    'Update GPT Personality': props<{ gptPersonality: Partial<GptPersonalityState> }>(),
-    'Update GPT Settings': props<{ gptSettings: Partial<GptSettingsState> }>(),
-    'Update GPT Chat': props<{ gptChat: Partial<GptChatState> }>(),
     'Update GPT Chat Permissions': props<{ permissions: Partial<ChatPermissions> }>(),
     'Update General Chat': props<{ generalChat: Partial<GeneralChatState> }>(),
     'Update General Chat Permissions': props<{ permissions: Partial<ChatPermissions> }>(),
