@@ -76,7 +76,15 @@ export class ChatGptComponent {
 
     this.settingsGroup.valueChanges
       .pipe(takeUntilDestroyed(), filter(() => this.settingsGroup.valid))
-      .subscribe(settings => this.openAIService.updateSettings(settings));
+      .subscribe(settings => this.openAIService.updateSettings({
+        ...settings,
+        // Maybe I should look into material inputs so they can handle the conversions for me.
+        presencePenalty: Number(settings.presencePenalty),
+        temperature: Number(settings.temperature),
+        frequencyPenalty: Number(settings.frequencyPenalty),
+        historyLimit: Number(settings.historyLimit),
+        maxTokens: Number(settings.maxTokens),
+      }));
 
     this.charLimit.valueChanges
       .pipe(takeUntilDestroyed(), filter(() => this.charLimit.valid))
