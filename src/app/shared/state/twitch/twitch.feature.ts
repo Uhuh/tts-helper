@@ -41,11 +41,16 @@ export interface TwitchSubState {
   subCharacterLimit: number;
 }
 
+export interface TwitchSettingsState {
+  randomChance: number;
+}
+
 export interface TwitchState {
   token: string | null;
   isTokenValid: boolean;
-  subsInfo: TwitchSubState;
   channelInfo: TwitchChannelInfo;
+  settings: TwitchSettingsState;
+  subsInfo: TwitchSubState;
   bitInfo: TwitchBitState;
   redeemInfo: TwitchRedeemState;
 }
@@ -53,6 +58,9 @@ export interface TwitchState {
 const initialState: TwitchState = {
   token: null,
   isTokenValid: false,
+  settings: {
+    randomChance: 0,
+  },
   subsInfo: {
     enabled: true,
     giftMessage: '',
@@ -86,6 +94,13 @@ export const TwitchFeature = createFeature({
       ...twitchState,
       channelInfo: {
         ...twitchState.channelInfo,
+      },
+    })),
+    on(TwitchStateActions.updateSettings, (state, { partialState }) => ({
+      ...state,
+      settings: {
+        ...state.settings,
+        ...partialState,
       },
     })),
     on(TwitchStateActions.updateToken, (state, { token }) => ({

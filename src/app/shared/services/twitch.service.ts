@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
-import { TwitchFeature, TwitchRedeemState, ValidUser } from '../state/twitch/twitch.feature';
+import { TwitchFeature, TwitchRedeemState, TwitchSettingsState, ValidUser } from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LogService } from './logs.service';
@@ -17,6 +17,7 @@ export class TwitchService implements OnDestroy {
   public readonly redeems$ = this.store.select(TwitchFeature.selectRedeems);
   public readonly isTokenValid$ = this.store.select(TwitchFeature.selectIsTokenValid);
   public readonly channelInfo$ = this.store.select(TwitchFeature.selectChannelInfo);
+  public readonly settings$ = this.store.select(TwitchFeature.selectSettings);
 
   public readonly subsInfo$ = this.store.select(TwitchFeature.selectSubsInfo);
   public readonly redeemInfo$ = this.store.select(TwitchFeature.selectRedeemInfo);
@@ -126,6 +127,10 @@ export class TwitchService implements OnDestroy {
           console.error(`Failed to log user in.`, e);
         },
       });
+  }
+
+  updateSettings(partialState: Partial<TwitchSettingsState>) {
+    this.store.dispatch(TwitchStateActions.updateSettings({ partialState }));
   }
 
   updateRedeemInfo(redeemInfo: Partial<TwitchRedeemState>) {

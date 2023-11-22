@@ -23,6 +23,8 @@ import { LogService } from './logs.service';
 import { combineLatest, map } from 'rxjs';
 import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsService } from './eleven-labs.service';
+import { TwitchSettingsState } from '../state/twitch/twitch.feature';
+import { TwitchService } from './twitch.service';
 
 @Injectable()
 export class AudioService {
@@ -38,6 +40,7 @@ export class AudioService {
   amazonPolly!: AmazonPollyData;
   tikTok!: TikTokData;
   elevenLabs!: ElevenLabsState;
+  twitchSettings!: TwitchSettingsState;
 
   constructor(
     private readonly store: Store,
@@ -45,6 +48,7 @@ export class AudioService {
     private readonly snackbar: MatSnackBar,
     private readonly playback: PlaybackService,
     private readonly elevenLabsService: ElevenLabsService,
+    private readonly twitchService: TwitchService,
     private readonly logService: LogService,
   ) {
 
@@ -64,6 +68,10 @@ export class AudioService {
         this.amazonPolly = amazonPolly;
         this.tikTok = tikTok;
       });
+
+    this.twitchService.settings$
+      .pipe(takeUntilDestroyed())
+      .subscribe(settings => this.twitchSettings = settings);
 
     this.elevenLabsService.state$
       .pipe(takeUntilDestroyed())
@@ -117,7 +125,6 @@ export class AudioService {
         this.logService.add(`Played TTS.\n${JSON.stringify({
           ...data,
           username,
-          audioText,
           charLimit,
         }, null, 1)}`, 'info', 'AudioService.playTts');
 
