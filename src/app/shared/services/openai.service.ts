@@ -88,7 +88,7 @@ export class OpenAIService {
     this.store.dispatch(OpenAIActions.updateChatSettings({ chatSettings }));
   }
 
-  async generateOpenAIResponse(user: string, text: string) {
+  async generateOpenAIResponse(user: string, text: string, isCommand = false) {
     if (
       !this.settings ||
       !this.chatSettings ||
@@ -97,7 +97,9 @@ export class OpenAIService {
       return;
     }
 
-    const trimmedText = text.substring(this.chatSettings.command.length).trim();
+    this.logService.add(`Attempting to generate OpenAI content.`, 'info', 'OpenAI.generateOpenAIResponse');
+
+    const trimmedText = isCommand ? text.substring(this.chatSettings.command.length).trim() : text;
     const content = `${user} says "${trimmedText}"`;
     try {
       const response = await this.openAIApi.createChatCompletion({
@@ -116,12 +118,17 @@ export class OpenAIService {
         ],
       });
 
+      // Usage for stats alter
+      const { usage } = response.data;
+
       const { message } = response.data.choices[0];
 
       if (!message || !message.content) {
         this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(message, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
         return console.info('OpenAI failed to respond.');
       }
+
+      this.logService.add(`Generated response: ${message.content}.`, 'info', 'OpenAI.generateOpenAIResponse');
 
       this.gptHistory.push({
         role: 'user',
