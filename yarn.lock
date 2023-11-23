@@ -2354,6 +2354,11 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
+"@ctrl/tinycolor@^3.6.0":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.6.1.tgz#b6c75a56a1947cc916ea058772d666a2c8932f31"
+  integrity sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==
+
 "@d-fischer/cache-decorators@^3.0.0":
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@d-fischer/cache-decorators/-/cache-decorators-3.0.3.tgz#3eb77680181c8847ce397cf540035372f00f54e0"
@@ -7823,6 +7828,11 @@ make-fetch-happen@^13.0.0:
     promise-retry "^2.0.1"
     ssri "^10.0.0"
 
+material-colors@^1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/material-colors/-/material-colors-1.2.6.tgz#6d1958871126992ceecc72f4bcc4d8f010865f46"
+  integrity sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==
+
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
@@ -8119,6 +8129,15 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+ngx-color@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-color/-/ngx-color-9.0.0.tgz#7e58da081a3563c53607fc10090a61cfa27eaffc"
+  integrity sha512-zyAFux+FRI4cACZ7g8DQQsBbNMhqmFkhtUPaxhkiVHhPzWU1iqXP8MqWH6By3guNOCch5oYrYNBWlHToklbdDg==
+  dependencies:
+    "@ctrl/tinycolor" "^3.6.0"
+    material-colors "^1.2.6"
+    tslib "^2.3.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"
