@@ -25,6 +25,7 @@ import { VTubeStudioActions } from './shared/state/vtubestudio/vtubestudio.actio
 import { OpenAIService } from './shared/services/openai.service';
 import { OpenAIState } from './shared/state/openai/openai.feature';
 import { OpenAIActions } from './shared/state/openai/openai.actions';
+import { ObsWebSocketService } from './shared/services/obs-websocket.service';
 
 @Component({
   selector: 'app-root',
@@ -46,6 +47,7 @@ export class AppComponent {
     private readonly elevenLabsService: ElevenLabsService,
     private readonly configService: ConfigService,
     private readonly openAIService: OpenAIService,
+    private readonly obsSocketService: ObsWebSocketService,
     private readonly playbackService: PlaybackService,
     private readonly storageService: StorageService,
     private readonly twitchPubSub: TwitchPubSub,
@@ -120,6 +122,9 @@ export class AppComponent {
     // Setup user audio device and volume on startup.
     this.playbackService.setOutputDevice(data.value.audioDevice);
     this.playbackService.setVolumeLevel(data.value.deviceVolume);
+    this.playbackService.setPlaybackState({
+      endDelay: data.value.audioDelay * 1000,
+    });
 
     this.store.dispatch(
       GlobalConfigActions.updateState({ configState: data.value }),

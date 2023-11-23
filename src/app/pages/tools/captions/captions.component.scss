@@ -1,0 +1,15 @@
+:host {
+  display: contents;
+}
+
+.color-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+app-label-block app-input[type=number] {
+  position: absolute;
+  width: fit-content;
+  right: 0;
+}
