@@ -43,7 +43,11 @@ export const routes: Routes = [
   },
   {
     path: 'logs',
-    loadComponent: () => import('./pages/user-logs/user-logs.component')
+    loadComponent: () => import('./pages/user-logs/user-logs.component'),
+  },
+  {
+    path: 'tools',
+    loadComponent: () => import('./pages/tools/tools.component'),
   },
   {
     path: '',

@@ -104,6 +104,15 @@
         <mat-icon class="tts-icon">description</mat-icon>
         <span>Logs</span>
       </a>
+      <a
+        class="nav-link"
+        [routerLink]="['tools']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
+        <mat-icon class="tts-icon">construction</mat-icon>
+        <span>Tools</span>
+      </a>
     </div>
   </div>
   <div class="version">v{{ appVersion }}</div>
