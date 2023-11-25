@@ -391,7 +391,7 @@ export class VTubeStudioService {
 
   private sendRandomMouthParams() {
     const mouthOpen = Math.random();
-    const mouthForm = Math.random() * 1.5 - 1;
+    const mouthForm = 0.5;
 
     this.socket.send(JSON.stringify({
       ...this.vtsBasics,
