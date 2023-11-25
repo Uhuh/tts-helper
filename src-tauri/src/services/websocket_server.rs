@@ -1,79 +1,63 @@
-use std::net::Ipv4Addr;
-use std::sync::Arc;
+use std::{collections::HashMap, net::SocketAddr, sync::{Arc, Mutex}};
 
-use axum::{routing::get, Router, Server};
-use axum::extract::State;
-use axum::extract::ws::{WebSocket, WebSocketUpgrade};
-use axum::response::{Response, IntoResponse};
-use tokio::runtime::Builder;
-use tokio::sync::broadcast;
-use tracing::{error, instrument};
-use futures::{sink::SinkExt, stream::StreamExt};
+use futures_channel::mpsc::{unbounded, UnboundedSender};
+use futures_util::{future, pin_mut, StreamExt, TryStreamExt};
+use tokio::net::{TcpListener, TcpStream};
+use tokio_tungstenite::tungstenite::protocol::Message;
 
-struct AppState {
-    tx: broadcast::Sender<String>,
-}
+type Tx = UnboundedSender<Message>;
+type PeerMap = Arc<Mutex<HashMap<SocketAddr, Tx>>>;
 
+pub async fn start_ws_server(port: &str) {
+    let addr = format!("127.0.0.1:{port}");
 
-/// Runs the auth server, which listens on `http://localhost:12583/auth`. It expects to receive the
-/// access token as a hash fragment in the URL, and then sends it to the app via a global event.
-#[instrument(skip_all)]
-pub fn run_websocket_server() {
-    fn run_server_inner() -> anyhow::Result<()> {
-        let rt = Builder::new_current_thread().enable_all().build()?;
-        rt.block_on(listen())
-    }
+    let state = PeerMap::new(Mutex::new(HashMap::new()));
 
-    if let Err(error) = run_server_inner() {
-        error!(?error, "error while running oauth server: {error}");
+    // Create the event loop and TCP listener we'll accept connections on.
+    let try_socket = TcpListener::bind(&addr).await;
+    let listener = try_socket.expect("Failed to bind");
+    println!("Listening on: {}", addr);
+
+    // Let's spawn the handling of each connection in a separate task.
+    while let Ok((stream, addr)) = listener.accept().await {
+        tokio::spawn(handle_connection(state.clone(), stream, addr));
     }
 }
 
-async fn handler(ws: WebSocketUpgrade, State(state): State<Arc<AppState>>) -> Response {
-    ws.on_upgrade(|socket| handle_socket(socket, state))
-}
+async fn handle_connection(peer_map: PeerMap, raw_stream: TcpStream, addr: SocketAddr) {
+    println!("Incoming TCP connection from: {}", addr);
 
-async fn handle_socket(mut socket: WebSocket, state: Arc<AppState>) {
-    let (mut sender, mut receiver) = socket.split();
+    let ws_stream = tokio_tungstenite::accept_async(raw_stream)
+        .await
+        .expect("Error during the websocket handshake occurred");
+    println!("WebSocket connection established: {}", addr);
 
-    while let Some(msg) = receiver.recv().await {
-        let msg = if let Ok(msg) = msg {
-            println!("{:?}", msg);
-            msg
-        } else {
-            // client disconnected
-            return;
-        };
+    // Insert the write part of this peer to the peer map.
+    let (tx, rx) = unbounded();
+    peer_map.lock().unwrap().insert(addr, tx);
 
-        if sender.send(msg).await.is_err() {
-            // client disconnected
-            return;
+    let (outgoing, incoming) = ws_stream.split();
+
+    let broadcast_incoming = incoming.try_for_each(|msg| {
+        println!("Received a message from {}: {}", addr, msg.to_text().unwrap());
+        let peers = peer_map.lock().unwrap();
+
+        // We want to broadcast the message to everyone except ourselves.
+        let broadcast_recipients =
+            peers.iter().filter(|(peer_addr, _)| peer_addr != &&addr).map(|(_, ws_sink)| ws_sink);
+
+        for recp in broadcast_recipients {
+            recp.unbounded_send(msg.clone()).unwrap();
         }
-    }
 
-    let mut rx = state.tx.subscribe();
+        future::ok(())
+    });
 
-    let msg = format!("Hello world");
-    tracing::debug!("{msg}");
+    let receive_from_others = rx.map(Ok).forward(outgoing);
 
-    let _ = state.tx.send(msg);
-}
+    pin_mut!(broadcast_incoming, receive_from_others);
+    future::select(broadcast_incoming, receive_from_others).await;
 
-async fn listen() -> anyhow::Result<()> {
-    let (tx, _rx) = broadcast::channel(5);
-
-    let app_state = Arc::new(AppState { tx });
-    
-    // Create app
-    let app = Router::new()
-        .route("/ws", get(handler))
-        .with_state(app_state);
-
-    // Run server
-    const PORT: u16 = 12683;
-    Server::bind(&(Ipv4Addr::UNSPECIFIED, PORT).into())
-        .serve(app.into_make_service())
-        .await?;
-
-    Ok(())
+    println!("{} disconnected", &addr);
+    peer_map.lock().unwrap().remove(&addr);
 }
