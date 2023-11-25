@@ -13,3 +13,8 @@ app-label-block app-input[type=number] {
   width: fit-content;
   right: 0;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}

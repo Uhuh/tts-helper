@@ -1,5 +1,10 @@
 <div class="header">
   <span>Captions</span>
+  <app-button
+    (click)="downloadCaptions()"
+  >
+    Download Captions
+  </app-button>
 </div>
 
 <div
@@ -22,9 +27,19 @@
 </div>
 
 <app-label-block>
+  <div header>Max width</div>
+  <div sub-text>Set a max width to handle text wrapping.</div>
+  <app-input 
+    placeholder="Enter the max width"
+    type="number"
+    [control]="maxWidthControl"
+  />
+</app-label-block>
+
+<app-label-block>
   <div header>Font size</div>
   <div sub-text>How large the font is.</div>
-  <app-input 
+  <app-input
     placeholder="Enter the font size"
     type="number"
     [control]="fontSizeControl"

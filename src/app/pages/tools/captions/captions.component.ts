@@ -7,33 +7,37 @@ import { ColorEvent } from 'ngx-color';
 import { FormControl } from '@angular/forms';
 import { TwitchService } from '../../../shared/services/twitch.service';
 import { BorderString, captionsGenerator, PixelString, RGBAString } from './assets/captions';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-captions',
   standalone: true,
-  imports: [CommonModule, LabelBlockComponent, InputComponent, ColorChromeModule],
+  imports: [CommonModule, LabelBlockComponent, InputComponent, ColorChromeModule, ButtonComponent],
   templateUrl: './captions.component.html',
   styleUrl: './captions.component.scss',
 })
 export class CaptionsComponent {
+  maxWidthControl = new FormControl(300, { nonNullable: true });
   fontSizeControl = new FormControl(16, { nonNullable: true });
   borderSizeControl = new FormControl(2, { nonNullable: true });
-  borderRadiusControl = new FormControl(10, { nonNullable: true });
+  borderRadiusControl = new FormControl(6, { nonNullable: true });
   paddingControl = new FormControl('10', { nonNullable: true });
 
   backgroundColor: RGBAString = 'rgba(100, 37, 175, 0.48)';
-  fontColor: RGBAString = 'rgba(0, 0, 0, 1)';
+  fontColor: RGBAString = 'rgba(255, 255, 255, 1)';
   fontSize: PixelString = '16px';
+  maxWidth: PixelString = '300px';
 
   borderColor: RGBAString = 'rgba(255, 255, 255, 1)';
-  borderRadius: PixelString = '10px';
+  borderRadius: PixelString = '6px';
   borderSize: PixelString = '2px';
   borderStyle: 'solid' | 'dotted' = 'solid';
   padding = '10px';
 
   username = 'Alphyx';
 
-  constructor(private readonly twitchService: TwitchService) {
+  constructor(private readonly twitchService: TwitchService, private readonly snackbar: MatSnackBar) {
     this.twitchService.channelInfo$
       .subscribe(info => this.username = info.username ?? 'Alphyx');
 
@@ -48,6 +52,9 @@ export class CaptionsComponent {
 
     this.paddingControl.valueChanges
       .subscribe(padding => this.parsePadding(padding));
+
+    this.maxWidthControl.valueChanges
+      .subscribe(width => this.maxWidth = `${width}px`);
   }
 
   parsePadding(padding: string) {
@@ -65,13 +72,14 @@ export class CaptionsComponent {
   }
 
   generate() {
-    captionsGenerator({
+    return captionsGenerator({
       borderRadius: this.borderRadius,
       padding: this.padding,
       backgroundColor: this.backgroundColor,
       border: this.border,
       fontColor: this.fontColor,
       fontSize: this.fontSize,
+      maxWidth: this.maxWidth,
     });
   }
 
@@ -93,5 +101,18 @@ export class CaptionsComponent {
 
   get border(): BorderString {
     return `${this.borderSize} ${this.borderStyle} ${this.borderColor}`;
+  }
+
+  downloadCaptions() {
+    const data = 'data:text/html;charset=utf-8,' + encodeURIComponent(this.generate());
+
+    const anchor = document.createElement('a');
+    anchor.download = `tts-helper-captions.html`;
+    anchor.href = data;
+    anchor.click();
+
+    this.snackbar.open('Successfully downloaded captions file.', 'Dismiss', {
+      panelClass: 'notification-success',
+    });
   }
 }

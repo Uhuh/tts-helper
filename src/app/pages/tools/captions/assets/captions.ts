@@ -1,4 +1,4 @@
-﻿export type PixelString = `${string}px`;
+﻿export type PixelString = `${number}px`;
 export type BorderString = `${PixelString} ${'solid' | 'dotted'} ${string}`;
 export type RGBAString = `rgba(${number}, ${number}, ${number}, ${number})`;
 
@@ -9,6 +9,7 @@ export interface CaptionsInfo {
   borderRadius: PixelString;
   backgroundColor: RGBAString;
   padding: string;
+  maxWidth: PixelString;
 }
 
 export const captionsGenerator = (info: CaptionsInfo) => {
@@ -25,6 +26,7 @@ export const captionsGenerator = (info: CaptionsInfo) => {
         color: ${info.fontColor};
         font-size: ${info.fontSize};
         font-family: "Gill Sans", sans-serif;
+        max-width: ${info.maxWidth};
       }
       
       .fade-in {
