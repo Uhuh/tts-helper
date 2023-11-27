@@ -119,7 +119,7 @@ export class PlaybackService {
   }
 
   async skipCurrentlyPlaying() {
-    if (!this.currentlyPlaying) {
+    if (this.currentlyPlaying === null) {
       return;
     }
 
