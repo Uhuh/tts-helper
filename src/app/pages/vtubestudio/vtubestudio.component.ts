@@ -5,7 +5,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 import { VTubeStudioService } from '../../shared/services/vtubestudio.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { take } from 'rxjs';
+import { debounceTime, take } from 'rxjs';
 
 @Component({
   selector: 'app-vtubestudio',
@@ -32,7 +32,7 @@ export class VtubestudioComponent {
         this.settings.setValue(state, { emitEvent: false });
       });
 
-    this.settings.valueChanges.pipe(takeUntilDestroyed())
+    this.settings.valueChanges.pipe(takeUntilDestroyed(), debounceTime(200))
       .subscribe(settings => this.vtubeStudioService.updateState(settings));
   }
 }

@@ -14,7 +14,7 @@ import { PlaybackService } from './playback.service';
 import { Store } from '@ngrx/store';
 import { VTubeStudioFeature, VTubeStudioState } from '../state/vtubestudio/vtubestudio.feature.';
 import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
-import { interval } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 
 @Injectable()
 export class VTubeStudioService {
@@ -35,11 +35,13 @@ export class VTubeStudioService {
   readonly port$ = this.store.select(VTubeStudioFeature.selectPort);
   readonly isMouthOpenEnabled$ = this.store.select(VTubeStudioFeature.selectIsMirrorMouthOpenEnabled);
   readonly isMouthFormEnabled$ = this.store.select(VTubeStudioFeature.selectIsMirrorMouthFormEnabled);
+  readonly isConnected$ = new BehaviorSubject<boolean>(false);
 
   isMouthOpenEnabled = false;
   isMouthFormEnabled = false;
 
   // Try to connect to default.
+  private port = 8001;
   private socket = new WebSocket(`ws://localhost:8001`);
   private vtsAuthToken = '';
   private authenticationRequestUUID = uuid();
@@ -69,6 +71,7 @@ export class VTubeStudioService {
   ) {
     this.port$.pipe(takeUntilDestroyed())
       .subscribe(port => {
+        this.port = port;
         this.logService.add(
           `Attempting to connect to VTS on port ${port}`,
           'info',
@@ -77,7 +80,6 @@ export class VTubeStudioService {
 
         this.socket.close();
 
-        this.socket = new WebSocket(`ws://localhost:${port}`);
         this.setupSocketHandlers();
       });
 
@@ -114,7 +116,10 @@ export class VTubeStudioService {
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.randomMouth(false));
 
-    this.setupSocketHandlers();
+    this.playbackService.audioSkipped$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.randomMouth(false));
+
 
     /**
      * @TODO - Use the Rust tick alternative solution.
@@ -135,6 +140,10 @@ export class VTubeStudioService {
 
   private createMouthTrackingInterval() {
     return setInterval(() => {
+      if (!this.isConnected$.value) {
+        return;
+      }
+
       if (this.isMouthFormEnabled) {
         this.requestUserMouthInfo(VTubeStudioMessageType.MouthSmile);
       }
@@ -145,6 +154,8 @@ export class VTubeStudioService {
   }
 
   private setupSocketHandlers() {
+    this.socket = new WebSocket(`ws://localhost:${this.port}`);
+
     this.socket.addEventListener('open', (event) => {
       // Check if VTS is already authenticated.
       if (!this.vtsAuthToken) {
@@ -190,16 +201,28 @@ export class VTubeStudioService {
       );
     });
 
+    this.socket.addEventListener('close', () => {
+      if (this.isConnected$.value) {
+        this.logService.add('Connection to VTS closed.', 'info', 'VTubeStudioService');
+      }
+
+      this.socket.close();
+      this.isConnected$.next(false);
+      setTimeout(() => this.setupSocketHandlers(), 3000);
+    });
+
     this.socket.addEventListener('error', (event) => {
-      this.logService.add(
-        `Issue connecting to VTube Studio websocket.\n${JSON.stringify(
-          event,
-          undefined,
-          2,
-        )}`,
-        'error',
-        'VTubeStudioService',
-      );
+      if (this.isConnected$.value) {
+        this.logService.add(
+          `Issue connecting to VTube Studio websocket.\n${JSON.stringify(
+            event,
+            undefined,
+            2,
+          )}`,
+          'error',
+          'VTubeStudioService',
+        );
+      }
     });
   }
 
@@ -246,6 +269,13 @@ export class VTubeStudioService {
    * @param authenticationToken VTS Token
    */
   private verifyAuthToken(authenticationToken: string) {
+    const { readyState, CLOSED, CLOSING, CONNECTING } = this.socket;
+
+    // Obviously if the socket is dead ignore all intervals.
+    if (readyState === CLOSED || readyState === CLOSING || readyState === CONNECTING) {
+      return;
+    }
+
     // Assume the token is valid and assign here.
     this.vtsAuthToken = authenticationToken;
 
@@ -264,6 +294,13 @@ export class VTubeStudioService {
    * @private
    */
   private requestUserAuth() {
+    const { readyState, CLOSED, CLOSING, CONNECTING } = this.socket;
+
+    // Obviously if the socket is dead ignore all intervals.
+    if (readyState === CLOSED || readyState === CLOSING || readyState === CONNECTING) {
+      return;
+    }
+
     this.socket.send(
       JSON.stringify({
         ...this.vtsBasics,
@@ -327,15 +364,7 @@ export class VTubeStudioService {
       'VTubeStudioService',
     );
 
-    this.snackbar.open(
-      `Connected with VTS`,
-      'Dismiss',
-      {
-        duration: 3000,
-        panelClass: 'notification-success',
-      },
-    );
-
+    this.isConnected$.next(true);
     this.getParameterValues();
 
     this.configService.updateVTSToken(this.vtsAuthToken);
@@ -378,9 +407,9 @@ export class VTubeStudioService {
    * @private
    */
   private randomMouth(enabled: boolean) {
-    const { readyState, CLOSED, CLOSING } = this.socket;
+    const { readyState, CLOSED, CLOSING, CONNECTING } = this.socket;
 
-    if (!enabled || readyState === CLOSED || readyState === CLOSING) {
+    if (!enabled || readyState === CLOSED || readyState === CLOSING || readyState === CONNECTING) {
       clearInterval(this.randomMouthInterval);
 
       return this.randomMouthInterval = undefined;
