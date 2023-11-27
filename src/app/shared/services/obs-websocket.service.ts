@@ -36,6 +36,10 @@ export class ObsWebSocketService {
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.removeCaptions());
 
+    this.playbackService.audioSkipped$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.removeCaptions());
+
     this.connect();
 
     setTimeout(() => {
