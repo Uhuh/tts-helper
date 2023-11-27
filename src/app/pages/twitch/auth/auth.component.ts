@@ -32,7 +32,7 @@ export class AuthComponent {
   ) {
     combineLatest([
       this.twitchService.isTokenValid$,
-      this.twitchService.twitchToken$,
+      this.twitchService.token$,
     ])
       .pipe(takeUntilDestroyed())
       .subscribe(([isTokenValid, token]) => {

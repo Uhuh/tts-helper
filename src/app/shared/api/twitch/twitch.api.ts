@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 
 import { TwitchRedeem } from './twitch.interface';
+import { ValidUser } from '../../state/twitch/twitch.feature';
 
 @Injectable()
 export class TwitchApi implements OnDestroy {
@@ -45,13 +46,13 @@ export class TwitchApi implements OnDestroy {
     );
   }
 
-  validateToken(token: string): Observable<any> {
+  validateToken(token: string): Observable<ValidUser> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: `OAuth ${token}`,
     });
 
-    return this.http.get<any>(`${this.url}/oauth2/validate`, {
+    return this.http.get<ValidUser>(`${this.url}/oauth2/validate`, {
       headers,
     });
   }

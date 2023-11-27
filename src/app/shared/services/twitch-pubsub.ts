@@ -79,7 +79,7 @@ export class TwitchPubSub implements OnDestroy {
       .subscribe(settings => this.twitchSettings = settings);
 
     combineLatest([
-      this.twitchService.twitchToken$,
+      this.twitchService.token$,
       this.twitchService.channelInfo$,
     ])
       .pipe(takeUntilDestroyed())
