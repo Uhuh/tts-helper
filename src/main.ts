@@ -28,6 +28,7 @@ import { ElevenLabsApi } from './app/shared/api/eleven-labs/eleven-labs.api';
 import { VTubeStudioFeature } from './app/shared/state/vtubestudio/vtubestudio.feature.';
 import { OpenAIFeature } from './app/shared/state/openai/openai.feature';
 import { ObsWebSocketService } from './app/shared/services/obs-websocket.service';
+import { StreamDeckWebSocketService } from './app/shared/services/streamdeck-websocket.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -54,6 +55,7 @@ bootstrapApplication(AppComponent, {
     LogService,
     TwitchService,
     ObsWebSocketService,
+    StreamDeckWebSocketService,
     PlaybackService,
     StorageService,
     TwitchApi,

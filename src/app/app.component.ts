@@ -26,6 +26,7 @@ import { OpenAIService } from './shared/services/openai.service';
 import { OpenAIState } from './shared/state/openai/openai.feature';
 import { OpenAIActions } from './shared/state/openai/openai.actions';
 import { ObsWebSocketService } from './shared/services/obs-websocket.service';
+import { StreamDeckWebSocketService } from './shared/services/streamdeck-websocket.service';
 
 @Component({
   selector: 'app-root',
@@ -48,6 +49,7 @@ export class AppComponent {
     private readonly configService: ConfigService,
     private readonly openAIService: OpenAIService,
     private readonly obsSocketService: ObsWebSocketService,
+    private readonly streamDeckSocketService: StreamDeckWebSocketService,
     private readonly playbackService: PlaybackService,
     private readonly storageService: StorageService,
     private readonly twitchPubSub: TwitchPubSub,
