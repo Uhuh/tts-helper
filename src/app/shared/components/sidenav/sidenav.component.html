@@ -13,6 +13,7 @@
       >
         <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21"/>
         <span>Twitch</span>
+        <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
       </a>
       <a
         class="nav-link"
@@ -22,6 +23,7 @@
       >
         <img alt="youtube-logo" ngSrc="assets/vts_logo_transparent.png" height="25" width="25"/>
         <span>VTubeStudio</span>
+        <div class="connection" [ngClass]="{'connected': isVTSConnected$ | async }"></div>
       </a>
     </div>
     <div class="nav-group">
