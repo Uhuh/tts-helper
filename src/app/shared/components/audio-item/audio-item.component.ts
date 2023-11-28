@@ -70,6 +70,7 @@ export class AudioItemComponent {
       .setAudioState({ id: this.audio.id, skipped: true })
       .then(() => {
         this.audioService.updateAudio(this.audio.id, AudioStatus.skipped);
+        this.playbackService.audioSkipped$.next();
         this.ref.tick();
       })
       .catch((e) => {
