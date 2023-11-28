@@ -147,7 +147,9 @@ export class TwitchPubSub implements OnDestroy {
   }
 
   hasChatCommandPermissions(user: ChatUser, permissions: ChatPermissions) {
-    if (permissions.allUsers) {
+    if (user.isBroadcaster) {
+      return true;
+    } else if (permissions.allUsers) {
       return true;
     } else if (permissions.mods && user.badges.has('moderator')) {
       return true;
