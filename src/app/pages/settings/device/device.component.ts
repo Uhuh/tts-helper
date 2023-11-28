@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime } from 'rxjs';
+import { debounceTime, filter, take } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatOptionModule } from '@angular/material/core';
 import { NgFor } from '@angular/common';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
@@ -13,6 +13,7 @@ import { DeviceId, DeviceInfo, WithId } from 'src/app/shared/services/playback.i
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { SelectorComponent } from '../../../shared/components/selector/selector.component';
 import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.component';
+import { InputComponent } from '../../../shared/components/input/input.component';
 
 @Component({
   selector: 'app-device',
@@ -29,6 +30,7 @@ import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.
     MatSliderModule,
     LabelBlockComponent,
     SelectorComponent,
+    InputComponent,
   ],
 })
 export class DeviceComponent {
@@ -36,6 +38,7 @@ export class DeviceComponent {
   deviceOptions: TTSOption[] = [];
   selectedDevice = new FormControl(0, { nonNullable: true });
   volume = new FormControl(100, { nonNullable: true });
+  audioDelay = new FormControl(0, { nonNullable: true, validators: [Validators.min(0)] });
 
   constructor(
     private readonly configService: ConfigService,
@@ -47,16 +50,20 @@ export class DeviceComponent {
     });
 
     this.configService.selectedDevice$
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(), take(1))
       .subscribe((device) =>
-        this.selectedDevice.patchValue(device, { emitEvent: false }),
+        this.selectedDevice.setValue(device, { emitEvent: false }),
       );
 
     this.configService.deviceVolume$
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(), take(1))
       .subscribe((volume) =>
-        this.volume.patchValue(volume, { emitEvent: false }),
+        this.volume.setValue(volume, { emitEvent: false }),
       );
+
+    this.configService.audioDelay$
+      .pipe(takeUntilDestroyed(), take(1))
+      .subscribe(audioDelay => this.audioDelay.setValue(audioDelay, { emitEvent: false }));
 
     this.selectedDevice.valueChanges
       .pipe(takeUntilDestroyed())
@@ -65,5 +72,9 @@ export class DeviceComponent {
     this.volume.valueChanges
       .pipe(takeUntilDestroyed(), debounceTime(500))
       .subscribe((volume) => this.configService.updateDeviceVolume(volume));
+
+    this.audioDelay.valueChanges
+      .pipe(takeUntilDestroyed(), filter(() => this.audioDelay.valid))
+      .subscribe(audioDelay => this.configService.updateAudioDelay(audioDelay));
   }
 }

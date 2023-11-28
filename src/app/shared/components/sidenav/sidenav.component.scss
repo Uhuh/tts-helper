@@ -99,3 +99,15 @@
   pointer-events: none;
   filter: brightness(0.4);
 }
+
+.connection {
+  margin-left: auto;
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+  background-color: var(--red);
+}
+
+.connected {
+  background-color: var(--green);
+}

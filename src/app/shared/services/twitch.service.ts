@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { catchError, of, skip, Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
-import { TwitchFeature, TwitchRedeemState, ValidUser } from '../state/twitch/twitch.feature';
+import { TwitchFeature, TwitchRedeemState, TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LogService } from './logs.service';
@@ -12,11 +12,12 @@ import { TwitchApi } from '../api/twitch/twitch.api';
 export class TwitchService implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 
-  public readonly twitchState$ = this.store.select(TwitchFeature.selectTwitchStateState);
-  public readonly twitchToken$ = this.store.select(TwitchFeature.selectToken);
+  public readonly state$ = this.store.select(TwitchFeature.selectTwitchStateState);
+  public readonly token$ = this.store.select(TwitchFeature.selectToken);
   public readonly redeems$ = this.store.select(TwitchFeature.selectRedeems);
   public readonly isTokenValid$ = this.store.select(TwitchFeature.selectIsTokenValid);
   public readonly channelInfo$ = this.store.select(TwitchFeature.selectChannelInfo);
+  public readonly settings$ = this.store.select(TwitchFeature.selectSettings);
 
   public readonly subsInfo$ = this.store.select(TwitchFeature.selectSubsInfo);
   public readonly redeemInfo$ = this.store.select(TwitchFeature.selectRedeemInfo);
@@ -28,10 +29,37 @@ export class TwitchService implements OnDestroy {
     private readonly snackbar: MatSnackBar,
     private readonly logService: LogService,
   ) {
-    this.twitchToken$.pipe(takeUntil(this.destroyed$)).subscribe((token) => {
-      /**
-       * @TODO - If token is not null, setup validation.
-       */
+    this.token$.pipe(
+      // Ignore default state.
+      skip(1),
+      takeUntil(this.destroyed$),
+      switchMap(token => {
+        if (!token) {
+          return of(null);
+        }
+
+        return this.twitchApi.validateToken(token);
+      }),
+    ).subscribe({
+      next: (user) => {
+        if (!user) {
+          return this.logService.add('No token to authenticate with.', 'info', 'TwitchService.token$');
+        }
+
+        this.store.dispatch(TwitchStateActions.updateIsTokenValid({ isTokenValid: true }));
+        this.logService.add(`Validated Twitch Token.`, 'info', 'TwitchService.token$');
+      },
+      error: (err) => {
+        /**
+         * @TODO - If token isn't valid, try to refresh.
+         */
+        this.logService.add(`Users token is no longer valid.\n${JSON.stringify(err, undefined, 2)}`, 'error', 'TwitchService.token$');
+        this.store.dispatch(TwitchStateActions.updateIsTokenValid({ isTokenValid: false }));
+
+        this.snackbar.open(`Twitch token has expired. Reconnect!`, 'Dismiss', {
+          panelClass: 'notification-error',
+        });
+      },
     });
 
     listen('access-token', (authData) => {
@@ -70,7 +98,7 @@ export class TwitchService implements OnDestroy {
       .validateToken(token)
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap((user: ValidUser) => {
+        switchMap((user) => {
           this.store.dispatch(TwitchStateActions.updateToken({ token }));
           this.store.dispatch(TwitchStateActions.updateIsTokenValid({ isTokenValid: true }));
           this.store.dispatch(
@@ -126,6 +154,10 @@ export class TwitchService implements OnDestroy {
           console.error(`Failed to log user in.`, e);
         },
       });
+  }
+
+  updateSettings(partialState: Partial<TwitchSettingsState>) {
+    this.store.dispatch(TwitchStateActions.updateSettings({ partialState }));
   }
 
   updateRedeemInfo(redeemInfo: Partial<TwitchRedeemState>) {

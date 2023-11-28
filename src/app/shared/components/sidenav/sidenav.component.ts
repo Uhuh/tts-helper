@@ -3,21 +3,26 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { getVersion } from '@tauri-apps/api/app';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NgOptimizedImage } from '@angular/common';
+import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
+import { TwitchService } from '../../services/twitch.service';
+import { VTubeStudioService } from '../../services/vtubestudio.service';
 
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, NgClass, AsyncPipe],
 })
 export class SidenavComponent {
-  @Input() nav!: MatSidenav;
+  @Input({ required: true }) nav!: MatSidenav;
   @Input() isMobile = false;
-  appVersion: string = '';
+  appVersion = '';
+  
+  isTwitchTokenValid$ = this.twitchService.isTokenValid$;
+  isVTSConnected$ = this.vtsService.isConnected$;
 
-  constructor() {
+  constructor(private readonly twitchService: TwitchService, private readonly vtsService: VTubeStudioService) {
     getVersion().then((v) => (this.appVersion = v));
   }
 

@@ -10,15 +10,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TwitchCheer, TwitchGiftSub, TwitchRedeem, TwitchSub, TwitchSubMessage } from './twitch-pubsub.interface';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ConfigService } from './config.service';
-import {
-  ChatPermissions,
-  GeneralChatState,
-  GptChatState,
-  GptPersonalityState,
-  GptSettingsState,
-} from '../state/config/config.feature';
+import { ChatPermissions, GeneralChatState } from '../state/config/config.feature';
 import { LogService } from './logs.service';
-import { OpenaiService } from './openai.service';
+import { OpenAIService } from './openai.service';
+import { GptChatState, GptPersonalityState, GptSettingsState } from '../state/openai/openai.feature';
+import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 
 @Injectable()
 export class TwitchPubSub implements OnDestroy {
@@ -33,12 +29,13 @@ export class TwitchPubSub implements OnDestroy {
   subsInfo = toSignal(this.twitchService.subsInfo$);
 
   // Normal TTS chat command
-  generalChat?: GeneralChatState;
+  generalChat!: GeneralChatState;
+  twitchSettings!: TwitchSettingsState;
 
   // ChatGPT Settings
-  gptChat?: GptChatState;
-  gptSettings?: GptSettingsState;
-  gptPersonality?: GptPersonalityState;
+  gptChatSettings!: GptChatState;
+  gptSettings!: GptSettingsState;
+  gptPersonality!: GptPersonalityState;
 
   gptOnCooldown = false;
   generalOnCooldown = false;
@@ -58,27 +55,31 @@ export class TwitchPubSub implements OnDestroy {
     private readonly audioService: AudioService,
     private readonly configService: ConfigService,
     private readonly logService: LogService,
-    private readonly openaiService: OpenaiService,
+    private readonly openaiService: OpenAIService,
     private readonly snackbar: MatSnackBar,
   ) {
-    this.configService.gptSettings$
+    this.openaiService.settings$
       .pipe(takeUntilDestroyed())
-      .subscribe(gptSettings => this.gptSettings = gptSettings);
+      .subscribe(settings => this.gptSettings = settings);
 
     this.configService.generalChat$
       .pipe(takeUntilDestroyed())
       .subscribe(generalChat => this.generalChat = generalChat);
 
-    this.configService.gptChat$
+    this.openaiService.chatSettings$
       .pipe(takeUntilDestroyed())
-      .subscribe(gptChat => this.gptChat = gptChat);
+      .subscribe(chatSettings => this.gptChatSettings = chatSettings);
 
-    this.configService.gptPersonality$
+    this.openaiService.personality$
       .pipe(takeUntilDestroyed())
-      .subscribe(gptPersonality => this.gptPersonality = gptPersonality);
+      .subscribe(personality => this.gptPersonality = personality);
+
+    this.twitchService.settings$
+      .pipe(takeUntilDestroyed())
+      .subscribe(settings => this.twitchSettings = settings);
 
     combineLatest([
-      this.twitchService.twitchToken$,
+      this.twitchService.token$,
       this.twitchService.channelInfo$,
     ])
       .pipe(takeUntilDestroyed())
@@ -158,12 +159,11 @@ export class TwitchPubSub implements OnDestroy {
   }
 
   async onMessage(user: ChatUser, text: string) {
-    // If both chat commands are disabled ignore.
-    if (!this.generalChat?.enabled && !this.gptChat?.enabled) {
+    if (!this.generalChat.enabled && !this.gptChatSettings.enabled && !this.twitchSettings.randomChance) {
       return;
     }
 
-    if (this.generalChat?.enabled &&
+    if (this.generalChat.enabled &&
       text.startsWith(this.generalChat.command) &&
       this.hasChatCommandPermissions(user, this.generalChat.permissions) &&
       !this.generalOnCooldown
@@ -174,23 +174,28 @@ export class TwitchPubSub implements OnDestroy {
       // Handle cooldown if there is any.
       this.generalOnCooldown = true;
       setTimeout(() => this.generalOnCooldown = false, this.generalChat.cooldown * 1000);
-    } else if (this.gptChat?.enabled &&
-      text.startsWith(this.gptChat.command) &&
-      this.hasChatCommandPermissions(user, this.gptChat.permissions) &&
+    } else if (this.gptChatSettings.enabled &&
+      text.startsWith(this.gptChatSettings.command) &&
+      this.hasChatCommandPermissions(user, this.gptChatSettings.permissions) &&
       !this.gptOnCooldown
     ) {
-      this.openaiService.gptHandler(user.displayName, text)
-        .catch(e => {
-          this.logService.add(
-            `Failed to handle GPT request { user: ${user.displayName}, text: '${text}' } \n ${e}`,
-            'error',
-            'TwitchPubSub.onMessage.gptHandler',
-          );
-        });
+      this.openaiService.generateOpenAIResponse(user.displayName, text, true);
 
       // Handle cooldown if there is any.
       this.gptOnCooldown = true;
-      setTimeout(() => this.gptOnCooldown = false, this.gptChat.cooldown * 1000);
+      setTimeout(() => this.gptOnCooldown = false, this.gptChatSettings.cooldown * 1000);
+    } else if (this.twitchSettings.randomChance) {
+      const diceRoll = Math.random() * 100;
+
+      if (diceRoll > this.twitchSettings.randomChance) {
+        return;
+      }
+
+      if (this.gptSettings.enabled) {
+        this.openaiService.generateOpenAIResponse(user.displayName, text);
+      } else {
+        this.audioService.playTts(text, user.displayName, 'twitch', this.generalChat.charLimit);
+      }
     }
   }
 
@@ -280,10 +285,7 @@ export class TwitchPubSub implements OnDestroy {
 
     // If the streamer has GPT enabled, forward all TTS to ChatGPT.
     if (this.gptSettings?.enabled && this.redeemInfo()?.gptRedeem === rewardId) {
-      this.openaiService.gptHandler(userDisplayName, input || 'Haha! Someone forgot to say something.')
-        .catch(e => {
-          this.logService.add(`Failed to generate OpenAI response for Twitch redeem.\n${e}`, 'error', 'TwitchPubSub.onRedeem');
-        });
+      this.openaiService.generateOpenAIResponse(userDisplayName, input, true);
     }
   }
 

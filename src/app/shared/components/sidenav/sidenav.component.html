@@ -13,15 +13,17 @@
       >
         <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21"/>
         <span>Twitch</span>
+        <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
       </a>
       <a
-        class="nav-link disabled"
-        [routerLink]="['youtube']"
+        class="nav-link"
+        [routerLink]="['vtubestudio']"
         routerLinkActive="active"
         (click)="close()"
       >
-        <img alt="youtube-logo" ngSrc="assets/youtube.svg" height="17" width="24"/>
-        <span>Youtube</span>
+        <img alt="youtube-logo" ngSrc="assets/vts_logo_transparent.png" height="25" width="25"/>
+        <span>VTubeStudio</span>
+        <div class="connection" [ngClass]="{'connected': isVTSConnected$ | async }"></div>
       </a>
     </div>
     <div class="nav-group">
@@ -103,6 +105,15 @@
       >
         <mat-icon class="tts-icon">description</mat-icon>
         <span>Logs</span>
+      </a>
+      <a
+        class="nav-link"
+        [routerLink]="['tools']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
+        <mat-icon class="tts-icon">construction</mat-icon>
+        <span>Tools</span>
       </a>
     </div>
   </div>

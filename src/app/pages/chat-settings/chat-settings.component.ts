@@ -7,6 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from '../../shared/services/config.service';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
+import { OpenAIService } from '../../shared/services/openai.service';
 
 export interface ChatPermissionsFormGroup {
   allUsers: FormControl<boolean>;
@@ -26,7 +27,7 @@ export interface ChatSettingsFormGroup {
   standalone: true,
   imports: [CommonModule, InputComponent, UserPermsComponent, ToggleComponent, LabelBlockComponent],
   templateUrl: './chat-settings.component.html',
-  styleUrls: ['./chat-settings.component.scss']
+  styleUrls: ['./chat-settings.component.scss'],
 })
 export class ChatSettingsComponent {
 
@@ -36,7 +37,7 @@ export class ChatSettingsComponent {
     enabled: new FormControl(false, { nonNullable: true }),
     charLimit: new FormControl(100, { nonNullable: true, validators: [Validators.min(0)] }),
   });
-  
+
   generalPermissions = new FormGroup<ChatPermissionsFormGroup>({
     allUsers: new FormControl(false, { nonNullable: true }),
     mods: new FormControl(false, { nonNullable: true }),
@@ -49,18 +50,18 @@ export class ChatSettingsComponent {
     enabled: new FormControl(false, { nonNullable: true }),
     charLimit: new FormControl(999, { nonNullable: true, validators: [Validators.min(0)] }),
   });
-  
+
   gptPermissions = new FormGroup<ChatPermissionsFormGroup>({
     allUsers: new FormControl(false, { nonNullable: true }),
     mods: new FormControl(false, { nonNullable: true }),
     payingMembers: new FormControl(false, { nonNullable: true }),
   });
 
-  constructor(private readonly configService: ConfigService) {
-    this.configService.gptChat$
+  constructor(private readonly configService: ConfigService, private readonly openAIService: OpenAIService) {
+    this.openAIService.chatSettings$
       .pipe(takeUntilDestroyed())
-      .subscribe(gptChat => {
-        const { permissions, ...settings } = gptChat;
+      .subscribe(chatSettings => {
+        const { permissions, ...settings } = chatSettings;
         this.gptChat.setValue(settings, { emitEvent: false });
         this.gptPermissions.setValue(permissions, { emitEvent: false });
       });
@@ -76,7 +77,7 @@ export class ChatSettingsComponent {
     this.gptChat.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(gptChat => {
-        this.configService.updateGptChat(gptChat);
+        this.openAIService.updateChatSettings(gptChat);
       });
 
     this.generalChat.valueChanges
@@ -88,13 +89,13 @@ export class ChatSettingsComponent {
     this.gptPermissions.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(perms => {
-        this.configService.updateChatPermissions(perms, 'gpt');
+        this.openAIService.updateChatPermissions(perms);
       });
 
     this.generalPermissions.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(perms => {
-        this.configService.updateChatPermissions(perms, 'general');
+        this.configService.updateChatPermissions(perms);
       });
   }
 }

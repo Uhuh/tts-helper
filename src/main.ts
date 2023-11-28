@@ -25,6 +25,10 @@ import { ElevenLabsService } from './app/shared/services/eleven-labs.service';
 import { ElevenLabsFeature } from './app/shared/state/eleven-labs/eleven-labs.feature';
 import { TwitchApi } from './app/shared/api/twitch/twitch.api';
 import { ElevenLabsApi } from './app/shared/api/eleven-labs/eleven-labs.api';
+import { VTubeStudioFeature } from './app/shared/state/vtubestudio/vtubestudio.feature.';
+import { OpenAIFeature } from './app/shared/state/openai/openai.feature';
+import { ObsWebSocketService } from './app/shared/services/obs-websocket.service';
+import { StreamDeckWebSocketService } from './app/shared/services/streamdeck-websocket.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -33,9 +37,11 @@ bootstrapApplication(AppComponent, {
       StoreModule.forRoot({}),
       StoreModule.forFeature(AudioFeature),
       StoreModule.forFeature(AzureFeature),
-      StoreModule.forFeature(ElevenLabsFeature),
-      StoreModule.forFeature(TwitchFeature),
       StoreModule.forFeature(ConfigFeature),
+      StoreModule.forFeature(ElevenLabsFeature),
+      StoreModule.forFeature(OpenAIFeature),
+      StoreModule.forFeature(TwitchFeature),
+      StoreModule.forFeature(VTubeStudioFeature),
       MatSnackBarModule,
       StoreDevtoolsModule.instrument({
         maxAge: 25,
@@ -48,6 +54,8 @@ bootstrapApplication(AppComponent, {
     ElevenLabsService,
     LogService,
     TwitchService,
+    ObsWebSocketService,
+    StreamDeckWebSocketService,
     PlaybackService,
     StorageService,
     TwitchApi,

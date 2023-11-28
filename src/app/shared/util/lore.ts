@@ -1,4 +1,4 @@
-﻿import { GptPersonalityState } from '../state/config/config.feature';
+﻿import { GptPersonalityState } from '../state/openai/openai.feature';
 
 export function loreTemplateGenerator(personality: GptPersonalityState) {
   return `You will adopt the personality and attitudes of ${personality.modelsIdentity} as described in ${personality.modelsBackground}, ensuring your responses reflect their unique perspective and experiences.

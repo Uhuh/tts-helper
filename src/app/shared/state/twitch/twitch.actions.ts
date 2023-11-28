@@ -1,10 +1,17 @@
 ﻿import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { TwitchChannelInfo, TwitchRedeemInfo, TwitchRedeemState, TwitchState } from './twitch.feature';
+import {
+  TwitchChannelInfo,
+  TwitchRedeemInfo,
+  TwitchRedeemState,
+  TwitchSettingsState,
+  TwitchState,
+} from './twitch.feature';
 
 export const TwitchStateActions = createActionGroup({
   source: 'TwitchState',
   events: {
     'Update Token': props<{ token: string | null }>(),
+    'Update Settings': props<{ partialState: Partial<TwitchSettingsState> }>(),
     'Update Redeems': props<{ redeems: TwitchRedeemInfo[] }>(),
     'Update State': props<{ twitchState: TwitchState }>(),
     'Update Is Token Valid': props<{ isTokenValid: boolean }>(),
@@ -18,5 +25,5 @@ export const TwitchStateActions = createActionGroup({
     'Update Bits Min': props<{ minBits: number }>(),
     'Update Bits Char Limit': props<{ bitsCharacterLimit: number }>(),
     'Reset State': emptyProps(),
-  }
+  },
 });

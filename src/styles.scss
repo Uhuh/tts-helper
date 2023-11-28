@@ -275,7 +275,7 @@ hr {
 }
 
 .mat-drawer-backdrop.mat-drawer-shown {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.6) !important;
 }
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::before {

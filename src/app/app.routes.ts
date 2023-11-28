@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/twitch/twitch.component'),
   },
   {
+    path: 'vtubestudio',
+    loadComponent: () => import('./pages/vtubestudio/vtubestudio.component'),
+  },
+  {
     path: 'history',
     loadComponent: () => import('./pages/history/history.component'),
   },
@@ -39,7 +43,11 @@ export const routes: Routes = [
   },
   {
     path: 'logs',
-    loadComponent: () => import('./pages/user-logs/user-logs.component')
+    loadComponent: () => import('./pages/user-logs/user-logs.component'),
+  },
+  {
+    path: 'tools',
+    loadComponent: () => import('./pages/tools/tools.component'),
   },
   {
     path: '',

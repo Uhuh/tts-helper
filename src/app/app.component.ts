@@ -20,6 +20,13 @@ import { AzureActions } from './shared/state/azure/azure.actions';
 import { ElevenLabsService } from './shared/services/eleven-labs.service';
 import { ElevenLabsState } from './shared/state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsActions } from './shared/state/eleven-labs/eleven-labs.actions';
+import { VTubeStudioState } from './shared/state/vtubestudio/vtubestudio.feature.';
+import { VTubeStudioActions } from './shared/state/vtubestudio/vtubestudio.actions';
+import { OpenAIService } from './shared/services/openai.service';
+import { OpenAIState } from './shared/state/openai/openai.feature';
+import { OpenAIActions } from './shared/state/openai/openai.actions';
+import { ObsWebSocketService } from './shared/services/obs-websocket.service';
+import { StreamDeckWebSocketService } from './shared/services/streamdeck-websocket.service';
 
 @Component({
   selector: 'app-root',
@@ -39,25 +46,32 @@ export class AppComponent {
     private readonly store: Store,
     private readonly azureService: AzureSttService,
     private readonly elevenLabsService: ElevenLabsService,
-    private readonly twitchPubSub: TwitchPubSub,
     private readonly configService: ConfigService,
-    private readonly twitchService: TwitchService,
-    private readonly storageService: StorageService,
+    private readonly openAIService: OpenAIService,
+    private readonly obsSocketService: ObsWebSocketService,
+    private readonly streamDeckSocketService: StreamDeckWebSocketService,
     private readonly playbackService: PlaybackService,
+    private readonly storageService: StorageService,
+    private readonly twitchPubSub: TwitchPubSub,
+    private readonly twitchService: TwitchService,
     private readonly vtubeStudioService: VTubeStudioService,
   ) {
     combineLatest([
       this.storageService.getFromStore<ConfigState>(this.settingsLocation, 'config'),
+      this.storageService.getFromStore<OpenAIState>(this.settingsLocation, 'openai'),
       this.storageService.getFromStore<TwitchState>(this.settingsLocation, 'twitch'),
       this.storageService.getFromStore<AzureState>(this.settingsLocation, 'azure'),
       this.storageService.getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs'),
+      this.storageService.getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio'),
     ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([config, twitch, azure, elevenLabs]) => {
+      .subscribe(([config, openai, twitch, azure, elevenLabs, vtubeStudio]) => {
         this.handleGlobalData(config);
+        this.handleOpenAIData(openai);
         this.handleTwitchData(twitch);
         this.handleAzureData(azure);
         this.handleElevenLabsData(elevenLabs);
+        this.handleVTubeStudioData(vtubeStudio);
       });
 
     /**
@@ -65,13 +79,13 @@ export class AppComponent {
      * Debounce to ignore multi updates so it can save "less" times than needed
      */
 
-    this.configService.configState$
+    this.configService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe((state) => {
         this.storageService.saveToStore(this.settingsLocation, 'config', state);
       });
 
-    this.twitchService.twitchState$
+    this.twitchService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe((state) => {
         this.storageService.saveToStore(this.settingsLocation, 'twitch', state);
@@ -88,6 +102,18 @@ export class AppComponent {
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'eleven-labs', state);
       });
+
+    this.vtubeStudioService.state$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => {
+        this.storageService.saveToStore(this.settingsLocation, 'vtube-studio', state);
+      });
+
+    this.openAIService.state$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => {
+        this.storageService.saveToStore(this.settingsLocation, 'openai', state);
+      });
   }
 
   handleGlobalData(data: { value: ConfigState } | null) {
@@ -98,9 +124,22 @@ export class AppComponent {
     // Setup user audio device and volume on startup.
     this.playbackService.setOutputDevice(data.value.audioDevice);
     this.playbackService.setVolumeLevel(data.value.deviceVolume);
+    this.playbackService.setPlaybackState({
+      endDelay: data.value.audioDelay * 1000,
+    });
 
     this.store.dispatch(
       GlobalConfigActions.updateState({ configState: data.value }),
+    );
+  }
+
+  handleOpenAIData(data: { value: OpenAIState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.store.dispatch(
+      OpenAIActions.updateState({ openAIState: data.value }),
     );
   }
 
@@ -131,6 +170,16 @@ export class AppComponent {
 
     this.store.dispatch(
       ElevenLabsActions.updateState({ partialState: data.value }),
+    );
+  }
+
+  handleVTubeStudioData(data: { value: VTubeStudioState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.store.dispatch(
+      VTubeStudioActions.updateState({ partialState: data.value }),
     );
   }
 }

@@ -10,7 +10,7 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
   standalone: true,
   imports: [CommonModule, InputComponent, ReactiveFormsModule, LabelBlockComponent],
   templateUrl: './gpt-personality.component.html',
-  styleUrls: ['./gpt-personality.component.scss']
+  styleUrls: ['./gpt-personality.component.scss'],
 })
 export class GptPersonalityComponent {
   @Input({ required: true }) formGroup!: FormGroup<GptPersonalityFormGroup>;

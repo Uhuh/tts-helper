@@ -4,12 +4,12 @@ import { InputComponent } from '../../shared/components/input/input.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 import { GptPersonalityComponent } from './gpt-personality/gpt-personality.component';
-import { ConfigService } from '../../shared/services/config.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
-import { debounceTime } from 'rxjs';
+import { filter, take } from 'rxjs';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
+import { OpenAIService } from '../../shared/services/openai.service';
 
 export interface GptPersonalityFormGroup {
   streamersIdentity: FormControl<string>;
@@ -28,10 +28,17 @@ export interface GptPersonalityFormGroup {
   styleUrls: ['./chat-gpt.component.scss'],
 })
 export class ChatGptComponent {
-  apiKeyControl = new FormControl('', { nonNullable: true });
-  enableGptControl = new FormControl(false, { nonNullable: true });
-  historyControl = new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(20)] });
-  charLimitControl = new FormControl(300, { nonNullable: true, validators: [Validators.min(0)] });
+  charLimit = new FormControl(300, { nonNullable: true, validators: [Validators.min(0)] });
+
+  settingsGroup = new FormGroup({
+    apiToken: new FormControl('', { nonNullable: true }),
+    enabled: new FormControl(false, { nonNullable: true }),
+    historyLimit: new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(20)] }),
+    presencePenalty: new FormControl(0, { nonNullable: true, validators: [Validators.min(-2), Validators.max(2)] }),
+    frequencyPenalty: new FormControl(0, { nonNullable: true, validators: [Validators.min(-2), Validators.max(2)] }),
+    maxTokens: new FormControl(100, { nonNullable: true, validators: [Validators.min(0)] }),
+    temperature: new FormControl(1, { nonNullable: true }),
+  });
 
   /**
    * These are to make the ChatGPT model a little more personal.
@@ -46,52 +53,42 @@ export class ChatGptComponent {
     modelsBackground: new FormControl('', { nonNullable: true }),
   });
 
-  constructor(private readonly configService: ConfigService) {
-    this.configService.gptPersonality$
-      .pipe(takeUntilDestroyed())
+  constructor(private readonly openAIService: OpenAIService) {
+    this.openAIService.personality$
+      .pipe(takeUntilDestroyed(), take(1))
       .subscribe(personality => this.personalityGroup.setValue(personality, { emitEvent: false }));
 
-    this.configService.gptSettings$
-      .pipe(takeUntilDestroyed())
-      .subscribe(gptSettings => {
-        this.apiKeyControl.setValue(gptSettings.apiToken, { emitEvent: false });
-        this.enableGptControl.setValue(gptSettings.enabled, { emitEvent: false });
-        this.historyControl.setValue(gptSettings.historyLimit, { emitEvent: false });
+    this.openAIService.settings$
+      .pipe(takeUntilDestroyed(), take(1))
+      .subscribe(settings => {
+        this.settingsGroup.setValue(settings, { emitEvent: false });
       });
 
-    this.configService.gptChat$
-      .pipe(takeUntilDestroyed())
-      .subscribe(chat => {
-        this.charLimitControl.setValue(chat.charLimit, { emitEvent: false });
+    this.openAIService.chatSettings$
+      .pipe(takeUntilDestroyed(), take(1))
+      .subscribe(chatSettings => {
+        this.charLimit.setValue(chatSettings.charLimit, { emitEvent: false });
       });
 
     this.personalityGroup.valueChanges
       .pipe(takeUntilDestroyed())
-      .subscribe(personality => this.configService.updateGptPersonality(personality));
+      .subscribe(personality => this.openAIService.updatePersonality(personality));
 
-    this.enableGptControl.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(enabled => this.configService.updateGptSettings({ enabled }));
+    this.settingsGroup.valueChanges
+      .pipe(takeUntilDestroyed(), filter(() => this.settingsGroup.valid))
+      .subscribe(settings => this.openAIService.updateSettings({
+        ...settings,
+        // Maybe I should look into material inputs so they can handle the conversions for me.
+        presencePenalty: Number(settings.presencePenalty),
+        temperature: Number(settings.temperature),
+        frequencyPenalty: Number(settings.frequencyPenalty),
+        historyLimit: Number(settings.historyLimit),
+        maxTokens: Number(settings.maxTokens),
+      }));
 
-    this.apiKeyControl.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(apiToken => this.configService.updateGptSettings({ apiToken }));
-
-    this.charLimitControl.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(charLimit => {
-        if (this.charLimitControl.valid) {
-          this.configService.updateGptChat({ charLimit });
-        }
-      });
-
-    this.historyControl.valueChanges
-      .pipe(takeUntilDestroyed(), debounceTime(500))
-      .subscribe(historyLimit => {
-        if (this.historyControl.valid) {
-          this.configService.updateGptSettings({ historyLimit });
-        }
-      });
+    this.charLimit.valueChanges
+      .pipe(takeUntilDestroyed(), filter(() => this.charLimit.valid))
+      .subscribe(charLimit => this.openAIService.updateChatSettings({ charLimit }));
   }
 }
 

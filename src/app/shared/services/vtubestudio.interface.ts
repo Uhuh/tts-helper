@@ -10,6 +10,8 @@
   Live2DParameterListRequest = 'Live2DParameterListRequest',
   InjectParameterDataRequest = 'InjectParameterDataRequest',
   InjectParameterDataResponse = 'InjectParameterDataResponse',
+  MouthSmile = 'MouthSmile',
+  MouthOpen = 'MouthOpen',
 }
 
 export interface AuthResponse {
@@ -28,21 +30,21 @@ export interface VTubeStudioParameter {
 export enum TTSHelperParameterNames {
   TTSHelperMouthOpen = 'TTSHelperMouthOpen',
   TTSHelperMouthForm = 'TTSHelperMouthForm',
-};
+}
 
 export const TTSHelperParameters: Readonly<VTubeStudioParameter[]> = [
   {
     max: 1,
     min: 0,
-    defaultValue: 0.1,
+    defaultValue: 0,
     explanation: 'Mouth open?',
-    parameterName: TTSHelperParameterNames.TTSHelperMouthOpen
+    parameterName: TTSHelperParameterNames.TTSHelperMouthOpen,
   },
   {
     max: 1,
     min: -1,
-    defaultValue: 0.5,
+    defaultValue: 0,
     explanation: 'Mouth form?',
-    parameterName: TTSHelperParameterNames.TTSHelperMouthForm
-  }
+    parameterName: TTSHelperParameterNames.TTSHelperMouthForm,
+  },
 ] as const;

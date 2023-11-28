@@ -1,4 +1,4 @@
-﻿import { Injectable, isDevMode } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import {
   AudioConfig,
   CancellationDetails,
@@ -7,7 +7,7 @@ import {
   SpeechConfig,
   SpeechRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
-import { isRegistered, register, unregister, unregisterAll } from '@tauri-apps/api/globalShortcut';
+import { isRegistered, register, unregister } from '@tauri-apps/api/globalShortcut';
 import { LogService } from './logs.service';
 import { Store } from '@ngrx/store';
 import { AzureFeature, AzureState } from '../state/azure/azure.feature';
@@ -15,7 +15,7 @@ import { AzureActions } from '../state/azure/azure.actions';
 import { combineLatest, filter, skip } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { OpenaiService } from './openai.service';
+import { OpenAIService } from './openai.service';
 import { TwitchService } from './twitch.service';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class AzureSttService {
 
   constructor(
     private readonly store: Store,
-    private readonly openaiService: OpenaiService,
+    private readonly openaiService: OpenAIService,
     private readonly logService: LogService,
     private readonly twitchService: TwitchService,
     private readonly snackbar: MatSnackBar,
@@ -81,18 +81,10 @@ export class AzureSttService {
   }
 
   async checkHotKey(hotkey: string) {
-    // When in devmode, hotkeys are forgotten due to the chunk files changing so much.
-    // So remove all keys and just re-register them.
-    if (isDevMode()) {
-      console.info(`Unregistering shortcuts, going to register: ${hotkey}`);
-      await unregisterAll();
-    }
-
-    const registered = await isRegistered(hotkey);
-
-    if (registered) {
-      return console.info(`Shortcut is already registered: ${hotkey}`);
-    }
+    /**
+     * Due to the user being able to CTRL + R we need to re register it or else it'll break if they CTRL + R.
+     */
+    await unregister(hotkey);
 
     await register(hotkey, () => {
       this.captureSpeech();
@@ -200,8 +192,12 @@ export class AzureSttService {
     this.updateAzureState({ hotkey: '' });
   }
 
+  /**
+   * Send Azure's recognized text to OpenAI to generate a response to the user.
+   * @param text Azure's "recognized" text.
+   * @private
+   */
   private sendRecognizedText(text: string) {
-    // @TODO - Get the users actual name.
-    this.openaiService.gptHandler(this.twitchUsername, text);
+    this.openaiService.generateOpenAIResponse(this.twitchUsername, text);
   }
 }

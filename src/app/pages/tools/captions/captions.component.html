@@ -1,0 +1,95 @@
+<div class="header">
+  <span>Captions</span>
+  <app-button
+    (click)="downloadCaptions()"
+  >
+    Download Captions
+  </app-button>
+</div>
+
+<div
+  [style.transition]="'all 0.3s'"
+  [style.width]="'fit-content'"
+  [style.max-width]="'100%'"
+  [style.background-color]="backgroundColor"
+  [style.border]="border"
+  [style.border-radius]="borderRadius"
+  [style.padding]="padding"
+>
+  <span
+    [style.transition]="'all 0.3s'"
+    [style.display]="'inline-flex'"
+    [style.color]="fontColor"
+    [style.font-size]="fontSize"
+  >
+    Hello {{username}}! How's your stream going?
+  </span>
+</div>
+
+<app-label-block>
+  <div header>Max width</div>
+  <div sub-text>Set a max width to handle text wrapping.</div>
+  <app-input 
+    placeholder="Enter the max width"
+    type="number"
+    [control]="maxWidthControl"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Font size</div>
+  <div sub-text>How large the font is.</div>
+  <app-input
+    placeholder="Enter the font size"
+    type="number"
+    [control]="fontSizeControl"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Border size</div>
+  <div sub-text>How thick the border is.</div>
+  <app-input
+    placeholder="Enter the border thickness"
+    type="number"
+    [control]="borderSizeControl"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Border radius</div>
+  <div sub-text>Change the roundness of the corners.</div>
+  <app-input
+    placeholder="Enter the radius size"
+    type="number"
+    [control]="borderRadiusControl"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Padding</div>
+  <div sub-text>How much space to put around the words.</div>
+  <div sub-text>Format it like "10" or "10 12" or even "10 12 8 6" to get more in depth.</div>
+  <app-input
+    placeholder="10 12"
+    type="text"
+    [control]="paddingControl"
+  />
+</app-label-block>
+
+<div class="color-wrapper">
+  <app-label-block>
+    <div header>Font color</div>
+    <color-chrome [color]="fontColor" (onChange)="changeColor($event, 'font')" />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Background color</div>
+    <color-chrome [color]="backgroundColor" (onChange)="changeColor($event, 'bg')" />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Border color</div>
+    <color-chrome [color]="borderColor" (onChange)="changeColor($event, 'border')" />
+  </app-label-block>
+</div>

@@ -2,11 +2,11 @@
   <div header>Connection Status</div>
   <div sub-text>{{ connectionMessage() }}</div>
   <div class="action-row">
-    <span class="twitch-status" [ngClass]="{ valid: (isTokenValid$ | async) }">
+    <span class="twitch-status" [ngClass]="{ valid: isTokenValid() }">
       {{ connectionStatus() }}
     </span>
-    
-    @if (isTokenValid$ | async) {
+
+    @if (isTokenValid()) {
       <div class="twitch-auth" (click)="signOut()">
         sign-out
       </div>

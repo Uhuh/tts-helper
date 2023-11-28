@@ -1,5 +1,5 @@
 import { ApplicationRef, Component, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
@@ -24,7 +24,7 @@ export class AuthComponent {
 
   connectionStatus = signal<ConnectionType>('Disconnected');
   connectionMessage = signal('');
-  isTokenValid$ = this.twitchService.isTokenValid$;
+  isTokenValid = toSignal(this.twitchService.isTokenValid$);
 
   constructor(
     private readonly twitchService: TwitchService,
@@ -32,24 +32,24 @@ export class AuthComponent {
   ) {
     combineLatest([
       this.twitchService.isTokenValid$,
-      this.twitchService.twitchToken$,
+      this.twitchService.token$,
     ])
       .pipe(takeUntilDestroyed())
       .subscribe(([isTokenValid, token]) => {
         if (!token) {
           this.connectionStatus.set('Disconnected');
           this.connectionMessage.set(
-            `You've been disconnected. You'll need to sign-in again to reconnect your Twitch account.`
+            `You've been disconnected. You'll need to sign-in again to reconnect your Twitch account.`,
           );
         } else if (token && isTokenValid) {
           this.connectionStatus.set('Connected');
           this.connectionMessage.set(
-            `Your Twitch account is currently connected with TTS Helper.`
+            `Your Twitch account is currently connected with TTS Helper.`,
           );
         } else {
           this.connectionStatus.set('Expired');
           this.connectionMessage.set(
-            `You haven't used the app for a long time, to keep your account secure we time out our sessions after two weeks of no activity.`
+            `You haven't used the app for a long time, to keep your account secure we time out our sessions after two weeks of no activity.`,
           );
         }
 

@@ -12,6 +12,9 @@ import {
   WithId,
 } from './playback.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
+import { AudioActions } from '../state/audio/audio.actions';
+import { AudioStatus } from '../state/audio/audio.feature';
 
 @Injectable()
 export class PlaybackService {
@@ -26,18 +29,26 @@ export class PlaybackService {
   readonly audioFinished$ = new Subject<AudioId>();
 
   /**
+   * Emits when an audio source is skipped.
+   */
+  readonly audioSkipped$ = new Subject<void>();
+
+  /**
    * Emits when an audio playback state changes.
    */
   readonly playbackState$ = new BehaviorSubject<PlaybackState | undefined>(undefined);
 
   readonly isPaused$ = new BehaviorSubject<boolean>(false);
 
+  currentlyPlaying: AudioId | null = null;
+
   // The Application ref helps make the history / queue view update once an item is finished/started/skipped etc.
-  constructor(private readonly ref: ApplicationRef) {
+  constructor(private readonly store: Store, private readonly ref: ApplicationRef) {
     from(
       listen('playback::audio::start', (event) => {
         const id = event.payload as AudioId;
         this.audioStarted$.next(id);
+        this.currentlyPlaying = id;
 
         this.ref.tick();
       }),
@@ -50,6 +61,7 @@ export class PlaybackService {
       listen('playback::audio::finish', (event) => {
         const id = event.payload as AudioId;
         this.audioFinished$.next(id);
+        this.currentlyPlaying = null;
 
         this.ref.tick();
       }),
@@ -104,6 +116,20 @@ export class PlaybackService {
   async setPlaybackState(state: Partial<PlaybackState>): Promise<void> {
     const newState = await invoke('plugin:playback|set_playback_state', { state });
     this.playbackState$.next(newState as PlaybackState);
+  }
+
+  async skipCurrentlyPlaying() {
+    if (this.currentlyPlaying === null) {
+      return;
+    }
+
+    /**
+     * @TODO - Figure out how to get the Rust side to handle this instead.
+     */
+    this.setAudioState({ id: this.currentlyPlaying, skipped: true });
+    this.store.dispatch(AudioActions.updateAudioState({ id: this.currentlyPlaying, audioState: AudioStatus.skipped }));
+    this.audioSkipped$.next();
+    this.currentlyPlaying = null;
   }
 
   /**

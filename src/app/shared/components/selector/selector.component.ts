@@ -8,14 +8,14 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 type Option = {
   displayName: string;
   value: string | number;
-}
+};
 
 @Component({
   selector: 'app-selector',
   standalone: true,
   imports: [CommonModule, MatFormFieldModule, MatOptionModule, MatSelectModule, ReactiveFormsModule],
   templateUrl: './selector.component.html',
-  styleUrls: ['./selector.component.scss']
+  styleUrls: ['./selector.component.scss'],
 })
 export class SelectorComponent {
   @Input({ required: true }) options!: Option[];

@@ -28,7 +28,14 @@ axum = { version = "0.6", default-features = false, features = [
     "http1",
     "tokio",
     "tracing",
+    "ws",
 ] }
+futures = "0.3"
+tower = { version = "0.4", features = ["util"] }
+static_assertions = "1.1.0"
+tokio-tungstenite = "*"
+futures-channel = "0.3.29"
+futures-util = "0.3.29"
 
 # Errors
 anyhow = { workspace = true }
