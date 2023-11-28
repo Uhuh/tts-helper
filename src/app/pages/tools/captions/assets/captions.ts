@@ -27,6 +27,7 @@ export const captionsGenerator = (info: CaptionsInfo) => {
         font-size: ${info.fontSize};
         font-family: "Gill Sans", sans-serif;
         max-width: ${info.maxWidth};
+        overflow: hidden;
       }
       
       .fade-in {
