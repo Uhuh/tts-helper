@@ -6,6 +6,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { TwitchService } from '../../services/twitch.service';
 import { VTubeStudioService } from '../../services/vtubestudio.service';
+import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
+import { from, interval, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-sidenav',
@@ -21,6 +23,18 @@ export class SidenavComponent {
   
   isTwitchTokenValid$ = this.twitchService.isTokenValid$;
   isVTSConnected$ = this.vtsService.isConnected$;
+  newVersion = false;
+
+  private readonly updateChecker = interval(500)
+    .pipe(switchMap(() => from(checkUpdate())))
+    .subscribe((updater) => {
+      console.log(updater)
+      if (!updater.shouldUpdate) {
+        return;
+      }
+
+      this.newVersion = true;
+    });
 
   constructor(private readonly twitchService: TwitchService, private readonly vtsService: VTubeStudioService) {
     getVersion().then((v) => (this.appVersion = v));
@@ -30,5 +44,9 @@ export class SidenavComponent {
     if (!this.isMobile) return;
 
     this.nav.close();
+  }
+  
+  async update() {
+    await installUpdate();
   }
 }

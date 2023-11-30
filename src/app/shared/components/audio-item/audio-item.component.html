@@ -2,7 +2,7 @@
   <div class="info">
     <span class="username">
       <span class="name">{{ audio.username }}</span>
-      <img [src]="svg"/>
+      <img [alt]="audio.source" [src]="svg"/>
     </span>
     <span>{{ audio.createdAt | date : 'short' }}</span>
   </div>
