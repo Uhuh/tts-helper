@@ -20,13 +20,13 @@ export class AudioItemComponent {
   @Output() itemSkipped = new EventEmitter<number>();
 
   readonly AudioState = AudioStatus;
-  
+
   constructor(
     private readonly audioService: AudioService,
     private readonly playbackService: PlaybackService,
     private readonly ref: ApplicationRef,
     private readonly logService: LogService,
-    private readonly snackbar: MatSnackBar
+    private readonly snackbar: MatSnackBar,
   ) {}
 
   get svg() {
@@ -81,7 +81,7 @@ export class AudioItemComponent {
           'Dismiss',
           {
             panelClass: 'notification-error',
-          }
+          },
         );
       });
   }

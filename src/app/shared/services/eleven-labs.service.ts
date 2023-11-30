@@ -11,7 +11,7 @@ export class ElevenLabsService {
   public readonly apiKey$ = this.store.select(ElevenLabsFeature.selectApiKey);
   public readonly state$ = this.store.select(ElevenLabsFeature.selectElevenLabsState);
   public readonly apiUrl = 'https://api.elevenlabs.io/v1';
-  
+
   constructor(private readonly store: Store, private readonly elevenLabsApi: ElevenLabsApi) {
     this.apiKey$
       .pipe(
@@ -23,7 +23,7 @@ export class ElevenLabsService {
           return this.elevenLabsApi.getModels();
         }),
       ).subscribe((models) => {
-      this.store.dispatch(ElevenLabsActions.updateState({ partialState: { models } }));
+        this.store.dispatch(ElevenLabsActions.updateState({ partialState: { models } }));
       },
     );
   }

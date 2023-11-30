@@ -9,7 +9,7 @@ export class LogService {
   filename = 'tts-helper-logs.json' as const;
   logs$ = new BehaviorSubject<IUserLog[]>([]);
 
-  add(message: string, level: LogLevel, origin: string,) {
+  add(message: string, level: LogLevel, origin: string) {
     this.logs$.next([
       ...this.logs$.value,
       { message, level, origin, createdAt: new Date() },
