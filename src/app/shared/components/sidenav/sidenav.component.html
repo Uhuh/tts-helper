@@ -1,7 +1,12 @@
 <div class="wrapper">
-  <a [routerLink]="['home']" (click)="close()">
-    <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107"/>
-  </a>
+  <div class="home-download">
+    <a [routerLink]="['home']" (click)="close()">
+      <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107"/>
+    </a>
+    @if (newVersion) {
+      <img alt="download-button" (click)="update()" src="assets/download.svg" />
+    }
+  </div>
   <div class="nav-groups">
     <div class="nav-group">
       <span class="nav-header">My Connections</span>

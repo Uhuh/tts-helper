@@ -30,6 +30,26 @@
   }
 }
 
+.home-download {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  // Download SVG
+  & > img {
+    height: 42px;
+    width: 42px;
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 6px;
+    
+    &:hover {
+      background-color: var(--white-5);
+    }
+  }
+}
+
 .nav-groups {
   display: flex;
   flex-direction: column;

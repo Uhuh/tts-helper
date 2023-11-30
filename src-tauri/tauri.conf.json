@@ -34,7 +34,7 @@
     },
     "updater": {
       "active": true,
-      "dialog": true,
+      "dialog": false,
       "endpoints": [
         "https://s3.us-east-2.amazonaws.com/panku.io/latest.json"
       ],

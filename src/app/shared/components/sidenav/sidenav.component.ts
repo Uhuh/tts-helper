@@ -20,15 +20,14 @@ export class SidenavComponent {
   @Input({ required: true }) nav!: MatSidenav;
   @Input() isMobile = false;
   appVersion = '';
-  
+
   isTwitchTokenValid$ = this.twitchService.isTokenValid$;
   isVTSConnected$ = this.vtsService.isConnected$;
   newVersion = false;
 
-  private readonly updateChecker = interval(500)
+  private readonly updateChecker = interval(5000)
     .pipe(switchMap(() => from(checkUpdate())))
     .subscribe((updater) => {
-      console.log(updater)
       if (!updater.shouldUpdate) {
         return;
       }
@@ -45,7 +44,7 @@ export class SidenavComponent {
 
     this.nav.close();
   }
-  
+
   async update() {
     await installUpdate();
   }
