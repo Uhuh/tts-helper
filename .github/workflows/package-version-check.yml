@@ -26,6 +26,8 @@ jobs:
       - name: Compare package versions
         id: compare-versions
         run: |
+          echo $current-version
+          echo $base-version
           if [[ "$current-version" != "$base-version" ]]; then
             echo "status=bumped" >> $GITHUB_OUTPUT
           else
