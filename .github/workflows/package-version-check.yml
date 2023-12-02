@@ -1,0 +1,39 @@
+﻿name: Check if package.json version was bumped
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-package-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get current package version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+        id: current-version
+
+      - name: Checkout main branch
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      
+      - name: Get base branch package version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+        id: base-version
+
+      - name: Compare package versions
+        id: compare-versions
+        run: |
+          if [[ "${{ steps.current-version.outputs.current-version }}" != "${{ steps.base-version.outputs.current-version }}" ]]; then
+            echo "status=bumped" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Fail if package.json version was not bumped
+        if: steps.compare-versions.outputs.status == 'failure'
+        run: exit 1

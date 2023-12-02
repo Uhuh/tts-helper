@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "TTS Helper",
-    "version": "1.1.1"
+    "version": "1.1.2"
   },
   "tauri": {
     "allowlist": {
@@ -36,7 +36,7 @@
       "active": true,
       "dialog": false,
       "endpoints": [
-        "https://s3.us-east-2.amazonaws.com/panku.io/latest.json"
+        "https://github.com/Uhuh/tts-helper/releases/latest/download/latest.json"
       ],
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ4ODM0MzRFQjBERUU0MDgKUldRSTVONndUa09EMkpZMnQrckdEUktmWGtWdzJHRWpZeWJONEsyTldKbWY1NGRjRGxGN1NLR3oK",
       "windows": {
