@@ -36,4 +36,4 @@ jobs:
 
       - name: Fail if package.json version was not bumped
         if: steps.compare-versions.outputs.status == 'failure'
-        run: echo "status ${{ steps.compare-version.outputs.status }}" && exit 1
+        run: exit 1
