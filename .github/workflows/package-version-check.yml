@@ -27,9 +27,9 @@ jobs:
         id: compare-versions
         run: |
           if [[ "$current-version" != "$base-version" ]]; then
-            echo "package.json version was bumped"
+            echo "STATUS=bumped"
           else
-            echo "package.json version was not bumped"
+            echo "STATUS=failure"
           fi
 
       - name: Fail if package.json version was not bumped
