@@ -15,11 +15,11 @@ jobs:
       - name: Get current package version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
         id: current-version
-
+        
       - name: Get base branch package version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
         with:
-          branch: main
+          ref: main
         id: base-version
 
       - name: Compare package versions
