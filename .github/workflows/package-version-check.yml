@@ -19,7 +19,6 @@ jobs:
       - name: Get base branch package version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
         with:
-          path: package.json
           branch: main
         id: base-version
 
