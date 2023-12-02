@@ -27,9 +27,9 @@ jobs:
         id: compare-versions
         run: |
           if [[ "$current-version" != "$base-version" ]]; then
-            echo "STATUS=bumped"
+            echo "STATUS=bumped" >> $GITHUB_OUTPUT
           else
-            echo "STATUS=failure"
+            echo "STATUS=failure" >> $GITHUB_OUTPUT
           fi
 
       - name: Fail if package.json version was not bumped
