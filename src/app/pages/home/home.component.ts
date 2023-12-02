@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,8 +8,9 @@ import { LabelBlockComponent } from '../../shared/components/input-block/label-b
   styleUrls: ['./home.component.scss'],
   standalone: true,
   imports: [
-    LabelBlockComponent
-  ]
+    LabelBlockComponent,
+    RouterLink,
+  ],
 })
 export class HomeComponent {}
 

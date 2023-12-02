@@ -2,15 +2,6 @@
   <span>Home</span>
 </div>
 <div class="section">
-  <div class="warning">
-    <span>Heyo! Thanks for using this.</span>
-    <span>
-      This home page will always be accessible by clicking the logo in the top
-      left.
-    </span>
-    <span>I'll figure out what to do with this page soon enough.</span>
-  </div>
-  
   <app-label-block>
     <div header>Support</div>
     <div sub-text>Feedback, support or community</div>
@@ -18,4 +9,50 @@
       Join the support server <a href="https://discord.gg/jNDjNVeuJp" target="_blank">here</a>
     </div>
   </app-label-block>
+  
+  <div>
+    <div class="header">
+      <span>TTS Helper</span>
+    </div>
+    <span>TTS Helper is an application designed to help Twitch streamers integrate TTS into their streams to create more unique interactions with their viewers.</span>
+  </div>
+
+  <div>
+    <div class="header"><span>TTS Helper utilities</span></div>
+    <span>TTS Helper has a few things built in to make life easier.</span>
+    <ul>
+      <li><a [routerLink]="['/history']">History</a> - This will show the currently playing and all completed or skipped redeems.</li>
+      <li><a [routerLink]="['/queue']">Queue</a> - This will show the currently playing and all soon to play redeems.</li>
+      <li><a [routerLink]="['/chat-settings']">Chat Settings</a> - Twitch Affiliates/Partners get redeems. If you're just starting out on Twitch you don't have access to redeems. This area allows you to setup chat commands for your viewers so they can use it to invoke TTS.</li>
+      <li><a [routerLink]="['/tools']">Captions</a> - If you want captions shown in your OBS (or preferred streaming software) you can create a limited, but customizable captions box to display played TTS redeems.</li>
+      <li><a [routerLink]="['/moderation']">Moderation</a> - You can filter out redeems by banning words with this simplistic tool. It handles words and phrases separated by a comma.</li>
+      <li><a href="https://marketplace.elgato.com/product/tts-helper-ff8f9b6e-ca8a-42a8-9bbe-b12b900cbd89" target="_blank">StreamDeck Plugin</a> - Use the official StreamDeck TTS Helper plugin for some basic buttons.</li>
+    </ul>
+  </div>
+  
+  <div>
+    <div class="header"><span>Free third party services inside TTS Helper</span></div>
+    <span>TTS Helper has a few free to use third party services to help kickstart your TTS adventure.</span>
+    <ul>
+      <li>StreamElements - StreamElements offers a decent variety of TTS options. It's got a high rate limit, you realistically won't exceed it unless you spam every second.</li>
+      <li>TikTok - Offers all the silly TikTok voices. Gracefully hosted by <a href="https://github.com/Weilbyte" target="_blank">WeilByte</a>.</li>
+      <li>VTubeStudio - You can hookup a rigged model with VTubeStudio and TTS Helper will make the mouth move when you use the TTSHelperParameters</li>
+    </ul>
+  </div>
+  
+  <div class="warning">
+    <span>I know these lack tutorials. Please be patient. There will be some eventually.</span>
+  </div>
+  <div>
+    <div class="header"><span>Paid third party services inside TTS Helper</span></div>
+    <span>TTS Helper supports a number of third party services to make the TTS Helper experience better.</span>
+    <p>These are all optional to use.</p>
+    <ul>
+      <li><a href="https://aws.amazon.com/polly/" target="_blank">Amazon Polly</a> - A pay as you use TTS service. Fairly cheap and has great response times.</li>
+      <li><a href="https://elevenlabs.io/">ElevenLabs</a> - Natural sounding voices to give the returned responses a lot more personality. Can be expensive!</li>
+      <li><a href="https://platform.openai.com/docs/overview" target="_blank">OpenAI</a> - Personalize a ChatGPT model to act as a fictional character for your stream!</li>
+      <li><a href="https://azure.microsoft.com/en-us/products/ai-services/speech-to-text" target="_blank">Azure Speech to Text</a> - A way for the streamer to communicate with their personalized OpenAI model with their voice!</li>
+    </ul>
+  </div>
+  
 </div>

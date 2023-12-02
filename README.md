@@ -9,6 +9,7 @@ TTS Helper has a few things built in to make life easier.
 * Chat Settings - Twitch Affiliates/Partners get redeems. If you're just starting out on Twitch you don't have access to redeems. This area allows you to setup chat commands for your viewers so they can use it to invoke TTS.
 * Captions - If you want captions shown in your OBS (or preferred streaming software) you can create a limited, but customizable captions box to display played TTS redeems.
 * Moderation - You can filter out redeems by banning words with this simplistic tool. It handles words and phrases separated by a comma.
+* [StreamDeck Plugin](https://marketplace.elgato.com/product/tts-helper-ff8f9b6e-ca8a-42a8-9bbe-b12b900cbd89) - Use the official StreamDeck TTS Helper plugin for some basic buttons.
 
 ## Free third party services inside TTS Helper
 TTS Helper has a few free to use third party services to help kickstart your TTS adventure.
@@ -23,7 +24,7 @@ These are all optional to use.
 * [Amazon Polly](https://aws.amazon.com/polly/) - A pay as you use TTS service. Fairly cheap and has great response times.
 * [ElevenLabs](https://elevenlabs.io/) - Natural sounding voices to give the returned responses a lot more personality. Can be expensive!
 * [OpenAI](https://platform.openai.com/docs/overview) - Personalize a ChatGPT model to act as a fictional character for your stream!
-* [Azure Speech to Text](https://azure.microsoft.com/en-us/products/ai-services/speech-to-text) - A way for the streamer 
+* [Azure Speech to Text](https://azure.microsoft.com/en-us/products/ai-services/speech-to-text) - A way for the streamer to communicate with their personalized OpenAI model with their voice!
 
 ## Recommended IDE Setup
 
