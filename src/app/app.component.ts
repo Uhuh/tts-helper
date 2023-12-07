@@ -27,6 +27,7 @@ import { OpenAIState } from './shared/state/openai/openai.feature';
 import { OpenAIActions } from './shared/state/openai/openai.actions';
 import { ObsWebSocketService } from './shared/services/obs-websocket.service';
 import { StreamDeckWebSocketService } from './shared/services/streamdeck-websocket.service';
+import { VStreamService } from './shared/services/vstream.service';
 
 @Component({
   selector: 'app-root',
@@ -55,6 +56,7 @@ export class AppComponent {
     private readonly twitchPubSub: TwitchPubSub,
     private readonly twitchService: TwitchService,
     private readonly vtubeStudioService: VTubeStudioService,
+    private readonly vstreamService: VStreamService,
   ) {
     combineLatest([
       this.storageService.getFromStore<ConfigState>(this.settingsLocation, 'config'),

@@ -29,6 +29,8 @@ import { VTubeStudioFeature } from './app/shared/state/vtubestudio/vtubestudio.f
 import { OpenAIFeature } from './app/shared/state/openai/openai.feature';
 import { ObsWebSocketService } from './app/shared/services/obs-websocket.service';
 import { StreamDeckWebSocketService } from './app/shared/services/streamdeck-websocket.service';
+import { VStreamApi } from './app/shared/api/vstream/vstream.api';
+import { VStreamService } from './app/shared/services/vstream.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -61,6 +63,8 @@ bootstrapApplication(AppComponent, {
     TwitchApi,
     TwitchPubSub,
     VTubeStudioService,
+    VStreamApi,
+    VStreamService,
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideRouter(routes),
