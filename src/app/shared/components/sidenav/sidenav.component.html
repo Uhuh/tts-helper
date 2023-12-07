@@ -22,6 +22,16 @@
       </a>
       <a
         class="nav-link"
+        [routerLink]="['vstream']"
+        routerLinkActive="active"
+        (click)="close()"
+      >
+        <img alt="vstream-logo" ngSrc="assets/vstream.svg" height="22" width="21"/>
+        <span>VStream</span>
+        <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
+      </a>
+      <a
+        class="nav-link"
         [routerLink]="['vtubestudio']"
         routerLinkActive="active"
         (click)="close()"
