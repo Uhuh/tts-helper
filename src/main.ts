@@ -31,6 +31,8 @@ import { ObsWebSocketService } from './app/shared/services/obs-websocket.service
 import { StreamDeckWebSocketService } from './app/shared/services/streamdeck-websocket.service';
 import { VStreamApi } from './app/shared/api/vstream/vstream.api';
 import { VStreamService } from './app/shared/services/vstream.service';
+import { VStreamFeature } from './app/shared/state/vstream/vstream.feature';
+import { VStreamPubsubService } from './app/shared/services/vstream-pubsub.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -44,6 +46,7 @@ bootstrapApplication(AppComponent, {
       StoreModule.forFeature(OpenAIFeature),
       StoreModule.forFeature(TwitchFeature),
       StoreModule.forFeature(VTubeStudioFeature),
+      StoreModule.forFeature(VStreamFeature),
       MatSnackBarModule,
       StoreDevtoolsModule.instrument({
         maxAge: 25,
@@ -65,6 +68,7 @@ bootstrapApplication(AppComponent, {
     VTubeStudioService,
     VStreamApi,
     VStreamService,
+    VStreamPubsubService,
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideRouter(routes),

@@ -28,6 +28,9 @@ import { OpenAIActions } from './shared/state/openai/openai.actions';
 import { ObsWebSocketService } from './shared/services/obs-websocket.service';
 import { StreamDeckWebSocketService } from './shared/services/streamdeck-websocket.service';
 import { VStreamService } from './shared/services/vstream.service';
+import { VStreamState } from './shared/state/vstream/vstream.feature';
+import { VStreamActions } from './shared/state/vstream/vstream.actions';
+import { VStreamPubsubService } from './shared/services/vstream-pubsub.service';
 
 @Component({
   selector: 'app-root',
@@ -57,6 +60,7 @@ export class AppComponent {
     private readonly twitchService: TwitchService,
     private readonly vtubeStudioService: VTubeStudioService,
     private readonly vstreamService: VStreamService,
+    private readonly vstreamPubSub: VStreamPubsubService,
   ) {
     combineLatest([
       this.storageService.getFromStore<ConfigState>(this.settingsLocation, 'config'),
@@ -65,15 +69,25 @@ export class AppComponent {
       this.storageService.getFromStore<AzureState>(this.settingsLocation, 'azure'),
       this.storageService.getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs'),
       this.storageService.getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio'),
+      this.storageService.getFromStore<VStreamState>(this.settingsLocation, 'vstream'),
     ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([config, openai, twitch, azure, elevenLabs, vtubeStudio]) => {
+      .subscribe(([
+        config,
+        openai,
+        twitch,
+        azure,
+        elevenLabs,
+        vtubeStudio,
+        vstream,
+      ]) => {
         this.handleGlobalData(config);
         this.handleOpenAIData(openai);
         this.handleTwitchData(twitch);
         this.handleAzureData(azure);
         this.handleElevenLabsData(elevenLabs);
         this.handleVTubeStudioData(vtubeStudio);
+        this.handleVStreamData(vstream);
       });
 
     /**
@@ -116,6 +130,12 @@ export class AppComponent {
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'openai', state);
       });
+    
+    this.vstreamService.state$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => {
+        this.storageService.saveToStore(this.settingsLocation, 'vstream', state);
+      })
   }
 
   handleGlobalData(data: { value: ConfigState } | null) {
@@ -182,6 +202,16 @@ export class AppComponent {
 
     this.store.dispatch(
       VTubeStudioActions.updateState({ partialState: data.value }),
+    );
+  }
+
+  handleVStreamData(data: { value: VStreamState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.store.dispatch(
+      VStreamActions.updateState({ partialState: data.value }),
     );
   }
 }
