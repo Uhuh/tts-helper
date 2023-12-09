@@ -28,7 +28,7 @@
       >
         <img alt="vstream-logo" ngSrc="assets/vstream.svg" height="22" width="21"/>
         <span>VStream</span>
-        <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
+        <div class="connection" [ngClass]="{'connected': isVStreamConnected$ | async }"></div>
       </a>
       <a
         class="nav-link"

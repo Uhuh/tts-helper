@@ -8,6 +8,7 @@ import { TwitchService } from '../../services/twitch.service';
 import { VTubeStudioService } from '../../services/vtubestudio.service';
 import { checkUpdate, installUpdate } from '@tauri-apps/api/updater';
 import { from, interval, switchMap } from 'rxjs';
+import { VStreamService } from '../../services/vstream.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -23,6 +24,7 @@ export class SidenavComponent {
 
   isTwitchTokenValid$ = this.twitchService.isTokenValid$;
   isVTSConnected$ = this.vtsService.isConnected$;
+  isVStreamConnected$ = this.vstreamService.isTokenValid$;
   newVersion = false;
 
   private readonly updateChecker = interval(5000)
@@ -35,7 +37,11 @@ export class SidenavComponent {
       this.newVersion = true;
     });
 
-  constructor(private readonly twitchService: TwitchService, private readonly vtsService: VTubeStudioService) {
+  constructor(
+    private readonly twitchService: TwitchService,
+    private readonly vtsService: VTubeStudioService,
+    private readonly vstreamService: VStreamService,
+  ) {
     getVersion().then((v) => (this.appVersion = v));
   }
 
