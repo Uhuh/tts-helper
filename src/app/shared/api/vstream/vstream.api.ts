@@ -1,12 +1,14 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import CryptoJS from 'crypto-js';
+import { VStreamTokenResponse } from '../../state/vstream/vstream.feature';
 
 @Injectable()
 export class VStreamApi {
   private readonly clientId = '018c3d0a-6e23-7000-b15f-3bf29bb3111d';
   private readonly redirectUri = 'http://localhost:12583/auth/vstream';
   private readonly url = 'https://api.vstream.com';
+  private readonly scopes = ['chat:write', 'openid', 'offline_access', 'profile'];
   #tokenVerifier = '';
 
   constructor(private readonly http: HttpClient) {}
@@ -35,18 +37,38 @@ export class VStreamApi {
     /**
      * Default scope, I doubt I'll ever need this but we'll see.
      */
-    authUrl.searchParams.append('scope', 'chat:write');
+    authUrl.searchParams.append('scope', this.scopes.join(' '));
     authUrl.searchParams.append('code_challenge', challenge);
     authUrl.searchParams.append('code_challenge_method', 'S256');
+    // This gives us the users claims, like profile/picture/channelId
+    authUrl.searchParams.append('prompt', 'consent');
 
     return authUrl.toString();
   }
+
+  refreshAccessToken(refreshToken: string) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
+
+    const url = `${this.url}/oidc/token`;
+    const params = new HttpParams()
+      .set('grant_type', 'refresh_token')
+      .set('refresh_token', refreshToken)
+      .set('client_id', this.clientId);
+
+    return this.http.post<VStreamTokenResponse>(url, params, {
+      headers,
+    });
+  }
+
 
   validate(code: string) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
     });
 
+    const url = `${this.url}/oidc/token`;
     const params = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('code_verifier', this.#tokenVerifier)
@@ -54,13 +76,9 @@ export class VStreamApi {
       .set('redirect_uri', this.redirectUri)
       .set('client_id', this.clientId);
 
-    const url = `${this.url}/oidc/token`;
 
-    this.http.post(url, params, {
+    return this.http.post<VStreamTokenResponse>(url, params, {
       headers,
-    }).subscribe({
-      next: (c) => console.info(c),
-      error: (e) => console.error(e),
     });
   }
 }
