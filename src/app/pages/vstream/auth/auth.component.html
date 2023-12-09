@@ -7,11 +7,11 @@
     </span>
 
     @if (isTokenValid()) {
-      <div class="twitch-auth" (click)="signOut()">
+      <div class="auth" (click)="signOut()">
         sign-out
       </div>
     } @else {
-      <a target="_blank" [href]="loginUrl" class="twitch-auth">
+      <a target="_blank" [href]="loginUrl" class="auth">
         authorize
       </a>
     }
