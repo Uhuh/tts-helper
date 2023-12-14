@@ -18,7 +18,11 @@ export type VStreamToken = {
   expiresIn: number;
 };
 
-export interface VStreamState {
+export type VStreamSettingsState = {
+  randomChance: number;
+};
+
+export type VStreamState = {
   token: VStreamToken;
   channelInfo: {
     username: string;
@@ -26,7 +30,8 @@ export interface VStreamState {
     pictureUrl: string;
     channelUrl: string;
   };
-}
+  settings: VStreamSettingsState
+};
 
 const initialState: VStreamState = {
   token: {
@@ -42,6 +47,9 @@ const initialState: VStreamState = {
     pictureUrl: '',
     channelUrl: '',
   },
+  settings: {
+    randomChance: 0,
+  },
 };
 
 export const VStreamFeature = createFeature({
@@ -51,6 +59,13 @@ export const VStreamFeature = createFeature({
     on(VStreamActions.updateState, (state, { partialState }) => ({
       ...state,
       ...partialState,
+    })),
+    on(VStreamActions.updateSettings, (state, { partialSettings }) => ({
+      ...state,
+      settings: {
+        ...state.settings,
+        ...partialSettings,
+      },
     })),
     on(VStreamActions.updateToken, (state, { token }) => ({
       ...state,
