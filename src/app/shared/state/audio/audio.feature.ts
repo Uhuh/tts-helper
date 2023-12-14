@@ -13,7 +13,7 @@ export enum AudioStatus {
   finished,
 }
 
-export type AudioSource = 'youtube' | 'twitch' | 'tts-helper' | 'gpt' | 'azure';
+export type AudioSource = 'youtube' | 'twitch' | 'tts-helper' | 'gpt' | 'azure' | 'vstream';
 
 export interface AudioItem {
   id: number;
