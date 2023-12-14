@@ -26,7 +26,9 @@ import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchService } from './twitch.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AudioService {
   public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
   public readonly queuedItems$ = this.audioItems$

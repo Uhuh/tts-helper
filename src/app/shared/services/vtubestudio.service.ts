@@ -16,7 +16,9 @@ import { VTubeStudioFeature, VTubeStudioState } from '../state/vtubestudio/vtube
 import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
 import { BehaviorSubject, interval } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class VTubeStudioService {
   private readonly vtsBasics = {
     apiName: 'VTubeStudioPublicAPI',

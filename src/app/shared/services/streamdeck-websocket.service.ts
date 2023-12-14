@@ -6,7 +6,9 @@ import { StreamDeckActions, StreamDeckEvent } from './streamdeck-websocket.inter
 import { LogService } from './logs.service';
 import { PlaybackService } from './playback.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class StreamDeckWebSocketService {
   private readonly connection = 'ws://localhost:17448';
   private socket$ = webSocket<StreamDeckEvent>(this.connection);

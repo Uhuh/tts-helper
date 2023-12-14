@@ -6,7 +6,9 @@ import { ElevenLabsApi } from '../api/eleven-labs/eleven-labs.api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ElevenLabsService {
   public readonly apiKey$ = this.store.select(ElevenLabsFeature.selectApiKey);
   public readonly state$ = this.store.select(ElevenLabsFeature.selectElevenLabsState);
