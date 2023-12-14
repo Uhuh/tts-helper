@@ -30,7 +30,7 @@ import { StreamDeckWebSocketService } from './shared/services/streamdeck-websock
 import { VStreamService } from './shared/services/vstream.service';
 import { VStreamState } from './shared/state/vstream/vstream.feature';
 import { VStreamActions } from './shared/state/vstream/vstream.actions';
-import { VStreamPubsubService } from './shared/services/vstream-pubsub.service';
+import { VStreamPubSubService } from './shared/services/vstream-pubsub.service';
 
 @Component({
   selector: 'app-root',
@@ -60,7 +60,7 @@ export class AppComponent {
     private readonly twitchService: TwitchService,
     private readonly vtubeStudioService: VTubeStudioService,
     private readonly vstreamService: VStreamService,
-    private readonly vstreamPubSub: VStreamPubsubService,
+    private readonly vstreamPubSub: VStreamPubSubService,
   ) {
     combineLatest([
       this.storageService.getFromStore<ConfigState>(this.settingsLocation, 'config'),
@@ -130,12 +130,12 @@ export class AppComponent {
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'openai', state);
       });
-    
+
     this.vstreamService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'vstream', state);
-      })
+      });
   }
 
   handleGlobalData(data: { value: ConfigState } | null) {
