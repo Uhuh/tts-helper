@@ -1,8 +1,13 @@
-﻿type VStreamChannelId = `chan_${string}`;
+﻿type VStreamTransactionID = `trans_${string}`;
+type VStreamChannelID = `chan_${string}`;
+type VStreamVideoID = `video_${string}`;
+type VStreamEmojiID = `emoji_${string}`;
+type VStreamChatID = `chat_${string}`;
+type VStreamSubID = `sub_${string}`;
 
 type VStreamChatter = {
   displayName: string;
-  id: VStreamChannelId;
+  id: VStreamChannelID;
   status: 'active' | string;
   username: string;
 };
@@ -21,13 +26,13 @@ type VStreamTextNode = {
 type VStreamEmojiNode = {
   type: 'emoji';
   originalActionText: string;
-  id: `emoji_${string}`;
-  channelID: VStreamChannelId | null;
+  id: VStreamEmojiID;
+  channelID: VStreamChannelID | null;
 };
 
 type VStreamMentionNode = {
   type: 'mention';
-  channelID: VStreamChannelId;
+  channelID: VStreamChannelID;
   originalUsername: string;
 };
 
@@ -58,14 +63,14 @@ export type VStreamEventChatCreated = {
   type: 'chat_created';
   timestamp: string;
   data: {
-    chatterChannelID: VStreamChannelId;
+    chatterChannelID: VStreamChannelID;
     color: `#${string}`;
     createdAt: string;
-    id: `chat_${string}`;
+    id: VStreamChatID;
     nodes: VStreamNodes;
     text: string;
-    videoChannelID: VStreamChannelId;
-    videoID: `video_${string}`;
+    videoChannelID: VStreamChannelID;
+    videoID: VStreamVideoID;
     chatter: VStreamChatter;
   };
 };
@@ -81,8 +86,8 @@ export type VStreamEventUpLift = {
   timestamp: string;
   data: {
     amount: VSteamAmount;
-    channelID: VStreamChannelId;
-    id: `trans_${string}`;
+    channelID: VStreamChannelID;
+    id: VStreamTransactionID;
     isAnonymous: boolean;
     message: {
       nodes: VStreamNodes;
@@ -91,7 +96,7 @@ export type VStreamEventUpLift = {
     level: number;
     score: number;
     sender: VStreamChatter;
-    videoID: `video_${string}`;
+    videoID: VStreamVideoID;
   };
 };
 
@@ -100,8 +105,8 @@ export type VStreamEventSubscriptionRenew = {
   timestamp: string;
   data: {
     amount: VSteamAmount;
-    channelID: VStreamChannelId;
-    id: `trans_${string}`;
+    channelID: VStreamChannelID;
+    id: VStreamTransactionID;
     message: {
       nodes: VStreamNodes;
       text: string;
@@ -111,7 +116,7 @@ export type VStreamEventSubscriptionRenew = {
     score: number;
     streakMonth: number;
     subscriber: VStreamChatter;
-    subscriptionID: `sub_${string}`;
+    subscriptionID: VStreamSubID;
   };
 };
 
@@ -119,8 +124,8 @@ export type VStreamEventSubscriptionGifted = {
   type: 'subscriptions_gifted';
   timestamp: string;
   data: {
-    channelID: VStreamChannelId;
-    id: `trans_${string}`;
+    channelID: VStreamChannelID;
+    id: VStreamTransactionID;
     gifter: VStreamChatter;
     tier: number;
     subscribers: VStreamChatter[];
