@@ -6,20 +6,3 @@
   color: (--text);
   margin: 0;
 }
-
-.example {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-
-  .example-text {
-    color: var(--text-inactive);
-
-    font-size: 16px;
-    font-family: monospace;
-
-    &:first-child {
-      margin-bottom: 10px;
-    }
-  }
-}

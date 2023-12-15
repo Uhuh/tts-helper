@@ -25,16 +25,11 @@
   <app-label-block>
     <div header>Gift subs message</div>
     <div sub-text>Customize what your TTS says when a user gifts subs!</div>
-    <div class="warning">
-      <app-gift-variables></app-gift-variables>
-      <div class="example">
-        Example:
-        <span class="example-text">
-          Thanks <span class="var">username</span> for the <span class="var">amount</span> subs!
-        </span>
-        Will turn into: <i class="example-text">Thanks Mei for the 2 subs!</i>
-      </div>
-    </div>
+    <app-variable-table [variables]="variables">
+      <span header>Use variables to reference info related to the gift</span>
+      <span example-text>Thanks <span class="var">username</span> for the <span class="var">amount</span> subs!</span>
+      <span result-text>Thanks Mei for the 2 subs!</span>
+    </app-variable-table>
     <textarea
       placeholder="Thanks {username} for the {amount} subs!"
       [formControl]="giftMessage"

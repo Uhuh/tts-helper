@@ -3,12 +3,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
-import { GiftVariablesComponent } from './gift-variables/gift-variables.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { NgIf } from '@angular/common';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
+import {
+  VariableTableComponent,
+  VariableTableOption,
+} from '../../../shared/components/variable-table/variable-table.component';
 
 @Component({
   selector: 'app-subs',
@@ -20,10 +23,10 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
     NgIf,
     InputComponent,
     MatFormFieldModule,
-    GiftVariablesComponent,
     FormsModule,
     ReactiveFormsModule,
     LabelBlockComponent,
+    VariableTableComponent,
   ],
 })
 export class SubsComponent {
@@ -33,6 +36,11 @@ export class SubsComponent {
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
   giftMessage = new FormControl('', { nonNullable: true });
+
+  readonly variables: VariableTableOption[] = [
+    { variable: 'amount', descriptor: 'The number of subs gifted' },
+    { variable: 'username', descriptor: 'The username of the gifter' },
+  ];
 
   constructor(private readonly twitchService: TwitchService) {
     this.twitchService.subsInfo$
@@ -53,16 +61,16 @@ export class SubsComponent {
       .pipe(
         takeUntilDestroyed(),
         debounceTime(1000),
-        filter(() => this.charLimit.valid)
+        filter(() => this.charLimit.valid),
       )
       .subscribe((charLimit) =>
-        this.twitchService.updateSubCharLimit(Number(charLimit))
+        this.twitchService.updateSubCharLimit(Number(charLimit)),
       );
 
     this.giftMessage.valueChanges
       .pipe(takeUntilDestroyed(), debounceTime(1000))
       .subscribe((giftMessage) =>
-        this.twitchService.updateGiftMessage(giftMessage)
+        this.twitchService.updateGiftMessage(giftMessage),
       );
   }
 }
