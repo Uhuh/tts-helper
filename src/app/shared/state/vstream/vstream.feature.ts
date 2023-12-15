@@ -11,7 +11,7 @@ export type VStreamTokenResponse = {
 };
 
 export type VStreamToken = {
-  expireDate: number,
+  expireDate: number;
   accessToken: string;
   refreshToken: string;
   idToken: string;
@@ -22,15 +22,38 @@ export type VStreamSettingsState = {
   randomChance: number;
 };
 
+export type VStreamChannelState = {
+  username: string;
+  channelId: string;
+  pictureUrl: string;
+  channelUrl: string;
+};
+
+export type VStreamCustomMessageState = {
+  enabled: boolean;
+  enabledGpt: boolean;
+  customMessage: string;
+};
+
+export type VStreamSubscriptionSettingsState = {
+  renew: VStreamCustomMessageState;
+  gifted: VStreamCustomMessageState;
+}
+
 export type VStreamState = {
   token: VStreamToken;
-  channelInfo: {
-    username: string;
-    channelId: string;
-    pictureUrl: string;
-    channelUrl: string;
-  };
-  settings: VStreamSettingsState
+  channelInfo: VStreamChannelState;
+  settings: VStreamSettingsState;
+  uplift: VStreamCustomMessageState;
+  meteorShower: VStreamCustomMessageState;
+  subscriptions: VStreamSubscriptionSettingsState;
+  followers: VStreamCustomMessageState;
+};
+
+const initialCustomMessage: VStreamCustomMessageState = {
+  customMessage: '',
+  enabledGpt: false,
+  enabled: false,
 };
 
 const initialState: VStreamState = {
@@ -50,6 +73,13 @@ const initialState: VStreamState = {
   settings: {
     randomChance: 0,
   },
+  uplift: initialCustomMessage,
+  meteorShower: initialCustomMessage,
+  subscriptions: {
+    renew: initialCustomMessage,
+    gifted: initialCustomMessage,
+  },
+  followers: initialCustomMessage,
 };
 
 export const VStreamFeature = createFeature({
@@ -60,10 +90,58 @@ export const VStreamFeature = createFeature({
       ...state,
       ...partialState,
     })),
+    on(VStreamActions.updateChannel, (state, { partialChannel }) => ({
+      ...state,
+      channelInfo: {
+        ...state.channelInfo,
+        ...partialChannel,
+      },
+    })),
     on(VStreamActions.updateSettings, (state, { partialSettings }) => ({
       ...state,
       settings: {
         ...state.settings,
+        ...partialSettings,
+      },
+    })),
+    on(VStreamActions.updateUpLift, (state, { partialSettings }) => ({
+      ...state,
+      uplift: {
+        ...state.uplift,
+        ...partialSettings,
+      },
+    })),
+    on(VStreamActions.updateMeteorShower, (state, { partialSettings }) => ({
+      ...state,
+      meteorShower: {
+        ...state.meteorShower,
+        ...partialSettings,
+      },
+    })),
+    on(VStreamActions.updateRenewalSubscriptions, (state, { partialSettings }) => ({
+      ...state,
+      subscriptions: {
+        ...state.subscriptions,
+        renew: {
+          ...state.subscriptions.renew,
+          ...partialSettings,
+        },
+      },
+    })),
+    on(VStreamActions.updateGiftedSubscriptions, (state, { partialSettings }) => ({
+      ...state,
+      subscriptions: {
+        ...state.subscriptions,
+        gifted: {
+          ...state.subscriptions.gifted,
+          ...partialSettings,
+        },
+      },
+    })),
+    on(VStreamActions.updateFollowers, (state, { partialSettings }) => ({
+      ...state,
+      followers: {
+        ...state.followers,
         ...partialSettings,
       },
     })),
@@ -77,8 +155,11 @@ export const VStreamFeature = createFeature({
         expiresIn: token.expires_in,
       },
     })),
-    on(VStreamActions.clearState, () => ({
-      ...initialState,
+    on(VStreamActions.clearToken, (state) => ({
+      ...state,
+      token: {
+        ...initialState.token,
+      },
     })),
   ),
 });
