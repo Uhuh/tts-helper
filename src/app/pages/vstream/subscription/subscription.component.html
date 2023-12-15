@@ -1,0 +1,73 @@
+<div class="header">
+  <span>Subscription Settings</span>
+</div>
+
+<app-label-block>
+  <div header>Enable normal TTS</div>
+  <div sub-text>If enabled, TTS will read your custom message.</div>
+  <app-toggle
+    [control]="renewSettings.controls.enabled"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Enable normal ChatGPT</div>
+  <div sub-text>If enabled, ChatGPT will receive the custom message instead.</div>
+  <app-toggle
+    [control]="renewSettings.controls.enabledGpt"
+  />
+</app-label-block>
+
+<app-variable-table [variables]="renewVariables">
+  <span header>Use variables to reference info related to the subscription.</span>
+  <span example-text>Thanks <span class="var">username</span> for subscribing for <span
+    class="var">renewalMonth</span> months!</span>
+  <span result-text>Thanks Panku for subscribing for 2 months!</span>
+</app-variable-table>
+
+<app-label-block>
+  <div header>Custom response</div>
+  <div sub-text>This text will be used for TTS if enabled.</div>
+  <textarea
+    [formControl]="renewSettings.controls.customMessage"
+    placeholder="Thanks {username} for subscribing for {renewalMonth} months!"
+  ></textarea>
+</app-label-block>
+
+<hr/>
+
+<div class="header">
+  <span>Gift Subscription Settings</span>
+</div>
+
+<app-label-block>
+  <div header>Enable normal TTS</div>
+  <div sub-text>If enabled, TTS will read your custom message.</div>
+  <app-toggle
+    [control]="giftedSettings.controls.enabled"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Enable normal ChatGPT</div>
+  <div sub-text>If enabled, ChatGPT will receive the custom message instead.</div>
+  <app-toggle
+    [control]="giftedSettings.controls.enabledGpt"
+  />
+</app-label-block>
+
+<app-variable-table [variables]="giftedVariables">
+  <span header>Use variables to reference info related to the subscription.</span>
+  <span example-text>Thanks <span class="var">gifter</span> for gifting <span class="var">amount</span> tier <span
+    class="var">tier</span> subs!</span>
+  <span result-text>Thanks Panku for gifting for 2 tier 2 subs!</span>
+</app-variable-table>
+
+<app-label-block>
+  <div header>Custom response</div>
+  <div sub-text>This text will be used for TTS if enabled.</div>
+  <textarea
+    [formControl]="giftedSettings.controls.customMessage"
+    placeholder="Thanks {gifter} for gifting {amount} tier {tier} subs!"
+  ></textarea>
+</app-label-block>
