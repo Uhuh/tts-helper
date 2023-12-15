@@ -1,0 +1,33 @@
+<div class="header">
+  <span>Meteor Shower Settings</span>
+</div>
+
+<div class="warning red">
+  <span>Meteor Showers are not implemented in the API yet.</span>
+  <span>Feel free to set this up for now to be prepared.</span>
+</div>
+
+<app-label-block>
+  <div header>Enable normal TTS</div>
+  <div sub-text>If enabled, TTS will read your custom message.</div>
+  <app-toggle
+    [control]="settings.controls.enabled"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Enable normal ChatGPT</div>
+  <div sub-text>If enabled, ChatGPT will receive the custom message instead.</div>
+  <app-toggle
+    [control]="settings.controls.enabledGpt"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Custom response</div>
+  <div sub-text>This text will be used for TTS if enabled.</div>
+  <textarea
+    [formControl]="settings.controls.customMessage"
+    placeholder="Thanks {username} for the {formatted} uppies!"
+  ></textarea>
+</app-label-block>
