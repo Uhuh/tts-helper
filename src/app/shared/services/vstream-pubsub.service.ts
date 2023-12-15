@@ -52,12 +52,14 @@ export class VStreamPubSubService {
       this.vstreamService.meteorShowerSettings$,
       this.vstreamService.subscriptionSettings$,
       this.vstreamService.upliftSettings$,
+      this.vstreamService.followerSettings$,
     ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([meteorShower, subscription, uplift]) => {
+      .subscribe(([meteorShower, subscription, uplift, follower]) => {
         this.meteorShowerSettings = meteorShower;
         this.subscriptionSettings = subscription;
         this.upliftSettings = uplift;
+        this.followerSettings = follower;
       });
 
     this.openaiService.settings$
