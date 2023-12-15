@@ -3,7 +3,9 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import CryptoJS from 'crypto-js';
 import { VStreamTokenResponse } from '../../state/vstream/vstream.feature';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class VStreamApi {
   private readonly clientId = '018c3d0a-6e23-7000-b15f-3bf29bb3111d';
   private readonly redirectUri = 'http://localhost:12583/auth/vstream';
@@ -62,7 +64,6 @@ export class VStreamApi {
     });
   }
 
-
   validate(code: string) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -78,6 +79,30 @@ export class VStreamApi {
 
 
     return this.http.post<VStreamTokenResponse>(url, params, {
+      headers,
+    });
+  }
+
+  getUsersChannelId(username: string, token: string) {
+    const url = `${this.url}/channels/lookup?username=${username}`;
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.get<{ data: { id: string } }>(url, {
+      headers,
+    });
+  }
+
+  authenticatePubSub(token: string) {
+    const url = `${this.url}/events/connect`;
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post<{
+      data: { token: string }
+    }>(url, undefined, {
       headers,
     });
   }
