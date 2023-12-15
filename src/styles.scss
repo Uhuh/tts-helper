@@ -61,7 +61,10 @@ $my-app-theme: mat.define-dark-theme(
   --blue-5: rgba(0, 119, 255, 0.05);
   --purple: rgba(89, 24, 225, 1);
   --yellow: rgba(249, 189, 36, 1);
+  
   --green: rgb(21, 180, 28);
+  --green-5: rgba(21, 180, 28, 0.05);
+  
   --white: rgba(255, 255, 255, 1);
   --white-5: rgba(255, 255, 255, 0.05);
   --white-10: rgba(255, 255, 255, 0.1);
@@ -72,8 +75,11 @@ $my-app-theme: mat.define-dark-theme(
   --header: rgba(255, 255, 255, 0.8);
 
   --orange: #f09845;
+  --orange-5: rgba(240, 152, 69, 0.05);
 
   --red: #b40000;
+  --red-5: rgb(180, 0, 0, 0.05);
+
   --off-red-bg: rgba(180, 0, 0, 0.37);
   --off-green-bg: rgba(0, 140, 0, 0.37);
 }
@@ -136,7 +142,7 @@ a {
   font-weight: 400;
   font-size: 28px;
   padding-bottom: 2rem;
-  
+
   span {
     text-decoration: underline;
     text-decoration-color: var(--blue);
@@ -157,7 +163,7 @@ app-toggle {
   .header {
     color: var(--header);
     font-size: 24px;
-    padding-bottom: 1rem;
+    padding-bottom: 0;
   }
 }
 
@@ -169,6 +175,21 @@ app-toggle {
   border-radius: 6px;
   background-color: var(--blue-5);
   border: 1px solid var(--blue);
+
+  &.orange {
+    border: 1px solid var(--orange);
+    background-color: var(--orange-5);
+  }
+
+  &.red {
+    border: 1px solid var(--red);
+    background-color: var(--red-5);
+  }
+
+  &.green {
+    border: 1px solid var(--green);
+    background-color: var(--green-5);
+  }
 
   a {
     color: var(--blue);
@@ -207,6 +228,24 @@ textarea {
   &:focus,
   &:active {
     outline: 1px solid var(--blue) !important;
+  }
+}
+
+// This is for variable tables to show example usage
+.example {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+
+  .example-text {
+    color: var(--text-inactive);
+
+    font-size: 16px;
+    font-family: monospace;
+
+    &:first-child {
+      margin-bottom: 10px;
+    }
   }
 }
 
