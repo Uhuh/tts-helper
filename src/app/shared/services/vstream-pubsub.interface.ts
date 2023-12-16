@@ -110,7 +110,7 @@ export type VStreamEventSubscriptionRenew = {
     message: {
       nodes: VStreamNodes;
       text: string;
-    };
+    } | null;
     renewalMonth: number;
     tier: number;
     score: number;

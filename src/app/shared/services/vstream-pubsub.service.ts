@@ -173,13 +173,13 @@ export class VStreamPubSubService {
 
   async handleSubRenew(renew: VStreamEventSubscriptionRenew) {
     const { customMessage, enabled, enabledGpt } = this.subscriptionSettings.renew;
-    const { tier, streakMonth, renewalMonth, message: { text }, subscriber: { username } } = renew.data;
+    const { tier, streakMonth, renewalMonth, message, subscriber: { username } } = renew.data;
 
     const parsedInput = customMessage
       .replaceAll(/{tier}/g, `${tier}`)
       .replaceAll(/{streakMonth}/g, `${streakMonth}`)
       .replaceAll(/{renewalMonth}/g, `${renewalMonth}`)
-      .replaceAll(/{text}/g, text)
+      .replaceAll(/{text}/g, message?.text ?? '')
       .replaceAll(/{username}/g, username);
 
     this.handleCustomMessage(parsedInput, enabled, enabledGpt, username);
