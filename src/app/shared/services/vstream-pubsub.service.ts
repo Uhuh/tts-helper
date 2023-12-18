@@ -142,12 +142,10 @@ export class VStreamPubSubService {
       .replaceAll(/{text}/g, text)
       .replaceAll(/{username}/g, username);
 
-    this.handleCustomMessage(parsedInput, enabled, enabledGpt, username);
+    this.handleCustomMessage(parsedInput ?? text, enabled, enabledGpt, username);
   }
 
   async handleFollower(follower: VStreamEventNewFollower) {
-    console.log(follower);
-
     const { customMessage, enabled, enabledGpt } = this.followerSettings;
     const { username } = follower.data;
 
@@ -175,14 +173,15 @@ export class VStreamPubSubService {
     const { customMessage, enabled, enabledGpt } = this.subscriptionSettings.renew;
     const { tier, streakMonth, renewalMonth, message, subscriber: { username } } = renew.data;
 
+    const subMessage = message?.text ?? '';
     const parsedInput = customMessage
       .replaceAll(/{tier}/g, `${tier}`)
       .replaceAll(/{streakMonth}/g, `${streakMonth}`)
       .replaceAll(/{renewalMonth}/g, `${renewalMonth}`)
-      .replaceAll(/{text}/g, message?.text ?? '')
+      .replaceAll(/{text}/g, subMessage)
       .replaceAll(/{username}/g, username);
 
-    this.handleCustomMessage(parsedInput, enabled, enabledGpt, username);
+    this.handleCustomMessage(parsedInput ?? subMessage, enabled, enabledGpt, username);
   }
 
   async handleChatMessage(chat: VStreamEventChatCreated) {
