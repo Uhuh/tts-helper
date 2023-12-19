@@ -16,7 +16,9 @@ import { Store } from '@ngrx/store';
 import { AudioActions } from '../state/audio/audio.actions';
 import { AudioStatus } from '../state/audio/audio.feature';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class PlaybackService {
   /**
    * Emits when an audio source starts playing.

@@ -13,7 +13,9 @@ type ObsEvent = {
   text?: string;
 };
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ObsWebSocketService {
   private readonly connection = 'ws://localhost:37891';
   private socket$ = webSocket(this.connection);

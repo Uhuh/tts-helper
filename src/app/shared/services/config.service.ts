@@ -11,7 +11,9 @@ import {
 import { GlobalConfigActions } from '../state/config/config.actions';
 import { PlaybackService } from './playback.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ConfigService {
   public readonly state$ = this.store.select(ConfigFeature.selectGlobalConfigState);
   public readonly streamElements$ = this.store.select(ConfigFeature.selectStreamElements);

@@ -1,0 +1,30 @@
+:host {
+  display: contents;
+}
+
+.auth {
+  color: var(--header);
+  padding: 4px 8px;
+  border-radius: 4px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--sidebar);
+  }
+}
+
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0.5rem 0;
+}
+
+.status {
+  font-size: 20px;
+  color: var(--red);
+}
+
+.valid {
+  color: var(--green);
+}

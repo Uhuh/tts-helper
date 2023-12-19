@@ -18,7 +18,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { OpenAIService } from './openai.service';
 import { TwitchService } from './twitch.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AzureSttService {
   public readonly subscriptionKey$ = this.store.select(AzureFeature.selectSubscriptionKey);
   public readonly region$ = this.store.select(AzureFeature.selectRegion);

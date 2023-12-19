@@ -1,0 +1,20 @@
+<div class="warning green">
+  <ng-content select="[header]"></ng-content>
+  <table>
+    @for (variable of variables; track variable.variable) {
+      <tr>
+        <td>
+          <span class="var">{{ variable.variable }}</span>
+        </td>
+        <td>- {{ variable.descriptor }}</td>
+      </tr>
+    }
+  </table>
+  <div class="example">
+    Example:
+    <span class="example-text">
+    <ng-content select="[example-text]"></ng-content>
+  </span>
+    Will turn into: <i class="example-text"><ng-content select="[result-text]"></ng-content></i>
+  </div>
+</div>

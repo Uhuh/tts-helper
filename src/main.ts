@@ -9,26 +9,13 @@ import { AudioFeature } from './app/shared/state/audio/audio.feature';
 import { StoreModule } from '@ngrx/store';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
-import { LogService } from './app/shared/services/logs.service';
-import { PlaybackService } from './app/shared/services/playback.service';
-import { AudioService } from './app/shared/services/audio.service';
-import { ConfigService } from './app/shared/services/config.service';
-import { StorageService } from './app/shared/services/storage.service';
-import { TwitchPubSub } from './app/shared/services/twitch-pubsub';
-import { TwitchService } from './app/shared/services/twitch.service';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
-import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
 import { AzureFeature } from './app/shared/state/azure/azure.feature';
-import { AzureSttService } from './app/shared/services/azure-stt.service';
-import { ElevenLabsService } from './app/shared/services/eleven-labs.service';
 import { ElevenLabsFeature } from './app/shared/state/eleven-labs/eleven-labs.feature';
-import { TwitchApi } from './app/shared/api/twitch/twitch.api';
-import { ElevenLabsApi } from './app/shared/api/eleven-labs/eleven-labs.api';
 import { VTubeStudioFeature } from './app/shared/state/vtubestudio/vtubestudio.feature.';
 import { OpenAIFeature } from './app/shared/state/openai/openai.feature';
-import { ObsWebSocketService } from './app/shared/services/obs-websocket.service';
-import { StreamDeckWebSocketService } from './app/shared/services/streamdeck-websocket.service';
+import { VStreamFeature } from './app/shared/state/vstream/vstream.feature';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -42,25 +29,12 @@ bootstrapApplication(AppComponent, {
       StoreModule.forFeature(OpenAIFeature),
       StoreModule.forFeature(TwitchFeature),
       StoreModule.forFeature(VTubeStudioFeature),
+      StoreModule.forFeature(VStreamFeature),
       MatSnackBarModule,
       StoreDevtoolsModule.instrument({
         maxAge: 25,
         logOnly: !isDevMode(),
       })),
-    AudioService,
-    AzureSttService,
-    ConfigService,
-    ElevenLabsApi,
-    ElevenLabsService,
-    LogService,
-    TwitchService,
-    ObsWebSocketService,
-    StreamDeckWebSocketService,
-    PlaybackService,
-    StorageService,
-    TwitchApi,
-    TwitchPubSub,
-    VTubeStudioService,
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideRouter(routes),

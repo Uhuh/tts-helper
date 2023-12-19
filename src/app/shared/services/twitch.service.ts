@@ -8,7 +8,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { LogService } from './logs.service';
 import { TwitchApi } from '../api/twitch/twitch.api';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class TwitchService implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
 

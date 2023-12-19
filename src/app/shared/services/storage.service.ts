@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { Store } from 'tauri-plugin-store-api';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class StorageService {
   constructor() {}
 

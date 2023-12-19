@@ -5,7 +5,9 @@ import { Observable, Subject } from 'rxjs';
 import { TwitchRedeem } from './twitch.interface';
 import { ValidUser } from '../../state/twitch/twitch.feature';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class TwitchApi implements OnDestroy {
   private readonly destroyed$ = new Subject<void>();
   private readonly apiUrl = 'https://api.twitch.tv/helix';

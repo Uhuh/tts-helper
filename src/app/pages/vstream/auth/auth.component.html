@@ -1,0 +1,20 @@
+<app-label-block>
+  <div header>Connection Status</div>
+  <div sub-text>{{ connectionMessage() }}</div>
+  <div class="action-row">
+    <span class="status" [ngClass]="{ valid: isTokenValid() }">
+      {{ connectionStatus() }}
+    </span>
+
+    @if (isTokenValid()) {
+      <div class="auth" (click)="signOut()">
+        sign-out
+      </div>
+    } @else {
+      <a target="_blank" [href]="loginUrl" class="auth">
+        authorize
+      </a>
+    }
+  </div>
+</app-label-block>
+

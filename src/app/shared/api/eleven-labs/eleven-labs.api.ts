@@ -4,7 +4,9 @@ import { ElevenLabsModel, ElevenLabsVoice } from './eleven-labs.interface';
 import { Store } from '@ngrx/store';
 import { ElevenLabsFeature } from '../../state/eleven-labs/eleven-labs.feature';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ElevenLabsApi {
   private readonly apiUrl = 'https://api.elevenlabs.io/v1';
   private apiKey = '';

@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './label-block.component.html',
-  styleUrls: ['./label-block.component.scss']
+  styleUrls: ['./label-block.component.scss'],
 })
-export class LabelBlockComponent {}
+export class LabelBlockComponent {
+}
