@@ -109,7 +109,7 @@ export class VStreamService {
           return combineLatest([this.token$, this.channelInfo$]);
         }),
         switchMap(([token, channelInfo]) => {
-          if (!channelInfo.username) {
+          if (!channelInfo.username || !token.accessToken) {
             return of(null);
           }
 
@@ -121,6 +121,11 @@ export class VStreamService {
           }
 
           this.liveStreamID$.next(data.data.id);
+        }),
+        catchError((err) => {
+          this.logService.add(`Failed to find VStream video ID.\n${JSON.stringify(err, undefined, 2)}`, 'error', 'VStreamService.interval');
+
+          return of(null);
         }),
       )
       .subscribe();
