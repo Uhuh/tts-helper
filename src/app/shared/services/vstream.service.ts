@@ -2,10 +2,23 @@
 import { VStreamApi } from '../api/vstream/vstream.api';
 import { listen } from '@tauri-apps/api/event';
 import { LogService } from './logs.service';
-import { catchError, from, interval, map, of, Subject, switchMap, tap, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  distinctUntilChanged,
+  from,
+  interval,
+  map,
+  of,
+  switchMap,
+  tap,
+  timer,
+} from 'rxjs';
 import { Store } from '@ngrx/store';
 import { VStreamActions } from '../state/vstream/vstream.actions';
 import { VStreamCustomMessageState, VStreamFeature, VStreamSettingsState } from '../state/vstream/vstream.feature';
+import { VStreamVideoID } from './vstream-pubsub.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +32,8 @@ export class VStreamService {
   readonly subscriptionSettings$ = this.store.select(VStreamFeature.selectSubscriptions);
   readonly meteorShowerSettings$ = this.store.select(VStreamFeature.selectMeteorShower);
   readonly followerSettings$ = this.store.select(VStreamFeature.selectFollowers);
+
+  readonly liveStreamID$ = new BehaviorSubject<VStreamVideoID | null>(null);
 
   readonly isTokenValid$ = interval(1000)
     .pipe(switchMap(() => {
@@ -84,6 +99,31 @@ export class VStreamService {
         }),
       )
       .subscribe();
+
+    /**
+     * Check if the user is currently live on VStream so that they can use the chat message feature
+     */
+    interval(3000)
+      .pipe(
+        switchMap(() => {
+          return combineLatest([this.token$, this.channelInfo$]);
+        }),
+        switchMap(([token, channelInfo]) => {
+          if (!channelInfo.username) {
+            return of(null);
+          }
+
+          return this.vstreamApi.findStream(token.accessToken, channelInfo.channelId);
+        }),
+        map(data => {
+          if (!data?.data) {
+            return;
+          }
+
+          this.liveStreamID$.next(data.data.id);
+        }),
+      )
+      .subscribe();
   }
 
   authenticatePubSub(token: string) {
@@ -131,6 +171,33 @@ export class VStreamService {
     }
   }
 
+  postChannelMessage(text: string) {
+    return combineLatest([this.token$, this.channelInfo$, this.liveStreamID$])
+      .pipe(
+        distinctUntilChanged((
+          [prevToken, _, prevVideoId],
+          [token, _channel, videoID],
+        ) => {
+          /**
+           * @TODO - Not sure if we care about channel information changing or not.
+           * Figure this out later.
+           */
+          return prevToken === token && prevVideoId === videoID;
+        }),
+        switchMap(([token, channelInfo, videoID]) => {
+          if (!videoID) {
+            throw Error('Tried to post a channel message when the video ID was not found.');
+          }
+
+          return this.vstreamApi.postChannelMessage(text, token.accessToken, channelInfo.channelId, videoID);
+        }))
+      .subscribe({
+        error: err => {
+          this.logService.add(`Failed to post channel message: ${JSON.stringify(err, undefined, 2)}`, 'error', 'VStreamService.postChannelMessage');
+        },
+      });
+  }
+
   /**
    * @TODO - This should be a temporary thing until the access token includes the channel id claim.
    */
@@ -150,7 +217,7 @@ export class VStreamService {
           this.store.dispatch(VStreamActions.updateChannel({
             partialChannel: {
               username: '',
-              channelId: '',
+              channelId: 'chan_',
             },
           }));
 

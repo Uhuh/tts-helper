@@ -2,6 +2,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import CryptoJS from 'crypto-js';
 import { VStreamTokenResponse } from '../../state/vstream/vstream.feature';
+import { VStreamChannelID, VStreamVideoID } from '../../services/vstream-pubsub.interface';
+import { VStreamAPIChannelVideoLiveStream } from './vstream.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -89,7 +91,7 @@ export class VStreamApi {
       Authorization: `Bearer ${token}`,
     });
 
-    return this.http.get<{ data: { id: string } }>(url, {
+    return this.http.get<{ data: { id: VStreamChannelID } }>(url, {
       headers,
     });
   }
@@ -103,6 +105,28 @@ export class VStreamApi {
     return this.http.post<{
       data: { token: string }
     }>(url, undefined, {
+      headers,
+    });
+  }
+
+  postChannelMessage(text: string, token: string, channelId: VStreamChannelID, videoId: VStreamVideoID) {
+    const url = `${this.url}/channels/${channelId}/videos/${videoId}/chats`;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.post(url, { text }, { headers });
+  }
+
+  findStream(token: string, channelID: VStreamChannelID) {
+    const url = `${this.url}/channels/${channelID}/live`;
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.get<{ data: VStreamAPIChannelVideoLiveStream | null }>(url, {
       headers,
     });
   }
