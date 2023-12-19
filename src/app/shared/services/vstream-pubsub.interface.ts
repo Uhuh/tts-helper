@@ -1,9 +1,10 @@
 ﻿type VStreamTransactionID = `trans_${string}`;
-type VStreamChannelID = `chan_${string}`;
-type VStreamVideoID = `video_${string}`;
+export type VStreamChannelID = `chan_${string}`;
+export type VStreamVideoID = `video_${string}`;
 type VStreamEmojiID = `emoji_${string}`;
 type VStreamChatID = `chat_${string}`;
 type VStreamSubID = `sub_${string}`;
+type VStreamMeteorShowerReceivedID = `mtr_${string}`;
 
 type VStreamChatter = {
   displayName: string;
@@ -49,6 +50,31 @@ export type VStreamNodes = (
   | VStreamLinkNode
   )[];
 
+type VStreamMeteorShowerEmoji = {
+  type: 'native';
+  emoji: string;
+} | {
+  type: 'channel';
+  channelID: VStreamChannelID;
+  emojiID: VStreamEmojiID;
+} | {
+  type: 'chanel';
+  channelID: 'global';
+  emojiID: VStreamEmojiID;
+};
+
+type VStreamChatBadges = [
+  { type: 'global', id: 'streamer' },
+  { type: 'global', id: 'moderator' },
+  { type: 'global', id: 'vteam' },
+  { type: 'global', id: 'partner' },
+  {
+    type: 'channel',
+    channelID: VStreamChannelID,
+    // Subscription tiers
+    id: string
+  },
+];
 
 /**
  * Relevant event types below.
@@ -63,6 +89,7 @@ export type VStreamEventChatCreated = {
   type: 'chat_created';
   timestamp: string;
   data: {
+    badges: VStreamChatBadges;
     chatterChannelID: VStreamChannelID;
     color: `#${string}`;
     createdAt: string;
@@ -132,10 +159,41 @@ export type VStreamEventSubscriptionGifted = {
   }
 };
 
+export type VStreamEventMeteorShower = {
+  type: 'shower_received';
+  timestamp: string;
+  data: {
+    audienceSize: number;
+    createdAt: string;
+    emoji: VStreamMeteorShowerEmoji;
+    id: VStreamMeteorShowerReceivedID;
+    receiverID: VStreamChannelID;
+    receiverVideoID: VStreamVideoID;
+    sender: VStreamChatter;
+    senderVideo: {
+      channelID: VStreamChannelID;
+      contentWarning: string;
+      deletedAt: null,
+      description: string;
+      id: VStreamVideoID;
+      tags: string[];
+      title: string;
+      cancelledAt: null,
+      endedAt: string;
+      liveAt: string;
+      scheduledTime: string;
+      status: 'ended';
+      type: 'livestream';
+      vodVisibility: string;
+    }
+  }
+};
+
 export type VStreamEvents =
   VStreamEventUpLift
   | VStreamEventKeepAlive
   | VStreamEventChatCreated
   | VStreamEventNewFollower
   | VStreamEventSubscriptionRenew
-  | VStreamEventSubscriptionGifted;
+  | VStreamEventSubscriptionGifted
+  | VStreamEventMeteorShower;

@@ -4,6 +4,7 @@ import { combineLatest, filter, switchMap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
 import {
   VStreamEventChatCreated,
+  VStreamEventMeteorShower,
   VStreamEventNewFollower,
   VStreamEvents,
   VStreamEventSubscriptionGifted,
@@ -108,6 +109,9 @@ export class VStreamPubSubService {
       case 'subscription_renewed':
         this.handleSubRenew(event);
         break;
+      case 'shower_received':
+        this.handleMeteorShower(event);
+        break;
       default:
         return;
     }
@@ -115,9 +119,10 @@ export class VStreamPubSubService {
     this.logService.add(`Message received: ${JSON.stringify(event, undefined, 2)}`, 'info', 'VStreamPubSub.onEvent');
   }
 
-  handleCustomMessage(text: string, enabled: boolean, enabledGpt: boolean, username: string) {
-    // If no custom message is setup, or if both TTS options are disabled, ignore the event.
-    if (!text || (!enabled && !enabledGpt)) {
+  handleCustomMessage(text: string, username: string, settings: Pick<VStreamCustomMessageState, 'enabled' | 'enabledChat' | 'enabledGpt'>) {
+    const { enabledChat, enabledGpt, enabled } = settings;
+
+    if (!text) {
       return;
     }
 
@@ -131,10 +136,14 @@ export class VStreamPubSubService {
         99999,
       );
     }
+
+    if (enabledChat) {
+      this.vstreamService.postChannelMessage(text);
+    }
   }
 
   async handleUpLift(uplift: VStreamEventUpLift) {
-    const { customMessage, enabled, enabledGpt } = this.upliftSettings;
+    const { customMessage } = this.upliftSettings;
     const { amount: { formatted }, sender: { username }, message: { text } } = uplift.data;
 
     const parsedInput = customMessage
@@ -142,21 +151,21 @@ export class VStreamPubSubService {
       .replaceAll(/{text}/g, text)
       .replaceAll(/{username}/g, username);
 
-    this.handleCustomMessage(parsedInput ?? text, enabled, enabledGpt, username);
+    this.handleCustomMessage(parsedInput ?? text, username, this.upliftSettings);
   }
 
   async handleFollower(follower: VStreamEventNewFollower) {
-    const { customMessage, enabled, enabledGpt } = this.followerSettings;
+    const { customMessage } = this.followerSettings;
     const { username } = follower.data;
 
     const parsedInput = customMessage
       .replaceAll(/{username}/g, username);
 
-    this.handleCustomMessage(parsedInput, enabled, enabledGpt, username);
+    this.handleCustomMessage(parsedInput, username, this.followerSettings);
   }
 
   async handleGiftSub(gift: VStreamEventSubscriptionGifted) {
-    const { customMessage, enabled, enabledGpt } = this.subscriptionSettings.gifted;
+    const { customMessage } = this.subscriptionSettings.gifted;
     const { tier, gifter: { username }, subscribers } = gift.data;
 
     const amount = subscribers.length;
@@ -166,11 +175,11 @@ export class VStreamPubSubService {
       .replaceAll(/{amount}/g, `${amount}`)
       .replaceAll(/{gifter}/g, username);
 
-    this.handleCustomMessage(parsedInput, enabled, enabledGpt, username);
+    this.handleCustomMessage(parsedInput, username, this.subscriptionSettings.gifted);
   }
 
   async handleSubRenew(renew: VStreamEventSubscriptionRenew) {
-    const { customMessage, enabled, enabledGpt } = this.subscriptionSettings.renew;
+    const { customMessage } = this.subscriptionSettings.renew;
     const { tier, streakMonth, renewalMonth, message, subscriber: { username } } = renew.data;
 
     const subMessage = message?.text ?? '';
@@ -181,24 +190,42 @@ export class VStreamPubSubService {
       .replaceAll(/{text}/g, subMessage)
       .replaceAll(/{username}/g, username);
 
-    this.handleCustomMessage(parsedInput ?? subMessage, enabled, enabledGpt, username);
+    this.handleCustomMessage(parsedInput ?? subMessage, username, this.subscriptionSettings.renew);
+  }
+
+  async handleMeteorShower(meteorShower: VStreamEventMeteorShower) {
+    const { customMessage } = this.meteorShowerSettings;
+    const { data: { audienceSize, sender: { username }, senderVideo: { title, description } } } = meteorShower;
+
+    const parsedInput = customMessage
+      .replaceAll(/{username}/g, username)
+      .replaceAll(/{size}/g, `${audienceSize}`)
+      .replaceAll(/{title}/g, title)
+      .replaceAll(/{description}/g, description);
+
+    this.handleCustomMessage(parsedInput, username, this.meteorShowerSettings);
   }
 
   async handleChatMessage(chat: VStreamEventChatCreated) {
     const {
       data: {
+        badges,
         text,
         chatter,
       },
     } = chat;
 
+    const isBroadcaster = !!badges.find(b => b.id === 'streamer');
+    const isPayingMember = !!badges.find(b => b.type === 'channel');
+    const isMod = !!badges.find(b => b.id === 'moderator');
+
     const playedMessage = await this.chatService.onMessage(
       {
         text,
         displayName: chatter.displayName,
-        isBroadcaster: false,
-        isPayingMember: false,
-        isMod: false,
+        isBroadcaster,
+        isPayingMember,
+        isMod,
       },
       'vstream',
     );
