@@ -2,11 +2,6 @@
   <span>Meteor Shower Settings</span>
 </div>
 
-<div class="warning red">
-  <span>Meteor Showers are not implemented in the API yet.</span>
-  <span>Feel free to set this up for now to be prepared.</span>
-</div>
-
 <app-label-block>
   <div header>Enable normal TTS</div>
   <div sub-text>If enabled, TTS will read your custom message.</div>
@@ -23,11 +18,19 @@
   />
 </app-label-block>
 
+<app-variable-table [variables]="variables">
+  <span header>Use variables to reference info related to the Meteor Shower.</span>
+  <span example-text>
+    Thanks <span class="var">username</span> for the <span class="var">size</span> person meteor shower!
+  </span>
+  <span result-text>Thanks Panku for the 10 person meteor shower!</span>
+</app-variable-table>
+
 <app-label-block>
   <div header>Custom response</div>
   <div sub-text>This text will be used for TTS if enabled.</div>
   <textarea
     [formControl]="settings.controls.customMessage"
-    placeholder=""
+    placeholder="Thanks {username} for the {size} person meteor shower!"
   ></textarea>
 </app-label-block>

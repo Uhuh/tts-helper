@@ -20,6 +20,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class MeteorShowerComponent {
   readonly variables: VariableTableOption[] = [
+    { variable: 'username', descriptor: 'The username of the person that started the meteor shower.' },
+    { variable: 'size', descriptor: 'The size of the meteor shower.' },
+    { variable: 'title', descriptor: 'The title of the senders stream.' },
+    { variable: 'description', descriptor: 'The description of the senders stream.' },
   ];
 
   settings = new FormGroup({
