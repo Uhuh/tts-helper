@@ -1,5 +1,6 @@
 ﻿import { createFeature, createReducer, on } from '@ngrx/store';
 import { VStreamActions } from './vstream.actions';
+import { VStreamChannelID } from '../../services/vstream-pubsub.interface';
 
 export type VStreamTokenResponse = {
   access_token: string;
@@ -24,7 +25,7 @@ export type VStreamSettingsState = {
 
 export type VStreamChannelState = {
   username: string;
-  channelId: string;
+  channelId: VStreamChannelID;
   pictureUrl: string;
   channelUrl: string;
 };
@@ -32,13 +33,14 @@ export type VStreamChannelState = {
 export type VStreamCustomMessageState = {
   enabled: boolean;
   enabledGpt: boolean;
+  enabledChat: boolean;
   customMessage: string;
 };
 
 export type VStreamSubscriptionSettingsState = {
   renew: VStreamCustomMessageState;
   gifted: VStreamCustomMessageState;
-}
+};
 
 export type VStreamState = {
   token: VStreamToken;
@@ -54,6 +56,7 @@ const initialCustomMessage: VStreamCustomMessageState = {
   customMessage: '',
   enabledGpt: false,
   enabled: false,
+  enabledChat: false,
 };
 
 const initialState: VStreamState = {
@@ -66,7 +69,7 @@ const initialState: VStreamState = {
   },
   channelInfo: {
     username: '',
-    channelId: '',
+    channelId: 'chan_',
     pictureUrl: '',
     channelUrl: '',
   },

@@ -36,12 +36,14 @@ export class SubscriptionComponent {
   renewSettings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     enabledGpt: new FormControl(false, { nonNullable: true }),
+    enabledChat: new FormControl(false, { nonNullable: true }),
     customMessage: new FormControl('', { nonNullable: true }),
   });
 
   giftedSettings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     enabledGpt: new FormControl(false, { nonNullable: true }),
+    enabledChat: new FormControl(false, { nonNullable: true }),
     customMessage: new FormControl('', { nonNullable: true }),
   });
 

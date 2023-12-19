@@ -29,6 +29,7 @@ export class MeteorShowerComponent {
   settings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     enabledGpt: new FormControl(false, { nonNullable: true }),
+    enabledChat: new FormControl(false, { nonNullable: true }),
     customMessage: new FormControl('', { nonNullable: true }),
   });
 
