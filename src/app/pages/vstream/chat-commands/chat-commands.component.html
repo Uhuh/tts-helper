@@ -1,0 +1,7 @@
+<div class="header">
+  <span>Chat Command Settings</span>
+</div>
+
+@for (command of commands; track command.command) {
+  <app-edit-command [command]="command" />
+}

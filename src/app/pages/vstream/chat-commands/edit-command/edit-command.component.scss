@@ -1,0 +1,24 @@
+:host {
+  padding: 20px;
+  
+  border-radius: 10px;
+  border: 2px solid var(--blue-20);
+}
+
+.command-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 20px;
+}
+
+.command-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  hr {
+    margin: 10px 0;
+  }
+}

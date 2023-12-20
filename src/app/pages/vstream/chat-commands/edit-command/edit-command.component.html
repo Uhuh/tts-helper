@@ -1,0 +1,75 @@
+<cdk-accordion>
+  <cdk-accordion-item
+    #accordionItem="cdkAccordionItem"
+    role="button"
+    tabindex="0"
+    [attr.aria-expanded]="accordionItem.expanded"
+  >
+    <div class="command-header" (click)="accordionItem.toggle()">
+      {{ command.command }}
+      <mat-icon>
+        {{ accordionItem.expanded ? 'expand_more' : 'chevron_left' }}
+      </mat-icon>
+    </div>
+    <div
+      role="region"
+      [style.display]="accordionItem.expanded ? 'block' : 'none'"
+    >
+      <div class="command-body">
+        <hr/>
+        
+        <app-label-block>
+          <div header>Enable</div>
+          <div sub-text>If enabled, users can then invoke this command.</div>
+          <app-toggle [control]="enabled"/>
+        </app-label-block>
+        
+        <hr/>
+
+        <div class="header">
+          <span>Permissions</span>
+        </div>
+        
+        <app-label-block>
+          <div header>All Users</div>
+          <div sub-text>Everyone can run this command.</div>
+          <app-toggle [control]="permissions.controls.allUsers"/>
+        </app-label-block>
+
+        <app-label-block>
+          <div header>Mods</div>
+          <div sub-text>Allows your channel mods to run this command.</div>
+          <app-toggle [control]="permissions.controls.mods"/>
+        </app-label-block>
+
+        <app-label-block>
+          <div header>Paying Users</div>
+          <div sub-text>Anyone with an active subscription to you.</div>
+          <app-toggle [control]="permissions.controls.payingMembers"/>
+        </app-label-block>
+
+        <hr/>
+        
+        <div class="header">
+          <span>Command Settings</span>
+        </div>
+
+        <app-label-block>
+          <div header>Cooldown</div>
+          <div sub-text>The cooldown of the command in seconds.</div>
+          <app-input [control]="cooldown" type="number"/>
+        </app-label-block>
+
+        <app-label-block>
+          <div header>Command Response</div>
+          <div sub-text>This is what the command responds with.</div>
+          <textarea
+            [formControl]="commandMessage"
+            placeholder="Here are my socials!"
+          ></textarea>
+        </app-label-block>
+      </div>
+    </div>
+  </cdk-accordion-item>
+</cdk-accordion>
+
