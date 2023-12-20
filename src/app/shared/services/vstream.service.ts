@@ -6,7 +6,7 @@ import {
   BehaviorSubject,
   catchError,
   combineLatest,
-  distinctUntilChanged,
+  first,
   from,
   interval,
   map,
@@ -179,16 +179,7 @@ export class VStreamService {
   postChannelMessage(text: string) {
     return combineLatest([this.token$, this.channelInfo$, this.liveStreamID$])
       .pipe(
-        distinctUntilChanged((
-          [prevToken, _, prevVideoId],
-          [token, _channel, videoID],
-        ) => {
-          /**
-           * @TODO - Not sure if we care about channel information changing or not.
-           * Figure this out later.
-           */
-          return prevToken === token && prevVideoId === videoID;
-        }),
+        first(),
         switchMap(([token, channelInfo, videoID]) => {
           if (!videoID) {
             throw Error('Tried to post a channel message when the video ID was not found.');
