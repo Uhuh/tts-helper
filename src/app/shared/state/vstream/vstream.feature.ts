@@ -42,8 +42,13 @@ export type VStreamSubscriptionSettingsState = {
   gifted: VStreamCustomMessageState;
 };
 
+export type VStreamChatCommand = {
+  command: string;
+};
+
 export type VStreamState = {
   token: VStreamToken;
+  chatCommands: VStreamChatCommand[];
   channelInfo: VStreamChannelState;
   settings: VStreamSettingsState;
   uplift: VStreamCustomMessageState;
@@ -60,6 +65,7 @@ const initialCustomMessage: VStreamCustomMessageState = {
 };
 
 const initialState: VStreamState = {
+  chatCommands: [],
   token: {
     accessToken: '',
     idToken: '',

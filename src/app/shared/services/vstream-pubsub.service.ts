@@ -223,9 +223,11 @@ export class VStreamPubSubService {
       {
         text,
         displayName: chatter.displayName,
-        isBroadcaster,
-        isPayingMember,
-        isMod,
+        permissions: {
+          isBroadcaster,
+          isPayingMember,
+          isMod,
+        },
       },
       'vstream',
     );

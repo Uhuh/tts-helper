@@ -2,12 +2,12 @@ import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
   AmazonPollyData,
   AuthTokens,
-  ChatPermissions,
   ConfigState,
   GeneralChatState,
   StreamElementsData,
   TtsType,
 } from './config.feature';
+import { ChatPermissions } from '../../services/chat.interface';
 
 export const GlobalConfigActions = createActionGroup({
   source: 'GlobalConfig',

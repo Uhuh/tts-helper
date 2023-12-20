@@ -154,10 +154,10 @@ app-toggle, app-button.right {
   right: 0;
 }
 
-.section {
+mat-tab-group, .mat-mdc-tab-body-content, .section {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.2rem !important;
   width: 100%;
 
   .header {

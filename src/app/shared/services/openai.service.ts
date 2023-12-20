@@ -6,8 +6,8 @@ import { loreTemplateGenerator } from '../util/lore';
 import { LogService } from './logs.service';
 import { Store } from '@ngrx/store';
 import { GptChatState, GptPersonalityState, GptSettingsState, OpenAIFeature } from '../state/openai/openai.feature';
-import { ChatPermissions } from '../state/config/config.feature';
 import { OpenAIActions } from '../state/openai/openai.actions';
+import { ChatPermissions } from './chat.interface';
 
 @Injectable({
   providedIn: 'root',
