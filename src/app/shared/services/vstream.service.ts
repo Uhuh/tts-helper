@@ -19,6 +19,8 @@ import { Store } from '@ngrx/store';
 import { VStreamActions } from '../state/vstream/vstream.actions';
 import { VStreamCustomMessageState, VStreamFeature, VStreamSettingsState } from '../state/vstream/vstream.feature';
 import { VStreamVideoID } from './vstream-pubsub.interface';
+import { ChatCommand, ChatPermissions, UserPermissions } from './chat.interface';
+import { ChatService } from './chat.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,18 +34,25 @@ export class VStreamService {
   readonly subscriptionSettings$ = this.store.select(VStreamFeature.selectSubscriptions);
   readonly meteorShowerSettings$ = this.store.select(VStreamFeature.selectMeteorShower);
   readonly followerSettings$ = this.store.select(VStreamFeature.selectFollowers);
+  readonly commands$ = this.store.select(VStreamFeature.selectChatCommands);
 
   readonly liveStreamID$ = new BehaviorSubject<VStreamVideoID | null>(null);
-
   readonly isTokenValid$ = interval(1000)
     .pipe(switchMap(() => {
       return this.token$.pipe(map(token => token.expireDate > Date.now() && token.accessToken));
     }));
 
+  cooldowns = new Map<string, boolean>();
+  autoredeems = new Map<string, {
+    interval: number,
+    timer: NodeJS.Timer,
+  }>();
+
   constructor(
     private readonly store: Store,
     private readonly vstreamApi: VStreamApi,
     private readonly logService: LogService,
+    private readonly chatService: ChatService,
   ) {
     listen('access-token', (authData) => {
       this.logService.add(`Attempting VStream signin with code. ${JSON.stringify(authData, undefined, 2)}.`, 'info', 'VStreamService.constructor');
@@ -129,6 +138,70 @@ export class VStreamService {
         }),
       )
       .subscribe();
+
+    this.commands$
+      .pipe(
+        tap(commands => {
+          const commandIDs = commands.map(c => c.id);
+          this.clearOldAutoIntervals(commandIDs);
+          this.resetAutoIntervals(commands);
+        }),
+      ).subscribe();
+  }
+
+  private resetAutoIntervals(commands: ChatCommand[]) {
+    /**
+     * I want to be safe and have the lowest interval be 1 minute.
+     */
+    const LOWEST_INTERVAL = 60 * 1000;
+
+    for (const command of commands) {
+      const interval = command.autoRedeemInterval * LOWEST_INTERVAL;
+      const isIntervalValid = interval >= LOWEST_INTERVAL;
+      const autoRedeem = this.autoredeems.get(command.id);
+
+      if (command.autoRedeem && !autoRedeem && isIntervalValid) {
+        this.autoredeems.set(
+          command.id,
+          {
+            interval,
+            timer: setInterval(() => this.handleAutoRedeem(command.id), interval),
+          },
+        );
+      } else if (command.autoRedeem && autoRedeem && autoRedeem.interval !== interval && isIntervalValid) {
+        clearInterval(autoRedeem.timer);
+
+        this.autoredeems.set(
+          command.id,
+          {
+            interval,
+            timer: setInterval(() => this.handleAutoRedeem(command.id), interval),
+          },
+        );
+      } else if ((!command.autoRedeem || !isIntervalValid) && autoRedeem) {
+        clearInterval(autoRedeem.timer);
+        this.autoredeems.delete(command.id);
+      }
+    }
+  }
+
+  private clearOldAutoIntervals(commandIDs: string[]) {
+    const autoIDs = this.autoredeems.keys();
+
+    /**
+     * If a user removes a command that had auto redeem we want to remove it from the timers.
+     */
+    for (const autoID of autoIDs) {
+      const redeemExist = commandIDs.find(id => autoID === id);
+
+      if (redeemExist) {
+        continue;
+      }
+
+      const redeem = this.autoredeems.get(autoID);
+      clearInterval(redeem?.timer);
+      this.autoredeems.delete(autoID);
+    }
   }
 
   authenticatePubSub(token: string) {
@@ -145,6 +218,22 @@ export class VStreamService {
 
   updateSettings(partialSettings: Partial<VStreamSettingsState>) {
     this.store.dispatch(VStreamActions.updateSettings({ partialSettings }));
+  }
+
+  updateCommandSettings(partialCommand: Partial<ChatCommand>, commandID: string) {
+    this.store.dispatch(VStreamActions.updateChatCommand({ partialCommand, commandID }));
+  }
+
+  updateCommandPermissions(partialPermissions: Partial<ChatPermissions>, commandID: string) {
+    this.store.dispatch(VStreamActions.updateChatCommandPermissions({ partialPermissions, commandID }));
+  }
+
+  deleteCommand(commandID: string) {
+    this.store.dispatch(VStreamActions.deleteChatCommand({ commandID }));
+  }
+
+  createChatCommand() {
+    this.store.dispatch(VStreamActions.createChatCommand());
   }
 
   /**
@@ -176,6 +265,42 @@ export class VStreamService {
     }
   }
 
+  sendCommandResponse(permissions: UserPermissions, command: ChatCommand | undefined) {
+    if (!command || !command.enabled || this.cooldowns.get(command.id)) {
+      return;
+    }
+
+    const hasPerms = this.chatService.hasChatCommandPermissions({ permissions }, command.permissions);
+
+    if (!hasPerms) {
+      return;
+    }
+
+    const duration = command.cooldown * 1000;
+
+    this.postChannelMessage(command.response);
+
+    this.cooldowns.set(command.id, true);
+    setTimeout(() => this.cooldowns.set(command.id, false), duration);
+  }
+
+  handleAutoRedeem(commandID: string) {
+    this.commands$
+      .pipe(
+        first(),
+        map(commands => {
+          return commands.find(c => c.id === commandID);
+        }),
+        tap(command => {
+          if (!command) {
+            return;
+          }
+
+          this.postChannelMessage(command.response);
+        }),
+      ).subscribe();
+  }
+
   postChannelMessage(text: string) {
     return combineLatest([this.token$, this.channelInfo$, this.liveStreamID$])
       .pipe(
@@ -185,7 +310,10 @@ export class VStreamService {
             throw Error('Tried to post a channel message when the video ID was not found.');
           }
 
-          return this.vstreamApi.postChannelMessage(text, token.accessToken, channelInfo.channelId, videoID);
+          // VStream chat does not like multiple lines.
+          const formattedText = text.split('\n').join(' ');
+
+          return this.vstreamApi.postChannelMessage(formattedText, token.accessToken, channelInfo.channelId, videoID);
         }))
       .subscribe({
         error: err => {
