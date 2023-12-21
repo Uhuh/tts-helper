@@ -1,39 +1,24 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VStreamService } from '../../../shared/services/vstream.service';
-import { ChatCommand } from '../../../shared/services/chat.interface';
 import { EditCommandComponent } from './edit-command/edit-command.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 @Component({
   selector: 'app-chat-commands',
   standalone: true,
-  imports: [CommonModule, EditCommandComponent],
+  imports: [CommonModule, EditCommandComponent, MatTabsModule, ButtonComponent, LabelBlockComponent],
   templateUrl: './chat-commands.component.html',
   styleUrl: './chat-commands.component.scss',
 })
 export class ChatCommandsComponent {
-  commands: ChatCommand[] = [
-    {
-      command: '!social',
-      cooldown: 5,
-      enabled: true,
-      permissions: {
-        allUsers: true,
-        mods: false,
-        payingMembers: false,
-      },
-    },
-    {
-      command: '!discord',
-      cooldown: 0,
-      enabled: true,
-      permissions: {
-        allUsers: true,
-        mods: false,
-        payingMembers: false,
-      },
-    },
-  ];
+  commands$ = this.vstreamService.commands$;
 
   constructor(private readonly vstreamService: VStreamService) {}
+  
+  createCommand() {
+    this.vstreamService.createChatCommand();
+  }
 }

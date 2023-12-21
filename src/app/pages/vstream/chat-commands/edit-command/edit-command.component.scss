@@ -11,14 +11,19 @@
   align-items: center;
   cursor: pointer;
   user-select: none;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .command-body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   hr {
     margin: 10px 0;
   }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
 }

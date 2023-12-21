@@ -6,7 +6,7 @@
     [attr.aria-expanded]="accordionItem.expanded"
   >
     <div class="command-header" (click)="accordionItem.toggle()">
-      {{ command.command }}
+      {{ command.command ? command.command : '&lt;not set&gt;' }}
       <mat-icon>
         {{ accordionItem.expanded ? 'expand_more' : 'chevron_left' }}
       </mat-icon>
@@ -18,18 +18,45 @@
       <div class="command-body">
         <hr/>
         
+        <div class="header">
+          <span>Basics</span>
+          <app-button [style]="'danger'" (click)="deleteCommand()">
+            Delete
+          </app-button>
+        </div>
+        
         <app-label-block>
           <div header>Enable</div>
           <div sub-text>If enabled, users can then invoke this command.</div>
-          <app-toggle [control]="enabled"/>
+          <app-toggle [control]="commandSettings.controls.enabled"/>
+        </app-label-block>
+
+        <app-label-block>
+          <div header>Command</div>
+          <div sub-text>The command!</div>
+          <app-input class="right" [control]="commandSettings.controls.command" placeholder="!command" type="text"/>
         </app-label-block>
         
+        <hr/>
+
+        <app-label-block>
+          <div header>Enable AutoRedeem</div>
+          <div sub-text>If enabled, this command will send the response in chat.</div>
+          <app-toggle [control]="commandSettings.controls.autoRedeem"/>
+        </app-label-block>
+        
+        <app-label-block>
+          <div header>AutoRedeem Cooldown</div>
+          <div sub-text>The cooldown of the autoredeem in minutes.</div>
+          <app-input class="right" [control]="commandSettings.controls.autoRedeemInterval" type="number"/>
+        </app-label-block>
+
         <hr/>
 
         <div class="header">
           <span>Permissions</span>
         </div>
-        
+
         <app-label-block>
           <div header>All Users</div>
           <div sub-text>Everyone can run this command.</div>
@@ -49,7 +76,7 @@
         </app-label-block>
 
         <hr/>
-        
+
         <div class="header">
           <span>Command Settings</span>
         </div>
@@ -57,14 +84,14 @@
         <app-label-block>
           <div header>Cooldown</div>
           <div sub-text>The cooldown of the command in seconds.</div>
-          <app-input [control]="cooldown" type="number"/>
+          <app-input class="right" [control]="commandSettings.controls.cooldown" type="number"/>
         </app-label-block>
 
         <app-label-block>
           <div header>Command Response</div>
           <div sub-text>This is what the command responds with.</div>
           <textarea
-            [formControl]="commandMessage"
+            [formControl]="commandSettings.controls.response"
             placeholder="Here are my socials!"
           ></textarea>
         </app-label-block>
