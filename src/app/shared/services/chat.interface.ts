@@ -28,8 +28,14 @@ export type ChatUserMessage = {
 };
 
 export type ChatCommand = {
-  enabled: boolean;
+  // UUID
+  id: string;
   command: string;
+  response: string;
+  enabled: boolean;
+  autoRedeem: boolean;
+  // The auto redeem interval in minutes.
+  autoRedeemInterval: number;
   // The cooldown a command has in seconds.
   cooldown: number;
 

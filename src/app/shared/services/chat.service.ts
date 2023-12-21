@@ -99,7 +99,7 @@ export class ChatService {
     }
   }
 
-  hasChatCommandPermissions(user: ChatUserMessage, permissions: ChatPermissions) {
+  hasChatCommandPermissions(user: Pick<ChatUserMessage, 'permissions'>, permissions: ChatPermissions) {
     if (user.permissions.isBroadcaster) {
       return true;
     } else if (permissions.allUsers) {
