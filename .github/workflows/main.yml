@@ -33,6 +33,9 @@ jobs:
           librsvg2-dev
           patchelf
           libasound2-dev
+      - uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
       - name: install frontend dependencies
         run: yarn install
       - uses: tauri-apps/tauri-action@dev
