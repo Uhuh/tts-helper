@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { VStreamService } from './vstream.service';
-import { combineLatest, filter, switchMap } from 'rxjs';
+import { combineLatest, filter, first, map, switchMap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
 import {
   VStreamEventChatCreated,
@@ -30,6 +30,8 @@ import { AudioService } from './audio.service';
 export class VStreamPubSubService {
   private socketUrl = 'wss://events.vstream.com/channels';
   vstreamSocket = webSocket(this.socketUrl);
+
+  commands$ = this.vstreamService.commands$;
 
   channelInfo!: VStreamChannelState;
 
@@ -219,20 +221,24 @@ export class VStreamPubSubService {
     const isPayingMember = !!badges.find(b => b.type === 'channel');
     const isMod = !!badges.find(b => b.id === 'moderator');
 
+    const permissions = {
+      isBroadcaster,
+      isPayingMember,
+      isMod,
+    };
+
     const playedMessage = await this.chatService.onMessage(
       {
         text,
         displayName: chatter.displayName,
-        isBroadcaster,
-        isPayingMember,
-        isMod,
+        permissions,
       },
       'vstream',
     );
 
     const { randomChance } = this.vstreamSettings;
 
-    if (!playedMessage && randomChance) {
+    if (!playedMessage && randomChance && !isBroadcaster) {
       this.chatService.randomChance(
         {
           text,
@@ -243,5 +249,15 @@ export class VStreamPubSubService {
         'vstream',
       );
     }
+
+    this.commands$
+      .pipe(
+        first(),
+        filter(() => !isBroadcaster),
+        map(commands => commands.find(c => text.startsWith(c.command))),
+      )
+      .subscribe(command => {
+        this.vstreamService.sendCommandResponse(permissions, command);
+      });
   }
 }

@@ -1,6 +1,6 @@
 ﻿import { createActionGroup, props } from '@ngrx/store';
 import { GptChatState, GptPersonalityState, GptSettingsState, OpenAIState } from './openai.feature';
-import { ChatPermissions } from '../config/config.feature';
+import { ChatPermissions } from '../../services/chat.interface';
 
 export const OpenAIActions = createActionGroup({
   source: 'OpenAI',

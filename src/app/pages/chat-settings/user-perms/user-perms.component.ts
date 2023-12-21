@@ -10,7 +10,7 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
   standalone: true,
   imports: [CommonModule, ToggleComponent, LabelBlockComponent],
   templateUrl: './user-perms.component.html',
-  styleUrls: ['./user-perms.component.scss']
+  styleUrls: ['./user-perms.component.scss'],
 })
 export class UserPermsComponent {
   @Input({ required: true }) formGroup!: FormGroup<ChatPermissionsFormGroup>;

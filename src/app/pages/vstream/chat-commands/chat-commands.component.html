@@ -1,0 +1,22 @@
+<div class="header">
+  <span>Chat Command Settings</span>
+</div>
+
+<app-label-block>
+  <div header>Create new command</div>
+  <div sub-text>If you want to create a command click here.</div>
+  <app-button class="right" (click)="createCommand()">Create</app-button>
+</app-label-block>
+
+<div class="warning red">
+  <span>Chat commands are experimental right now and only for VStream!</span>
+  <span>You must be live for these commands to work!</span>
+</div>
+
+@for (command of commands$ | async; track command.id) {
+  <app-edit-command [command]="command" />
+} @empty {
+  <div class="empty">
+    No chat commands yet!
+  </div>
+}

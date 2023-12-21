@@ -1,6 +1,6 @@
 ﻿import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
-import { ChatState } from '../config/config.feature';
 import { OpenAIActions } from './openai.actions';
+import { ChatState } from '../../services/chat.interface';
 
 export interface GptChatState extends ChatState {
 }

@@ -1,5 +1,6 @@
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { GlobalConfigActions } from './config.actions';
+import { ChatPermissions, ChatState } from '../../services/chat.interface';
 
 export type TtsType =
   | 'stream-elements'
@@ -39,20 +40,6 @@ export interface TikTokData {
 /**
  * TODO Support multiple TTS redeems that can be configured to different services.
  */
-
-export interface ChatPermissions {
-  allUsers: boolean,
-  mods: boolean,
-  payingMembers: boolean,
-}
-
-export interface ChatState {
-  enabled: boolean;
-  permissions: ChatPermissions;
-  cooldown: number;
-  charLimit: number;
-  command: string;
-}
 
 export interface GeneralChatState extends ChatState {
 }

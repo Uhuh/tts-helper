@@ -6,6 +6,7 @@ import {
   VStreamState,
   VStreamTokenResponse,
 } from './vstream.feature';
+import { ChatCommand, ChatPermissions } from '../../services/chat.interface';
 
 export const VStreamActions = createActionGroup({
   source: 'VStream',
@@ -14,6 +15,10 @@ export const VStreamActions = createActionGroup({
     'Update Token': props<{ token: VStreamTokenResponse }>(),
     'Update Channel': props<{ partialChannel: Partial<VStreamChannelState> }>(),
     'Update Settings': props<{ partialSettings: Partial<VStreamSettingsState> }>(),
+    'Create Chat Command': emptyProps(),
+    'Delete Chat Command': props<{ commandID: string }>(),
+    'Update Chat Command': props<{ partialCommand: Partial<ChatCommand>, commandID: string }>(),
+    'Update Chat Command Permissions': props<{ partialPermissions: Partial<ChatPermissions>, commandID: string }>(),
     'Update Up Lift': props<{ partialSettings: Partial<VStreamCustomMessageState> }>(),
     'Update Meteor Shower': props<{ partialSettings: Partial<VStreamCustomMessageState> }>(),
     'Update Renewal Subscriptions': props<{ partialSettings: Partial<VStreamCustomMessageState> }>(),

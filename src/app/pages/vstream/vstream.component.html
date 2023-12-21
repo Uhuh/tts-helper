@@ -3,14 +3,20 @@
 </div>
 <div class="section">
   <app-auth/>
-  <hr/>
-  <app-settings/>
-  <hr/>
-  <app-followers/>
-  <hr/>
-  <app-uplifts/>
-  <hr/>
-  <app-subscription/>
-  <hr/>
-  <app-meteor-shower/>
+  <mat-tab-group animationDuration="0ms">
+    <mat-tab label="Settings">
+      <app-settings/>
+      <hr/>
+      <app-followers/>
+      <hr/>
+      <app-uplifts/>
+      <hr/>
+      <app-subscription/>
+      <hr/>
+      <app-meteor-shower/>
+    </mat-tab>
+    <mat-tab label="Chat Commands">
+      <app-chat-commands/>
+    </mat-tab>
+  </mat-tab-group>
 </div>

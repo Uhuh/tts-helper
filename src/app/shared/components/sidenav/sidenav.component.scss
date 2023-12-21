@@ -62,10 +62,32 @@
   gap: 14px;
 }
 
-.version {
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-top: auto;
-  font-size: 14px;
   padding: 5px 10px;
+  
+  .support {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 16px;
+    
+    a {
+      transition: color 0.2s;
+    }
+    
+    a:hover {
+      transition: color 0.2s;
+      color: var(--blue);
+    }
+  }
+  
+  .version {
+    font-size: 14px;
+  }
 }
 
 .nav-header {

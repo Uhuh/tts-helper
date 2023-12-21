@@ -1,9 +1,9 @@
 ﻿import { Injectable } from '@angular/core';
 import { ConfigService } from './config.service';
 import { OpenAIService } from './openai.service';
-import { ChatPermissions, GeneralChatState } from '../state/config/config.feature';
+import { GeneralChatState } from '../state/config/config.feature';
 import { GptChatState } from '../state/openai/openai.feature';
-import { ChatUserMessage } from './chat.interface';
+import { ChatPermissions, ChatUserMessage } from './chat.interface';
 import { AudioService } from './audio.service';
 import { AudioSource } from '../state/audio/audio.feature';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -99,14 +99,14 @@ export class ChatService {
     }
   }
 
-  hasChatCommandPermissions(user: ChatUserMessage, permissions: ChatPermissions) {
-    if (user.isBroadcaster) {
+  hasChatCommandPermissions(user: Pick<ChatUserMessage, 'permissions'>, permissions: ChatPermissions) {
+    if (user.permissions.isBroadcaster) {
       return true;
     } else if (permissions.allUsers) {
       return true;
-    } else if (permissions.mods && user.isMod) {
+    } else if (permissions.mods && user.permissions.isMod) {
       return true;
-    } else if (permissions.payingMembers && user.isPayingMember) {
+    } else if (permissions.payingMembers && user.permissions.isPayingMember) {
       return true;
     }
 

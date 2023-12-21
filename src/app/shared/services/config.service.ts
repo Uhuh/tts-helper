@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   AmazonPollyData,
-  ChatPermissions,
   ConfigFeature,
   GeneralChatState,
   StreamElementsData,
@@ -10,6 +9,7 @@ import {
 } from '../state/config/config.feature';
 import { GlobalConfigActions } from '../state/config/config.actions';
 import { PlaybackService } from './playback.service';
+import { ChatPermissions } from './chat.interface';
 
 @Injectable({
   providedIn: 'root',

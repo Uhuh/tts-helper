@@ -1,6 +1,7 @@
 ﻿import { createFeature, createReducer, on } from '@ngrx/store';
 import { VStreamActions } from './vstream.actions';
 import { VStreamChannelID } from '../../services/vstream-pubsub.interface';
+import { ChatCommand } from '../../services/chat.interface';
 
 export type VStreamTokenResponse = {
   access_token: string;
@@ -44,6 +45,7 @@ export type VStreamSubscriptionSettingsState = {
 
 export type VStreamState = {
   token: VStreamToken;
+  chatCommands: ChatCommand[];
   channelInfo: VStreamChannelState;
   settings: VStreamSettingsState;
   uplift: VStreamCustomMessageState;
@@ -59,7 +61,22 @@ const initialCustomMessage: VStreamCustomMessageState = {
   enabledChat: false,
 };
 
+const initialChatCommand: Omit<ChatCommand, 'id'> = {
+  command: '!command',
+  permissions: {
+    allUsers: true,
+    payingMembers: false,
+    mods: false,
+  },
+  autoRedeemInterval: 0,
+  autoRedeem: false,
+  cooldown: 0,
+  enabled: true,
+  response: 'Change me!',
+};
+
 const initialState: VStreamState = {
+  chatCommands: [],
   token: {
     accessToken: '',
     idToken: '',
@@ -158,6 +175,76 @@ export const VStreamFeature = createFeature({
         expiresIn: token.expires_in,
       },
     })),
+    on(VStreamActions.createChatCommand, (state) => ({
+      ...state,
+      chatCommands: [
+        ...state.chatCommands,
+        {
+          id: crypto.randomUUID(),
+          ...initialChatCommand,
+        },
+      ],
+    })),
+    on(VStreamActions.deleteChatCommand, (state, { commandID }) => {
+      const command = state.chatCommands.find(c => c.id === commandID);
+
+      if (!command) {
+        return state;
+      }
+
+      const copyOfCommands = state.chatCommands.slice();
+      const index = state.chatCommands.indexOf(command);
+
+      copyOfCommands.splice(index, 1);
+
+      return {
+        ...state,
+        chatCommands: copyOfCommands,
+      };
+    }),
+    on(VStreamActions.updateChatCommand, (state, { partialCommand, commandID }) => {
+      const command = state.chatCommands.find(c => c.id === commandID);
+
+      if (!command) {
+        return state;
+      }
+
+      const copyOfCommands = state.chatCommands.slice();
+      const index = state.chatCommands.indexOf(command);
+
+      copyOfCommands[index] = {
+        ...command,
+        ...partialCommand,
+      };
+
+      return {
+        ...state,
+        chatCommands: copyOfCommands,
+      };
+    }),
+    on(VStreamActions.updateChatCommandPermissions, (state, { partialPermissions, commandID }) => {
+      const command = state.chatCommands.find(c => c.id === commandID);
+
+      if (!command) {
+        return state;
+      }
+
+      const copyOfCommands = state.chatCommands.slice();
+      const index = state.chatCommands.indexOf(command);
+
+      copyOfCommands[index] = {
+        ...command,
+        permissions: {
+          ...command.permissions,
+          ...partialPermissions,
+        },
+      };
+
+      return {
+        ...state,
+        chatCommands: copyOfCommands,
+      };
+    }),
     on(VStreamActions.clearToken, (state) => ({
       ...state,
       token: {

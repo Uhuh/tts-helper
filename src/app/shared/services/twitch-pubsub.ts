@@ -134,9 +134,11 @@ export class TwitchPubSub implements OnDestroy {
       {
         text,
         displayName: user.displayName,
-        isBroadcaster: user.isBroadcaster,
-        isMod: user.badges.has('moderator'),
-        isPayingMember: user.isSubscriber,
+        permissions: {
+          isBroadcaster: user.isBroadcaster,
+          isMod: user.badges.has('moderator'),
+          isPayingMember: user.isSubscriber,
+        },
       },
       'twitch',
     );
