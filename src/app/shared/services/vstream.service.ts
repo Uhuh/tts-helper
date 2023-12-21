@@ -42,7 +42,11 @@ export class VStreamService {
       return this.token$.pipe(map(token => token.expireDate > Date.now() && token.accessToken));
     }));
 
-  cooldowns = new Map<string, boolean>();
+  cooldowns = new Map<string, {
+    duration: number,
+    onCooldown: boolean,
+    timeout?: NodeJS.Timeout,
+  }>();
   autoredeems = new Map<string, {
     interval: number,
     timer: NodeJS.Timer,
@@ -145,8 +149,34 @@ export class VStreamService {
           const commandIDs = commands.map(c => c.id);
           this.clearOldAutoIntervals(commandIDs);
           this.resetAutoIntervals(commands);
+          this.updateCooldowns(commands);
         }),
       ).subscribe();
+  }
+
+  /**
+   * If a user has updated the cooldowns of an existing command, we want to remove any active cooldowns.
+   * @param commands All the VStream chat commands
+   * @private
+   */
+  private updateCooldowns(commands: ChatCommand[]) {
+    for (const command of commands) {
+      const cooldown = this.cooldowns.get(command.id);
+
+      if (!cooldown) {
+        continue;
+      }
+
+      const { duration, timeout } = cooldown;
+      const newDuration = command.cooldown * 1000;
+
+      if (duration === newDuration) {
+        continue;
+      }
+
+      clearTimeout(timeout);
+      this.cooldowns.delete(command.id);
+    }
   }
 
   private resetAutoIntervals(commands: ChatCommand[]) {
@@ -266,7 +296,7 @@ export class VStreamService {
   }
 
   sendCommandResponse(permissions: UserPermissions, command: ChatCommand | undefined) {
-    if (!command || !command.enabled || this.cooldowns.get(command.id)) {
+    if (!command || !command.enabled || this.cooldowns.get(command.id)?.onCooldown) {
       return;
     }
 
@@ -280,8 +310,11 @@ export class VStreamService {
 
     this.postChannelMessage(command.response);
 
-    this.cooldowns.set(command.id, true);
-    setTimeout(() => this.cooldowns.set(command.id, false), duration);
+    this.cooldowns.set(command.id, {
+      duration,
+      onCooldown: true,
+      timeout: setTimeout(() => this.cooldowns.set(command.id, { duration, onCooldown: false }), duration),
+    });
   }
 
   handleAutoRedeem(commandID: string) {
