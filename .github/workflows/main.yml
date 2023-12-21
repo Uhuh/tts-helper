@@ -16,9 +16,6 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
-      - uses: Swatinem/rust-cache@v2
-        with:
-          save-if: ${{ github.ref == 'refs/heads/master' }}
       - name: setup node
         uses: actions/setup-node@v3
         with:
@@ -36,6 +33,9 @@ jobs:
           librsvg2-dev
           patchelf
           libasound2-dev
+      - uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
       - name: install frontend dependencies
         run: yarn install
       - uses: tauri-apps/tauri-action@dev
