@@ -142,7 +142,7 @@ export class VTubeStudioService {
 
   private createMouthTrackingInterval() {
     return setInterval(() => {
-      if (!this.isConnected$.value) {
+      if (!this.isConnected$.value || !this.vtsAuthToken) {
         return;
       }
 
@@ -421,6 +421,10 @@ export class VTubeStudioService {
   }
 
   private sendRandomMouthParams() {
+    if (!this.vtsAuthToken) {
+      return;
+    }
+
     const mouthOpen = Math.random();
     const mouthForm = 0.5;
 
