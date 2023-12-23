@@ -133,7 +133,7 @@ export class VStreamService {
           return combineLatest([this.token$, this.channelInfo$]);
         }),
         switchMap(([token, channelInfo]) => {
-          if (!channelInfo.username || !token.accessToken) {
+          if (!channelInfo.channelId || !token.accessToken) {
             return of(null);
           }
 
