@@ -18,9 +18,11 @@ import {
 import { Store } from '@ngrx/store';
 import { VStreamActions } from '../state/vstream/vstream.actions';
 import { VStreamCustomMessageState, VStreamFeature, VStreamSettingsState } from '../state/vstream/vstream.feature';
-import { VStreamVideoID } from './vstream-pubsub.interface';
+import { VStreamChannelID, VStreamVideoID } from './vstream-pubsub.interface';
 import { ChatCommand, ChatPermissions, UserPermissions } from './chat.interface';
 import { ChatService } from './chat.service';
+import { jwtDecode } from 'jwt-decode';
+import { TypeID } from 'typeid-js';
 
 @Injectable({
   providedIn: 'root',
@@ -74,6 +76,15 @@ export class VStreamService {
         .subscribe({
           next: (tokenResponse) => {
             this.logService.add(`Validated users VStream code and got token response`, 'info', 'VStreamService.validate');
+
+            const { id_token } = tokenResponse;
+            const { sub } = jwtDecode(id_token);
+
+            if (sub) {
+              const chanType = TypeID.fromUUID('chan', sub);
+              const channelId: VStreamChannelID = `${chanType.getType()}_${chanType.getSuffix()}`;
+              this.store.dispatch(VStreamActions.updateChannel({ partialChannel: { channelId } }));
+            }
 
             this.store.dispatch(VStreamActions.updateToken({ token: tokenResponse }));
           },
@@ -353,33 +364,5 @@ export class VStreamService {
           this.logService.add(`Failed to post channel message: ${JSON.stringify(err, undefined, 2)}`, 'error', 'VStreamService.postChannelMessage');
         },
       });
-  }
-
-  /**
-   * @TODO - This should be a temporary thing until the access token includes the channel id claim.
-   */
-  updateChannelId(username: string) {
-    return this.token$
-      .pipe(
-        switchMap(token => this.vstreamApi.getUsersChannelId(username, token.accessToken)),
-        tap(channelID => {
-          this.store.dispatch(VStreamActions.updateChannel({
-            partialChannel: {
-              username,
-              channelId: channelID.data.id,
-            },
-          }));
-        }),
-        catchError(() => {
-          this.store.dispatch(VStreamActions.updateChannel({
-            partialChannel: {
-              username: '',
-              channelId: 'chan_',
-            },
-          }));
-
-          return of({ data: { id: '' } });
-        }),
-      );
   }
 }

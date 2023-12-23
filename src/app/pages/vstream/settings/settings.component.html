@@ -2,25 +2,6 @@
   <span>Settings</span>
 </div>
 
-<div class="warning orange">
-  <span>VStream currently has nothing similar to Twitch redeems.</span>
-  <span>So if you're a VStreamer, use the <a [routerLink]="['/chat-settings']">chat settings</a> and enable the Chat command.</span>
-  <span>You can optionally enable the ChatGPT command too. But will need to setup a ChatGPT model.</span>
-</div>
-
-<app-label-block>
-  <div header>Find Channel ID by Username</div>
-  <div sub-text>Temporary solution for finding your channel ID</div>
-  @if (channelID()) {
-    <div sub-text>Found channel ID: <span class="green">{{ channelID() }}</span></div>
-  }
-  <app-input
-    placeholder="Enter your VStream username"
-    type="text"
-    [control]="username"
-  />
-</app-label-block>
-
 <app-label-block>
   <div header>Random Message Chance</div>
   <div sub-text>The chance that a message from chat will be read.</div>
