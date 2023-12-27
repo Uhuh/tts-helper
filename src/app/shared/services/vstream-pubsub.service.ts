@@ -254,12 +254,12 @@ export class VStreamPubSubService {
       .pipe(
         first(),
         map(commands => commands.find(c => text.startsWith(c.command))),
-        filter(command => !!command),
+        filter(command => !!command && !!command.command),
       )
       .subscribe(command => {
         this.logService.add(`User "${chatter.displayName}" ran a chat command "${command?.command}"`, 'info', 'VStreamPubSub.handleChatMessage');
 
-        this.vstreamService.sendCommandResponse(permissions, command);
+        this.vstreamService.sendCommandResponse(permissions, command, text);
       });
   }
 }
