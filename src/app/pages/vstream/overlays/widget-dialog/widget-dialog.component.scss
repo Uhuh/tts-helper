@@ -1,0 +1,14 @@
+:host {
+  background-color: var(--background);
+}
+
+div[mat-dialog-title], mat-dialog-content {
+  margin: 0;
+  background-color: var(--background);
+}
+
+mat-dialog-actions {
+  background-color: var(--background);
+  display: flex;
+  gap: 10px;
+}
