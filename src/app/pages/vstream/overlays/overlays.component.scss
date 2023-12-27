@@ -1,0 +1,17 @@
+:host {
+  display: contents;
+}
+
+.widget-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px;
+  border: 2px solid var(--blue-20);
+  padding: 12px 24px;
+
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+}

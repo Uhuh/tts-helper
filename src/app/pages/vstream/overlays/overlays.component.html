@@ -1,0 +1,27 @@
+<div class="header">
+  <span>Overlays for alerts</span>
+</div>
+
+<app-label-block>
+  <div header>Add widget to source</div>
+  <div sub-text>Add a new widget to the VStream browser source</div>
+  <app-button class="right" (click)="openDialog()">
+    Add Widget
+  </app-button>
+</app-label-block>
+
+<hr/>
+
+@for (widget of widgets$ | async; track widget.id) {
+  <div class="widget-row">
+    <span class>{{ widget.trigger }}</span>
+    <div class="actions">
+      <app-button (click)="openDialog(widget)">Edit</app-button>
+      <app-button [style]="'danger'">Delete</app-button>
+    </div>
+  </div>
+} @empty {
+  <div class="empty">
+    No widgets!
+  </div>
+}
