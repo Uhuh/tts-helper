@@ -17,7 +17,12 @@ import {
 } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { VStreamActions } from '../state/vstream/vstream.actions';
-import { VStreamCustomMessageState, VStreamFeature, VStreamSettingsState } from '../state/vstream/vstream.feature';
+import {
+  VStreamCustomMessageState,
+  VStreamFeature,
+  VStreamSettingsState,
+  VStreamWidget,
+} from '../state/vstream/vstream.feature';
 import { VStreamChannelID, VStreamVideoID } from './vstream-pubsub.interface';
 import { ChatCommand, ChatPermissions, UserPermissions } from './chat.interface';
 import { ChatService } from './chat.service';
@@ -37,6 +42,7 @@ export class VStreamService {
   readonly meteorShowerSettings$ = this.store.select(VStreamFeature.selectMeteorShower);
   readonly followerSettings$ = this.store.select(VStreamFeature.selectFollowers);
   readonly commands$ = this.store.select(VStreamFeature.selectChatCommands);
+  readonly widgets$ = this.store.select(VStreamFeature.selectWidgets);
 
   readonly liveStreamID$ = new BehaviorSubject<VStreamVideoID | null>(null);
   readonly isTokenValid$ = interval(1000)
@@ -275,6 +281,21 @@ export class VStreamService {
 
   createChatCommand() {
     this.store.dispatch(VStreamActions.createChatCommand());
+  }
+
+  createWidget(widget: Omit<VStreamWidget, 'id'>) {
+    const id = crypto.randomUUID();
+
+    this.store.dispatch(VStreamActions.createWidget({
+      widget: {
+        id,
+        ...widget,
+      },
+    }));
+  }
+
+  updateWidget(widget: VStreamWidget) {
+    this.store.dispatch(VStreamActions.updateWidget({ widget }));
   }
 
   /**

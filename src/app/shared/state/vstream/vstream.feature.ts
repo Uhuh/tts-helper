@@ -1,6 +1,6 @@
 ﻿import { createFeature, createReducer, on } from '@ngrx/store';
 import { VStreamActions } from './vstream.actions';
-import { VStreamChannelID } from '../../services/vstream-pubsub.interface';
+import { VStreamChannelID, VStreamEvents } from '../../services/vstream-pubsub.interface';
 import { ChatCommand } from '../../services/chat.interface';
 
 export type VStreamTokenResponse = {
@@ -43,9 +43,28 @@ export type VStreamSubscriptionSettingsState = {
   gifted: VStreamCustomMessageState;
 };
 
+type ExtractEventTypes<T> = T extends { type: infer U } ? U : never;
+export type VStreamEventTypes = ExtractEventTypes<VStreamEvents>;
+
+export type VStreamWidget = {
+  id: string;
+  trigger: VStreamEventTypes;
+  customMessage: string | null;
+  // This will be the b64 encoded URL
+  fileURL: string | null;
+  soundPath: string | null;
+  width: number;
+  height: number;
+  yPosition: number;
+  xPosition: number;
+  fadeInDuration: number;
+  fadeOutDuration: number;
+};
+
 export type VStreamState = {
   token: VStreamToken;
   chatCommands: ChatCommand[];
+  widgets: VStreamWidget[];
   channelInfo: VStreamChannelState;
   settings: VStreamSettingsState;
   uplift: VStreamCustomMessageState;
@@ -77,6 +96,7 @@ const initialChatCommand: Omit<ChatCommand, 'id'> = {
 
 const initialState: VStreamState = {
   chatCommands: [],
+  widgets: [],
   token: {
     accessToken: '',
     idToken: '',
@@ -93,13 +113,28 @@ const initialState: VStreamState = {
   settings: {
     randomChance: 0,
   },
-  uplift: initialCustomMessage,
-  meteorShower: initialCustomMessage,
-  subscriptions: {
-    renew: initialCustomMessage,
-    gifted: initialCustomMessage,
+  uplift: {
+    ...initialCustomMessage,
+    customMessage: 'Thanks {username} for the {formatted} UpLift!',
   },
-  followers: initialCustomMessage,
+  meteorShower: {
+    ...initialCustomMessage,
+    customMessage: 'Thanks {username} for the {size} person meteor shower!',
+  },
+  subscriptions: {
+    renew: {
+      ...initialCustomMessage,
+      customMessage: 'Thanks {username} for subscribing for {renewalMonth} months!',
+    },
+    gifted: {
+      ...initialCustomMessage,
+      customMessage: 'Thanks {gifter} for gifting {amount} tier {tier} subs!',
+    },
+  },
+  followers: {
+    ...initialCustomMessage,
+    customMessage: 'Thanks {username} for following!',
+  },
 };
 
 export const VStreamFeature = createFeature({
@@ -175,6 +210,32 @@ export const VStreamFeature = createFeature({
         expiresIn: token.expires_in,
       },
     })),
+    on(VStreamActions.createWidget, (state, { widget }) => ({
+      ...state,
+      widgets: [
+        ...state.widgets,
+        widget,
+      ],
+    })),
+    on(VStreamActions.updateWidget, (state, { widget }) => {
+      const existingWidget = state.widgets.find(w => w.id === widget.id);
+
+      if (!existingWidget) {
+        return state;
+      }
+
+      const copyOfWidgets = state.widgets.slice();
+      const index = state.widgets.indexOf(existingWidget);
+
+      copyOfWidgets[index] = {
+        ...widget,
+      };
+
+      return {
+        ...state,
+        widgets: copyOfWidgets,
+      };
+    }),
     on(VStreamActions.createChatCommand, (state) => ({
       ...state,
       chatCommands: [
