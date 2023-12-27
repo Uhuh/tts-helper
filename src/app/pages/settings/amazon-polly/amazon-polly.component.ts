@@ -35,7 +35,7 @@ export class AmazonPollyComponent {
   readonly voices = voices.options;
 
   amazonPollyGroup = new FormGroup({
-    region: new FormControl<string>(this.regions[0].value, { nonNullable: true }),
+    region: new FormControl(this.regions[0].value, { nonNullable: true }),
     poolId: new FormControl('', { nonNullable: true }),
     language: new FormControl('', { nonNullable: true }),
     voice: new FormControl('', { nonNullable: true }),
@@ -53,7 +53,7 @@ export class AmazonPollyComponent {
     this.amazonPollyGroup.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe((amazonPolly) =>
-        this.configService.updateAmazonPolly(amazonPolly)
+        this.configService.updateAmazonPolly(amazonPolly),
       );
   }
 }
