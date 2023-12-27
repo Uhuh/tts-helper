@@ -27,7 +27,7 @@ export class SidenavComponent {
   isVStreamConnected$ = this.vstreamService.isTokenValid$;
   newVersion = false;
 
-  private readonly updateChecker = interval(5000)
+  private readonly updateChecker$ = interval(5000)
     .pipe(switchMap(() => from(checkUpdate())))
     .subscribe((updater) => {
       if (!updater.shouldUpdate) {

@@ -10,11 +10,12 @@ import { InputComponent } from '../../../../shared/components/input/input.compon
 import { VStreamService } from '../../../../shared/services/vstream.service';
 import { filter } from 'rxjs';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-edit-command',
   standalone: true,
-  imports: [CommonModule, CdkAccordionModule, LabelBlockComponent, ToggleComponent, MatIconModule, ReactiveFormsModule, InputComponent, ButtonComponent],
+  imports: [CommonModule, CdkAccordionModule, LabelBlockComponent, ToggleComponent, MatIconModule, ReactiveFormsModule, InputComponent, ButtonComponent, MatTabsModule],
   templateUrl: './edit-command.component.html',
   styleUrl: './edit-command.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -327,7 +327,7 @@ export class VStreamService {
     }
   }
 
-  sendCommandResponse(permissions: UserPermissions, command: ChatCommand | undefined) {
+  sendCommandResponse(permissions: UserPermissions, command: ChatCommand | undefined, text: string) {
     if (!command || !command.enabled || this.cooldowns.get(command.id)?.onCooldown) {
       return;
     }
@@ -338,9 +338,17 @@ export class VStreamService {
       return;
     }
 
+    let { response } = command;
+
+    const [_, ...args] = text.split(' ');
+
+    for (const i in args) {
+      response = response.replaceAll(`{${i}}`, args[i]);
+    }
+
     const duration = command.cooldown * 1000;
 
-    this.postChannelMessage(command.response);
+    this.postChannelMessage(response);
 
     this.cooldowns.set(command.id, {
       duration,
