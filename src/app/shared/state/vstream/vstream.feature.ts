@@ -74,7 +74,7 @@ const initialWidget: VStreamWidget = {
   soundPath: null,
   fontPosition: null,
   fontColor: null,
-  fontSize: 16,
+  fontSize: 20,
   width: 300,
   height: 300,
   yPosition: 300,

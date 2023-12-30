@@ -57,7 +57,7 @@ export class EditWidgetComponent implements OnInit {
     xPosition: new FormControl(300, { nonNullable: true, validators: [Validators.required] }),
     fontPosition: new FormControl<string | null>(null),
     fontColor: new FormControl<string | null>(null),
-    fontSize: new FormControl(16, { nonNullable: true }),
+    fontSize: new FormControl(20, { nonNullable: true }),
     fadeInDuration: new FormControl(300, { nonNullable: true }),
     fadeOutDuration: new FormControl(300, { nonNullable: true }),
   });
@@ -78,6 +78,7 @@ export class EditWidgetComponent implements OnInit {
     const { id, ...settings } = this.widget;
 
     this.variables = VStreamEventVariables[settings.trigger];
+    this.fontColor = settings.fontColor ?? this.fontColor;
     this.settings.setValue(settings, { emitEvent: false });
   }
 
