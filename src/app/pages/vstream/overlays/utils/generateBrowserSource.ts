@@ -32,7 +32,7 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
       <div class="widget" style="flex-direction: ${direction}; left: ${w.xPosition}px; top: ${w.yPosition}px; height: ${w.height}px; width: ${w.width}px; --fade-in-duration: ${w.fadeInDuration}ms; --fade-out-duration: ${w.fadeOutDuration}ms">
         ${w.fileURL ? `<img src="${w.fileURL}">` : ''}
         ${w.soundPath ? `<audio src="${w.soundPath}"></audio>` : ''}
-        <span data-duration="${w.duration}" class="${w.trigger}" style="color: ${w.fontColor}; position: ${w.fontPosition === 'center' ? 'absolute' : ''}">${w.customMessage ?? ''}</span>
+        <span data-duration="${w.duration}" class="${w.trigger}" style="color: ${w.fontColor}; position: ${w.fontPosition === 'center' ? 'absolute' : ''}; font-size: ${w.fontSize}px; color: ${w.fontColor}">${w.customMessage ?? ''}</span>
       </div>
     `;
   }).join(' ');
@@ -44,7 +44,7 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
         width: 100%;
         height: 100%;
         color: white;
-        text-shadow: 2px 2px black;
+        text-shadow: 1px 1px black;
         font-family: "Gill Sans", sans-serif;
       }
       
