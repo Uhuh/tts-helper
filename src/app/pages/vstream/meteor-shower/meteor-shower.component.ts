@@ -10,6 +10,7 @@ import {
 } from '../../../shared/components/variable-table/variable-table.component';
 import { VStreamService } from '../../../shared/services/vstream.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
   selector: 'app-meteor-shower',
@@ -19,12 +20,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './meteor-shower.component.scss',
 })
 export class MeteorShowerComponent {
-  readonly variables: VariableTableOption[] = [
-    { variable: 'username', descriptor: 'The username of the person that started the meteor shower.' },
-    { variable: 'size', descriptor: 'The size of the meteor shower.' },
-    { variable: 'title', descriptor: 'The title of the senders stream.' },
-    { variable: 'description', descriptor: 'The description of the senders stream.' },
-  ];
+  readonly variables: VariableTableOption[] = VStreamEventVariables.shower_received.variables;
 
   settings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),

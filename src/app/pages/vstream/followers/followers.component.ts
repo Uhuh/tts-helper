@@ -9,6 +9,7 @@ import {
 } from '../../../shared/components/variable-table/variable-table.component';
 import { VStreamService } from '../../../shared/services/vstream.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
   selector: 'app-followers',
@@ -18,9 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './followers.component.scss',
 })
 export class FollowersComponent {
-  readonly variables: VariableTableOption[] = [
-    { variable: 'username', descriptor: 'The user that followed.' },
-  ];
+  readonly variables: VariableTableOption[] = VStreamEventVariables.new_follower.variables;
 
   settings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
