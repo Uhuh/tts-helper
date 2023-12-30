@@ -283,19 +283,18 @@ export class VStreamService {
     this.store.dispatch(VStreamActions.createChatCommand());
   }
 
-  createWidget(widget: Omit<VStreamWidget, 'id'>) {
+  createWidget() {
     const id = crypto.randomUUID();
 
-    this.store.dispatch(VStreamActions.createWidget({
-      widget: {
-        id,
-        ...widget,
-      },
-    }));
+    this.store.dispatch(VStreamActions.createWidget({ id }));
   }
 
-  updateWidget(widget: VStreamWidget) {
-    this.store.dispatch(VStreamActions.updateWidget({ widget }));
+  updateWidget(partialWidget: Partial<VStreamWidget>) {
+    this.store.dispatch(VStreamActions.updateWidget({ partialWidget }));
+  }
+
+  deleteWidget(id: string) {
+    this.store.dispatch(VStreamActions.deleteWidget({ id }));
   }
 
   /**
