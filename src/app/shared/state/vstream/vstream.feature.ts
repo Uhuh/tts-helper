@@ -49,16 +49,36 @@ export type VStreamEventTypes = ExtractEventTypes<VStreamEvents>;
 export type VStreamWidget = {
   id: string;
   trigger: VStreamEventTypes;
+  duration: number;
   customMessage: string | null;
   // This will be the b64 encoded URL
   fileURL: string | null;
   soundPath: string | null;
+  fontPosition: string | null;
+  fontColor: string | null;
   width: number;
   height: number;
   yPosition: number;
   xPosition: number;
   fadeInDuration: number;
   fadeOutDuration: number;
+};
+
+const initialWidget: VStreamWidget = {
+  id: '',
+  trigger: 'new_follower',
+  duration: 5,
+  customMessage: null,
+  fileURL: null,
+  soundPath: null,
+  fontPosition: null,
+  fontColor: null,
+  width: 300,
+  height: 300,
+  yPosition: 300,
+  xPosition: 300,
+  fadeInDuration: 300,
+  fadeOutDuration: 300,
 };
 
 export type VStreamState = {
@@ -210,15 +230,18 @@ export const VStreamFeature = createFeature({
         expiresIn: token.expires_in,
       },
     })),
-    on(VStreamActions.createWidget, (state, { widget }) => ({
+    on(VStreamActions.createWidget, (state, { id }) => ({
       ...state,
       widgets: [
         ...state.widgets,
-        widget,
+        {
+          ...initialWidget,
+          id,
+        },
       ],
     })),
-    on(VStreamActions.updateWidget, (state, { widget }) => {
-      const existingWidget = state.widgets.find(w => w.id === widget.id);
+    on(VStreamActions.updateWidget, (state, { partialWidget }) => {
+      const existingWidget = state.widgets.find(w => w.id === partialWidget.id);
 
       if (!existingWidget) {
         return state;
@@ -228,8 +251,26 @@ export const VStreamFeature = createFeature({
       const index = state.widgets.indexOf(existingWidget);
 
       copyOfWidgets[index] = {
-        ...widget,
+        ...existingWidget,
+        ...partialWidget,
       };
+
+      return {
+        ...state,
+        widgets: copyOfWidgets,
+      };
+    }),
+    on(VStreamActions.deleteWidget, (state, { id }) => {
+      const widget = state.widgets.find(w => w.id === id);
+
+      if (!widget) {
+        return state;
+      }
+
+      const copyOfWidgets = state.widgets.slice();
+      const index = state.widgets.indexOf(widget);
+
+      copyOfWidgets.splice(index, 1);
 
       return {
         ...state,
