@@ -1,11 +1,6 @@
 ﻿import { VStreamWidget } from '../../../../shared/state/vstream/vstream.feature';
 
 export const generateBrowserSource = (widgets: VStreamWidget[]) => {
-  /**
-   * @TODO
-   * Figure out how to handle fade in/out uniquely for each widget individually
-   */
-
   const htmlWidgets = widgets.map(w => {
     let direction = 'column';
 
