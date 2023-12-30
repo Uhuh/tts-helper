@@ -1,25 +1,32 @@
 <div class="header">
   <span>Overlays for alerts</span>
+  <app-button class="right" (click)="downloadBrowserSource()">
+    Download browser source
+  </app-button>
 </div>
 
+<hr/>
+
 <app-label-block>
-  <div header>Add widget to source</div>
-  <div sub-text>Add a new widget to the VStream browser source</div>
-  <app-button class="right" (click)="openDialog()">
-    Add Widget
+  <div header>Create new widget</div>
+  <div sub-text>Create a new widget to the VStream browser source</div>
+  <app-button class="right" (click)="createWidget()">
+    Create
+  </app-button>
+</app-label-block>
+
+<app-label-block>
+  <div header>Test overlays</div>
+  <div sub-text>Test all the overlays...</div>
+  <app-button class="right" (click)="test()">
+    Test
   </app-button>
 </app-label-block>
 
 <hr/>
 
 @for (widget of widgets$ | async; track widget.id) {
-  <div class="widget-row">
-    <span class>{{ widget.trigger }}</span>
-    <div class="actions">
-      <app-button (click)="openDialog(widget)">Edit</app-button>
-      <app-button [style]="'danger'">Delete</app-button>
-    </div>
-  </div>
+  <app-edit-widget [widget]="widget"/>
 } @empty {
   <div class="empty">
     No widgets!
