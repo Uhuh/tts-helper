@@ -56,6 +56,7 @@ export type VStreamWidget = {
   soundPath: string | null;
   fontPosition: string | null;
   fontColor: string | null;
+  fontSize: number;
   width: number;
   height: number;
   yPosition: number;
@@ -73,6 +74,7 @@ const initialWidget: VStreamWidget = {
   soundPath: null,
   fontPosition: null,
   fontColor: null,
+  fontSize: 16,
   width: 300,
   height: 300,
   yPosition: 300,
