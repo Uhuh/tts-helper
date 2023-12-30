@@ -1,0 +1,34 @@
+:host {
+  padding: 20px;
+
+  border-radius: 10px;
+  border: 2px solid var(--blue-20);
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+}
+
+.widget-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  hr {
+    margin: 10px 0;
+  }
+}
+
+.files {
+  img {
+    height: 128px;
+    width: 128px;
+  }
+  
+  display: flex;
+  justify-content: space-between;
+}

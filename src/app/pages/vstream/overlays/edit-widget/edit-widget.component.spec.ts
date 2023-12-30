@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WidgetDialogComponent } from './widget-dialog.component';
+import { EditWidgetComponent } from './edit-widget.component';
 
 describe('WidgetDialogComponent', () => {
-  let component: WidgetDialogComponent;
-  let fixture: ComponentFixture<WidgetDialogComponent>;
+  let component: EditWidgetComponent;
+  let fixture: ComponentFixture<EditWidgetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WidgetDialogComponent]
+      imports: [EditWidgetComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(WidgetDialogComponent);
+    fixture = TestBed.createComponent(EditWidgetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
