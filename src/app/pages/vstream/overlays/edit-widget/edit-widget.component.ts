@@ -14,11 +14,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { VStreamService } from '../../../../shared/services/vstream.service';
 import { VStreamEventVariables } from '../../utils/variables';
 import { VariableTableComponent } from '../../../../shared/components/variable-table/variable-table.component';
+import { ColorChromeModule } from 'ngx-color/chrome';
+import { ColorEvent } from 'ngx-color';
+import { RGBAString } from '../../../tools/captions/assets/captions';
 
 @Component({
   selector: 'app-edit-widget',
   standalone: true,
-  imports: [CommonModule, LabelBlockComponent, SelectorComponent, MatDialogContent, MatDialogTitle, MatDialogActions, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent],
+  imports: [CommonModule, LabelBlockComponent, SelectorComponent, MatDialogContent, MatDialogTitle, MatDialogActions, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ColorChromeModule],
   templateUrl: './edit-widget.component.html',
   styleUrl: './edit-widget.component.scss',
 })
@@ -34,6 +37,8 @@ export class EditWidgetComponent implements OnInit {
   ];
 
   fontPositions = ['top', 'left', 'bottom', 'right', 'center'];
+
+  fontColor = '#fff';
 
   variables = VStreamEventVariables.new_follower;
 
@@ -52,6 +57,7 @@ export class EditWidgetComponent implements OnInit {
     xPosition: new FormControl(300, { nonNullable: true, validators: [Validators.required] }),
     fontPosition: new FormControl<string | null>(null),
     fontColor: new FormControl<string | null>(null),
+    fontSize: new FormControl(16, { nonNullable: true }),
     fadeInDuration: new FormControl(300, { nonNullable: true }),
     fadeOutDuration: new FormControl(300, { nonNullable: true }),
   });
@@ -75,6 +81,19 @@ export class EditWidgetComponent implements OnInit {
     this.settings.setValue(settings, { emitEvent: false });
   }
 
+  rgba(color: ColorEvent): RGBAString {
+    const { r, b, g, a } = color.color.rgb;
+    return `rgba(${r}, ${g}, ${b}, ${a})`;
+  }
+
+  changeColor(event: ColorEvent) {
+    const color = this.rgba(event);
+
+    // For display purposes.
+    this.fontColor = color;
+    this.settings.controls.fontColor.setValue(color);
+  }
+
   async onFileSelected(event: Event, type: 'image' | 'sound') {
     const file = (event.target as HTMLInputElement & EventTarget)?.files?.[0] ?? null;
 
@@ -89,8 +108,12 @@ export class EditWidgetComponent implements OnInit {
     }
 
     switch (type) {
-      case 'image': this.settings.controls.fileURL.setValue(fileURL); break;
-      case 'sound': this.settings.controls.soundPath.setValue(fileURL); break;
+      case 'image':
+        this.settings.controls.fileURL.setValue(fileURL);
+        break;
+      case 'sound':
+        this.settings.controls.soundPath.setValue(fileURL);
+        break;
     }
   }
 

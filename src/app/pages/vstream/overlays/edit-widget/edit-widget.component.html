@@ -94,6 +94,17 @@
                 }
               </mat-radio-group>
             </app-label-block>
+
+            <app-label-block>
+              <div header>Font Size</div>
+              <div sub-text>How big the font is in pixels.</div>
+              <app-input class="right" [control]="settings.controls.fontSize" type="number" />
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Font Color</div>
+              <color-chrome [color]="fontColor" (onChange)="changeColor($event)" />
+            </app-label-block>
             
             <app-variable-table [variables]="variables.variables">
               <div header>{{variables.header}}</div>
