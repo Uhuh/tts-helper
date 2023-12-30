@@ -9,6 +9,7 @@ import {
 } from '../../../shared/components/variable-table/variable-table.component';
 import { VStreamService } from '../../../shared/services/vstream.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
   selector: 'app-uplifts',
@@ -18,11 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './uplifts.component.scss',
 })
 export class UpliftsComponent {
-  readonly variables: VariableTableOption[] = [
-    { variable: 'formatted', descriptor: 'The monetary value of the UpLift. (Ex $10)' },
-    { variable: 'text', descriptor: 'The text the user included in the UpLift.' },
-    { variable: 'username', descriptor: 'The user that sent the UpLift.' },
-  ];
+  readonly variables: VariableTableOption[] = VStreamEventVariables.uplifting_chat_sent.variables;
 
   settings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),

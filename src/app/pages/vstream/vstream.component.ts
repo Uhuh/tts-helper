@@ -8,11 +8,12 @@ import { MeteorShowerComponent } from './meteor-shower/meteor-shower.component';
 import { FollowersComponent } from './followers/followers.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ChatCommandsComponent } from './chat-commands/chat-commands.component';
+import { OverlaysComponent } from './overlays/overlays.component';
 
 @Component({
   selector: 'app-vstream',
   standalone: true,
-  imports: [CommonModule, AuthComponent, SettingsComponent, SubscriptionComponent, UpliftsComponent, MeteorShowerComponent, FollowersComponent, MatTabsModule, ChatCommandsComponent],
+  imports: [CommonModule, AuthComponent, SettingsComponent, SubscriptionComponent, UpliftsComponent, MeteorShowerComponent, FollowersComponent, MatTabsModule, ChatCommandsComponent, OverlaysComponent],
   templateUrl: './vstream.component.html',
   styleUrl: './vstream.component.scss',
 })

@@ -1,6 +1,6 @@
 ﻿import { createFeature, createReducer, on } from '@ngrx/store';
 import { VStreamActions } from './vstream.actions';
-import { VStreamChannelID } from '../../services/vstream-pubsub.interface';
+import { VStreamChannelID, VStreamEvents } from '../../services/vstream-pubsub.interface';
 import { ChatCommand } from '../../services/chat.interface';
 
 export type VStreamTokenResponse = {
@@ -43,9 +43,50 @@ export type VStreamSubscriptionSettingsState = {
   gifted: VStreamCustomMessageState;
 };
 
+type ExtractEventTypes<T> = T extends { type: infer U } ? U : never;
+export type VStreamEventTypes = ExtractEventTypes<VStreamEvents>;
+
+export type VStreamWidget = {
+  id: string;
+  trigger: VStreamEventTypes;
+  duration: number;
+  customMessage: string | null;
+  // This will be the b64 encoded URL
+  fileURL: string | null;
+  soundPath: string | null;
+  fontPosition: string | null;
+  fontColor: string | null;
+  fontSize: number;
+  width: number;
+  height: number;
+  yPosition: number;
+  xPosition: number;
+  fadeInDuration: number;
+  fadeOutDuration: number;
+};
+
+const initialWidget: VStreamWidget = {
+  id: '',
+  trigger: 'new_follower',
+  duration: 5,
+  customMessage: null,
+  fileURL: null,
+  soundPath: null,
+  fontPosition: null,
+  fontColor: null,
+  fontSize: 20,
+  width: 300,
+  height: 300,
+  yPosition: 300,
+  xPosition: 300,
+  fadeInDuration: 300,
+  fadeOutDuration: 300,
+};
+
 export type VStreamState = {
   token: VStreamToken;
   chatCommands: ChatCommand[];
+  widgets: VStreamWidget[];
   channelInfo: VStreamChannelState;
   settings: VStreamSettingsState;
   uplift: VStreamCustomMessageState;
@@ -77,6 +118,7 @@ const initialChatCommand: Omit<ChatCommand, 'id'> = {
 
 const initialState: VStreamState = {
   chatCommands: [],
+  widgets: [],
   token: {
     accessToken: '',
     idToken: '',
@@ -93,13 +135,28 @@ const initialState: VStreamState = {
   settings: {
     randomChance: 0,
   },
-  uplift: initialCustomMessage,
-  meteorShower: initialCustomMessage,
-  subscriptions: {
-    renew: initialCustomMessage,
-    gifted: initialCustomMessage,
+  uplift: {
+    ...initialCustomMessage,
+    customMessage: 'Thanks {username} for the {formatted} UpLift!',
   },
-  followers: initialCustomMessage,
+  meteorShower: {
+    ...initialCustomMessage,
+    customMessage: 'Thanks {username} for the {size} person meteor shower!',
+  },
+  subscriptions: {
+    renew: {
+      ...initialCustomMessage,
+      customMessage: 'Thanks {username} for subscribing for {renewalMonth} months!',
+    },
+    gifted: {
+      ...initialCustomMessage,
+      customMessage: 'Thanks {gifter} for gifting {amount} tier {tier} subs!',
+    },
+  },
+  followers: {
+    ...initialCustomMessage,
+    customMessage: 'Thanks {username} for following!',
+  },
 };
 
 export const VStreamFeature = createFeature({
@@ -175,6 +232,53 @@ export const VStreamFeature = createFeature({
         expiresIn: token.expires_in,
       },
     })),
+    on(VStreamActions.createWidget, (state, { id }) => ({
+      ...state,
+      widgets: [
+        ...state.widgets,
+        {
+          ...initialWidget,
+          id,
+        },
+      ],
+    })),
+    on(VStreamActions.updateWidget, (state, { partialWidget }) => {
+      const existingWidget = state.widgets.find(w => w.id === partialWidget.id);
+
+      if (!existingWidget) {
+        return state;
+      }
+
+      const copyOfWidgets = state.widgets.slice();
+      const index = state.widgets.indexOf(existingWidget);
+
+      copyOfWidgets[index] = {
+        ...existingWidget,
+        ...partialWidget,
+      };
+
+      return {
+        ...state,
+        widgets: copyOfWidgets,
+      };
+    }),
+    on(VStreamActions.deleteWidget, (state, { id }) => {
+      const widget = state.widgets.find(w => w.id === id);
+
+      if (!widget) {
+        return state;
+      }
+
+      const copyOfWidgets = state.widgets.slice();
+      const index = state.widgets.indexOf(widget);
+
+      copyOfWidgets.splice(index, 1);
+
+      return {
+        ...state,
+        widgets: copyOfWidgets,
+      };
+    }),
     on(VStreamActions.createChatCommand, (state) => ({
       ...state,
       chatCommands: [

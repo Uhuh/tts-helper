@@ -1,0 +1,150 @@
+<cdk-accordion>
+  <cdk-accordion-item
+    #accordionItem="cdkAccordionItem"
+    role="button"
+    tabindex="0"
+    [attr.aria-expanded]="accordionItem.expanded"
+  >
+    <div class="widget-header" (click)="accordionItem.toggle()">
+      {{ widget.trigger }}
+      <mat-icon>
+        {{ accordionItem.expanded ? 'expand_more' : 'chevron_left' }}
+      </mat-icon>
+    </div>
+    <div
+      role="region"
+      [style.display]="accordionItem.expanded ? 'block' : 'none'"
+    >
+      <div class="widget-body">
+        <hr/>
+        
+        <mat-tab-group animationDuration="0ms">
+          <mat-tab label="Basics">
+            <div class="header">
+              <span>Basics</span>
+              <app-button [style]="'danger'" class="right" (click)="deleteWidget()">
+                Delete
+              </app-button>
+            </div>
+            
+            <app-label-block>
+              <div header>Trigger event</div>
+              <div sub-text>Which event to listen to for this widget.</div>
+              <app-selector [control]="settings.controls.trigger" [options]="eventOptions" placeholder="Select an event" />
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Display duration</div>
+              <div sub-text>How long to display the widget in seconds.</div>
+              <app-input class="right" [control]="settings.controls.duration" type="number"/>
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Width</div>
+              <div sub-text>Width of the widget in pixels</div>
+              <app-input class="right" [control]="settings.controls.width" type="number"/>
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Height</div>
+              <div sub-text>Height of the widget in pixels</div>
+              <app-input class="right" [control]="settings.controls.height" type="number" />
+            </app-label-block>
+
+            <app-label-block>
+              <div header>X Position</div>
+              <div sub-text>The x position (in pixels) of the widget in the source.</div>
+              <app-input class="right" [control]="settings.controls.xPosition" type="number" />
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Y Position</div>
+              <div sub-text>The y position (in pixels) of the widget in the source.</div>
+              <app-input class="right" [control]="settings.controls.yPosition" type="number" />
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Fade In Duration</div>
+              <div sub-text>How fast it fades in (milliseconds)</div>
+              <app-input class="right" [control]="settings.controls.fadeInDuration" type="number" />
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Fade Out Duration</div>
+              <div sub-text>How fast it fades out (milliseconds)</div>
+              <app-input class="right" [control]="settings.controls.fadeOutDuration" type="number" />
+            </app-label-block>
+
+          </mat-tab>
+          <mat-tab label="Text">
+            <div class="header">
+              <span>Text Settings</span>
+            </div>
+
+            <div class="warning orange">
+              <span>These settings are optional.</span>
+            </div>
+            
+            <app-label-block>
+              <div header>Text position</div>
+              <div sub-text>Where to position the text if a file is present.</div>
+              <mat-radio-group [formControl]="settings.controls.fontPosition">
+                @for (position of fontPositions; track position) {
+                  <mat-radio-button [value]="position">{{position}}</mat-radio-button>
+                }
+              </mat-radio-group>
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Font Size</div>
+              <div sub-text>How big the font is in pixels.</div>
+              <app-input class="right" [control]="settings.controls.fontSize" type="number" />
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Font Color</div>
+              <color-chrome [color]="fontColor" (onChange)="changeColor($event)" />
+            </app-label-block>
+            
+            <app-variable-table [variables]="variables.variables">
+              <div header>{{variables.header}}</div>
+              <div example-text [innerHTML]="variables.example"></div>
+              <div result-text>{{variables.result}}</div>
+            </app-variable-table>
+
+            <app-label-block>
+              <div header>Custom message</div>
+              <div sub-text>Optional text to display when the event happens.</div>
+              <textarea [formControl]="settings.controls.customMessage" [placeholder]="variables.result"></textarea>
+            </app-label-block>
+          </mat-tab>
+          <mat-tab label="File">
+            <div class="files">
+              @if (widget.fileURL) {
+                <img [src]="widget.fileURL">
+              }
+
+              @if (widget.soundPath) {
+                <audio controls [src]="widget.soundPath"></audio>
+              }
+            </div>
+            
+            <app-label-block>
+              <div header>Image</div>
+              <div sub-text>Want to show an image or a gif? Load it!</div>
+              <app-button class="right" (click)="fileInput.click()">Choose File</app-button>
+              <input hidden (change)="onFileSelected($event, 'image')" #fileInput type="file" accept="image/*"/>
+            </app-label-block>
+
+            <app-label-block>
+              <div header>Sound</div>
+              <div sub-text>A sound to play.</div>
+              <app-button class="right" (click)="soundInput.click()">Choose File</app-button>
+              <input hidden (change)="onFileSelected($event, 'sound')" #soundInput type="file" accept="audio/*"/>
+            </app-label-block>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+  </cdk-accordion-item>
+</cdk-accordion>

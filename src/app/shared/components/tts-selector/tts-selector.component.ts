@@ -1,11 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  Input,
-  OnChanges,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnChanges, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -56,22 +49,22 @@ export class TtsSelectorComponent implements OnChanges {
 
     this.languageOptions.set(
       [...this.languageVoiceMap.keys()]
-        .map(l => ({ value: l, displayName: l }))
+        .map(l => ({ value: l, displayName: l })),
     );
 
     this.languageVoiceOptions.set(
-      this.languageVoiceMap.get(this.languageControl.value) ?? []
+      this.languageVoiceMap.get(this.languageControl.value) ?? [],
     );
 
     this.languageControl.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((language) => {
         this.languageVoiceOptions.set(
-          this.languageVoiceMap.get(language) ?? []
+          this.languageVoiceMap.get(language) ?? [],
         );
 
         this.voiceControl.patchValue(
-          `${this.languageVoiceOptions()[0].value}` ?? ''
+          `${this.languageVoiceOptions()[0].value}` ?? '',
         );
       });
   }

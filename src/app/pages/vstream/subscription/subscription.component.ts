@@ -10,6 +10,7 @@ import {
 } from '../../../shared/components/variable-table/variable-table.component';
 import { VStreamService } from '../../../shared/services/vstream.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
   selector: 'app-subscription',
@@ -19,19 +20,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './subscription.component.scss',
 })
 export class SubscriptionComponent {
-  readonly renewVariables: VariableTableOption[] = [
-    { variable: 'streakMonth', descriptor: 'The current subscription streak.' },
-    { variable: 'renewalMonth', descriptor: 'The number of months the user has subscribed.' },
-    { variable: 'tier', descriptor: 'The tier of the subscription.' },
-    { variable: 'text', descriptor: 'The text the user included in the subscription.' },
-    { variable: 'username', descriptor: 'The user that subscribed.' },
-  ];
-
-  readonly giftedVariables: VariableTableOption[] = [
-    { variable: 'tier', descriptor: 'The tier of the gift.' },
-    { variable: 'amount', descriptor: 'The number of gifts the user gifted.' },
-    { variable: 'gifter', descriptor: 'The user that gifted subscriptions.' },
-  ];
+  readonly renewVariables: VariableTableOption[] = VStreamEventVariables.subscription_renewed.variables;
+  readonly giftedVariables: VariableTableOption[] = VStreamEventVariables.subscriptions_gifted.variables;
 
   renewSettings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
