@@ -12,6 +12,7 @@ use crate::services::{run_auth_server, start_ws_server};
 fn main() -> anyhow::Result<()> {
     let obs_port = "37891";
     let streamdeck_port = "17448";
+    let vstream_overlays_port = "37391";
     
     Registry::default()
         .with(if cfg!(debug_assertions) {
@@ -32,6 +33,7 @@ fn main() -> anyhow::Result<()> {
             std::thread::spawn(move || run_auth_server(handle));
             tauri::async_runtime::spawn(start_ws_server(obs_port));
             tauri::async_runtime::spawn(start_ws_server(streamdeck_port));
+            tauri::async_runtime::spawn(start_ws_server(vstream_overlays_port));
 
             Ok(())
         })
