@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { VStreamService } from './vstream.service';
-import { combineLatest, filter, first, map, switchMap } from 'rxjs';
+import { combineLatest, filter, first, map, retry, switchMap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
 import {
   VStreamEventChatCreated,
@@ -29,7 +29,9 @@ import { AudioService } from './audio.service';
 })
 export class VStreamPubSubService {
   private socketUrl = 'wss://events.vstream.com/channels';
-  vstreamSocket = webSocket(this.socketUrl);
+  vstreamSocket$ = webSocket(this.socketUrl);
+
+  vstreamOverlaysSocket$ = webSocket(`ws://localhost:37391`);
 
   commands$ = this.vstreamService.commands$;
 
@@ -83,14 +85,30 @@ export class VStreamPubSubService {
         }),
       )
       .subscribe(token => {
-        this.vstreamSocket.complete();
+        this.vstreamSocket$.complete();
 
-        this.vstreamSocket = webSocket(`${this.socketUrl}/${this.channelInfo.channelId}/events?authorization=${token.data.token}`);
+        this.vstreamSocket$ = webSocket(`${this.socketUrl}/${this.channelInfo.channelId}/events?authorization=${token.data.token}`);
 
-        this.vstreamSocket.subscribe({
+        this.vstreamSocket$.subscribe({
           next: (event) => this.handleEvent(event as VStreamEvents),
           error: e => console.error(e),
         });
+      });
+
+    this.connect();
+  }
+
+  private connect() {
+    this.vstreamOverlaysSocket$ = webSocket(`ws://localhost:37391`);
+
+    this.vstreamOverlaysSocket$
+      .pipe(retry({
+        delay: 5000,
+      }))
+      .subscribe({
+        complete: () => {
+          setTimeout(() => this.connect(), 3000);
+        },
       });
   }
 
@@ -154,6 +172,18 @@ export class VStreamPubSubService {
       .replaceAll(/{username}/g, username);
 
     this.handleCustomMessage(parsedInput ?? text, username, this.upliftSettings);
+
+    const event = {
+      id: 'tts-helper',
+      event: 'uplifting_chat_sent',
+      eventData: {
+        username,
+        formatted,
+        text,
+      },
+    };
+
+    this.vstreamOverlaysSocket$.next(event);
   }
 
   async handleFollower(follower: VStreamEventNewFollower) {
@@ -163,7 +193,18 @@ export class VStreamPubSubService {
     const parsedInput = customMessage
       .replaceAll(/{username}/g, username);
 
+
     this.handleCustomMessage(parsedInput, username, this.followerSettings);
+
+    const event = {
+      id: 'tts-helper',
+      event: 'new_follower',
+      eventData: {
+        username,
+      },
+    };
+
+    this.vstreamOverlaysSocket$.next(event);
   }
 
   async handleGiftSub(gift: VStreamEventSubscriptionGifted) {
@@ -178,6 +219,18 @@ export class VStreamPubSubService {
       .replaceAll(/{gifter}/g, username);
 
     this.handleCustomMessage(parsedInput, username, this.subscriptionSettings.gifted);
+
+    const event = {
+      id: 'tts-helper',
+      event: 'subscriptions_gifted',
+      eventData: {
+        tier,
+        amount,
+        gifter: username,
+      },
+    };
+
+    this.vstreamOverlaysSocket$.next(event);
   }
 
   async handleSubRenew(renew: VStreamEventSubscriptionRenew) {
@@ -193,6 +246,20 @@ export class VStreamPubSubService {
       .replaceAll(/{username}/g, username);
 
     this.handleCustomMessage(parsedInput ?? subMessage, username, this.subscriptionSettings.renew);
+
+    const event = {
+      id: 'tts-helper',
+      event: 'subscription_renewed',
+      eventData: {
+        tier,
+        streakMonth,
+        renewalMonth,
+        text: subMessage,
+        username,
+      },
+    };
+
+    this.vstreamOverlaysSocket$.next(event);
   }
 
   async handleMeteorShower(meteorShower: VStreamEventMeteorShower) {
@@ -206,6 +273,19 @@ export class VStreamPubSubService {
       .replaceAll(/{description}/g, description);
 
     this.handleCustomMessage(parsedInput, username, this.meteorShowerSettings);
+
+    const event = {
+      id: 'tts-helper',
+      event: 'shower_received',
+      eventData: {
+        username,
+        size: audienceSize,
+        title,
+        description,
+      },
+    };
+
+    this.vstreamOverlaysSocket$.next(event);
   }
 
   async handleChatMessage(chat: VStreamEventChatCreated) {
@@ -257,9 +337,68 @@ export class VStreamPubSubService {
         filter(command => !!command && !!command.command),
       )
       .subscribe(command => {
-        this.logService.add(`User "${chatter.displayName}" ran a chat command "${command?.command}"`, 'info', 'VStreamPubSub.handleChatMessage');
+        this.logService.add(`User "${chatter.displayName}" ran a chat command "${JSON.stringify(command, undefined, 2)}"`, 'info', 'VStreamPubSub.handleChatMessage');
 
         this.vstreamService.sendCommandResponse(permissions, command, text);
       });
+  }
+
+  testOverlays() {
+    const shower = {
+      id: 'tts-helper',
+      event: 'shower_received',
+      eventData: {
+        username: 'Alphyx',
+        size: 5,
+        title: 'Blah',
+        description: 'yurr',
+      },
+    };
+
+    const sub = {
+      id: 'tts-helper',
+      event: 'subscription_renewed',
+      eventData: {
+        tier: 1,
+        streakMonth: 1,
+        renewalMonth: 1,
+        text: 'Hello',
+        username: 'Alphyx',
+      },
+    };
+
+    const gift = {
+      id: 'tts-helper',
+      event: 'subscriptions_gifted',
+      eventData: {
+        tier: 1,
+        amount: 3,
+        gifter: 'Alphyx',
+      },
+    };
+
+    const follow = {
+      id: 'tts-helper',
+      event: 'new_follower',
+      eventData: {
+        username: 'Alphyx',
+      },
+    };
+
+    const uplift = {
+      id: 'tts-helper',
+      event: 'uplifting_chat_sent',
+      eventData: {
+        username: 'Alphyx',
+        formatted: '$10',
+        text: 'Thanks for streaming!',
+      },
+    };
+
+    this.vstreamOverlaysSocket$.next(shower);
+    this.vstreamOverlaysSocket$.next(sub);
+    this.vstreamOverlaysSocket$.next(gift);
+    this.vstreamOverlaysSocket$.next(follow);
+    this.vstreamOverlaysSocket$.next(uplift);
   }
 }
