@@ -28,9 +28,25 @@ export class OverlaysComponent {
   createWidget() {
     this.vstreamService.createWidget();
   }
-  
+
   test() {
     this.vstreamPubsub.testOverlays();
+  }
+
+  /**
+   * Let users preview their changes so they don't have to download the browser source over and over to test.
+   */
+  preview() {
+    this.widgets$
+      .pipe(take(1))
+      .subscribe(widgets => {
+        const htmlContent = generateBrowserSource(widgets);
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+
+        const tempURL = URL.createObjectURL(blob);
+
+        window.open(tempURL);
+      });
   }
 
   downloadBrowserSource() {
