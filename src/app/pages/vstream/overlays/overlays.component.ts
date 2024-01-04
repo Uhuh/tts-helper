@@ -5,7 +5,7 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
 import { VStreamService } from '../../../shared/services/vstream.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EditWidgetComponent } from './edit-widget/edit-widget.component';
-import { take } from 'rxjs';
+import { map, scan, take } from 'rxjs';
 import { generateBrowserSource } from './utils/generateBrowserSource';
 import { VStreamPubSubService } from '../../../shared/services/vstream-pubsub.service';
 
@@ -38,15 +38,20 @@ export class OverlaysComponent {
    */
   preview() {
     this.widgets$
-      .pipe(take(1))
-      .subscribe(widgets => {
-        const htmlContent = generateBrowserSource(widgets);
-        const blob = new Blob([htmlContent], { type: 'text/html' });
+      .pipe(
+        take(1),
+        map((widgets) => {
+          const htmlContent = generateBrowserSource(widgets);
+          const blob = new Blob([htmlContent], { type: 'text/html' });
 
-        const tempURL = URL.createObjectURL(blob);
-
-        window.open(tempURL);
-      });
+          return URL.createObjectURL(blob);
+        }),
+        scan((oldURL, newURL) => {
+          URL.revokeObjectURL(oldURL);
+          return newURL;
+        }),
+      )
+      .subscribe(url => window.open(url));
   }
 
   downloadBrowserSource() {
