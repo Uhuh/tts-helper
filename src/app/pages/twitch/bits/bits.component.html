@@ -5,14 +5,14 @@
 <app-label-block>
   <div header>Handle bits</div>
   <div sub-text>Enable or disable TTS events for bits.</div>
-  <app-toggle [control]="enabled"/>
+  <app-toggle class="right" [control]="enabled"/>
 </app-label-block>
 
 @if (enabled.value) {
   <app-label-block>
     <div header>Exact bits amount</div>
     <div sub-text>Only trigger TTS on exact min bits amount.</div>
-    <app-toggle [control]="exact"/>
+    <app-toggle class="right" [control]="exact"/>
   </app-label-block>
 
   <app-label-block>

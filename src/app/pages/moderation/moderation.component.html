@@ -6,7 +6,7 @@
     <div header>Banned words</div>
     <div sub-text>Put words separated by commas.</div>
     <div sub-text>Messages that contain any of these will be ignored entirely.</div>
-    <app-toggle [control]="hideBannedWords" text="Blur" />
+    <app-toggle class="right" [control]="hideBannedWords" text="Blur" />
     <textarea
       [formControl]="bannedWords"
       class="banned-words hide"

@@ -5,19 +5,19 @@
 <app-label-block>
   <div header>Enable normal TTS</div>
   <div sub-text>If enabled, TTS will read your custom message.</div>
-  <app-toggle [control]="settings.controls.enabled"/>
+  <app-toggle class="right" [control]="settings.controls.enabled"/>
 </app-label-block>
 
 <app-label-block>
   <div header>Enable normal ChatGPT</div>
   <div sub-text>If enabled, ChatGPT will receive the custom message instead.</div>
-  <app-toggle [control]="settings.controls.enabledGpt"/>
+  <app-toggle class="right" [control]="settings.controls.enabledGpt"/>
 </app-label-block>
 
 <app-label-block>
   <div header>Enable sending to chat</div>
   <div sub-text>If enabled, the customized message below will be sent to your VStream chat.</div>
-  <app-toggle [control]="settings.controls.enabledChat"/>
+  <app-toggle class="right" [control]="settings.controls.enabledChat"/>
 </app-label-block>
 
 <app-variable-table [variables]="variables">

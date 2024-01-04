@@ -30,7 +30,7 @@
             <app-label-block>
               <div header>Enable</div>
               <div sub-text>If enabled, users can then invoke this command.</div>
-              <app-toggle [control]="commandSettings.controls.enabled"/>
+              <app-toggle class="right" [control]="commandSettings.controls.enabled"/>
             </app-label-block>
 
             <app-label-block>
@@ -44,7 +44,7 @@
             <app-label-block>
               <div header>Enable auto-run</div>
               <div sub-text>If enabled, this command runs automatically on a timer.</div>
-              <app-toggle [control]="commandSettings.controls.autoRedeem"/>
+              <app-toggle class="right" [control]="commandSettings.controls.autoRedeem"/>
             </app-label-block>
 
             <app-label-block>
@@ -57,19 +57,19 @@
             <app-label-block>
               <div header>All Users</div>
               <div sub-text>Everyone can run this command.</div>
-              <app-toggle [control]="permissions.controls.allUsers"/>
+              <app-toggle class="right" [control]="permissions.controls.allUsers"/>
             </app-label-block>
 
             <app-label-block>
               <div header>Mods</div>
               <div sub-text>Allows your channel mods to run this command.</div>
-              <app-toggle [control]="permissions.controls.mods"/>
+              <app-toggle class="right" [control]="permissions.controls.mods"/>
             </app-label-block>
 
             <app-label-block>
               <div header>Paying Users</div>
               <div sub-text>Anyone with an active subscription to you.</div>
-              <app-toggle [control]="permissions.controls.payingMembers"/>
+              <app-toggle class="right" [control]="permissions.controls.payingMembers"/>
             </app-label-block>
           </mat-tab>
           <mat-tab label="Command Settings">

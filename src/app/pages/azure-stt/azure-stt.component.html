@@ -12,7 +12,7 @@
   <app-label-block>
     <div header>Enable STT</div>
     <div sub-text>If enabled, you can use STT with the set hotkey.</div>
-    <app-toggle [control]="azureSettings.controls.enabled"/>
+    <app-toggle class="right" [control]="azureSettings.controls.enabled"/>
   </app-label-block>
 
   @if (azureSettings.controls.enabled.value) {

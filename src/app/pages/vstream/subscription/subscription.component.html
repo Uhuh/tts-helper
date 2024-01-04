@@ -5,19 +5,19 @@
 <app-label-block>
   <div header>Enable normal TTS</div>
   <div sub-text>If enabled, TTS will read your custom message.</div>
-  <app-toggle [control]="renewSettings.controls.enabled"/>
+  <app-toggle class="right" [control]="renewSettings.controls.enabled"/>
 </app-label-block>
 
 <app-label-block>
   <div header>Enable normal ChatGPT</div>
   <div sub-text>If enabled, ChatGPT will receive the custom message instead.</div>
-  <app-toggle [control]="renewSettings.controls.enabledGpt"/>
+  <app-toggle class="right" [control]="renewSettings.controls.enabledGpt"/>
 </app-label-block>
 
 <app-label-block>
   <div header>Enable sending to chat</div>
   <div sub-text>If enabled, the customized message below will be sent to your VStream chat.</div>
-  <app-toggle [control]="renewSettings.controls.enabledChat"/>
+  <app-toggle class="right" [control]="renewSettings.controls.enabledChat"/>
 </app-label-block>
 
 <app-variable-table [variables]="renewVariables">
@@ -46,19 +46,19 @@
 <app-label-block>
   <div header>Enable normal TTS</div>
   <div sub-text>If enabled, TTS will read your custom message.</div>
-  <app-toggle [control]="giftedSettings.controls.enabled"/>
+  <app-toggle class="right" [control]="giftedSettings.controls.enabled"/>
 </app-label-block>
 
 <app-label-block>
   <div header>Enable normal ChatGPT</div>
   <div sub-text>If enabled, ChatGPT will receive the custom message instead.</div>
-  <app-toggle [control]="giftedSettings.controls.enabledGpt"/>
+  <app-toggle class="right" [control]="giftedSettings.controls.enabledGpt"/>
 </app-label-block>
 
 <app-label-block>
   <div header>Enable sending to chat</div>
   <div sub-text>If enabled, the customized message below will be sent to your VStream chat.</div>
-  <app-toggle [control]="giftedSettings.controls.enabledChat"/>
+  <app-toggle class="right" [control]="giftedSettings.controls.enabledChat"/>
 </app-label-block>
 
 <app-variable-table [variables]="giftedVariables">

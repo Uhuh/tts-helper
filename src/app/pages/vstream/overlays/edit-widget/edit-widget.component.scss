@@ -12,6 +12,12 @@
   cursor: pointer;
   user-select: none;
   font-size: 18px;
+
+  .widget-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 }
 
 .widget-body {
