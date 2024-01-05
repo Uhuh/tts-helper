@@ -27,7 +27,7 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
       <div class="widget" style="flex-direction: ${direction}; left: ${w.xPosition}px; top: ${w.yPosition}px; height: ${w.height}px; width: ${w.width}px; --fade-in-duration: ${w.fadeInDuration}ms; --fade-out-duration: ${w.fadeOutDuration}ms">
         ${w.fileURL ? `<img src="${w.fileURL}">` : ''}
         ${w.soundPath ? `<audio src="${w.soundPath}"></audio>` : ''}
-        <span data-duration="${w.duration}" class="${w.trigger}" style="color: ${w.fontColor}; position: ${w.fontPosition === 'center' ? 'absolute' : ''}; font-size: ${w.fontSize}px; color: ${w.fontColor}">${w.customMessage ?? ''}</span>
+        <span data-duration="${w.duration}" data-enabled="${w.enabled}" class="${w.trigger}" style="color: ${w.fontColor}; position: ${w.fontPosition === 'center' ? 'absolute' : ''}; font-size: ${w.fontSize}px; color: ${w.fontColor}">${w.customMessage ?? ''}</span>
       </div>
     `;
   }).join(' ');
@@ -280,6 +280,13 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
       function handleElement(parsedText, originalText, elem) {
         // We store the duration of each widget as a data attr.
         const duration = Number(elem.getAttribute('data-duration'));
+        const enabled = Boolean(elem.getAttribute('data-enabled'));
+        
+        // Obviously, if the widget isn't enabled, we want to ignore the event.
+        if (!enabled) {
+          return;
+        }
+        
         const audio = elem.parentElement.querySelector('audio');
         
         elem.innerText = parsedText;
