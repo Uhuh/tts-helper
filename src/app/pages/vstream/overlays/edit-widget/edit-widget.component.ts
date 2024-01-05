@@ -17,11 +17,12 @@ import { VariableTableComponent } from '../../../../shared/components/variable-t
 import { ColorChromeModule } from 'ngx-color/chrome';
 import { ColorEvent } from 'ngx-color';
 import { RGBAString } from '../../../tools/captions/assets/captions';
+import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
 
 @Component({
   selector: 'app-edit-widget',
   standalone: true,
-  imports: [CommonModule, LabelBlockComponent, SelectorComponent, MatDialogContent, MatDialogTitle, MatDialogActions, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ColorChromeModule],
+  imports: [CommonModule, LabelBlockComponent, SelectorComponent, MatDialogContent, MatDialogTitle, MatDialogActions, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ColorChromeModule, ToggleComponent],
   templateUrl: './edit-widget.component.html',
   styleUrl: './edit-widget.component.scss',
 })
@@ -41,6 +42,8 @@ export class EditWidgetComponent implements OnInit {
   fontColor = '#fff';
 
   variables = VStreamEventVariables.new_follower;
+
+  enabled = new FormControl(true, { nonNullable: true });
 
   settings = new FormGroup({
     trigger: new FormControl<VStreamEventTypes>('new_follower', {
@@ -69,17 +72,19 @@ export class EditWidgetComponent implements OnInit {
       });
 
     this.settings.valueChanges
-      .subscribe(settings => {
-        this.vstreamService.updateWidget({ id: this.widget.id, ...settings });
-      });
+      .subscribe(settings => this.vstreamService.updateWidget({ id: this.widget.id, ...settings }));
+
+    this.enabled.valueChanges
+      .subscribe(enabled => this.vstreamService.updateWidget({ id: this.widget.id, enabled }));
   }
 
   ngOnInit() {
-    const { id, ...settings } = this.widget;
+    const { id, enabled, ...settings } = this.widget;
 
     this.variables = VStreamEventVariables[settings.trigger];
     this.fontColor = settings.fontColor ?? this.fontColor;
     this.settings.setValue(settings, { emitEvent: false });
+    this.enabled.setValue(enabled, { emitEvent: false });
   }
 
   rgba(color: ColorEvent): RGBAString {

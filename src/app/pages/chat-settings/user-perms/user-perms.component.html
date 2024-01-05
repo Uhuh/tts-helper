@@ -5,17 +5,17 @@
 <app-label-block>
   <div header>All Users</div>
   <div sub-text>Everyone can run these commands.</div>
-  <app-toggle [control]="formGroup.controls.allUsers"/>
+  <app-toggle class="right" [control]="formGroup.controls.allUsers"/>
 </app-label-block>
 
 <app-label-block>
   <div header>Mods</div>
   <div sub-text>Allows your channel mods to run commands.</div>
-  <app-toggle [control]="formGroup.controls.mods"/>
+  <app-toggle class="right" [control]="formGroup.controls.mods"/>
 </app-label-block>
 
 <app-label-block>
   <div header>Paying Users</div>
   <div sub-text>Anyone with an active subscription to you.</div>
-  <app-toggle [control]="formGroup.controls.payingMembers"/>
+  <app-toggle class="right" [control]="formGroup.controls.payingMembers"/>
 </app-label-block>

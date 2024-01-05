@@ -48,6 +48,7 @@ export type VStreamEventTypes = ExtractEventTypes<VStreamEvents>;
 
 export type VStreamWidget = {
   id: string;
+  enabled: boolean;
   trigger: VStreamEventTypes;
   duration: number;
   customMessage: string | null;
@@ -67,6 +68,7 @@ export type VStreamWidget = {
 
 const initialWidget: VStreamWidget = {
   id: '',
+  enabled: true,
   trigger: 'new_follower',
   duration: 5,
   customMessage: null,
