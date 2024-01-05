@@ -1,7 +1,7 @@
 ﻿import { VStreamWidget } from '../../../../shared/state/vstream/vstream.feature';
 
-export const generateBrowserSource = (widgets: VStreamWidget[]) => {
-  const htmlWidgets = widgets.map(w => {
+export function generateWidgetsHtml(widgets: VStreamWidget[]) {
+  return widgets.map(w => {
     let direction = 'column';
 
     /**
@@ -27,10 +27,14 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
       <div class="widget" style="flex-direction: ${direction}; left: ${w.xPosition}px; top: ${w.yPosition}px; height: ${w.height}px; width: ${w.width}px; --fade-in-duration: ${w.fadeInDuration}ms; --fade-out-duration: ${w.fadeOutDuration}ms">
         ${w.fileURL ? `<img src="${w.fileURL}">` : ''}
         ${w.soundPath ? `<audio src="${w.soundPath}"></audio>` : ''}
-        <span data-duration="${w.duration}" data-enabled="${w.enabled}" class="${w.trigger}" style="color: ${w.fontColor}; position: ${w.fontPosition === 'center' ? 'absolute' : ''}; font-size: ${w.fontSize}px; color: ${w.fontColor}">${w.customMessage ?? ''}</span>
+        <span data-duration="${w.duration}" ${w.enabled ? 'data-enabled' : ''} class="${w.trigger}" style="color: ${w.fontColor}; position: ${w.fontPosition === 'center' ? 'absolute' : ''}; font-size: ${w.fontSize}px; color: ${w.fontColor}">${w.customMessage ?? ''}</span>
       </div>
     `;
   }).join(' ');
+}
+
+export const generateBrowserSource = (widgets: VStreamWidget[]) => {
+  const htmlWidgets = generateWidgetsHtml(widgets);
 
   return `
     <style>
@@ -90,7 +94,7 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
         }
       }
     </style>
-    <main>
+    <main id="main-wrapper">
       ${htmlWidgets}
     </main>
     <script>
@@ -117,7 +121,7 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
           // If it's not from tts-helper we don't care.
           if (id !== 'tts-helper') return;
 
-          switch(event) {
+          switch (event) {
             case 'new_follower':
               handleFollowerEvent(eventData);
               break;
@@ -132,6 +136,9 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
               break;
             case 'uplifting_chat_sent':
               handleUpLiftEvent(eventData);
+              break;
+            case 'rebuild_widgets':
+              handleWidgetRebuild(eventData);
               break;
             default:
           }
@@ -174,6 +181,22 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
             reconnecting = false;
           }, 3000);
         };
+      }
+      
+      /**
+      * Users want to be able to update their widgets without having to redownload every single time.
+      * @param data - sent from TTS Helper, should contained all the rebuilt widgets as an HTML string.
+      */
+      function handleWidgetRebuild(data) {
+        const { html } = data;
+        
+        const mainElem = document.getElementById('main-wrapper');
+        
+        if (!mainElem) {
+          return console.error('Cannot find main element!!!!');
+        }
+        
+        mainElem.innerHTML = html;
       }
       
       /**
@@ -280,7 +303,7 @@ export const generateBrowserSource = (widgets: VStreamWidget[]) => {
       function handleElement(parsedText, originalText, elem) {
         // We store the duration of each widget as a data attr.
         const duration = Number(elem.getAttribute('data-duration'));
-        const enabled = Boolean(elem.getAttribute('data-enabled'));
+        const enabled = elem.hasAttribute('data-enabled');
         
         // Obviously, if the widget isn't enabled, we want to ignore the event.
         if (!enabled) {

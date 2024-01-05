@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { VStreamService } from './vstream.service';
-import { combineLatest, filter, first, map, retry, switchMap } from 'rxjs';
+import { combineLatest, debounceTime, filter, first, map, retry, switchMap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
 import {
   VStreamEventChatCreated,
@@ -23,6 +23,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GptSettingsState } from '../state/openai/openai.feature';
 import { LogService } from './logs.service';
 import { AudioService } from './audio.service';
+import { generateWidgetsHtml } from '../../pages/vstream/overlays/utils/generateBrowserSource';
 
 @Injectable({
   providedIn: 'root',
@@ -92,6 +93,24 @@ export class VStreamPubSubService {
         this.vstreamSocket$.subscribe({
           next: (event) => this.handleEvent(event as VStreamEvents),
           error: e => console.error(e),
+        });
+      });
+
+    /**
+     * Users want to be able to update their widgets without having to re-download a browser source every time.
+     * So everytime widgets change, generate a new HTML string and send it to the browser source to self update.
+     */
+    this.vstreamService.widgets$
+      .pipe(takeUntilDestroyed(), debounceTime(500))
+      .subscribe(widgets => {
+        const widgetsHtml = generateWidgetsHtml(widgets);
+
+        this.vstreamOverlaysSocket$.next({
+          id: 'tts-helper',
+          event: 'rebuild_widgets',
+          eventData: {
+            html: widgetsHtml,
+          },
         });
       });
 
