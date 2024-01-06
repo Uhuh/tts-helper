@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
@@ -20,24 +20,25 @@ import { VStreamEventVariables } from '../utils/variables';
   styleUrl: './subscription.component.scss',
 })
 export class SubscriptionComponent {
+  private readonly vstreamService = inject(VStreamService);
   readonly renewVariables: VariableTableOption[] = VStreamEventVariables.subscription_renewed.variables;
   readonly giftedVariables: VariableTableOption[] = VStreamEventVariables.subscriptions_gifted.variables;
 
-  renewSettings = new FormGroup({
+  readonly renewSettings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     enabledGpt: new FormControl(false, { nonNullable: true }),
     enabledChat: new FormControl(false, { nonNullable: true }),
     customMessage: new FormControl('', { nonNullable: true }),
   });
 
-  giftedSettings = new FormGroup({
+  readonly giftedSettings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     enabledGpt: new FormControl(false, { nonNullable: true }),
     enabledChat: new FormControl(false, { nonNullable: true }),
     customMessage: new FormControl('', { nonNullable: true }),
   });
 
-  constructor(private readonly vstreamService: VStreamService) {
+  constructor() {
     this.vstreamService.subscriptionSettings$
       .pipe(takeUntilDestroyed())
       .subscribe(settings => {

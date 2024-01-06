@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,13 +27,10 @@ import { PlaybackService } from '../../services/playback.service';
   ],
 })
 export class NavComponent implements OnInit {
+  private readonly breakpoint = inject(BreakpointObserver);
+  private readonly playbackService = inject(PlaybackService);
+  readonly isPaused$ = this.playbackService.isPaused$;
   isMobile = false;
-  isPaused$ = this.playbackService.isPaused$;
-
-  constructor(
-    private readonly breakpoint: BreakpointObserver,
-    private readonly playbackService: PlaybackService,
-  ) {}
 
   ngOnInit(): void {
     this.breakpoint.observe(['(max-width: 900px)']).subscribe((state) => {

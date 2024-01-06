@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
@@ -16,7 +16,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './eleven-labs.component.scss',
 })
 export class ElevenLabsComponent {
-  elevenLabs = new FormGroup({
+  private readonly elevenLabsService = inject(ElevenLabsService);
+
+  readonly elevenLabs = new FormGroup({
     apiKey: new FormControl('', { nonNullable: true }),
     voiceId: new FormControl('', { nonNullable: true }),
     modelId: new FormControl('', { nonNullable: true }),
@@ -25,7 +27,7 @@ export class ElevenLabsComponent {
   voiceOptions: TTSOption[] = [];
   modelOptions: TTSOption[] = [];
 
-  constructor(private readonly elevenLabsService: ElevenLabsService) {
+  constructor() {
     this.elevenLabsService.state$
       .pipe(takeUntilDestroyed())
       .subscribe(state => {

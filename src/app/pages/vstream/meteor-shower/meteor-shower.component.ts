@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
@@ -20,16 +20,17 @@ import { VStreamEventVariables } from '../utils/variables';
   styleUrl: './meteor-shower.component.scss',
 })
 export class MeteorShowerComponent {
+  private readonly vstreamService = inject(VStreamService);
+  
   readonly variables: VariableTableOption[] = VStreamEventVariables.shower_received.variables;
-
-  settings = new FormGroup({
+  readonly settings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     enabledGpt: new FormControl(false, { nonNullable: true }),
     enabledChat: new FormControl(false, { nonNullable: true }),
     customMessage: new FormControl('', { nonNullable: true }),
   });
 
-  constructor(private readonly vstreamService: VStreamService) {
+  constructor() {
     this.vstreamService.meteorShowerSettings$
       .pipe(takeUntilDestroyed())
       .subscribe(settings => {

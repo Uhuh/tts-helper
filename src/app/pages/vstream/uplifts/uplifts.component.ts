@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
@@ -19,16 +19,17 @@ import { VStreamEventVariables } from '../utils/variables';
   styleUrl: './uplifts.component.scss',
 })
 export class UpliftsComponent {
+  private readonly vstreamService = inject(VStreamService);
   readonly variables: VariableTableOption[] = VStreamEventVariables.uplifting_chat_sent.variables;
 
-  settings = new FormGroup({
+  readonly settings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     enabledGpt: new FormControl(false, { nonNullable: true }),
     enabledChat: new FormControl(false, { nonNullable: true }),
     customMessage: new FormControl('', { nonNullable: true }),
   });
 
-  constructor(private readonly vstreamService: VStreamService) {
+  constructor() {
     this.vstreamService.upliftSettings$
       .pipe(takeUntilDestroyed())
       .subscribe(settings => {

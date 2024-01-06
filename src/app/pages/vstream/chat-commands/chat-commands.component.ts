@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VStreamService } from '../../../shared/services/vstream.service';
 import { EditCommandComponent } from './edit-command/edit-command.component';
@@ -14,10 +14,10 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
   styleUrl: './chat-commands.component.scss',
 })
 export class ChatCommandsComponent {
-  commands$ = this.vstreamService.commands$;
+  private readonly vstreamService = inject(VStreamService);
 
-  constructor(private readonly vstreamService: VStreamService) {}
-  
+  readonly commands$ = this.vstreamService.commands$;
+
   createCommand() {
     this.vstreamService.createChatCommand();
   }

@@ -1,4 +1,4 @@
-import { ApplicationRef, Injectable } from '@angular/core';
+import { ApplicationRef, inject, Injectable } from '@angular/core';
 import { invoke } from '@tauri-apps/api';
 import { listen } from '@tauri-apps/api/event';
 import { BehaviorSubject, from, Subject, tap } from 'rxjs';
@@ -20,6 +20,9 @@ import { AudioStatus } from '../state/audio/audio.feature';
   providedIn: 'root',
 })
 export class PlaybackService {
+  private readonly store = inject(Store);
+  private readonly ref = inject(ApplicationRef);
+  
   /**
    * Emits when an audio source starts playing.
    */
@@ -45,7 +48,7 @@ export class PlaybackService {
   currentlyPlaying: AudioId | null = null;
 
   // The Application ref helps make the history / queue view update once an item is finished/started/skipped etc.
-  constructor(private readonly store: Store, private readonly ref: ApplicationRef) {
+  constructor() {
     from(
       listen('playback::audio::start', (event) => {
         const id = event.payload as AudioId;

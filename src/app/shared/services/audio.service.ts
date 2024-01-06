@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigService } from './config.service';
@@ -20,7 +20,7 @@ import {
 } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
-import { combineLatest, map } from 'rxjs';
+import { map } from 'rxjs';
 import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
@@ -30,6 +30,14 @@ import { TwitchService } from './twitch.service';
   providedIn: 'root',
 })
 export class AudioService {
+  private readonly store = inject(Store);
+  private readonly configService = inject(ConfigService);
+  private readonly snackbar = inject(MatSnackBar);
+  private readonly playback = inject(PlaybackService);
+  private readonly elevenLabsService = inject(ElevenLabsService);
+  private readonly twitchService = inject(TwitchService);
+  private readonly logService = inject(LogService);
+
   public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
   public readonly queuedItems$ = this.audioItems$
     .pipe(map(items => items.filter(i => i.state === AudioStatus.queued)));
@@ -44,25 +52,10 @@ export class AudioService {
   elevenLabs!: ElevenLabsState;
   twitchSettings!: TwitchSettingsState;
 
-  constructor(
-    private readonly store: Store,
-    private readonly configService: ConfigService,
-    private readonly snackbar: MatSnackBar,
-    private readonly playback: PlaybackService,
-    private readonly elevenLabsService: ElevenLabsService,
-    private readonly twitchService: TwitchService,
-    private readonly logService: LogService,
-  ) {
-
-    combineLatest([
-      this.configService.configTts$,
-      this.configService.bannedWords$,
-      this.configService.streamElements$,
-      this.configService.ttsMonster$,
-      this.configService.amazonPolly$,
-      this.configService.tikTok$,
-    ]).pipe(takeUntilDestroyed())
-      .subscribe(([tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok]) => {
+  constructor() {
+    this.configService.audioSettings$.pipe(takeUntilDestroyed())
+      .subscribe((audioSettings) => {
+        const { tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok } = audioSettings;
         this.tts = tts;
         this.bannedWords = bannedWords;
         this.streamElements = streamElements;

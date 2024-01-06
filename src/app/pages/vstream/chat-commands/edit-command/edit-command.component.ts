@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatCommand } from '../../../../shared/services/chat.interface';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
@@ -21,9 +21,11 @@ import { MatTabsModule } from '@angular/material/tabs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCommandComponent implements OnInit {
+  private readonly vstreamService = inject(VStreamService);
+
   @Input({ required: true }) command!: ChatCommand;
 
-  commandSettings = new FormGroup({
+  readonly commandSettings = new FormGroup({
     command: new FormControl('', { nonNullable: true, validators: [Validators.minLength(1)] }),
     enabled: new FormControl(false, { nonNullable: true }),
     autoRedeem: new FormControl(false, { nonNullable: true }),
@@ -32,13 +34,13 @@ export class EditCommandComponent implements OnInit {
     cooldown: new FormControl(0, { nonNullable: true }),
   });
 
-  permissions = new FormGroup({
+  readonly permissions = new FormGroup({
     allUsers: new FormControl(false, { nonNullable: true }),
     mods: new FormControl(false, { nonNullable: true }),
     payingMembers: new FormControl(false, { nonNullable: true }),
   });
 
-  constructor(private readonly vstreamService: VStreamService) {
+  constructor() {
     this.commandSettings.valueChanges
       .pipe(filter(() => this.commandSettings.valid))
       .subscribe(settings => {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import voices from '../../../shared/json/tiktok.json';
@@ -14,11 +14,12 @@ import { FormControl } from '@angular/forms';
   imports: [CommonModule, TtsSelectorComponent],
 })
 export class TiktokComponent {
+  private readonly configService = inject(ConfigService);
   readonly voices = voices;
-  voiceControl = new FormControl('', { nonNullable: true });
-  languageControl = new FormControl('', { nonNullable: true });
+  readonly voiceControl = new FormControl('', { nonNullable: true });
+  readonly languageControl = new FormControl('', { nonNullable: true });
 
-  constructor(private readonly configService: ConfigService) {
+  constructor() {
     this.configService.tikTok$
       .pipe(takeUntilDestroyed())
       .subscribe((tikTok) => {
@@ -34,7 +35,7 @@ export class TiktokComponent {
     this.languageControl.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe((language) =>
-        this.configService.updateTikTokLanguage(language)
+        this.configService.updateTikTokLanguage(language),
       );
 
     this.voiceControl.valueChanges

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { FormControl, Validators } from '@angular/forms';
@@ -15,9 +15,13 @@ import { filter, take } from 'rxjs';
   styleUrl: './settings.component.scss',
 })
 export class SettingsComponent {
-  randomChance = new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(100)] });
+  private readonly twitchService = inject(TwitchService);
+  readonly randomChance = new FormControl(0, {
+    nonNullable: true,
+    validators: [Validators.min(0), Validators.max(100)],
+  });
 
-  constructor(private readonly twitchService: TwitchService) {
+  constructor() {
     this.twitchService.settings$
       .pipe(takeUntilDestroyed(), take(1))
       .subscribe(settings => this.randomChance.setValue(settings.randomChance, { emitEvent: false }));

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { LogService } from '../../shared/services/logs.service';
 import { PlaybackService } from '../../shared/services/playback.service';
@@ -14,10 +14,10 @@ import { AudioStatus } from '../../shared/state/audio/audio.feature';
   imports: [ButtonComponent, AudioListComponent, AsyncPipe],
 })
 export class HistoryComponent {
+  private readonly logService = inject(LogService);
+  private readonly playbackService = inject(PlaybackService);
+  protected readonly isPaused$ = this.playbackService.isPaused$;
   protected readonly AudioStatus = AudioStatus;
-  isPaused$ = this.playbackService.isPaused$;
-
-  constructor(private readonly logService: LogService, private readonly playbackService: PlaybackService) {}
 
   togglePause() {
     this.playbackService.togglePause()

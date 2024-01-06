@@ -1,4 +1,4 @@
-import { ApplicationRef, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ApplicationRef, ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AudioService } from 'src/app/shared/services/audio.service';
 import { DatePipe, NgClass } from '@angular/common';
@@ -16,18 +16,16 @@ import { ButtonComponent } from '../button/button.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AudioItemComponent {
+  private readonly audioService = inject(AudioService);
+  private readonly playbackService = inject(PlaybackService);
+  private readonly ref = inject(ApplicationRef);
+  private readonly logService = inject(LogService);
+  private readonly snackbar = inject(MatSnackBar);
+
   @Input({ required: true }) audio!: AudioItem;
   @Output() itemSkipped = new EventEmitter<number>();
 
   readonly AudioState = AudioStatus;
-
-  constructor(
-    private readonly audioService: AudioService,
-    private readonly playbackService: PlaybackService,
-    private readonly ref: ApplicationRef,
-    private readonly logService: LogService,
-    private readonly snackbar: MatSnackBar,
-  ) {}
 
   get svg() {
     return `assets/${this.audio.source.toLowerCase()}.svg`;

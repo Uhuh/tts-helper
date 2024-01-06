@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, filter, take } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
@@ -34,19 +34,19 @@ import { InputComponent } from '../../../shared/components/input/input.component
   ],
 })
 export class DeviceComponent {
-  devices = signal<WithId<DeviceInfo, DeviceId>[]>([]);
-  deviceOptions: TTSOption[] = [];
-  selectedDevice = new FormControl(0, { nonNullable: true });
-  volume = new FormControl(100, { nonNullable: true });
-  audioDelay = new FormControl(0, { nonNullable: true, validators: [Validators.min(0)] });
+  private readonly configService = inject(ConfigService);
+  private readonly playbackService = inject(PlaybackService);
 
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly playbackService: PlaybackService,
-  ) {
+  readonly deviceOptions = signal<TTSOption[]>([]);
+  readonly devices = signal<WithId<DeviceInfo, DeviceId>[]>([]);
+  readonly selectedDevice = new FormControl(0, { nonNullable: true });
+  readonly volume = new FormControl(100, { nonNullable: true });
+  readonly audioDelay = new FormControl(0, { nonNullable: true, validators: [Validators.min(0)] });
+
+  constructor() {
     this.playbackService.listOutputDevices().then((devices) => {
       this.devices.set(devices.outputDevices);
-      this.deviceOptions = devices.outputDevices.map(d => ({ displayName: d.name, value: d.id }));
+      this.deviceOptions.set(devices.outputDevices.map(d => ({ displayName: d.name, value: d.id })));
     });
 
     this.configService.selectedDevice$

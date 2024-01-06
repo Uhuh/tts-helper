@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { InputComponent } from '../../../shared/components/input/input.component';
@@ -13,10 +13,11 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
   imports: [InputComponent, LabelBlockComponent],
 })
 export class TtsMonsterComponent {
-  overlay = new FormControl('', { nonNullable: true });
-  ai = new FormControl(false, { nonNullable: true });
+  private readonly configService = inject(ConfigService);
+  readonly overlay = new FormControl('', { nonNullable: true });
+  readonly ai = new FormControl(false, { nonNullable: true });
 
-  constructor(private readonly configService: ConfigService) {
+  constructor() {
     this.configService.ttsMonster$
       .pipe(takeUntilDestroyed())
       .subscribe((ttsMonster) => {

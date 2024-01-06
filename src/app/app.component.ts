@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { StorageService } from './shared/services/storage.service';
 import { Store } from '@ngrx/store';
@@ -40,28 +40,28 @@ import { VStreamPubSubService } from './shared/services/vstream-pubsub.service';
   imports: [NavComponent, RouterOutlet],
 })
 export class AppComponent {
+  private readonly store = inject(Store);
+  private readonly azureService = inject(AzureSttService);
+  private readonly elevenLabsService = inject(ElevenLabsService);
+  private readonly configService = inject(ConfigService);
+  private readonly openAIService = inject(OpenAIService);
+  private readonly obsSocketService = inject(ObsWebSocketService);
+  private readonly streamDeckSocketService = inject(StreamDeckWebSocketService);
+  private readonly playbackService = inject(PlaybackService);
+  private readonly storageService = inject(StorageService);
+  private readonly twitchPubSub = inject(TwitchPubSub);
+  private readonly twitchService = inject(TwitchService);
+  private readonly vtubeStudioService = inject(VTubeStudioService);
+  private readonly vstreamService = inject(VStreamService);
+  private readonly vstreamPubSub = inject(VStreamPubSubService);
+
   private readonly settingsLocation = '.settings.json';
 
   /**
    * @TODO - Figure out a better way to have the service come alive that isn't
    * just injecting it into the root of the app.
    */
-  constructor(
-    private readonly store: Store,
-    private readonly azureService: AzureSttService,
-    private readonly elevenLabsService: ElevenLabsService,
-    private readonly configService: ConfigService,
-    private readonly openAIService: OpenAIService,
-    private readonly obsSocketService: ObsWebSocketService,
-    private readonly streamDeckSocketService: StreamDeckWebSocketService,
-    private readonly playbackService: PlaybackService,
-    private readonly storageService: StorageService,
-    private readonly twitchPubSub: TwitchPubSub,
-    private readonly twitchService: TwitchService,
-    private readonly vtubeStudioService: VTubeStudioService,
-    private readonly vstreamService: VStreamService,
-    private readonly vstreamPubSub: VStreamPubSubService,
-  ) {
+  constructor() {
     combineLatest([
       this.storageService.getFromStore<ConfigState>(this.settingsLocation, 'config'),
       this.storageService.getFromStore<OpenAIState>(this.settingsLocation, 'openai'),

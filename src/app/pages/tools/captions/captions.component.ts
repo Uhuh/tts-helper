@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { InputComponent } from '../../../shared/components/input/input.component';
@@ -18,11 +18,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './captions.component.scss',
 })
 export class CaptionsComponent {
-  maxWidthControl = new FormControl(300, { nonNullable: true });
-  fontSizeControl = new FormControl(16, { nonNullable: true });
-  borderSizeControl = new FormControl(2, { nonNullable: true });
-  borderRadiusControl = new FormControl(6, { nonNullable: true });
-  paddingControl = new FormControl('10', { nonNullable: true });
+  private readonly twitchService = inject(TwitchService);
+  private readonly snackbar = inject(MatSnackBar);
+
+  readonly maxWidthControl = new FormControl(300, { nonNullable: true });
+  readonly fontSizeControl = new FormControl(16, { nonNullable: true });
+  readonly borderSizeControl = new FormControl(2, { nonNullable: true });
+  readonly borderRadiusControl = new FormControl(6, { nonNullable: true });
+  readonly paddingControl = new FormControl('10', { nonNullable: true });
 
   backgroundColor: RGBAString = 'rgba(100, 37, 175, 0.48)';
   fontColor: RGBAString = 'rgba(255, 255, 255, 1)';
@@ -37,7 +40,7 @@ export class CaptionsComponent {
 
   username = 'Alphyx';
 
-  constructor(private readonly twitchService: TwitchService, private readonly snackbar: MatSnackBar) {
+  constructor() {
     this.twitchService.channelInfo$
       .subscribe(info => this.username = info.username ?? 'Alphyx');
 

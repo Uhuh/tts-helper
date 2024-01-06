@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import CryptoJS from 'crypto-js';
 import { VStreamTokenResponse } from '../../state/vstream/vstream.feature';
@@ -9,13 +9,13 @@ import { VStreamAPIChannelVideoLiveStream } from './vstream.interface';
   providedIn: 'root',
 })
 export class VStreamApi {
+  private readonly http = inject(HttpClient);
+
   private readonly clientId = '018c3d0a-6e23-7000-b15f-3bf29bb3111d';
   private readonly redirectUri = 'http://localhost:12583/auth/vstream';
   private readonly url = 'https://api.vstream.com';
   private readonly scopes = ['chat:write', 'openid', 'offline_access', 'profile'];
   #tokenVerifier = '';
-
-  constructor(private readonly http: HttpClient) {}
 
   generateCodeVerifier(): string {
     // Generate 96 random bytes

@@ -1,5 +1,5 @@
 ﻿import { StaticAuthProvider } from '@twurple/auth';
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { TwitchService } from './twitch.service';
 import { combineLatest } from 'rxjs';
 import { ApiClient } from '@twurple/api';
@@ -19,15 +19,22 @@ import { ChatService } from './chat.service';
   providedIn: 'root',
 })
 export class TwitchPubSub implements OnDestroy {
+  private readonly twitchService = inject(TwitchService);
+  private readonly audioService = inject(AudioService);
+  private readonly logService = inject(LogService);
+  private readonly openaiService = inject(OpenAIService);
+  private readonly chatService = inject(ChatService);
+  private readonly snackbar = inject(MatSnackBar);
+
   // TTS Helper client ID. This isn't a sensitive code.
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
 
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
 
-  bitInfo = toSignal(this.twitchService.bitInfo$);
-  redeemInfo = toSignal(this.twitchService.redeemInfo$);
-  subsInfo = toSignal(this.twitchService.subsInfo$);
+  readonly bitInfo = toSignal(this.twitchService.bitInfo$);
+  readonly redeemInfo = toSignal(this.twitchService.redeemInfo$);
+  readonly subsInfo = toSignal(this.twitchService.subsInfo$);
 
   // Normal TTS chat command
   twitchSettings!: TwitchSettingsState;
@@ -45,14 +52,7 @@ export class TwitchPubSub implements OnDestroy {
   giftSubListener?: any;
   subMessageListener?: any;
 
-  constructor(
-    private readonly twitchService: TwitchService,
-    private readonly audioService: AudioService,
-    private readonly logService: LogService,
-    private readonly openaiService: OpenAIService,
-    private readonly chatService: ChatService,
-    private readonly snackbar: MatSnackBar,
-  ) {
+  constructor() {
     this.openaiService.settings$
       .pipe(takeUntilDestroyed())
       .subscribe(settings => this.gptSettings = settings);

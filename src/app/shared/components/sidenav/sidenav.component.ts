@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { getVersion } from '@tauri-apps/api/app';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +18,10 @@ import { VStreamService } from '../../services/vstream.service';
   imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, NgClass, AsyncPipe],
 })
 export class SidenavComponent {
+  private readonly twitchService = inject(TwitchService);
+  private readonly vtsService = inject(VTubeStudioService);
+  private readonly vstreamService = inject(VStreamService);
+
   @Input({ required: true }) nav!: MatSidenav;
   @Input() isMobile = false;
   appVersion = '';
@@ -37,11 +41,7 @@ export class SidenavComponent {
       this.newVersion = true;
     });
 
-  constructor(
-    private readonly twitchService: TwitchService,
-    private readonly vtsService: VTubeStudioService,
-    private readonly vstreamService: VStreamService,
-  ) {
+  constructor() {
     getVersion().then((v) => (this.appVersion = v));
   }
 

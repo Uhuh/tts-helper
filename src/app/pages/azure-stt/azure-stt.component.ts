@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
@@ -20,10 +20,12 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./azure-stt.component.scss'],
 })
 export class AzureSttComponent {
-  regions = azureTts.regions;
-  languages = azureTts.languages;
+  private readonly azureService = inject(AzureSttService);
 
-  azureSettings = new FormGroup({
+  readonly regions = azureTts.regions;
+  readonly languages = azureTts.languages;
+
+  readonly azureSettings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     subscriptionKey: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     region: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -60,7 +62,7 @@ export class AzureSttComponent {
     this.hotkey = (modifiers.length ? modifiers.join('+') + '+' : '') + key;
   }
 
-  constructor(private readonly azureService: AzureSttService) {
+  constructor() {
     this.azureSettings.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(settings => {

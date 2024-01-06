@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -28,9 +28,11 @@ export interface GptPersonalityFormGroup {
   styleUrls: ['./chat-gpt.component.scss'],
 })
 export class ChatGptComponent {
-  charLimit = new FormControl(300, { nonNullable: true, validators: [Validators.min(0)] });
+  private readonly openAIService = inject(OpenAIService);
 
-  settingsGroup = new FormGroup({
+  readonly charLimit = new FormControl(300, { nonNullable: true, validators: [Validators.min(0)] });
+
+  readonly settingsGroup = new FormGroup({
     apiToken: new FormControl('', { nonNullable: true }),
     enabled: new FormControl(false, { nonNullable: true }),
     historyLimit: new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(20)] }),
@@ -44,7 +46,7 @@ export class ChatGptComponent {
    * These are to make the ChatGPT model a little more personal.
    * These are all for the { "role": "system" } content messages when sending to OpenAI.
    */
-  personalityGroup = new FormGroup<GptPersonalityFormGroup>({
+  readonly personalityGroup = new FormGroup<GptPersonalityFormGroup>({
     streamersIdentity: new FormControl('', { nonNullable: true }),
     streamerModelRelation: new FormControl('', { nonNullable: true }),
     streamersThoughtsOnModel: new FormControl('', { nonNullable: true }),
@@ -53,7 +55,7 @@ export class ChatGptComponent {
     modelsBackground: new FormControl('', { nonNullable: true }),
   });
 
-  constructor(private readonly openAIService: OpenAIService) {
+  constructor() {
     this.openAIService.personality$
       .pipe(takeUntilDestroyed(), take(1))
       .subscribe(personality => this.personalityGroup.setValue(personality, { emitEvent: false }));

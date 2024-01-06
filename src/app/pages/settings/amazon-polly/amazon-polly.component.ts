@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ConfigService } from '../../../shared/services/config.service';
 import voices from '../../../shared/json/amazon-polly.json';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -31,17 +31,18 @@ import { SelectorComponent } from '../../../shared/components/selector/selector.
   ],
 })
 export class AmazonPollyComponent {
-  regions = voices.regions.map<{ value: string, displayName: string }>(r => ({ value: r, displayName: r }));
+  private readonly configService = inject(ConfigService);
+  readonly regions = voices.regions.map<{ value: string, displayName: string }>(r => ({ value: r, displayName: r }));
   readonly voices = voices.options;
 
-  amazonPollyGroup = new FormGroup({
+  readonly amazonPollyGroup = new FormGroup({
     region: new FormControl(this.regions[0].value, { nonNullable: true }),
     poolId: new FormControl('', { nonNullable: true }),
     language: new FormControl('', { nonNullable: true }),
     voice: new FormControl('', { nonNullable: true }),
   });
 
-  constructor(private readonly configService: ConfigService) {
+  constructor() {
     this.configService.amazonPolly$
       .pipe(takeUntilDestroyed())
       .subscribe((amazonPolly) => {

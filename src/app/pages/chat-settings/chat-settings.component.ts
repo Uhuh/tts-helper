@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { UserPermsComponent } from './user-perms/user-perms.component';
@@ -30,34 +30,36 @@ export interface ChatSettingsFormGroup {
   styleUrls: ['./chat-settings.component.scss'],
 })
 export class ChatSettingsComponent {
+  private readonly configService = inject(ConfigService);
+  private readonly openAIService = inject(OpenAIService);
 
-  generalChat = new FormGroup<ChatSettingsFormGroup>({
+  readonly generalChat = new FormGroup<ChatSettingsFormGroup>({
     command: new FormControl('', { nonNullable: true }),
     cooldown: new FormControl(0, { nonNullable: true }),
     enabled: new FormControl(false, { nonNullable: true }),
     charLimit: new FormControl(100, { nonNullable: true, validators: [Validators.min(0)] }),
   });
 
-  generalPermissions = new FormGroup<ChatPermissionsFormGroup>({
+  readonly generalPermissions = new FormGroup<ChatPermissionsFormGroup>({
     allUsers: new FormControl(false, { nonNullable: true }),
     mods: new FormControl(false, { nonNullable: true }),
     payingMembers: new FormControl(false, { nonNullable: true }),
   });
 
-  gptChat = new FormGroup<ChatSettingsFormGroup>({
+  readonly gptChat = new FormGroup<ChatSettingsFormGroup>({
     command: new FormControl('', { nonNullable: true }),
     cooldown: new FormControl(0, { nonNullable: true }),
     enabled: new FormControl(false, { nonNullable: true }),
     charLimit: new FormControl(999, { nonNullable: true, validators: [Validators.min(0)] }),
   });
 
-  gptPermissions = new FormGroup<ChatPermissionsFormGroup>({
+  readonly gptPermissions = new FormGroup<ChatPermissionsFormGroup>({
     allUsers: new FormControl(false, { nonNullable: true }),
     mods: new FormControl(false, { nonNullable: true }),
     payingMembers: new FormControl(false, { nonNullable: true }),
   });
 
-  constructor(private readonly configService: ConfigService, private readonly openAIService: OpenAIService) {
+  constructor() {
     this.openAIService.chatSettings$
       .pipe(takeUntilDestroyed())
       .subscribe(chatSettings => {

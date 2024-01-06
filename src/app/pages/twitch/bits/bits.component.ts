@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, Validators } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
@@ -17,18 +17,19 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
   imports: [ToggleComponent, NgIf, InputComponent, MatFormFieldModule, LabelBlockComponent],
 })
 export class BitsComponent {
-  minBits = new FormControl(0, {
+  private readonly twitchService = inject(TwitchService);
+  readonly minBits = new FormControl(0, {
     nonNullable: true,
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
-  bitsCharLimit = new FormControl(300, {
+  readonly bitsCharLimit = new FormControl(300, {
     nonNullable: true,
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
-  enabled = new FormControl(true, { nonNullable: true });
-  exact = new FormControl(false, { nonNullable: true });
+  readonly enabled = new FormControl(true, { nonNullable: true });
+  readonly exact = new FormControl(false, { nonNullable: true });
 
-  constructor(private readonly twitchService: TwitchService) {
+  constructor() {
     this.twitchService.bitInfo$
       .pipe(takeUntilDestroyed())
       .subscribe((bitInfo) => {
@@ -44,7 +45,7 @@ export class BitsComponent {
       .pipe(
         takeUntilDestroyed(),
         debounceTime(1000),
-        filter(() => this.minBits.valid)
+        filter(() => this.minBits.valid),
       )
       .subscribe((minBits) => {
         this.twitchService.updateMinBits(Number(minBits));
@@ -54,7 +55,7 @@ export class BitsComponent {
       .pipe(
         takeUntilDestroyed(),
         debounceTime(1000),
-        filter(() => this.bitsCharLimit.valid)
+        filter(() => this.bitsCharLimit.valid),
       )
       .subscribe((bitsCharLimit) => {
         this.twitchService.updateBitsCharLimit(Number(bitsCharLimit));

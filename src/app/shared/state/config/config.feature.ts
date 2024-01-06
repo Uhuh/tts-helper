@@ -211,10 +211,26 @@ export const ConfigFeature = createFeature({
   ),
   extraSelectors: ({
     selectBannedWords,
+    selectTts,
+    selectStreamElements,
+    selectTtsMonster,
+    selectAmazonPolly,
+    selectTikTok,
   }) => ({
     selectBannedWordsLength: createSelector(
       selectBannedWords,
       (bannedWords) => bannedWords.length,
+    ),
+    selectAudioSettings: createSelector(
+      selectTts,
+      selectBannedWords,
+      selectStreamElements,
+      selectTtsMonster,
+      selectAmazonPolly,
+      selectTikTok,
+      (tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok) => ({
+        bannedWords, tts, streamElements, ttsMonster, amazonPolly, tikTok,
+      }),
     ),
   }),
 });

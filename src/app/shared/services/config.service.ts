@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   AmazonPollyData,
@@ -15,6 +15,8 @@ import { ChatPermissions } from './chat.interface';
   providedIn: 'root',
 })
 export class ConfigService {
+  private readonly store = inject(Store);
+  private readonly playbackService = inject(PlaybackService);
   public readonly state$ = this.store.select(ConfigFeature.selectGlobalConfigState);
   public readonly streamElements$ = this.store.select(ConfigFeature.selectStreamElements);
   public readonly ttsMonster$ = this.store.select(ConfigFeature.selectTtsMonster);
@@ -28,11 +30,7 @@ export class ConfigService {
   public readonly generalChat$ = this.store.select(ConfigFeature.selectGeneralChat);
   public readonly authTokens$ = this.store.select(ConfigFeature.selectAuthTokens);
   public readonly audioDelay$ = this.store.select(ConfigFeature.selectAudioDelay);
-
-  constructor(
-    private readonly store: Store,
-    private readonly playbackService: PlaybackService,
-  ) {}
+  public readonly audioSettings$ = this.store.select(ConfigFeature.selectAudioSettings);
 
   updateVTSToken(vtsAuthToken: string) {
     this.store.dispatch(GlobalConfigActions.updateTokens({ tokens: { vtsAuthToken } }));
