@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AudioListComponent } from '../../shared/components/audio-list/audio-list.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -11,13 +11,14 @@ import { AudioStatus } from '../../shared/state/audio/audio.feature';
   standalone: true,
   imports: [CommonModule, AudioListComponent, ButtonComponent],
   templateUrl: './live-queue.component.html',
-  styleUrls: ['./live-queue.component.scss']
+  styleUrls: ['./live-queue.component.scss'],
 })
 export class LiveQueueComponent {
-  protected readonly AudioStatus = AudioStatus;
-  isPaused$ = this.playbackService.isPaused$;
+  private readonly logService = inject(LogService);
+  private readonly playbackService = inject(PlaybackService);
 
-  constructor(private readonly logService: LogService, private readonly playbackService: PlaybackService) {}
+  protected readonly AudioStatus = AudioStatus;
+  protected readonly isPaused$ = this.playbackService.isPaused$;
 
   togglePause() {
     this.playbackService.togglePause()
@@ -27,4 +28,4 @@ export class LiveQueueComponent {
   }
 }
 
-export default LiveQueueComponent
+export default LiveQueueComponent;

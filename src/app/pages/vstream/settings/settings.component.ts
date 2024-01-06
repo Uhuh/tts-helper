@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
@@ -16,9 +16,13 @@ import { RouterLink } from '@angular/router';
   styleUrl: './settings.component.scss',
 })
 export class SettingsComponent {
-  randomChance = new FormControl(0, { nonNullable: true, validators: [Validators.min(0), Validators.max(100)] });
+  private readonly vstreamService = inject(VStreamService);
+  readonly randomChance = new FormControl(0, {
+    nonNullable: true,
+    validators: [Validators.min(0), Validators.max(100)],
+  });
 
-  constructor(private readonly vstreamService: VStreamService) {
+  constructor() {
     this.vstreamService.settings$
       .pipe(takeUntilDestroyed())
       .subscribe(settings => {

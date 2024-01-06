@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { UserPermsComponent } from './user-perms/user-perms.component';
@@ -30,6 +30,8 @@ export interface ChatSettingsFormGroup {
   styleUrls: ['./chat-settings.component.scss'],
 })
 export class ChatSettingsComponent {
+  private readonly configService = inject(ConfigService);
+  private readonly openAIService = inject(OpenAIService);
 
   generalChat = new FormGroup<ChatSettingsFormGroup>({
     command: new FormControl('', { nonNullable: true }),
@@ -57,7 +59,7 @@ export class ChatSettingsComponent {
     payingMembers: new FormControl(false, { nonNullable: true }),
   });
 
-  constructor(private readonly configService: ConfigService, private readonly openAIService: OpenAIService) {
+  constructor() {
     this.openAIService.chatSettings$
       .pipe(takeUntilDestroyed())
       .subscribe(chatSettings => {

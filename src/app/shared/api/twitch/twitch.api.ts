@@ -1,6 +1,6 @@
-﻿import { Injectable, OnDestroy } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { TwitchRedeem } from './twitch.interface';
 import { ValidUser } from '../../state/twitch/twitch.feature';
@@ -8,18 +8,12 @@ import { ValidUser } from '../../state/twitch/twitch.feature';
 @Injectable({
   providedIn: 'root',
 })
-export class TwitchApi implements OnDestroy {
-  private readonly destroyed$ = new Subject<void>();
+export class TwitchApi {
+  private readonly http = inject(HttpClient);
+
   private readonly apiUrl = 'https://api.twitch.tv/helix';
   private readonly url = 'https://id.twitch.tv';
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
-
-  constructor(private readonly http: HttpClient) {}
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
 
   /**
    * Get channels possible redeems so they can configure TTS for each redeem.

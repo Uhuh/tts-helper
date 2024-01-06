@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { LogService } from './logs.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { v4 as uuid } from 'uuid';
@@ -20,6 +20,12 @@ import { BehaviorSubject, interval } from 'rxjs';
   providedIn: 'root',
 })
 export class VTubeStudioService {
+  private readonly store = inject(Store);
+  private readonly logService = inject(LogService);
+  private readonly playbackService = inject(PlaybackService);
+  private readonly configService = inject(ConfigService);
+  private readonly snackbar = inject(MatSnackBar);
+
   private readonly vtsBasics = {
     apiName: 'VTubeStudioPublicAPI',
     apiVersion: '1.0',
@@ -64,13 +70,7 @@ export class VTubeStudioService {
    */
   randomMouthInterval?: NodeJS.Timer = undefined;
 
-  constructor(
-    private readonly store: Store,
-    private readonly logService: LogService,
-    private readonly playbackService: PlaybackService,
-    private readonly configService: ConfigService,
-    private readonly snackbar: MatSnackBar,
-  ) {
+  constructor() {
     this.port$.pipe(takeUntilDestroyed())
       .subscribe(port => {
         this.port = port;

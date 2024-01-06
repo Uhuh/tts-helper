@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, signal } from '@angular/core';
+import { ApplicationRef, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
@@ -15,6 +15,9 @@ export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
   imports: [NgClass, NgIf, LabelBlockComponent, AsyncPipe],
 })
 export class AuthComponent {
+  private readonly twitchService = inject(TwitchService);
+  private readonly ref = inject(ApplicationRef);
+
   // Rust server running so we can auth in the users browser
   private readonly redirect = 'http://localhost:12583/auth/twitch';
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
@@ -26,10 +29,7 @@ export class AuthComponent {
   connectionMessage = signal('');
   isTokenValid = toSignal(this.twitchService.isTokenValid$);
 
-  constructor(
-    private readonly twitchService: TwitchService,
-    private readonly ref: ApplicationRef,
-  ) {
+  constructor() {
     combineLatest([
       this.twitchService.isTokenValid$,
       this.twitchService.token$,

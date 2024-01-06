@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { ConnectionType } from '../../twitch/auth/auth.component';
@@ -13,15 +13,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './auth.component.scss',
 })
 export class AuthComponent {
-  connectionStatus = signal<ConnectionType>('Disconnected');
-  connectionMessage = signal('');
-  isTokenValid = signal(false);
+  private readonly vStreamService = inject(VStreamService);
+  readonly connectionStatus = signal<ConnectionType>('Disconnected');
+  readonly connectionMessage = signal('');
+  readonly isTokenValid = signal(false);
   loginUrl = '';
 
-  constructor(
-    private readonly vStreamService: VStreamService,
-    private readonly ref: ApplicationRef,
-  ) {
+  constructor() {
     this.vStreamService.token$
       .pipe(takeUntilDestroyed())
       .subscribe(token => {

@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ElevenLabsFeature, ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsActions } from '../state/eleven-labs/eleven-labs.actions';
@@ -10,11 +10,13 @@ import { switchMap } from 'rxjs';
   providedIn: 'root',
 })
 export class ElevenLabsService {
+  private readonly store = inject(Store);
+  private readonly elevenLabsApi = inject(ElevenLabsApi);
   public readonly apiKey$ = this.store.select(ElevenLabsFeature.selectApiKey);
   public readonly state$ = this.store.select(ElevenLabsFeature.selectElevenLabsState);
   public readonly apiUrl = 'https://api.elevenlabs.io/v1';
 
-  constructor(private readonly store: Store, private readonly elevenLabsApi: ElevenLabsApi) {
+  constructor() {
     this.apiKey$
       .pipe(
         takeUntilDestroyed(),

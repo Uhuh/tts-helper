@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { debounceTime, filter } from 'rxjs';
@@ -30,19 +30,21 @@ import {
   ],
 })
 export class SubsComponent {
-  enabled = new FormControl(true, { nonNullable: true });
-  charLimit = new FormControl(300, {
+  private readonly twitchService = inject(TwitchService);
+
+  readonly charLimit = new FormControl(300, {
     nonNullable: true,
     validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
   });
-  giftMessage = new FormControl('', { nonNullable: true });
-
+  readonly enabled = new FormControl(true, { nonNullable: true });
+  readonly giftMessage = new FormControl('', { nonNullable: true });
+  
   readonly variables: VariableTableOption[] = [
     { variable: 'amount', descriptor: 'The number of subs gifted' },
     { variable: 'username', descriptor: 'The username of the gifter' },
   ];
 
-  constructor(private readonly twitchService: TwitchService) {
+  constructor() {
     this.twitchService.subsInfo$
       .pipe(takeUntilDestroyed())
       .subscribe((subsInfo) => {

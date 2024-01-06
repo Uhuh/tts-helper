@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { LabelBlockComponent } from '../../../../shared/components/input-block/label-block.component';
@@ -27,9 +27,11 @@ import { ToggleComponent } from '../../../../shared/components/toggle/toggle.com
   styleUrl: './edit-widget.component.scss',
 })
 export class EditWidgetComponent implements OnInit {
+  private readonly vstreamService = inject(VStreamService);
+
   @Input({ required: true }) widget!: VStreamWidget;
 
-  eventOptions: { value: VStreamEventTypes, displayName: string }[] = [
+  readonly eventOptions: { value: VStreamEventTypes, displayName: string }[] = [
     { value: 'new_follower', displayName: 'Follower' },
     { value: 'uplifting_chat_sent', displayName: 'UpLift' },
     { value: 'subscriptions_gifted', displayName: 'Gift Sub' },
@@ -37,7 +39,7 @@ export class EditWidgetComponent implements OnInit {
     { value: 'shower_received', displayName: 'Meteor Shower' },
   ];
 
-  fontPositions = ['top', 'left', 'bottom', 'right', 'center'];
+  readonly fontPositions = ['top', 'left', 'bottom', 'right', 'center'];
 
   fontColor = '#fff';
 
@@ -45,7 +47,7 @@ export class EditWidgetComponent implements OnInit {
 
   enabled = new FormControl(true, { nonNullable: true });
 
-  settings = new FormGroup({
+  readonly settings = new FormGroup({
     trigger: new FormControl<VStreamEventTypes>('new_follower', {
       nonNullable: true,
       validators: [Validators.required],
@@ -65,7 +67,7 @@ export class EditWidgetComponent implements OnInit {
     fadeOutDuration: new FormControl(300, { nonNullable: true }),
   });
 
-  constructor(private readonly vstreamService: VStreamService) {
+  constructor() {
     this.settings.controls.trigger.valueChanges
       .subscribe(trigger => {
         this.variables = VStreamEventVariables[trigger];

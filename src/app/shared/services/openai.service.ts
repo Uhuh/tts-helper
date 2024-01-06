@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { AudioService } from './audio.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Configuration, OpenAIApi } from 'openai';
@@ -13,6 +13,10 @@ import { ChatPermissions } from './chat.interface';
   providedIn: 'root',
 })
 export class OpenAIService {
+  private readonly store = inject(Store);
+  private readonly audioService = inject(AudioService);
+  private readonly logService = inject(LogService);
+
   public readonly state$ = this.store.select(OpenAIFeature.selectOpenAIFeatureState);
   public readonly chatSettings$ = this.store.select(OpenAIFeature.selectChatSettings);
   public readonly settings$ = this.store.select(OpenAIFeature.selectSettings);
@@ -30,11 +34,7 @@ export class OpenAIService {
   chatGptConfig?: Configuration;
   openAIApi?: OpenAIApi;
 
-  constructor(
-    private readonly store: Store,
-    private readonly audioService: AudioService,
-    private readonly logService: LogService,
-  ) {
+  constructor() {
     this.chatSettings$
       .pipe(takeUntilDestroyed())
       .subscribe(chatSettings => this.chatSettings = chatSettings);

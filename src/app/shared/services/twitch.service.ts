@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { catchError, of, skip, Subject, switchMap, takeUntil } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
@@ -12,6 +12,10 @@ import { TwitchApi } from '../api/twitch/twitch.api';
   providedIn: 'root',
 })
 export class TwitchService implements OnDestroy {
+  private readonly store = inject(Store);
+  private readonly twitchApi = inject(TwitchApi);
+  private readonly snackbar = inject(MatSnackBar);
+  private readonly logService = inject(LogService);
   private readonly destroyed$ = new Subject<void>();
 
   public readonly state$ = this.store.select(TwitchFeature.selectTwitchStateState);
@@ -25,12 +29,7 @@ export class TwitchService implements OnDestroy {
   public readonly redeemInfo$ = this.store.select(TwitchFeature.selectRedeemInfo);
   public readonly bitInfo$ = this.store.select(TwitchFeature.selectBitInfo);
 
-  constructor(
-    private readonly store: Store,
-    private readonly twitchApi: TwitchApi,
-    private readonly snackbar: MatSnackBar,
-    private readonly logService: LogService,
-  ) {
+  constructor() {
     this.token$.pipe(
       // Ignore default state.
       skip(1),

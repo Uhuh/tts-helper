@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { AudioService } from 'src/app/shared/services/audio.service';
@@ -40,9 +40,12 @@ interface TtsOption {
   ],
 })
 export class SettingsComponent {
-  ttsControl = new FormControl('', { nonNullable: true });
-  selectedTts = new FormControl<TtsType>('stream-elements', { nonNullable: true });
-  ttsOptions: Array<TtsOption> = [
+  private readonly audioService = inject(AudioService);
+  private readonly configService = inject(ConfigService);
+
+  readonly ttsControl = new FormControl('', { nonNullable: true });
+  readonly selectedTts = new FormControl<TtsType>('stream-elements', { nonNullable: true });
+  readonly ttsOptions: Array<TtsOption> = [
     {
       displayValue: 'StreamElements',
       value: 'stream-elements',
@@ -66,10 +69,7 @@ export class SettingsComponent {
     },
   ];
 
-  constructor(
-    private readonly audioService: AudioService,
-    private readonly configService: ConfigService,
-  ) {
+  constructor() {
     this.configService.configTts$
       .pipe(takeUntilDestroyed())
       .subscribe((tts) => {

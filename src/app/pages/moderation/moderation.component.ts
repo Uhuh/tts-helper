@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
@@ -16,11 +16,14 @@ import { LabelBlockComponent } from '../../shared/components/input-block/label-b
   imports: [FormsModule, ReactiveFormsModule, NgClass, ToggleComponent, LabelBlockComponent],
 })
 export class ModerationComponent {
-  // Just to prevent streamers from showing bad words on stream
-  hideBannedWords = new FormControl(true, { nonNullable: true });
-  bannedWords = new FormControl('', { nonNullable: true });
+  private readonly configService = inject(ConfigService);
+  private readonly logService = inject(LogService);
 
-  constructor(private readonly configService: ConfigService, private readonly logService: LogService) {
+  // Just to prevent streamers from showing bad words on stream
+  readonly hideBannedWords = new FormControl(true, { nonNullable: true });
+  readonly bannedWords = new FormControl('', { nonNullable: true });
+
+  constructor() {
     this.configService.bannedWords$
       .pipe(takeUntilDestroyed())
       .subscribe((bannedWords) => {

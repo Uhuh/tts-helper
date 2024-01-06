@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, map } from 'rxjs';
@@ -27,7 +27,10 @@ import { OpenAIService } from '../../../shared/services/openai.service';
   ],
 })
 export class RedeemsComponent {
-  redeemInfo = new FormGroup({
+  private readonly twitchService = inject(TwitchService);
+  private readonly openAIService = inject(OpenAIService);
+
+  readonly redeemInfo = new FormGroup({
     enabled: new FormControl(true, { nonNullable: true }),
     redeem: new FormControl('', { nonNullable: true }),
     gptRedeem: new FormControl('', { nonNullable: true }),
@@ -37,23 +40,21 @@ export class RedeemsComponent {
     }),
   });
 
-  gptEnabled = toSignal(this.openAIService.enabled$);
-
-  redeems$ = this.twitchService.redeems$;
-  redeemOptions$ = this.twitchService.redeems$
+  readonly gptEnabled = toSignal(this.openAIService.enabled$);
+  readonly redeems$ = this.twitchService.redeems$;
+  readonly redeemOptions$ = this.twitchService.redeems$
     .pipe(
       takeUntilDestroyed(),
-      map(redeems => redeems.map<TTSOption>(r => ({ displayName: r.title, value: r.id })))
+      map(redeems => redeems.map<TTSOption>(r => ({ displayName: r.title, value: r.id }))),
     );
 
-  constructor(private readonly twitchService: TwitchService, private readonly openAIService: OpenAIService) {
+  constructor() {
     this.twitchService.redeemInfo$
       .pipe(takeUntilDestroyed())
       .subscribe((redeemInfo) => {
         this.redeemInfo.setValue(redeemInfo, { emitEvent: false });
       });
-
-
+    
     this.redeemInfo.valueChanges
       .pipe(takeUntilDestroyed(), debounceTime(500))
       .subscribe(redeemInfo => {

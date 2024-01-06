@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import {
   AudioConfig,
   CancellationDetails,
@@ -22,6 +22,12 @@ import { TwitchService } from './twitch.service';
   providedIn: 'root',
 })
 export class AzureSttService {
+  private readonly store = inject(Store);
+  private readonly openaiService = inject(OpenAIService);
+  private readonly logService = inject(LogService);
+  private readonly twitchService = inject(TwitchService);
+  private readonly snackbar = inject(MatSnackBar);
+
   public readonly subscriptionKey$ = this.store.select(AzureFeature.selectSubscriptionKey);
   public readonly region$ = this.store.select(AzureFeature.selectRegion);
   public readonly hotkey$ = this.store.select(AzureFeature.selectHotkey);
@@ -35,13 +41,7 @@ export class AzureSttService {
   isEnabled = false;
   isCurrentlyListening = false;
 
-  constructor(
-    private readonly store: Store,
-    private readonly openaiService: OpenAIService,
-    private readonly logService: LogService,
-    private readonly twitchService: TwitchService,
-    private readonly snackbar: MatSnackBar,
-  ) {
+  constructor() {
     combineLatest([
       this.subscriptionKey$,
       this.region$,

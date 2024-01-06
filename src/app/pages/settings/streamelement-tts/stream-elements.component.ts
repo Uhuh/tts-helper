@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import voices from '../../../shared/json/stream-elements.json';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -13,13 +13,14 @@ import { FormControl, FormGroup } from '@angular/forms';
   imports: [TtsSelectorComponent],
 })
 export class StreamElementsComponent {
+  private readonly configService = inject(ConfigService);
   readonly voices = voices;
-  streamElementsGroup = new FormGroup({
+  readonly streamElementsGroup = new FormGroup({
     voice: new FormControl('', { nonNullable: true }),
     language: new FormControl('', { nonNullable: true }),
   });
 
-  constructor(private readonly configService: ConfigService) {
+  constructor() {
     this.configService.streamElements$
       .pipe(takeUntilDestroyed())
       .subscribe((streamElements) => {
@@ -31,7 +32,7 @@ export class StreamElementsComponent {
     this.streamElementsGroup.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe((streamElements) =>
-        this.configService.updateStreamElements(streamElements)
+        this.configService.updateStreamElements(streamElements),
       );
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -19,13 +19,14 @@ import { debounceTime, take } from 'rxjs';
   styleUrl: './vtubestudio.component.scss',
 })
 export class VtubestudioComponent {
-  settings = new FormGroup({
+  private readonly vtubeStudioService = inject(VTubeStudioService);
+  readonly settings = new FormGroup({
     port: new FormControl(8001, { nonNullable: true }),
     isMirrorMouthFormEnabled: new FormControl(false, { nonNullable: true }),
     isMirrorMouthOpenEnabled: new FormControl(false, { nonNullable: true }),
   });
 
-  constructor(private readonly vtubeStudioService: VTubeStudioService) {
+  constructor() {
     this.vtubeStudioService.state$
       .pipe(takeUntilDestroyed(), take(1))
       .subscribe(state => {
