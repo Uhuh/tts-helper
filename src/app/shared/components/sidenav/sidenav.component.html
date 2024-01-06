@@ -4,7 +4,7 @@
       <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107"/>
     </a>
     @if (newVersion) {
-      <img alt="download-button" (click)="update()" src="assets/download.svg" />
+      <img alt="download-button" (click)="update()" src="assets/download.svg"/>
     }
   </div>
   <div class="nav-groups">
@@ -130,14 +130,21 @@
         <mat-icon class="tts-icon">construction</mat-icon>
         <span>Tools</span>
       </a>
+      <a class="nav-link" href="https://ko-fi.com/panku" target="_blank">
+        <mat-icon class="tts-icon">coffee</mat-icon>
+        <span>Ko-fi</span>
+      </a>
+      <a class="nav-link" href="https://discord.gg/jNDjNVeuJp" target="_blank">
+        <mat-icon class="tts-icon">discord</mat-icon>
+        <span>Discord</span>
+      </a>
+      <a class="nav-link" href="https://github.com/Uhuh/tts-helper/releases/latest/" target="_blank">
+        <mat-icon class="tts-icon">terminal</mat-icon>
+        <span>GitHub</span>
+      </a>
     </div>
   </div>
   <div class="bottom">
-    <div class="support">
-      <a href="https://twitter.com/pankurs" target="_blank">Twitter</a>
-      <a href="https://discord.gg/jNDjNVeuJp" target="_blank">Discord</a>
-      <a href="https://github.com/Uhuh/tts-helper/releases/latest/" target="_blank">GitHub</a>
-    </div>
     <div class="version">v{{ appVersion }}</div>
   </div>
 </div>
