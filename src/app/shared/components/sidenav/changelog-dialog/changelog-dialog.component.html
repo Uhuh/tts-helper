@@ -1,0 +1,17 @@
+<div class="header">
+  <span>{{ this.header }}</span>
+</div>
+<div class="changelog">
+  <span>Let's review the changes!</span>
+  <ul>
+    @for (point of bulletPoints;track point.type) {
+      <li class="{{point.type}}">{{ point.content }}</li>
+    } @empty {
+      <li>None!</li>
+    }
+  </ul>
+</div>
+<div class="actions">
+  <app-button (click)="close()" [style]="'danger'">Cancel</app-button>
+  <app-button (click)="update()" [style]="'active'">Update</app-button>
+</div>

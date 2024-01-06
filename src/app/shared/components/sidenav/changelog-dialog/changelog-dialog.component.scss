@@ -1,0 +1,42 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 30px;
+  background-color: var(--background);
+}
+
+.changelog {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.update:before {
+  content: 'update:';
+  color: var(--orange);
+  padding-right: 5px;
+}
+
+.chore:before {
+  content: 'chore:';
+  color: var(--yellow);
+  padding-right: 5px;
+}
+
+.feat:before {
+  content: 'feat:';
+  color: var(--blue);
+  padding-right: 5px;
+}
+
+.fix:before {
+  content: 'fix:';
+  color: var(--green);
+  padding-right: 5px;
+}
