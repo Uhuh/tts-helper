@@ -25,7 +25,7 @@ export class AzureSttComponent {
   readonly regions = azureTts.regions;
   readonly languages = azureTts.languages;
 
-  azureSettings = new FormGroup({
+  readonly azureSettings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
     subscriptionKey: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     region: new FormControl('', { nonNullable: true, validators: [Validators.required] }),

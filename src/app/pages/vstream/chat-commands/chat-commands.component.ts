@@ -16,7 +16,7 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
 export class ChatCommandsComponent {
   private readonly vstreamService = inject(VStreamService);
 
-  commands$ = this.vstreamService.commands$;
+  readonly commands$ = this.vstreamService.commands$;
 
   createCommand() {
     this.vstreamService.createChatCommand();
