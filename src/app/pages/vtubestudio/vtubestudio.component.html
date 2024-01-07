@@ -10,6 +10,22 @@
 
 <div class="section">
   <app-label-block>
+    <div header>
+      @if (isAuthed$ | async) {
+        De-authorize
+      } @else {
+        Authorize
+      }
+    </div>
+    <div sub-text>Control TTS Helper's VTS auth level.</div>
+    @if (isAuthed$ | async) {
+      <app-button class="right" (click)="deauth()" [style]="'active'">De-authorize</app-button>
+    } @else {
+      <app-button class="right" (click)="auth()" [style]="'active'">Authorize</app-button>
+    }
+  </app-label-block>
+  
+  <app-label-block>
     <div header>API Port</div>
     <div sub-text>The port that's set in your VTS Plugin API settings.</div>
     <app-input [control]="settings.controls.port" type="number" placeholder="VTS port"/>

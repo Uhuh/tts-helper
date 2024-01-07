@@ -5,7 +5,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 import { VTubeStudioService } from '../../shared/services/vtubestudio.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime, take } from 'rxjs';
+import { debounceTime, map, take } from 'rxjs';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { ConfigService } from '../../shared/services/config.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-vtubestudio',
@@ -14,12 +17,17 @@ import { debounceTime, take } from 'rxjs';
     LabelBlockComponent,
     InputComponent,
     ToggleComponent,
+    ButtonComponent,
+    AsyncPipe,
   ],
   templateUrl: './vtubestudio.component.html',
   styleUrl: './vtubestudio.component.scss',
 })
 export class VtubestudioComponent {
   private readonly vtubeStudioService = inject(VTubeStudioService);
+  private readonly configService = inject(ConfigService);
+
+  readonly isAuthed$ = this.configService.authTokens$.pipe(map(tokens => !!tokens.vtsAuthToken));
   readonly settings = new FormGroup({
     port: new FormControl(8001, { nonNullable: true }),
     isMirrorMouthFormEnabled: new FormControl(false, { nonNullable: true }),
@@ -35,6 +43,14 @@ export class VtubestudioComponent {
 
     this.settings.valueChanges.pipe(takeUntilDestroyed(), debounceTime(200))
       .subscribe(settings => this.vtubeStudioService.updateState(settings));
+  }
+
+  auth() {
+    this.vtubeStudioService.auth();
+  }
+
+  deauth() {
+    this.vtubeStudioService.deauth();
   }
 }
 
