@@ -160,9 +160,7 @@ export class VTubeStudioService {
 
     this.socket.addEventListener('open', (event) => {
       // Check if VTS is already authenticated.
-      if (!this.vtsAuthToken) {
-        this.requestUserAuth();
-      } else {
+      if (this.vtsAuthToken) {
         // Verify token in state
         this.verifyAuthToken(this.vtsAuthToken);
       }
@@ -210,7 +208,11 @@ export class VTubeStudioService {
 
       this.socket.close();
       this.isConnected$.next(false);
-      setTimeout(() => this.setupSocketHandlers(), 3000);
+
+      // If the user has authed with us before just assume they want us to auto connect.
+      if (this.vtsAuthToken) {
+        setTimeout(() => this.setupSocketHandlers(), 3000);
+      }
     });
 
     this.socket.addEventListener('error', (event) => {
@@ -461,5 +463,28 @@ export class VTubeStudioService {
 
   updateState(partialState: Partial<VTubeStudioState>) {
     this.store.dispatch(VTubeStudioActions.updateState({ partialState }));
+  }
+
+  /**
+   * Let users decide when they want to connect with VTS.
+   */
+  auth() {
+    const { readyState, CLOSED } = this.socket;
+
+    // If the socket is closed and the user is trying to auth, try to bring the websocket back to life.
+    if (readyState === CLOSED) {
+      this.setupSocketHandlers();
+    }
+
+    // Assuming the above is true, we need to wait for the socket to come alive. Wait an arbitrary amount of time before authing.
+    setTimeout(() => this.requestUserAuth(), 1000);
+  }
+
+  /**
+   * Clear out the token to "deauth" the user.
+   */
+  deauth() {
+    this.vtsAuthToken = '';
+    this.configService.updateVTSToken(this.vtsAuthToken);
   }
 }
