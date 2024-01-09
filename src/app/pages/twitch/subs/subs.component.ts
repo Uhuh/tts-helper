@@ -38,7 +38,7 @@ export class SubsComponent {
   });
   readonly enabled = new FormControl(true, { nonNullable: true });
   readonly giftMessage = new FormControl('', { nonNullable: true });
-  
+
   readonly variables: VariableTableOption[] = [
     { variable: 'amount', descriptor: 'The number of subs gifted' },
     { variable: 'username', descriptor: 'The username of the gifter' },
