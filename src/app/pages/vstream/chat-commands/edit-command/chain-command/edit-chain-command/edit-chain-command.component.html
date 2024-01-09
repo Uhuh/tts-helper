@@ -1,0 +1,4 @@
+<div class="chain-command">
+  <app-selector [options]="(options$ | async) ?? []" placeholder="Select a command" [control]="chainCommandControl" />
+  <app-button [style]="'danger'" (click)="deleteChainCommand()">Delete</app-button>
+</div>
