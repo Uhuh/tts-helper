@@ -3,7 +3,7 @@ import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { StorageService } from './shared/services/storage.service';
 import { Store } from '@ngrx/store';
 import { TwitchService } from './shared/services/twitch.service';
-import { combineLatest, debounceTime } from 'rxjs';
+import { combineLatest, debounceTime, first, map } from 'rxjs';
 import { ConfigService } from './shared/services/config.service';
 import { PlaybackService } from './shared/services/playback.service';
 import { TwitchState } from './shared/state/twitch/twitch.feature';
@@ -31,6 +31,7 @@ import { VStreamService } from './shared/services/vstream.service';
 import { VStreamState } from './shared/state/vstream/vstream.feature';
 import { VStreamActions } from './shared/state/vstream/vstream.actions';
 import { VStreamPubSubService } from './shared/services/vstream-pubsub.service';
+import { CounterCommand } from './shared/services/command.interface';
 
 @Component({
   selector: 'app-root',
@@ -213,5 +214,19 @@ export class AppComponent {
     this.store.dispatch(
       VStreamActions.updateState({ partialState: data.value }),
     );
+
+    /**
+     * Whenever the app loads, users sometimes want to reset certain counters.
+     */
+    this.vstreamService.commands$
+      .pipe(
+        first(),
+        map((commands): CounterCommand[] => commands.filter((c): c is CounterCommand => c.type === 'counter' && c.resetOnLaunch)),
+      )
+      .subscribe(commands => {
+        for (const command of commands) {
+          this.vstreamService.updateCommandSettings({ value: 0, type: 'counter' }, command.id);
+        }
+      });
   }
 }
