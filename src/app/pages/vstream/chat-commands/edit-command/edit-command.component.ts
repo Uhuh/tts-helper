@@ -1,67 +1,52 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChatCommand } from '../../../../shared/services/chat.interface';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { LabelBlockComponent } from '../../../../shared/components/input-block/label-block.component';
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { InputComponent } from '../../../../shared/components/input/input.component';
 import { VStreamService } from '../../../../shared/services/vstream.service';
-import { filter } from 'rxjs';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { TextCommandComponent } from './text-command/text-command.component';
+import { Commands, CommandTypes } from '../../../../shared/services/command.interface';
+import { Option, SelectorComponent } from '../../../../shared/components/selector/selector.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChoiceCommandComponent } from './choice-command/choice-command.component';
+import { CounterCommandComponent } from './counter-command/counter-command.component';
+import { SoundCommandComponent } from './sound-component/sound-command.component';
 
 @Component({
   selector: 'app-edit-command',
   standalone: true,
-  imports: [CommonModule, CdkAccordionModule, LabelBlockComponent, ToggleComponent, MatIconModule, ReactiveFormsModule, InputComponent, ButtonComponent, MatTabsModule],
+  imports: [CommonModule, CdkAccordionModule, LabelBlockComponent, ToggleComponent, MatIconModule, ReactiveFormsModule, InputComponent, ButtonComponent, MatTabsModule, TextCommandComponent, SelectorComponent, ChoiceCommandComponent, CounterCommandComponent, SoundCommandComponent],
   templateUrl: './edit-command.component.html',
   styleUrl: './edit-command.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCommandComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly vstreamService = inject(VStreamService);
+  readonly options: Option<CommandTypes>[] = [
+    { displayName: 'Chat', value: 'chat' },
+    { displayName: 'Choice', value: 'choice' },
+    { displayName: 'Counter', value: 'counter' },
+    { displayName: 'Sound', value: 'sound' },
+  ];
 
-  @Input({ required: true }) command!: ChatCommand;
+  readonly type = new FormControl<CommandTypes>('chat', { nonNullable: true });
 
-  readonly commandSettings = new FormGroup({
-    command: new FormControl('', { nonNullable: true, validators: [Validators.minLength(1)] }),
-    enabled: new FormControl(false, { nonNullable: true }),
-    autoRedeem: new FormControl(false, { nonNullable: true }),
-    autoRedeemInterval: new FormControl(0, { nonNullable: true }),
-    response: new FormControl('', { nonNullable: true }),
-    cooldown: new FormControl(0, { nonNullable: true }),
-  });
-
-  readonly permissions = new FormGroup({
-    allUsers: new FormControl(false, { nonNullable: true }),
-    mods: new FormControl(false, { nonNullable: true }),
-    payingMembers: new FormControl(false, { nonNullable: true }),
-  });
-
-  constructor() {
-    this.commandSettings.valueChanges
-      .pipe(filter(() => this.commandSettings.valid))
-      .subscribe(settings => {
-        this.vstreamService.updateCommandSettings({
-          ...settings,
-          cooldown: Number(settings.cooldown),
-          autoRedeemInterval: Number(settings.autoRedeemInterval),
-        }, this.command.id);
-      });
-
-    this.permissions.valueChanges
-      .subscribe(settings => {
-        this.vstreamService.updateCommandPermissions(settings, this.command.id);
-      });
-  }
+  @Input({ required: true }) command!: Commands;
 
   ngOnInit() {
-    const { id, permissions, ...settings } = this.command;
+    this.type.setValue(this.command.type, { emitEvent: false });
 
-    this.commandSettings.setValue(settings, { emitEvent: false });
-    this.permissions.setValue(permissions, { emitEvent: false });
+    this.type.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(type => {
+        this.vstreamService.updateCommandType(type, this.command.id);
+      });
   }
 
   deleteCommand() {

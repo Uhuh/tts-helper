@@ -6,7 +6,12 @@
     [attr.aria-expanded]="accordionItem.expanded"
   >
     <div class="command-header" (click)="accordionItem.toggle()">
-      {{ command.command ? command.command : '&lt;not set&gt;' }}
+      <div>
+        {{ command.command ? command.command : '&lt;not set&gt;' }}
+        @if (command.type === 'counter') {
+          <span class="yellow">current: {{ command.value }}</span>
+        }
+      </div>
       <mat-icon>
         {{ accordionItem.expanded ? 'expand_more' : 'chevron_left' }}
       </mat-icon>
@@ -17,78 +22,36 @@
     >
       <div class="command-body">
         <hr/>
-        
-        <mat-tab-group animationDuration="0ms">
-          <mat-tab label="Basics">
-            <div class="header">
-              <span>Basics</span>
-              <app-button [style]="'danger'" (click)="deleteCommand()">
-                Delete
-              </app-button>
-            </div>
 
-            <app-label-block>
-              <div header>Enable</div>
-              <div sub-text>If enabled, users can then invoke this command.</div>
-              <app-toggle class="right" [control]="commandSettings.controls.enabled"/>
-            </app-label-block>
+        <div class="header">
+          <span>Basics</span>
+          <app-button [style]="'danger'" (click)="deleteCommand()">
+            Delete
+          </app-button>
+        </div>
 
-            <app-label-block>
-              <div header>Command</div>
-              <div sub-text>The command!</div>
-              <app-input class="right" [control]="commandSettings.controls.command" placeholder="!command" type="text"/>
-            </app-label-block>
+        <app-label-block>
+          <div header>Command type</div>
+          <div sub-text>Select the type of command you want this to be.</div>
+          <app-selector class="right" [control]="type" [options]="options" placeholder="Select a command type"/>
+        </app-label-block>
 
-            <hr/>
+        <hr/>
 
-            <app-label-block>
-              <div header>Enable auto-run</div>
-              <div sub-text>If enabled, this command runs automatically on a timer.</div>
-              <app-toggle class="right" [control]="commandSettings.controls.autoRedeem"/>
-            </app-label-block>
-
-            <app-label-block>
-              <div header>Auto-run interval (minutes)</div>
-              <div sub-text>How long until the command auto-runs.</div>
-              <app-input class="right" [control]="commandSettings.controls.autoRedeemInterval" type="number"/>
-            </app-label-block>
-          </mat-tab>
-          <mat-tab label="Permissions">
-            <app-label-block>
-              <div header>All Users</div>
-              <div sub-text>Everyone can run this command.</div>
-              <app-toggle class="right" [control]="permissions.controls.allUsers"/>
-            </app-label-block>
-
-            <app-label-block>
-              <div header>Mods</div>
-              <div sub-text>Allows your channel mods to run this command.</div>
-              <app-toggle class="right" [control]="permissions.controls.mods"/>
-            </app-label-block>
-
-            <app-label-block>
-              <div header>Paying Users</div>
-              <div sub-text>Anyone with an active subscription to you.</div>
-              <app-toggle class="right" [control]="permissions.controls.payingMembers"/>
-            </app-label-block>
-          </mat-tab>
-          <mat-tab label="Command Settings">
-            <app-label-block>
-              <div header>Cooldown</div>
-              <div sub-text>The cooldown of the command in seconds.</div>
-              <app-input class="right" [control]="commandSettings.controls.cooldown" type="number"/>
-            </app-label-block>
-
-            <app-label-block>
-              <div header>Command Response</div>
-              <div sub-text>This is what the command responds with.</div>
-              <textarea
-                [formControl]="commandSettings.controls.response"
-                placeholder="Here are my socials!"
-              ></textarea>
-            </app-label-block>
-          </mat-tab>
-        </mat-tab-group>
+        @switch (command.type) {
+          @case ('chat') {
+            <app-text-command [command]="command"/>
+          }
+          @case ('choice') {
+            <app-choice-command [command]="command"/>
+          }
+          @case ('counter') {
+            <app-counter-command [command]="command"/>
+          }
+          @case ('sound') {
+            <app-sound-commmand [command]="command"/>
+          }
+        }
       </div>
     </div>
   </cdk-accordion-item>
