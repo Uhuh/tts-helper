@@ -7,13 +7,13 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 @Component({
-  selector: 'app-chat-commands',
+  selector: 'app-commands',
   standalone: true,
   imports: [CommonModule, EditCommandComponent, MatTabsModule, ButtonComponent, LabelBlockComponent],
-  templateUrl: './chat-commands.component.html',
-  styleUrl: './chat-commands.component.scss',
+  templateUrl: './commands.component.html',
+  styleUrl: './commands.component.scss',
 })
-export class ChatCommandsComponent {
+export class CommandsComponent {
   private readonly vstreamService = inject(VStreamService);
 
   readonly commands$ = this.vstreamService.commands$;
