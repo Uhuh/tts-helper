@@ -1,0 +1,68 @@
+<mat-tab-group animationDuration="0ms">
+  <mat-tab label="Basics">
+    <app-label-block>
+      <div header>Enable</div>
+      <div sub-text>If enabled, users can then invoke this command.</div>
+      <app-toggle class="right" [control]="settings.controls.enabled"/>
+    </app-label-block>
+
+    <app-label-block>
+      <div header>Command</div>
+      <div sub-text>The command!</div>
+      <app-input class="right" [control]="settings.controls.command" placeholder="!command" type="text"/>
+    </app-label-block>
+  </mat-tab>
+  <mat-tab label="Permissions">
+    <app-label-block>
+      <div header>All Users</div>
+      <div sub-text>Everyone can run this command.</div>
+      <app-toggle class="right" [control]="permissions.controls.allUsers"/>
+    </app-label-block>
+
+    <app-label-block>
+      <div header>Mods</div>
+      <div sub-text>Allows your channel mods to run this command.</div>
+      <app-toggle class="right" [control]="permissions.controls.mods"/>
+    </app-label-block>
+
+    <app-label-block>
+      <div header>Paying Users</div>
+      <div sub-text>Anyone with an active subscription to you.</div>
+      <app-toggle class="right" [control]="permissions.controls.payingMembers"/>
+    </app-label-block>
+  </mat-tab>
+  <mat-tab label="Settings">
+    <app-label-block>
+      <div header>Cooldown</div>
+      <div sub-text>The cooldown of the command in seconds.</div>
+      <app-input class="right" [control]="settings.controls.cooldown" type="number"/>
+    </app-label-block>
+
+    <app-label-block>
+      <div header>Command Options</div>
+      <div sub-text>Options that will be picked from at random, separated by comma's.</div>
+      <textarea
+        [formControl]="settings.controls.options"
+        placeholder="dog,cat,bird"
+      ></textarea>
+    </app-label-block>
+
+    <app-variable-table [variables]="variables">
+      <span header>Use variables to reference info related to the choice options</span>
+      <span example-text>You rolled a... <span class="var">value</span>!</span>
+      <span result-text>You rolled a... 5!</span>
+    </app-variable-table>
+
+    <app-label-block>
+      <div header>Command Response</div>
+      <div sub-text>This is what the command responds with.</div>
+      <textarea
+        [formControl]="settings.controls.response"
+        placeholder="You rolled a... {value}!"
+      ></textarea>
+    </app-label-block>
+  </mat-tab>
+  <mat-tab label="Chains">
+    <app-chain-command [command]="command" />
+  </mat-tab>
+</mat-tab-group>
