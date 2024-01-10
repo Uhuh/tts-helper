@@ -7,7 +7,7 @@ import { UpliftsComponent } from './uplifts/uplifts.component';
 import { MeteorShowerComponent } from './meteor-shower/meteor-shower.component';
 import { FollowersComponent } from './followers/followers.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { CommandsComponent } from './chat-commands/commands.component';
+import { CommandsComponent } from './commands/commands.component';
 import { OverlaysComponent } from './overlays/overlays.component';
 
 @Component({
