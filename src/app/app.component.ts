@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { StorageService } from './shared/services/storage.service';
 import { Store } from '@ngrx/store';
@@ -55,6 +55,8 @@ export class AppComponent {
   private readonly vtubeStudioService = inject(VTubeStudioService);
   private readonly vstreamService = inject(VStreamService);
   private readonly vstreamPubSub = inject(VStreamPubSubService);
+
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly settingsLocation = '.settings.json';
 
@@ -220,7 +222,7 @@ export class AppComponent {
      */
     this.vstreamService.commands$
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         first(),
         map(commands => commands.filter((c): c is CounterCommand => c.type === 'counter' && c.resetOnLaunch)),
       )
@@ -228,6 +230,27 @@ export class AppComponent {
         for (const command of commands) {
           this.vstreamService.updateCommandSettings({ value: 0, type: 'counter' }, command.id);
         }
+      });
+
+    /**
+     * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
+     */
+    combineLatest([
+      this.vstreamService.commands$,
+      this.vstreamService.chatCommands$,
+    ])
+      .pipe(first(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(([commands, chatCommands]) => {
+        const commandNames = commands.map(c => c.command);
+        // Make sure we're not bringing over unnamed commands and already same named.
+        const nonMigratedCommands = chatCommands.filter(c => !!c.command && !commandNames.includes(c.command));
+
+        for (const command of nonMigratedCommands) {
+          this.vstreamService.migrateChatCommands(command);
+        }
+
+        // Once the commands have been migrated, PURGE
+        this.vstreamService.removeOldChatCommands();
       });
   }
 }

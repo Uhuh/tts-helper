@@ -12,7 +12,7 @@ import {
   VStreamWidget,
 } from '../state/vstream/vstream.feature';
 import { VStreamChannelID, VStreamVideoID } from './vstream-pubsub.interface';
-import { ChatPermissions } from './chat.interface';
+import { ChatCommand, ChatPermissions } from './chat.interface';
 import { jwtDecode } from 'jwt-decode';
 import { TypeID } from 'typeid-js';
 import { Commands, CommandTypes } from './command.interface';
@@ -34,6 +34,10 @@ export class VStreamService {
   readonly meteorShowerSettings$ = this.store.select(VStreamFeature.selectMeteorShower);
   readonly followerSettings$ = this.store.select(VStreamFeature.selectFollowers);
   readonly commands$ = this.store.select(VStreamFeature.selectCommands);
+  /**
+   * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
+   */
+  readonly chatCommands$ = this.store.select(VStreamFeature.selectChatCommands);
   readonly widgets$ = this.store.select(VStreamFeature.selectWidgets);
 
   readonly liveStreamID$ = new BehaviorSubject<VStreamVideoID | null>(null);
@@ -158,6 +162,20 @@ export class VStreamService {
     this.store.dispatch(VStreamActions.updateCommand({ partialCommand, commandID }));
   }
 
+  /**
+   * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
+   */
+  migrateChatCommands(chatCommand: ChatCommand) {
+    this.store.dispatch(VStreamActions.migrateChatCommand({ chatCommand }));
+  }
+
+  /**
+   * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
+   */
+  removeOldChatCommands() {
+    this.store.dispatch(VStreamActions.removeOldChatCommands());
+  }
+
   updateCommandPermissions(partialPermissions: Partial<ChatPermissions>, commandID: string) {
     this.store.dispatch(VStreamActions.updateChatCommandPermissions({ partialPermissions, commandID }));
   }
@@ -179,7 +197,7 @@ export class VStreamService {
   }
 
   updateChainCommand(commandID: string, chainCommandID: string, chainCommand: string | null) {
-    this.store.dispatch(VStreamActions.updateChainCommand({ commandID, chainCommandID,chainCommand }));
+    this.store.dispatch(VStreamActions.updateChainCommand({ commandID, chainCommandID, chainCommand }));
   }
 
   deleteChainCommand(commandID: string, chainCommandID: string) {

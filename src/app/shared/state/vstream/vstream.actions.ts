@@ -7,7 +7,7 @@ import {
   VStreamTokenResponse,
   VStreamWidget,
 } from './vstream.feature';
-import { ChatPermissions } from '../../services/chat.interface';
+import { ChatCommand, ChatPermissions } from '../../services/chat.interface';
 import { Commands, CommandTypes } from '../../services/command.interface';
 
 export const VStreamActions = createActionGroup({
@@ -20,6 +20,8 @@ export const VStreamActions = createActionGroup({
     'Create Widget': props<{ id: string }>(),
     'Update Widget': props<{ partialWidget: Partial<VStreamWidget> }>(),
     'Delete Widget': props<{ id: string }>(),
+    'Migrate Chat Command': props<{ chatCommand: ChatCommand }>(),
+    'Remove Old Chat Commands': emptyProps(),
     'Create Chat Command': emptyProps(),
     'Create Chain Command': props<{ commandID: string, chainCommandID: string | null }>(),
     'Update Chain Command': props<{ commandID: string, chainCommandID: string, chainCommand: string | null }>(),

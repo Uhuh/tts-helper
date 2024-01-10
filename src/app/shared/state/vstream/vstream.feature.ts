@@ -305,6 +305,21 @@ export const VStreamFeature = createFeature({
         },
       ],
     })),
+    on(VStreamActions.migrateChatCommand, (state, { chatCommand }) => ({
+      ...state,
+      commands: [
+        ...state.commands,
+        {
+          ...chatCommand,
+          type: 'chat',
+          chainCommands: [],
+        } as ChatCommand,
+      ],
+    })),
+    on(VStreamActions.removeOldChatCommands, (state) => ({
+      ...state,
+      chatCommands: [],
+    })),
     on(VStreamActions.createChainCommand, (state, { commandID, chainCommandID }) => {
       const command = state.commands.find(c => c.id === commandID);
 
