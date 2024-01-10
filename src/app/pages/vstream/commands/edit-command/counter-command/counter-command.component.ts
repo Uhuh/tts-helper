@@ -13,6 +13,7 @@ import {
   VariableTableOption,
 } from '../../../../../shared/components/variable-table/variable-table.component';
 import { ChainCommandComponent } from '../chain-command/chain-command.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-counter-command',
@@ -47,7 +48,10 @@ export class CounterCommandComponent implements OnChanges {
 
   constructor() {
     this.settings.valueChanges
-      .pipe(filter(() => this.settings.valid))
+      .pipe(
+        takeUntilDestroyed(),
+        filter(() => this.settings.valid),
+      )
       .subscribe(settings => {
         this.vstreamService.updateCommandSettings({
           ...settings,
