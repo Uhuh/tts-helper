@@ -220,8 +220,9 @@ export class AppComponent {
      */
     this.vstreamService.commands$
       .pipe(
+        takeUntilDestroyed(),
         first(),
-        map((commands): CounterCommand[] => commands.filter((c): c is CounterCommand => c.type === 'counter' && c.resetOnLaunch)),
+        map(commands => commands.filter((c): c is CounterCommand => c.type === 'counter' && c.resetOnLaunch)),
       )
       .subscribe(commands => {
         for (const command of commands) {
