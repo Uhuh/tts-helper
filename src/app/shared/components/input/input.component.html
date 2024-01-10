@@ -1,6 +1,15 @@
-<input
-  [placeholder]="placeholder"
-  [formControl]="control"
-  [type]="type"
-  [ngClass]="{ error: hasError }"
-/>
+@if (type === 'number') {
+  <input
+    [placeholder]="placeholder"
+    [formControl]="control"
+    type="number"
+    [ngClass]="{ error: hasError }"
+  />
+} @else {
+  <input
+    [placeholder]="placeholder"
+    [formControl]="control"
+    [type]="type"
+    [ngClass]="{ error: hasError }"
+  />
+}

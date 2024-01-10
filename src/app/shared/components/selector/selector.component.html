@@ -1,8 +1,8 @@
 <mat-form-field>
   <mat-select [placeholder]="placeholder" [formControl]="control">
-    @for (voice of options; track voice.value) {
-      <mat-option [value]="voice.value">
-        {{ voice.displayName }}
+    @for (option of options; track option.value) {
+      <mat-option [value]="option.value">
+        {{ option.displayName }}
       </mat-option>
     }
   </mat-select>

@@ -1,0 +1,11 @@
+<app-label-block>
+  <div header>Create</div>
+  <div sub-text>Create a new chain command</div>
+  <app-button class="right" (click)="createChainCommand()">Create</app-button>
+</app-label-block>
+
+@for (chain of command.chainCommands;track chain.chainCommandID) {
+  <app-edit-chain-command [parentCommandID]="command.id" [chainCommand]="chain"/>
+} @empty {
+  <div class="empty">No chain commands</div>
+}

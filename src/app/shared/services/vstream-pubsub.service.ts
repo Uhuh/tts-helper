@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { VStreamService } from './vstream.service';
 import { combineLatest, debounceTime, filter, first, map, retry, switchMap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
@@ -24,11 +24,20 @@ import { GptSettingsState } from '../state/openai/openai.feature';
 import { LogService } from './logs.service';
 import { AudioService } from './audio.service';
 import { generateWidgetsHtml } from '../../pages/vstream/overlays/utils/generateBrowserSource';
+import { CommandService } from './command.service';
+import { Commands } from './command.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VStreamPubSubService {
+  private readonly vstreamService = inject(VStreamService);
+  private readonly commandService = inject(CommandService);
+  private readonly openaiService = inject(OpenAIService);
+  private readonly chatService = inject(ChatService);
+  private readonly audioService = inject(AudioService);
+  private readonly logService = inject(LogService);
+
   private socketUrl = 'wss://events.vstream.com/channels';
   vstreamSocket$ = webSocket(this.socketUrl);
 
@@ -47,13 +56,7 @@ export class VStreamPubSubService {
   // ChatGPT Settings
   gptSettings!: GptSettingsState;
 
-  constructor(
-    private readonly vstreamService: VStreamService,
-    private readonly openaiService: OpenAIService,
-    private readonly chatService: ChatService,
-    private readonly audioService: AudioService,
-    private readonly logService: LogService,
-  ) {
+  constructor() {
     combineLatest([
       this.vstreamService.meteorShowerSettings$,
       this.vstreamService.subscriptionSettings$,
@@ -326,6 +329,9 @@ export class VStreamPubSubService {
       isMod,
     };
 
+    /**
+     * If the users message was a !say or !ask command, this checks if it was played or not.
+     */
     const playedMessage = await this.chatService.onMessage(
       {
         text,
@@ -352,13 +358,13 @@ export class VStreamPubSubService {
     this.commands$
       .pipe(
         first(),
-        map(commands => commands.find(c => text.startsWith(c.command))),
-        filter(command => !!command && !!command.command),
+        map(commands => commands.filter(c => !!c.command).find(c => text.startsWith(c.command))),
+        filter((command): command is Commands => !!command && !!command.command && command.enabled),
       )
       .subscribe(command => {
-        this.logService.add(`User "${chatter.displayName}" ran a chat command "${JSON.stringify(command, undefined, 2)}"`, 'info', 'VStreamPubSub.handleChatMessage');
+        this.logService.add(`User "${chatter.displayName}" ran a chat command "${command.command}"`, 'info', 'VStreamPubSub.handleChatMessage');
 
-        this.vstreamService.sendCommandResponse(permissions, command, text);
+        this.commandService.handleCommand(command, permissions, text);
       });
   }
 

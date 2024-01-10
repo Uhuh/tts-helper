@@ -1,20 +1,8 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { VStreamApi } from '../api/vstream/vstream.api';
 import { listen } from '@tauri-apps/api/event';
 import { LogService } from './logs.service';
-import {
-  BehaviorSubject,
-  catchError,
-  combineLatest,
-  first,
-  from,
-  interval,
-  map,
-  of,
-  switchMap,
-  tap,
-  timer,
-} from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, first, from, interval, map, of, switchMap, timer } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { VStreamActions } from '../state/vstream/vstream.actions';
 import {
@@ -24,15 +12,19 @@ import {
   VStreamWidget,
 } from '../state/vstream/vstream.feature';
 import { VStreamChannelID, VStreamVideoID } from './vstream-pubsub.interface';
-import { ChatCommand, ChatPermissions, UserPermissions } from './chat.interface';
-import { ChatService } from './chat.service';
+import { ChatCommand, ChatPermissions } from './chat.interface';
 import { jwtDecode } from 'jwt-decode';
 import { TypeID } from 'typeid-js';
+import { Commands, CommandTypes } from './command.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VStreamService {
+  private readonly store = inject(Store);
+  private readonly vstreamApi = inject(VStreamApi);
+  private readonly logService = inject(LogService);
+
   readonly state$ = this.store.select(VStreamFeature.selectVStreamFeatureState);
   readonly token$ = this.store.select(VStreamFeature.selectToken);
   readonly settings$ = this.store.select(VStreamFeature.selectSettings);
@@ -41,7 +33,11 @@ export class VStreamService {
   readonly subscriptionSettings$ = this.store.select(VStreamFeature.selectSubscriptions);
   readonly meteorShowerSettings$ = this.store.select(VStreamFeature.selectMeteorShower);
   readonly followerSettings$ = this.store.select(VStreamFeature.selectFollowers);
-  readonly commands$ = this.store.select(VStreamFeature.selectChatCommands);
+  readonly commands$ = this.store.select(VStreamFeature.selectCommands);
+  /**
+   * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
+   */
+  readonly chatCommands$ = this.store.select(VStreamFeature.selectChatCommands);
   readonly widgets$ = this.store.select(VStreamFeature.selectWidgets);
 
   readonly liveStreamID$ = new BehaviorSubject<VStreamVideoID | null>(null);
@@ -50,22 +46,7 @@ export class VStreamService {
       return this.token$.pipe(map(token => token.expireDate > Date.now() && token.accessToken));
     }));
 
-  cooldowns = new Map<string, {
-    duration: number,
-    onCooldown: boolean,
-    timeout?: NodeJS.Timeout,
-  }>();
-  autoredeems = new Map<string, {
-    interval: number,
-    timer: NodeJS.Timer,
-  }>();
-
-  constructor(
-    private readonly store: Store,
-    private readonly vstreamApi: VStreamApi,
-    private readonly logService: LogService,
-    private readonly chatService: ChatService,
-  ) {
+  constructor() {
     listen('access-token', (authData) => {
       this.logService.add(`Attempting VStream signin with code. ${JSON.stringify(authData, undefined, 2)}.`, 'info', 'VStreamService.constructor');
 
@@ -159,96 +140,6 @@ export class VStreamService {
         }),
       )
       .subscribe();
-
-    this.commands$
-      .pipe(
-        tap(commands => {
-          const commandIDs = commands.map(c => c.id);
-          this.clearOldAutoIntervals(commandIDs);
-          this.resetAutoIntervals(commands);
-          this.updateCooldowns(commands);
-        }),
-      ).subscribe();
-  }
-
-  /**
-   * If a user has updated the cooldowns of an existing command, we want to remove any active cooldowns.
-   * @param commands All the VStream chat commands
-   * @private
-   */
-  private updateCooldowns(commands: ChatCommand[]) {
-    for (const command of commands) {
-      const cooldown = this.cooldowns.get(command.id);
-
-      if (!cooldown) {
-        continue;
-      }
-
-      const { duration, timeout } = cooldown;
-      const newDuration = command.cooldown * 1000;
-
-      if (duration === newDuration) {
-        continue;
-      }
-
-      clearTimeout(timeout);
-      this.cooldowns.delete(command.id);
-    }
-  }
-
-  private resetAutoIntervals(commands: ChatCommand[]) {
-    /**
-     * I want to be safe and have the lowest interval be 1 minute.
-     */
-    const LOWEST_INTERVAL = 60 * 1000;
-
-    for (const command of commands) {
-      const interval = command.autoRedeemInterval * LOWEST_INTERVAL;
-      const isIntervalValid = interval >= LOWEST_INTERVAL;
-      const autoRedeem = this.autoredeems.get(command.id);
-
-      if (command.autoRedeem && !autoRedeem && isIntervalValid) {
-        this.autoredeems.set(
-          command.id,
-          {
-            interval,
-            timer: setInterval(() => this.handleAutoRedeem(command.id), interval),
-          },
-        );
-      } else if (command.autoRedeem && autoRedeem && autoRedeem.interval !== interval && isIntervalValid) {
-        clearInterval(autoRedeem.timer);
-
-        this.autoredeems.set(
-          command.id,
-          {
-            interval,
-            timer: setInterval(() => this.handleAutoRedeem(command.id), interval),
-          },
-        );
-      } else if ((!command.autoRedeem || !isIntervalValid) && autoRedeem) {
-        clearInterval(autoRedeem.timer);
-        this.autoredeems.delete(command.id);
-      }
-    }
-  }
-
-  private clearOldAutoIntervals(commandIDs: string[]) {
-    const autoIDs = this.autoredeems.keys();
-
-    /**
-     * If a user removes a command that had auto redeem we want to remove it from the timers.
-     */
-    for (const autoID of autoIDs) {
-      const redeemExist = commandIDs.find(id => autoID === id);
-
-      if (redeemExist) {
-        continue;
-      }
-
-      const redeem = this.autoredeems.get(autoID);
-      clearInterval(redeem?.timer);
-      this.autoredeems.delete(autoID);
-    }
   }
 
   authenticatePubSub(token: string) {
@@ -267,8 +158,22 @@ export class VStreamService {
     this.store.dispatch(VStreamActions.updateSettings({ partialSettings }));
   }
 
-  updateCommandSettings(partialCommand: Partial<ChatCommand>, commandID: string) {
-    this.store.dispatch(VStreamActions.updateChatCommand({ partialCommand, commandID }));
+  updateCommandSettings(partialCommand: Partial<Commands>, commandID: string) {
+    this.store.dispatch(VStreamActions.updateCommand({ partialCommand, commandID }));
+  }
+
+  /**
+   * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
+   */
+  migrateChatCommands(chatCommand: ChatCommand) {
+    this.store.dispatch(VStreamActions.migrateChatCommand({ chatCommand }));
+  }
+
+  /**
+   * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
+   */
+  removeOldChatCommands() {
+    this.store.dispatch(VStreamActions.removeOldChatCommands());
   }
 
   updateCommandPermissions(partialPermissions: Partial<ChatPermissions>, commandID: string) {
@@ -279,8 +184,24 @@ export class VStreamService {
     this.store.dispatch(VStreamActions.deleteChatCommand({ commandID }));
   }
 
+  updateCommandType(newType: CommandTypes, commandID: string) {
+    this.store.dispatch(VStreamActions.updateCommandType({ newType, commandID }));
+  }
+
   createChatCommand() {
     this.store.dispatch(VStreamActions.createChatCommand());
+  }
+
+  createChainCommand(commandID: string, chainCommandID: string | null) {
+    this.store.dispatch(VStreamActions.createChainCommand({ commandID, chainCommandID }));
+  }
+
+  updateChainCommand(commandID: string, chainCommandID: string, chainCommand: string | null) {
+    this.store.dispatch(VStreamActions.updateChainCommand({ commandID, chainCommandID, chainCommand }));
+  }
+
+  deleteChainCommand(commandID: string, chainCommandID: string) {
+    this.store.dispatch(VStreamActions.deleteChainCommand({ commandID, chainCommandID }));
   }
 
   createWidget() {
@@ -324,53 +245,6 @@ export class VStreamService {
       default:
         return;
     }
-  }
-
-  sendCommandResponse(permissions: UserPermissions, command: ChatCommand | undefined, text: string) {
-    if (!command || !command.enabled || this.cooldowns.get(command.id)?.onCooldown) {
-      return;
-    }
-
-    const hasPerms = this.chatService.hasChatCommandPermissions({ permissions }, command.permissions);
-
-    if (!hasPerms) {
-      return;
-    }
-
-    let { response } = command;
-
-    const [_, ...args] = text.split(' ');
-
-    for (const i in args) {
-      response = response.replaceAll(`{${i}}`, args[i]);
-    }
-
-    const duration = command.cooldown * 1000;
-
-    this.postChannelMessage(response);
-
-    this.cooldowns.set(command.id, {
-      duration,
-      onCooldown: true,
-      timeout: setTimeout(() => this.cooldowns.set(command.id, { duration, onCooldown: false }), duration),
-    });
-  }
-
-  handleAutoRedeem(commandID: string) {
-    this.commands$
-      .pipe(
-        first(),
-        map(commands => {
-          return commands.find(c => c.id === commandID);
-        }),
-        tap(command => {
-          if (!command) {
-            return;
-          }
-
-          this.postChannelMessage(command.response);
-        }),
-      ).subscribe();
   }
 
   postChannelMessage(text: string) {

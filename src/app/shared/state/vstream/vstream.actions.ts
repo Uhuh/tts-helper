@@ -4,9 +4,11 @@ import {
   VStreamCustomMessageState,
   VStreamSettingsState,
   VStreamState,
-  VStreamTokenResponse, VStreamWidget,
+  VStreamTokenResponse,
+  VStreamWidget,
 } from './vstream.feature';
 import { ChatCommand, ChatPermissions } from '../../services/chat.interface';
+import { Commands, CommandTypes } from '../../services/command.interface';
 
 export const VStreamActions = createActionGroup({
   source: 'VStream',
@@ -18,9 +20,15 @@ export const VStreamActions = createActionGroup({
     'Create Widget': props<{ id: string }>(),
     'Update Widget': props<{ partialWidget: Partial<VStreamWidget> }>(),
     'Delete Widget': props<{ id: string }>(),
+    'Migrate Chat Command': props<{ chatCommand: ChatCommand }>(),
+    'Remove Old Chat Commands': emptyProps(),
     'Create Chat Command': emptyProps(),
+    'Create Chain Command': props<{ commandID: string, chainCommandID: string | null }>(),
+    'Update Chain Command': props<{ commandID: string, chainCommandID: string, chainCommand: string | null }>(),
+    'Delete Chain Command': props<{ commandID: string, chainCommandID: string }>(),
     'Delete Chat Command': props<{ commandID: string }>(),
-    'Update Chat Command': props<{ partialCommand: Partial<ChatCommand>, commandID: string }>(),
+    'Update Command Type': props<{ newType: CommandTypes, commandID: string }>(),
+    'Update Command': props<{ partialCommand: Partial<Commands>, commandID: string }>(),
     'Update Chat Command Permissions': props<{ partialPermissions: Partial<ChatPermissions>, commandID: string }>(),
     'Update Up Lift': props<{ partialSettings: Partial<VStreamCustomMessageState> }>(),
     'Update Meteor Shower': props<{ partialSettings: Partial<VStreamCustomMessageState> }>(),

@@ -61,10 +61,10 @@ $my-app-theme: mat.define-dark-theme(
   --blue-5: rgba(0, 119, 255, 0.05);
   --purple: rgba(89, 24, 225, 1);
   --yellow: rgba(249, 189, 36, 1);
-  
+
   --green: rgb(21, 180, 28);
   --green-5: rgba(21, 180, 28, 0.05);
-  
+
   --white: rgba(255, 255, 255, 1);
   --white-5: rgba(255, 255, 255, 0.05);
   --white-10: rgba(255, 255, 255, 0.1);
@@ -149,15 +149,16 @@ a {
   }
 }
 
-app-toggle.right, app-button.right, app-input.right {
+app-toggle.right, app-button.right, app-input.right, app-selector.right {
   position: absolute;
   right: 0;
 }
 
-app-input.right {
+app-input.right, app-selector.right {
   input {
     min-width: 100px;
   }
+
   max-width: 150px;
 }
 

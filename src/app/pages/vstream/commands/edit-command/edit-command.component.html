@@ -1,0 +1,59 @@
+<cdk-accordion>
+  <cdk-accordion-item
+    #accordionItem="cdkAccordionItem"
+    role="button"
+    tabindex="0"
+    [attr.aria-expanded]="accordionItem.expanded"
+  >
+    <div class="command-header" (click)="accordionItem.toggle()">
+      <div>
+        {{ command.command ? command.command : '&lt;not set&gt;' }}
+        @if (command.type === 'counter') {
+          <span class="yellow">current: {{ command.value }}</span>
+        }
+      </div>
+      <mat-icon>
+        {{ accordionItem.expanded ? 'expand_more' : 'chevron_left' }}
+      </mat-icon>
+    </div>
+    <div
+      role="region"
+      [style.display]="accordionItem.expanded ? 'block' : 'none'"
+    >
+      <div class="command-body">
+        <hr/>
+
+        <div class="header">
+          <span>Basics</span>
+          <app-button [style]="'danger'" (click)="deleteCommand()">
+            Delete
+          </app-button>
+        </div>
+
+        <app-label-block>
+          <div header>Command type</div>
+          <div sub-text>Select the type of command you want this to be.</div>
+          <app-selector class="right" [control]="type" [options]="options" placeholder="Select a command type"/>
+        </app-label-block>
+
+        <hr/>
+
+        @switch (command.type) {
+          @case ('chat') {
+            <app-text-command [command]="command"/>
+          }
+          @case ('choice') {
+            <app-choice-command [command]="command"/>
+          }
+          @case ('counter') {
+            <app-counter-command [command]="command"/>
+          }
+          @case ('sound') {
+            <app-sound-command [command]="command"/>
+          }
+        }
+      </div>
+    </div>
+  </cdk-accordion-item>
+</cdk-accordion>
+

@@ -1,7 +1,15 @@
 ﻿import { createFeature, createReducer, on } from '@ngrx/store';
 import { VStreamActions } from './vstream.actions';
 import { VStreamChannelID, VStreamEvents } from '../../services/vstream-pubsub.interface';
-import { ChatCommand } from '../../services/chat.interface';
+import {
+  ChatCommand,
+  Commands,
+  CommandTypes,
+  initialChatCommand,
+  initialChoiceCommand,
+  initialCounterCommand,
+  initialSoundCommand,
+} from '../../services/command.interface';
 
 export type VStreamTokenResponse = {
   access_token: string;
@@ -88,6 +96,7 @@ const initialWidget: VStreamWidget = {
 export type VStreamState = {
   token: VStreamToken;
   chatCommands: ChatCommand[];
+  commands: Commands[];
   widgets: VStreamWidget[];
   channelInfo: VStreamChannelState;
   settings: VStreamSettingsState;
@@ -104,22 +113,27 @@ const initialCustomMessage: VStreamCustomMessageState = {
   enabledChat: false,
 };
 
-const initialChatCommand: Omit<ChatCommand, 'id'> = {
-  command: '!command',
-  permissions: {
-    allUsers: true,
-    payingMembers: false,
-    mods: false,
-  },
-  autoRedeemInterval: 0,
-  autoRedeem: false,
-  cooldown: 0,
-  enabled: true,
-  response: 'Change me!',
-};
+/**
+ * Return a default state command for the passed in type.
+ * @param type
+ */
+function changeCommandType(type: CommandTypes) {
+  switch (type) {
+    case 'counter':
+      return initialCounterCommand;
+    case 'sound':
+      return initialSoundCommand;
+    case 'choice':
+      return initialChoiceCommand;
+    case 'chat':
+    default:
+      return initialChatCommand;
+  }
+}
 
 const initialState: VStreamState = {
   chatCommands: [],
+  commands: [],
   widgets: [],
   token: {
     accessToken: '',
@@ -283,60 +297,187 @@ export const VStreamFeature = createFeature({
     }),
     on(VStreamActions.createChatCommand, (state) => ({
       ...state,
-      chatCommands: [
-        ...state.chatCommands,
+      commands: [
+        ...state.commands,
         {
           id: crypto.randomUUID(),
           ...initialChatCommand,
         },
       ],
     })),
-    on(VStreamActions.deleteChatCommand, (state, { commandID }) => {
-      const command = state.chatCommands.find(c => c.id === commandID);
+    on(VStreamActions.migrateChatCommand, (state, { chatCommand }) => ({
+      ...state,
+      commands: [
+        ...state.commands,
+        {
+          ...chatCommand,
+          type: 'chat',
+          chainCommands: [],
+        } as ChatCommand,
+      ],
+    })),
+    on(VStreamActions.removeOldChatCommands, (state) => ({
+      ...state,
+      chatCommands: [],
+    })),
+    on(VStreamActions.createChainCommand, (state, { commandID, chainCommandID }) => {
+      const command = state.commands.find(c => c.id === commandID);
 
       if (!command) {
         return state;
       }
 
-      const copyOfCommands = state.chatCommands.slice();
-      const index = state.chatCommands.indexOf(command);
+      const copyOfCommands = state.commands.slice();
+      const index = state.commands.indexOf(command);
+      const id = crypto.randomUUID();
+
+      copyOfCommands[index] = {
+        ...command,
+        chainCommands: [
+          ...command.chainCommands ?? [], {
+            id,
+            chainCommandID,
+            chainCommandDelay: 0,
+          },
+        ],
+      };
+
+      return {
+        ...state,
+        commands: copyOfCommands,
+      };
+    }),
+    on(VStreamActions.updateChainCommand, (state, { commandID, chainCommandID, chainCommand }) => {
+      const command = state.commands.find(c => c.id === commandID);
+
+      if (!command) {
+        return state;
+      }
+
+      const copyOfCommands = state.commands.slice();
+      const commandIndex = state.commands.indexOf(command);
+      const chainCommands = copyOfCommands[commandIndex].chainCommands.slice();
+
+      const chainCommandToUpdate = chainCommands.find(c => c.id === chainCommandID);
+
+      if (!chainCommandToUpdate) {
+        return state;
+      }
+
+      const chainCommandIndex = chainCommands.indexOf(chainCommandToUpdate);
+
+      chainCommands[chainCommandIndex] = {
+        ...chainCommands[chainCommandIndex],
+        chainCommandID: chainCommand,
+      };
+
+      copyOfCommands[commandIndex] = {
+        ...command,
+        chainCommands,
+      };
+
+      return {
+        ...state,
+        commands: copyOfCommands,
+      };
+    }),
+    on(VStreamActions.deleteChainCommand, (state, { commandID, chainCommandID }) => {
+      const command = state.commands.find(c => c.id === commandID);
+
+      if (!command) {
+        return state;
+      }
+
+      const copyOfCommands = state.commands.slice();
+      const commandIndex = state.commands.indexOf(command);
+      const chainCommands = copyOfCommands[commandIndex].chainCommands.slice();
+
+      const chainCommand = chainCommands.find(c => c.id === chainCommandID);
+
+      if (!chainCommand) {
+        return state;
+      }
+
+      const chainCommandIndex = copyOfCommands[commandIndex].chainCommands.indexOf(chainCommand);
+
+      chainCommands.splice(chainCommandIndex, 1);
+
+      copyOfCommands[commandIndex] = {
+        ...command,
+        chainCommands,
+      };
+
+      return {
+        ...state,
+        commands: copyOfCommands,
+      };
+    }),
+    on(VStreamActions.updateCommandType, (state, { newType, commandID }) => {
+      const command = state.commands.find(c => c.id === commandID);
+
+      if (!command) {
+        return state;
+      }
+
+      const copyOfCommands = state.commands.slice();
+      const index = state.commands.indexOf(command);
+
+      copyOfCommands[index] = {
+        id: command.id,
+        ...changeCommandType(newType),
+      };
+
+      return {
+        ...state,
+        commands: copyOfCommands,
+      };
+    }),
+    on(VStreamActions.deleteChatCommand, (state, { commandID }) => {
+      const command = state.commands.find(c => c.id === commandID);
+
+      if (!command) {
+        return state;
+      }
+
+      const copyOfCommands = state.commands.slice();
+      const index = state.commands.indexOf(command);
 
       copyOfCommands.splice(index, 1);
 
       return {
         ...state,
-        chatCommands: copyOfCommands,
+        commands: copyOfCommands,
       };
     }),
-    on(VStreamActions.updateChatCommand, (state, { partialCommand, commandID }) => {
-      const command = state.chatCommands.find(c => c.id === commandID);
+    on(VStreamActions.updateCommand, (state, { partialCommand, commandID }) => {
+      const command = state.commands.find(c => c.id === commandID);
 
-      if (!command) {
+      if (!command || partialCommand.type !== command.type) {
         return state;
       }
 
-      const copyOfCommands = state.chatCommands.slice();
-      const index = state.chatCommands.indexOf(command);
+      const copyOfCommands = state.commands.slice();
+      const index = state.commands.indexOf(command);
 
       copyOfCommands[index] = {
         ...command,
         ...partialCommand,
-      };
+      } as Commands;
 
       return {
         ...state,
-        chatCommands: copyOfCommands,
+        commands: copyOfCommands,
       };
     }),
     on(VStreamActions.updateChatCommandPermissions, (state, { partialPermissions, commandID }) => {
-      const command = state.chatCommands.find(c => c.id === commandID);
+      const command = state.commands.find(c => c.id === commandID);
 
       if (!command) {
         return state;
       }
 
-      const copyOfCommands = state.chatCommands.slice();
-      const index = state.chatCommands.indexOf(command);
+      const copyOfCommands = state.commands.slice();
+      const index = state.commands.indexOf(command);
 
       copyOfCommands[index] = {
         ...command,
@@ -348,7 +489,7 @@ export const VStreamFeature = createFeature({
 
       return {
         ...state,
-        chatCommands: copyOfCommands,
+        commands: copyOfCommands,
       };
     }),
     on(VStreamActions.clearToken, (state) => ({
