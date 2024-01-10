@@ -3,7 +3,7 @@ import { ChatCommand, ChoiceCommand, Commands, CounterCommand, SoundCommand } fr
 import { LogService } from './logs.service';
 import { UserPermissions } from './chat.interface';
 import { VStreamService } from './vstream.service';
-import { filter, first, map, tap } from 'rxjs';
+import { concat, filter, first, map, of, switchMap, tap, timer } from 'rxjs';
 import { ChatService } from './chat.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -186,40 +186,15 @@ export class CommandService {
       .pipe(
         first(),
         takeUntilDestroyed(this.destroyRef),
-        map(commands => chainCommands.map(
-          chain => ({
-            command: commands.find(c => c.id === chain.chainCommandID),
-            chainCommandDelay: chain.chainCommandDelay,
-          }),
-        )),
-        map(commands => commands.filter(c => !!c.command)),
-      )
-      .subscribe(commands => {
-        /**
-         * I probably should handle deleting the ID if the command doesn't exist.
-         */
-        if (!commands.length) {
-          return;
-        }
-
-        let durationSum = 0;
-
-        for (const chainCommand of commands) {
-          const { command, chainCommandDelay } = chainCommand;
-
-          if (!command) {
-            continue;
+        map(allCommands => chainCommands.map(chain => ({
+          command: allCommands.find(c => c.id === chain.chainCommandID),
+          chainCommandDelay: chain.chainCommandDelay,
+        }))),
+        map(commands => commands.filter((c): c is { command: Commands, chainCommandDelay: number } => !!c.command)),
+        switchMap(commands => {
+          if (!commands.length) {
+            return of(null); // Handle empty array case
           }
-
-          /**
-           * This is a monstrous creation that shouldn't exist
-           * I'm way to lazy to await with promises here
-           * God forgive my sins for what I wrote here.
-           * I literally don't know how I want to handle delays for this feature right now.
-           * Forced delay of 200ms to help make the ordering work if users delay is 0seconds.
-           */
-          const duration = chainCommandDelay * 1000 + 200;
-          durationSum += duration;
 
           /**
            * @TODO - Investigate how to handle this case
@@ -227,9 +202,17 @@ export class CommandService {
            * This is due to the value of the command being the same here and they all try to increment from the same value, they do NOt
            * update each others value as they themselves update.
            */
-          setTimeout(() => this.handleCommand(command, permissions, text, true), durationSum);
-        }
-      });
+          return concat(
+            ...commands.map(chainCommand =>
+              timer(chainCommand.chainCommandDelay * 1000 + 200).pipe(
+                map(() => chainCommand.command),
+                tap(command => this.handleCommand(command, permissions, text, true)),
+              ),
+            ),
+          );
+        }),
+      )
+      .subscribe();
   }
 
   handleChatCommand(command: ChatCommand, text: string) {
