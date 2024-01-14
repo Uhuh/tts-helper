@@ -104,7 +104,7 @@ export class AudioService {
 
     if (!data) {
       this.snackbar.open(
-        `Failed to grab the requried data for TTS service: ${this.tts}!`,
+        `Failed to grab the required data for TTS service: ${this.tts}!`,
         'Dismiss',
         {
           panelClass: 'notification-error',

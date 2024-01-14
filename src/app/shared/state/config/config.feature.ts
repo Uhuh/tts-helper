@@ -108,7 +108,11 @@ export const initialState: ConfigState = {
     poolId: '',
     region: '',
   },
-  streamElements: defaultTtsState,
+  // Set a default value for SE since it's the default TTS option.
+  streamElements: {
+    language: 'English (US)',
+    voice: 'en-US-Standard-E',
+  },
   tikTok: defaultTtsState,
 };
 
