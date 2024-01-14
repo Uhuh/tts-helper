@@ -36,10 +36,10 @@ export class TtsSelectorComponent implements OnChanges {
   @Input({ required: true }) voiceControl!: FormControl<string>;
   @Input({ required: true }) voices!: Voices[];
 
-  languageVoiceMap = new Map<string, TTSOption[]>();
-  languageVoiceOptions = signal<TTSOption[]>([]);
-  languageOptions = signal<TTSOption[]>([]);
+  readonly languageVoiceOptions = signal<TTSOption[]>([]);
+  readonly languageOptions = signal<TTSOption[]>([]);
 
+  private readonly languageVoiceMap = new Map<string, TTSOption[]>();
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnChanges() {
