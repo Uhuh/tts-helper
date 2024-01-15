@@ -145,6 +145,27 @@ export class AudioService {
       });
   }
 
+  playSoundFile(fileURL: string) {
+    const base64EncodedPart = fileURL.split(',')[1];
+
+    this.playback.playAudio({
+      data: {
+        type: 'raw',
+        data: base64EncodedPart,
+      },
+    }).catch(e => {
+      this.logService.add(`Failed to play sound file. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playSoundFile');
+
+      this.snackbar.open(
+        'Oops! Issue playing sound file.',
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        },
+      );
+    });
+  }
+
   private async getRequestData(text: string): Promise<RequestAudioData | null> {
     switch (this.tts) {
       case 'stream-elements':

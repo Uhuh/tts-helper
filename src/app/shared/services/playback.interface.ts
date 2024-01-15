@@ -18,7 +18,8 @@ export interface PlayAudioRequest {
 export type RequestAudioData =
   | {
   type: 'raw';
-  data: Uint8Array;
+  // This is the b64 encoded data
+  data: string;
 }
   | {
   type: 'streamElements' | 'tikTok';
