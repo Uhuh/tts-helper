@@ -1,4 +1,5 @@
 use std::{io::Cursor, time::Duration};
+use base64::decode;
 
 use rodio::{Decoder, DevicesError, Source};
 use tauri::{
@@ -146,18 +147,18 @@ async fn play_audio(
 ) -> ApiResult<AudioId> {
     // Get source data
     let raw = match request.data {
-        RequestAudioData::Raw(raw) => raw.data,
+        RequestAudioData::Raw(raw) => decode(raw.data).unwrap(),
         RequestAudioData::StreamElements(stream_elements) => {
-            tts_svc.stream_elements(stream_elements).await?
+            tts_svc.stream_elements(stream_elements).await?.to_vec()
         }
         RequestAudioData::TikTok(tiktok) => {
-            tts_svc.tiktok(tiktok).await?
+            tts_svc.tiktok(tiktok).await?.to_vec()
         }
         RequestAudioData::AmazonPolly(amazon_polly) => {
-            tts_svc.amazon_polly(amazon_polly).await?
+            tts_svc.amazon_polly(amazon_polly).await?.to_vec()
         }
         RequestAudioData::ElevenLabs(eleven_labs) => {
-            tts_svc.eleven_labs(eleven_labs).await?
+            tts_svc.eleven_labs(eleven_labs).await?.to_vec()
         }
     };
 
