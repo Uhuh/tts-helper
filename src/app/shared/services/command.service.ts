@@ -6,6 +6,7 @@ import { VStreamService } from './vstream.service';
 import { concat, filter, first, map, of, switchMap, tap, timer } from 'rxjs';
 import { ChatService } from './chat.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AudioService } from './audio.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class CommandService {
   private readonly chatService = inject(ChatService);
   private readonly logService = inject(LogService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly audioService = inject(AudioService);
 
   private readonly commands$ = this.vstreamService.commands$;
 
@@ -234,11 +236,7 @@ export class CommandService {
       return;
     }
 
-    const audioElem = document.createElement('audio');
-
-    audioElem.src = fileURL;
-
-    audioElem.play();
+    this.audioService.playSoundFile(fileURL);
   }
 
   handleChoiceCommand(command: ChoiceCommand) {
