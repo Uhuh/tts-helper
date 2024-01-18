@@ -16,6 +16,23 @@ import { ElevenLabsFeature } from './app/shared/state/eleven-labs/eleven-labs.fe
 import { VTubeStudioFeature } from './app/shared/state/vtubestudio/vtubestudio.feature.';
 import { OpenAIFeature } from './app/shared/state/openai/openai.feature';
 import { VStreamFeature } from './app/shared/state/vstream/vstream.feature';
+import { AzureSttService } from './app/shared/services/azure-stt.service';
+import { AudioService } from './app/shared/services/audio.service';
+import { ChatService } from './app/shared/services/chat.service';
+import { CommandService } from './app/shared/services/command.service';
+import { ElevenLabsService } from './app/shared/services/eleven-labs.service';
+import { ConfigService } from './app/shared/services/config.service';
+import { LogService } from './app/shared/services/logs.service';
+import { OpenAIService } from './app/shared/services/openai.service';
+import { ObsWebSocketService } from './app/shared/services/obs-websocket.service';
+import { StreamDeckWebSocketService } from './app/shared/services/streamdeck-websocket.service';
+import { PlaybackService } from './app/shared/services/playback.service';
+import { StorageService } from './app/shared/services/storage.service';
+import { TwitchPubSub } from './app/shared/services/twitch-pubsub';
+import { TwitchService } from './app/shared/services/twitch.service';
+import { VStreamService } from './app/shared/services/vstream.service';
+import { VStreamPubSubService } from './app/shared/services/vstream-pubsub.service';
+import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -38,6 +55,23 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideRouter(routes),
+    AzureSttService,
+    AudioService,
+    ChatService,
+    CommandService,
+    ElevenLabsService,
+    ConfigService,
+    LogService,
+    OpenAIService,
+    ObsWebSocketService,
+    StreamDeckWebSocketService,
+    PlaybackService,
+    StorageService,
+    TwitchPubSub,
+    TwitchService,
+    VStreamService,
+    VStreamPubSubService,
+    VTubeStudioService,
   ],
 })
   .catch((err) => console.error(err));
