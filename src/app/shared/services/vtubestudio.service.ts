@@ -16,9 +16,7 @@ import { VTubeStudioFeature, VTubeStudioState } from '../state/vtubestudio/vtube
 import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
 import { BehaviorSubject, interval } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class VTubeStudioService {
   private readonly store = inject(Store);
   private readonly logService = inject(LogService);
@@ -121,19 +119,6 @@ export class VTubeStudioService {
     this.playbackService.audioSkipped$
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.randomMouth(false));
-
-
-    /**
-     * @TODO - Use the Rust tick alternative solution.
-     * This is a temporary hack. Due to the memory issues caused by unused references from intervals
-     * this will be the watchman killing the 60ms interval used for tracking users mouth data.
-     */
-    interval(3_600_000)
-      .subscribe(() => {
-        clearInterval(this.mouthTrackingInterval);
-
-        this.mouthTrackingInterval = this.createMouthTrackingInterval();
-      });
   }
 
   private get isTracking() {

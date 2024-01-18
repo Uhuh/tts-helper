@@ -15,9 +15,7 @@ import { GptSettingsState } from '../state/openai/openai.feature';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { ChatService } from './chat.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TwitchPubSub implements OnDestroy {
   private readonly twitchService = inject(TwitchService);
   private readonly audioService = inject(AudioService);

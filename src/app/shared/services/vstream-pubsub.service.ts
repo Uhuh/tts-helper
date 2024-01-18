@@ -1,6 +1,6 @@
-﻿import { inject, Injectable } from '@angular/core';
+﻿import { DestroyRef, inject, Injectable } from '@angular/core';
 import { VStreamService } from './vstream.service';
-import { combineLatest, debounceTime, filter, first, map, retry, switchMap } from 'rxjs';
+import { combineLatest, debounceTime, filter, first, map, switchMap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
 import {
   VStreamEventChatCreated,
@@ -27,9 +27,7 @@ import { generateWidgetsHtml } from '../../pages/vstream/overlays/utils/generate
 import { CommandService } from './command.service';
 import { Commands } from './command.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class VStreamPubSubService {
   private readonly vstreamService = inject(VStreamService);
   private readonly commandService = inject(CommandService);
@@ -37,6 +35,7 @@ export class VStreamPubSubService {
   private readonly chatService = inject(ChatService);
   private readonly audioService = inject(AudioService);
   private readonly logService = inject(LogService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private socketUrl = 'wss://events.vstream.com/channels';
   vstreamSocket$ = webSocket(this.socketUrl);
@@ -81,6 +80,7 @@ export class VStreamPubSubService {
 
     combineLatest([this.vstreamService.token$, this.vstreamService.channelInfo$])
       .pipe(
+        takeUntilDestroyed(),
         filter(([token, channelInfo]) => (!!token.accessToken && token.expireDate > Date.now()) && !!channelInfo.channelId),
         switchMap(([token, channelInfo]) => {
           this.channelInfo = channelInfo;
@@ -124,9 +124,7 @@ export class VStreamPubSubService {
     this.vstreamOverlaysSocket$ = webSocket(`ws://localhost:37391`);
 
     this.vstreamOverlaysSocket$
-      .pipe(retry({
-        delay: 5000,
-      }))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         complete: () => {
           setTimeout(() => this.connect(), 3000);

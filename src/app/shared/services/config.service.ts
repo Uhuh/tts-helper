@@ -11,9 +11,7 @@ import { GlobalConfigActions } from '../state/config/config.actions';
 import { PlaybackService } from './playback.service';
 import { ChatPermissions } from './chat.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ConfigService {
   private readonly store = inject(Store);
   private readonly playbackService = inject(PlaybackService);

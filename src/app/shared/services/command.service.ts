@@ -8,9 +8,7 @@ import { ChatService } from './chat.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AudioService } from './audio.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class CommandService {
   private readonly vstreamService = inject(VStreamService);
   private readonly chatService = inject(ChatService);

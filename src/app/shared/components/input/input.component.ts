@@ -13,5 +13,5 @@ export class InputComponent<TKey extends string | number> {
   @Input() placeholder = 'Put something here...';
   @Input({ required: true }) control!: FormControl<TKey>;
   @Input({ required: true }) type!: TKey extends string ? 'text' | 'password' : TKey extends number ? 'number' : never;
-  @Input() hasError: boolean = false;
+  @Input() hasError = false;
 }

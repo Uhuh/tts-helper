@@ -85,17 +85,6 @@ export class VStreamApi {
     });
   }
 
-  getUsersChannelId(username: string, token: string) {
-    const url = `${this.url}/channels/lookup?username=${username}`;
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
-
-    return this.http.get<{ data: { id: VStreamChannelID } }>(url, {
-      headers,
-    });
-  }
-
   authenticatePubSub(token: string) {
     const url = `${this.url}/events/connect`;
     const headers = new HttpHeaders({

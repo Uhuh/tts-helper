@@ -1,4 +1,4 @@
-﻿import { inject, Injectable } from '@angular/core';
+﻿import { DestroyRef, inject, Injectable } from '@angular/core';
 import { VStreamApi } from '../api/vstream/vstream.api';
 import { listen } from '@tauri-apps/api/event';
 import { LogService } from './logs.service';
@@ -16,14 +16,14 @@ import { ChatCommand, ChatPermissions } from './chat.interface';
 import { jwtDecode } from 'jwt-decode';
 import { TypeID } from 'typeid-js';
 import { Commands, CommandTypes } from './command.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class VStreamService {
   private readonly store = inject(Store);
   private readonly vstreamApi = inject(VStreamApi);
   private readonly logService = inject(LogService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly state$ = this.store.select(VStreamFeature.selectVStreamFeatureState);
   readonly token$ = this.store.select(VStreamFeature.selectToken);
@@ -88,6 +88,7 @@ export class VStreamService {
      */
     this.token$
       .pipe(
+        takeUntilDestroyed(),
         map(token => {
           const now = Date.now();
           const earlyExpires = token.expireDate > now ? token.expireDate - (60 * 1000) : -1;
@@ -95,6 +96,7 @@ export class VStreamService {
         }),
         switchMap(({ token, earlyExpires }) => {
           return timer(new Date(earlyExpires)).pipe(
+            takeUntilDestroyed(this.destroyRef),
             switchMap(() => {
               this.logService.add('Attempting to refreshing VStream token.', 'info', 'VStreanService.constructor');
 
@@ -116,8 +118,9 @@ export class VStreamService {
      */
     interval(3000)
       .pipe(
+        takeUntilDestroyed(),
         switchMap(() => {
-          return combineLatest([this.token$, this.channelInfo$]);
+          return combineLatest([this.token$, this.channelInfo$]).pipe(first());
         }),
         switchMap(([token, channelInfo]) => {
           if (!channelInfo.channelId || !token.accessToken) {
@@ -251,6 +254,7 @@ export class VStreamService {
     return combineLatest([this.token$, this.channelInfo$, this.liveStreamID$])
       .pipe(
         first(),
+        takeUntilDestroyed(this.destroyRef),
         switchMap(([token, channelInfo, videoID]) => {
           if (!videoID) {
             throw Error('Tried to post a channel message when the video ID was not found.');

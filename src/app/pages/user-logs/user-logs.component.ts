@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { LogService } from '../../shared/services/logs.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-user-logs',
@@ -12,22 +14,26 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./user-logs.component.scss'],
 })
 export class UserLogsComponent {
-  logService = inject(LogService);
-  snackbar = inject(MatSnackBar);
-  logs$ = this.logService.logs$;
+  private readonly logService = inject(LogService);
+  private readonly snackbar = inject(MatSnackBar);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly logs$ = this.logService.logs$;
 
   downloadLog() {
-    const data = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
-      logs: this.logs$.value
-    }, undefined, 2));
+    this.logs$.pipe(
+      take(1),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(logs => {
+      const data = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({ logs }, undefined, 2));
 
-    const anchor = document.createElement('a');
-    anchor.download = `tts-helper-detailed-log-` + Date.now() + '.json';
-    anchor.href = data;
-    anchor.click();
+      const anchor = document.createElement('a');
+      anchor.download = `tts-helper-detailed-log-` + Date.now() + '.json';
+      anchor.href = data;
+      anchor.click();
 
-    this.snackbar.open('Successfully downloaded log.', 'Dismiss', {
-      panelClass: 'notification-success',
+      this.snackbar.open('Successfully downloaded log.', 'Dismiss', {
+        panelClass: 'notification-success',
+      });
     });
   }
 

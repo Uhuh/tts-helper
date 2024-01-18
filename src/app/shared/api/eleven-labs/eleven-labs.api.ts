@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ElevenLabsModel, ElevenLabsVoice } from './eleven-labs.interface';
 import { Store } from '@ngrx/store';
 import { ElevenLabsFeature } from '../../state/eleven-labs/eleven-labs.feature';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class ElevenLabsApi {
 
   constructor() {
     this.store.select(ElevenLabsFeature.selectApiKey)
+      .pipe(takeUntilDestroyed())
       .subscribe(apiKey => this.apiKey = apiKey);
   }
 

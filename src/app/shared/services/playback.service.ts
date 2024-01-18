@@ -16,9 +16,7 @@ import { Store } from '@ngrx/store';
 import { AudioActions } from '../state/audio/audio.actions';
 import { AudioStatus } from '../state/audio/audio.feature';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class PlaybackService {
   private readonly store = inject(Store);
   private readonly ref = inject(ApplicationRef);

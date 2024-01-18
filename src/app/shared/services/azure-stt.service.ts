@@ -18,9 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { OpenAIService } from './openai.service';
 import { TwitchService } from './twitch.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AzureSttService {
   private readonly store = inject(Store);
   private readonly openaiService = inject(OpenAIService);

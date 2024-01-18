@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { debounceTime, filter } from 'rxjs';
+import { filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputComponent } from '../../../shared/components/input/input.component';
@@ -62,7 +62,6 @@ export class SubsComponent {
     this.charLimit.valueChanges
       .pipe(
         takeUntilDestroyed(),
-        debounceTime(1000),
         filter(() => this.charLimit.valid),
       )
       .subscribe((charLimit) =>
@@ -70,7 +69,7 @@ export class SubsComponent {
       );
 
     this.giftMessage.valueChanges
-      .pipe(takeUntilDestroyed(), debounceTime(1000))
+      .pipe(takeUntilDestroyed())
       .subscribe((giftMessage) =>
         this.twitchService.updateGiftMessage(giftMessage),
       );

@@ -33,7 +33,11 @@
             <app-label-block>
               <div header>Trigger event</div>
               <div sub-text>Which event to listen to for this widget.</div>
-              <app-selector [control]="settings.controls.trigger" [options]="eventOptions" placeholder="Select an event" />
+              <app-selector
+                [control]="settings.controls.trigger"
+                [options]="eventOptions"
+                placeholder="Select an event"
+              />
             </app-label-block>
 
             <app-label-block>
@@ -106,7 +110,8 @@
 
             <app-label-block>
               <div header>Font Color</div>
-              <color-chrome [color]="fontColor" (onChange)="changeColor($event)"/>
+              <div sub-text>Color of your font.</div>
+              <input [value]="fontColor" (change)="onColorChange($event)" type="color"/>
             </app-label-block>
 
             <app-variable-table [variables]="variables.variables">

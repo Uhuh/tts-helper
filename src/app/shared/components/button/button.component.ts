@@ -11,7 +11,6 @@ export type ButtonStyles = 'primary' | 'active' | 'outline' | 'danger';
   imports: [NgClass],
 })
 export class ButtonComponent {
-  @Input() text = '[NONE]';
   @Input() disabled = false;
   @Input() size = 'md';
   @Input() style: ButtonStyles = 'primary';

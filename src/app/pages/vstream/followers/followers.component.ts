@@ -37,6 +37,7 @@ export class FollowersComponent {
       });
 
     this.settings.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(settings => {
         this.vstreamService.updateCustomMessageSettings(settings, 'follower');
       });

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
@@ -8,6 +8,7 @@ import { EditWidgetComponent } from './edit-widget/edit-widget.component';
 import { map, scan, take } from 'rxjs';
 import { generateBrowserSource } from './utils/generateBrowserSource';
 import { VStreamPubSubService } from '../../../shared/services/vstream-pubsub.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-overlays',
@@ -17,13 +18,12 @@ import { VStreamPubSubService } from '../../../shared/services/vstream-pubsub.se
   styleUrl: './overlays.component.scss',
 })
 export class OverlaysComponent {
-  widgets$ = this.vstreamService.widgets$;
+  private readonly vstreamService = inject(VStreamService);
+  private readonly vstreamPubsub = inject(VStreamPubSubService);
+  private readonly snackbar = inject(MatSnackBar);
+  private readonly destroyRef = inject(DestroyRef);
 
-  constructor(
-    private readonly vstreamService: VStreamService,
-    private readonly vstreamPubsub: VStreamPubSubService,
-    private readonly snackbar: MatSnackBar,
-  ) {}
+  readonly widgets$ = this.vstreamService.widgets$;
 
   createWidget() {
     this.vstreamService.createWidget();
@@ -50,13 +50,17 @@ export class OverlaysComponent {
           URL.revokeObjectURL(oldURL);
           return newURL;
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(url => window.open(url));
   }
 
   downloadBrowserSource() {
     this.widgets$
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(widgets => {
         const data = 'data:text/html;charset=utf-8,' + encodeURIComponent(generateBrowserSource(widgets));
 
