@@ -32,6 +32,10 @@ import { VStreamState } from './shared/state/vstream/vstream.feature';
 import { VStreamActions } from './shared/state/vstream/vstream.actions';
 import { VStreamPubSubService } from './shared/services/vstream-pubsub.service';
 import { CounterCommand } from './shared/services/command.interface';
+import { AudioService } from './shared/services/audio.service';
+import { LogService } from './shared/services/logs.service';
+import { ChatService } from './shared/services/chat.service';
+import { CommandService } from './shared/services/command.service';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +43,25 @@ import { CounterCommand } from './shared/services/command.interface';
   styleUrls: ['./app.component.scss'],
   standalone: true,
   imports: [NavComponent, RouterOutlet],
+  providers: [
+    AzureSttService,
+    AudioService,
+    ChatService,
+    CommandService,
+    ElevenLabsService,
+    ConfigService,
+    LogService,
+    OpenAIService,
+    ObsWebSocketService,
+    StreamDeckWebSocketService,
+    PlaybackService,
+    StorageService,
+    TwitchPubSub,
+    TwitchService,
+    VStreamService,
+    VStreamPubSubService,
+    VTubeStudioService,
+  ],
 })
 export class AppComponent {
   private readonly store = inject(Store);
