@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { getVersion } from '@tauri-apps/api/app';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,10 +7,11 @@ import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { TwitchService } from '../../services/twitch.service';
 import { VTubeStudioService } from '../../services/vtubestudio.service';
 import { checkUpdate, installUpdate, UpdateResult } from '@tauri-apps/api/updater';
-import { from, interval, switchMap } from 'rxjs';
 import { VStreamService } from '../../services/vstream.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangelogDialogComponent } from './changelog-dialog/changelog-dialog.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-sidenav',
@@ -24,6 +25,7 @@ export class SidenavComponent {
   private readonly vtsService = inject(VTubeStudioService);
   private readonly vstreamService = inject(VStreamService);
   private readonly matDialog = inject(MatDialog);
+  private readonly destroyRef = inject(DestroyRef);
 
   @Input({ required: true }) nav!: MatSidenav;
   @Input() isMobile = false;
@@ -35,20 +37,24 @@ export class SidenavComponent {
   newVersion = false;
   updateInfo?: UpdateResult;
 
-  private readonly updateChecker$ = interval(5000)
-    .pipe(switchMap(() => from(checkUpdate())))
-    .subscribe((updater) => {
-      if (!updater.shouldUpdate) {
-        return;
-      }
-
-      this.updateInfo = updater;
-
-      this.newVersion = true;
-    });
-
   constructor() {
     getVersion().then((v) => (this.appVersion = v));
+
+    this.checkForUpdate();
+  }
+
+  async checkForUpdate() {
+    const updater = await checkUpdate();
+
+    if (!updater.shouldUpdate) {
+      return;
+    }
+
+    this.updateInfo = updater;
+
+    this.newVersion = true;
+
+    this.update();
   }
 
   close() {
@@ -68,6 +74,7 @@ export class SidenavComponent {
     });
 
     dialogRef.afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(update => {
         // If the user clicked update in the dialog.
         if (update) {
