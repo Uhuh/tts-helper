@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, map } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
@@ -40,11 +40,10 @@ export class RedeemsComponent {
     }),
   });
 
-  readonly gptEnabled = toSignal(this.openAIService.enabled$);
+  readonly gptEnabled$ = this.openAIService.enabled$;
   readonly redeems$ = this.twitchService.redeems$;
   readonly redeemOptions$ = this.twitchService.redeems$
     .pipe(
-      takeUntilDestroyed(),
       map(redeems => redeems.map<TTSOption>(r => ({ displayName: r.title, value: r.id }))),
     );
 
@@ -54,7 +53,7 @@ export class RedeemsComponent {
       .subscribe((redeemInfo) => {
         this.redeemInfo.setValue(redeemInfo, { emitEvent: false });
       });
-    
+
     this.redeemInfo.valueChanges
       .pipe(takeUntilDestroyed(), debounceTime(500))
       .subscribe(redeemInfo => {

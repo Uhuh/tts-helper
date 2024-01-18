@@ -1,4 +1,4 @@
-import { ApplicationRef, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
@@ -16,7 +16,6 @@ export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
 })
 export class AuthComponent {
   private readonly twitchService = inject(TwitchService);
-  private readonly ref = inject(ApplicationRef);
 
   // Rust server running so we can auth in the users browser
   private readonly redirect = 'http://localhost:12583/auth/twitch';
@@ -53,12 +52,10 @@ export class AuthComponent {
           );
         }
 
-        this.ref.tick();
       });
   }
 
   signOut() {
     this.twitchService.signOut();
-    this.ref.tick();
   }
 }

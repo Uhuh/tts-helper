@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { ButtonComponent } from '../button/button.component';
 import { PlaybackService } from '../../services/playback.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-nav',
@@ -29,13 +30,16 @@ import { PlaybackService } from '../../services/playback.service';
 export class NavComponent implements OnInit {
   private readonly breakpoint = inject(BreakpointObserver);
   private readonly playbackService = inject(PlaybackService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly isPaused$ = this.playbackService.isPaused$;
   isMobile = false;
 
   ngOnInit(): void {
-    this.breakpoint.observe(['(max-width: 900px)']).subscribe((state) => {
-      this.isMobile = state.matches;
-    });
+    this.breakpoint.observe(['(max-width: 900px)'])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((state) => {
+        this.isMobile = state.matches;
+      });
   }
 
   unpause() {

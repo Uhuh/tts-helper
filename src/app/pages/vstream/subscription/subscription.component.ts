@@ -47,11 +47,13 @@ export class SubscriptionComponent {
       });
 
     this.renewSettings.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(settings => {
         this.vstreamService.updateCustomMessageSettings(settings, 'sub-renew');
       });
 
     this.giftedSettings.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(settings => {
         this.vstreamService.updateCustomMessageSettings(settings, 'sub-gifted');
       });

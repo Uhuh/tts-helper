@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { PlaybackService } from './playback.service';
 import { AudioService } from './audio.service';
 import { webSocket } from 'rxjs/webSocket';
@@ -13,19 +13,17 @@ type ObsEvent = {
   text?: string;
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ObsWebSocketService {
+  private readonly playbackService = inject(PlaybackService);
+  private readonly audioService = inject(AudioService);
+  private readonly logService = inject(LogService);
+
   private readonly connection = 'ws://localhost:37891';
   private socket$ = webSocket(this.connection);
   private audioItems: AudioItem[] = [];
 
-  constructor(
-    private readonly playbackService: PlaybackService,
-    private readonly audioService: AudioService,
-    private readonly logService: LogService,
-  ) {
+  constructor() {
     this.audioService.audioItems$
       .pipe(takeUntilDestroyed())
       .subscribe(audioItems => this.audioItems = audioItems);

@@ -21,7 +21,7 @@ import { VStreamEventVariables } from '../utils/variables';
 })
 export class MeteorShowerComponent {
   private readonly vstreamService = inject(VStreamService);
-  
+
   readonly variables: VariableTableOption[] = VStreamEventVariables.shower_received.variables;
   readonly settings = new FormGroup({
     enabled: new FormControl(false, { nonNullable: true }),
@@ -38,6 +38,7 @@ export class MeteorShowerComponent {
       });
 
     this.settings.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(settings => {
         this.vstreamService.updateCustomMessageSettings(settings, 'meteor');
       });

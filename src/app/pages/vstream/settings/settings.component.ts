@@ -30,7 +30,7 @@ export class SettingsComponent {
       });
 
     this.randomChance.valueChanges
-      .pipe(filter(() => this.randomChance.valid))
+      .pipe(filter(() => this.randomChance.valid), takeUntilDestroyed())
       .subscribe(randomChance => this.vstreamService.updateSettings({ randomChance }));
   }
 }

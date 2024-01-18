@@ -9,6 +9,7 @@ import { TwitchService } from '../../../shared/services/twitch.service';
 import { BorderString, captionsGenerator, PixelString, RGBAString } from './assets/captions';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-captions',
@@ -42,21 +43,27 @@ export class CaptionsComponent {
 
   constructor() {
     this.twitchService.channelInfo$
+      .pipe(takeUntilDestroyed())
       .subscribe(info => this.username = info.username ?? 'Alphyx');
 
     this.fontSizeControl.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(size => this.fontSize = `${size}px`);
 
     this.borderSizeControl.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(size => this.borderSize = `${size}px`);
 
     this.borderRadiusControl.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(size => this.borderRadius = `${size}px`);
 
     this.paddingControl.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(padding => this.parsePadding(padding));
 
     this.maxWidthControl.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(width => this.maxWidth = `${width}px`);
   }
 

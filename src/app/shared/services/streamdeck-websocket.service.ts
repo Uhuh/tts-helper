@@ -1,23 +1,21 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { DestroyRef, inject, Injectable } from '@angular/core';
 import { AzureSttService } from './azure-stt.service';
 import { webSocket } from 'rxjs/webSocket';
-import { retry } from 'rxjs';
 import { StreamDeckActions, StreamDeckEvent } from './streamdeck-websocket.interface';
 import { LogService } from './logs.service';
 import { PlaybackService } from './playback.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class StreamDeckWebSocketService {
+  private readonly azureService = inject(AzureSttService);
+  private readonly playbackService = inject(PlaybackService);
+  private readonly logService = inject(LogService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly connection = 'ws://localhost:17448';
   private socket$ = webSocket<StreamDeckEvent>(this.connection);
 
-  constructor(
-    private readonly azureService: AzureSttService,
-    private readonly playbackService: PlaybackService,
-    private readonly logService: LogService,
-  ) {
+  constructor() {
     this.connect();
 
     setTimeout(() => {
@@ -29,9 +27,7 @@ export class StreamDeckWebSocketService {
     this.socket$ = webSocket(this.connection);
 
     this.socket$
-      .pipe(retry({
-        delay: 5000,
-      }))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => this.handleEvent(data),
         complete: () => {

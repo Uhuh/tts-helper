@@ -21,7 +21,7 @@
       <app-selector placeholder="Select a redeem option" [control]="redeemInfo.controls.redeem" [options]="(redeemOptions$ | async) ?? []" />
     </app-label-block>
 
-    @if (gptEnabled()) {
+    @if (gptEnabled$ | async) {
       <app-label-block>
         <div header>ChatGPT Redeem</div>
         <div sub-text>This redeem will trigger a ChatGPT response.</div>

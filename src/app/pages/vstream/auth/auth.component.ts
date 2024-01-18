@@ -46,11 +46,13 @@ export class AuthComponent {
 
         this.isTokenValid.set(false);
       });
+
     /**
      * Each time a user wants to auth we need to do PKCE auth generation.
      * Hence the get method here.
      */
     this.vStreamService.getLoginURL()
+      .pipe(takeUntilDestroyed())
       .subscribe(url => this.loginUrl = url);
   }
 
