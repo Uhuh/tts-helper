@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { LabelBlockComponent } from '../../../../shared/components/input-block/label-block.component';
@@ -14,17 +14,16 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { VStreamService } from '../../../../shared/services/vstream.service';
 import { VStreamEventVariables } from '../../utils/variables';
 import { VariableTableComponent } from '../../../../shared/components/variable-table/variable-table.component';
-import { ColorChromeModule } from 'ngx-color/chrome';
-import { ColorEvent } from 'ngx-color';
-import { RGBAString } from '../../../tools/captions/assets/captions';
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-edit-widget',
   standalone: true,
-  imports: [CommonModule, LabelBlockComponent, SelectorComponent, MatDialogContent, MatDialogTitle, MatDialogActions, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ColorChromeModule, ToggleComponent],
+  imports: [CommonModule, LabelBlockComponent, SelectorComponent, MatDialogContent, MatDialogTitle, MatDialogActions, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ToggleComponent],
   templateUrl: './edit-widget.component.html',
   styleUrl: './edit-widget.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditWidgetComponent implements OnInit {
   private readonly vstreamService = inject(VStreamService);
@@ -45,7 +44,7 @@ export class EditWidgetComponent implements OnInit {
 
   variables = VStreamEventVariables.new_follower;
 
-  enabled = new FormControl(true, { nonNullable: true });
+  readonly enabled = new FormControl(true, { nonNullable: true });
 
   readonly settings = new FormGroup({
     trigger: new FormControl<VStreamEventTypes>('new_follower', {
@@ -69,14 +68,17 @@ export class EditWidgetComponent implements OnInit {
 
   constructor() {
     this.settings.controls.trigger.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(trigger => {
         this.variables = VStreamEventVariables[trigger];
       });
 
     this.settings.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(settings => this.vstreamService.updateWidget({ id: this.widget.id, ...settings }));
 
     this.enabled.valueChanges
+      .pipe(takeUntilDestroyed())
       .subscribe(enabled => this.vstreamService.updateWidget({ id: this.widget.id, enabled }));
   }
 
@@ -89,17 +91,8 @@ export class EditWidgetComponent implements OnInit {
     this.enabled.setValue(enabled, { emitEvent: false });
   }
 
-  rgba(color: ColorEvent): RGBAString {
-    const { r, b, g, a } = color.color.rgb;
-    return `rgba(${r}, ${g}, ${b}, ${a})`;
-  }
-
-  changeColor(event: ColorEvent) {
-    const color = this.rgba(event);
-
-    // For display purposes.
-    this.fontColor = color;
-    this.settings.controls.fontColor.setValue(color);
+  onColorChange(event: any) {
+    this.settings.controls.fontColor.setValue(event.target.value);
   }
 
   async onFileSelected(event: Event, type: 'image' | 'sound') {
