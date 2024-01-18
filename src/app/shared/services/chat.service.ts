@@ -8,9 +8,7 @@ import { AudioService } from './audio.service';
 import { AudioSource } from '../state/audio/audio.feature';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ChatService {
   generalChat!: GeneralChatState;
   openAIChat!: GptChatState;

@@ -1,22 +1,21 @@
-import { inject, Injectable, OnDestroy } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { catchError, of, skip, Subject, switchMap, takeUntil } from 'rxjs';
+import { catchError, of, skip, switchMap } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
 import { TwitchFeature, TwitchRedeemState, TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LogService } from './logs.service';
 import { TwitchApi } from '../api/twitch/twitch.api';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class TwitchService implements OnDestroy {
+@Injectable()
+export class TwitchService {
   private readonly store = inject(Store);
   private readonly twitchApi = inject(TwitchApi);
   private readonly snackbar = inject(MatSnackBar);
   private readonly logService = inject(LogService);
-  private readonly destroyed$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   public readonly state$ = this.store.select(TwitchFeature.selectTwitchStateState);
   public readonly token$ = this.store.select(TwitchFeature.selectToken);
@@ -33,7 +32,7 @@ export class TwitchService implements OnDestroy {
     this.token$.pipe(
       // Ignore default state.
       skip(1),
-      takeUntil(this.destroyed$),
+      takeUntilDestroyed(),
       switchMap(token => {
         if (!token) {
           return of(null);
@@ -81,11 +80,6 @@ export class TwitchService implements OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
-
   clearState() {
     this.store.dispatch(TwitchStateActions.resetState());
   }
@@ -98,7 +92,7 @@ export class TwitchService implements OnDestroy {
     this.twitchApi
       .validateToken(token)
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap((user) => {
           this.store.dispatch(TwitchStateActions.updateToken({ token }));
           this.store.dispatch(TwitchStateActions.updateIsTokenValid({ isTokenValid: true }));

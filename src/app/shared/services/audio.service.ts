@@ -26,9 +26,7 @@ import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchService } from './twitch.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AudioService {
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);

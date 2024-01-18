@@ -2,12 +2,9 @@
 import { BehaviorSubject } from 'rxjs';
 import { IUserLog, LogLevel } from '../../pages/user-logs/user-logs.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class LogService {
-  filename = 'tts-helper-logs.json' as const;
-  logs$ = new BehaviorSubject<IUserLog[]>([]);
+  readonly logs$ = new BehaviorSubject<IUserLog[]>([]);
 
   add(message: string, level: LogLevel, origin: string) {
     this.logs$.next([

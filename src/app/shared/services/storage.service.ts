@@ -2,12 +2,8 @@ import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
 import { Store } from 'tauri-plugin-store-api';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class StorageService {
-  constructor() {}
-
   async saveToStore<T>(file: string, key: string, data: T) {
     const store = new Store(file);
 

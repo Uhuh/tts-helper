@@ -9,9 +9,7 @@ import { GptChatState, GptPersonalityState, GptSettingsState, OpenAIFeature } fr
 import { OpenAIActions } from '../state/openai/openai.actions';
 import { ChatPermissions } from './chat.interface';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class OpenAIService {
   private readonly store = inject(Store);
   private readonly audioService = inject(AudioService);
