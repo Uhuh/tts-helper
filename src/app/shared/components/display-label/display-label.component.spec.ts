@@ -6,12 +6,13 @@ describe('DisplayLabelComponent', () => {
   let component: DisplayLabelComponent;
   let fixture: ComponentFixture<DisplayLabelComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DisplayLabelComponent]
-    })
-    .compileComponents();
-    
+  beforeEach(() => {
+    TestBed.overrideComponent(DisplayLabelComponent, {
+      set: {
+        imports: [],
+      },
+    });
+
     fixture = TestBed.createComponent(DisplayLabelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

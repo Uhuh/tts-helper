@@ -10,7 +10,7 @@ export interface AzureState {
   thirdPartyUrl: string;
 }
 
-const initialState: AzureState = {
+export const initialState: AzureState = {
   enabled: false,
   hotkey: '',
   region: '',

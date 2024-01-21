@@ -1,4 +1,4 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { ConfigService } from './config.service';
 import { OpenAIService } from './openai.service';
 import { GeneralChatState } from '../state/config/config.feature';
@@ -10,16 +10,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class ChatService {
+  private readonly configService = inject(ConfigService);
+  private readonly openaiService = inject(OpenAIService);
+  private readonly audioService = inject(AudioService);
+
   generalChat!: GeneralChatState;
   openAIChat!: GptChatState;
 
   cooldowns = new Map<string, boolean>();
 
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly openaiService: OpenAIService,
-    private readonly audioService: AudioService,
-  ) {
+  constructor() {
     this.configService.generalChat$
       .pipe(takeUntilDestroyed())
       .subscribe(generalChat => this.generalChat = generalChat);

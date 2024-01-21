@@ -10,6 +10,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "test": "ng test",
     "build": "ng build",
     "tauri:dev": "yarn tauri dev",
     "watch": "ng build --watch --configuration development",
