@@ -6,9 +6,11 @@ import { BehaviorSubject, catchError, combineLatest, first, from, interval, map,
 import { Store } from '@ngrx/store';
 import { VStreamActions } from '../state/vstream/vstream.actions';
 import {
+  VStreamChannelState,
   VStreamCustomMessageState,
   VStreamFeature,
   VStreamSettingsState,
+  VStreamTokenResponse,
   VStreamWidget,
 } from '../state/vstream/vstream.feature';
 import { VStreamChannelID, VStreamVideoID } from './vstream-pubsub.interface';
@@ -41,6 +43,7 @@ export class VStreamService {
   readonly widgets$ = this.store.select(VStreamFeature.selectWidgets);
 
   readonly liveStreamID$ = new BehaviorSubject<VStreamVideoID | null>(null);
+
   readonly isTokenValid$ = interval(1000)
     .pipe(switchMap(() => {
       return this.token$.pipe(map(token => token.expireDate > Date.now() && token.accessToken));
@@ -70,10 +73,10 @@ export class VStreamService {
             if (sub) {
               const chanType = TypeID.fromUUID('chan', sub);
               const channelId: VStreamChannelID = `${chanType.getType()}_${chanType.getSuffix()}`;
-              this.store.dispatch(VStreamActions.updateChannel({ partialChannel: { channelId } }));
+              this.updateChannelInfo({ channelId });
             }
 
-            this.store.dispatch(VStreamActions.updateToken({ token: tokenResponse }));
+            this.updateToken(tokenResponse);
           },
           error: (error) => {
             this.logService.add(`Failed to validate users code for VStream\n${JSON.stringify(error, undefined, 2)}`, 'error', 'VStreamService.validate');
@@ -143,6 +146,14 @@ export class VStreamService {
         }),
       )
       .subscribe();
+  }
+
+  updateChannelInfo(partialChannel: Partial<VStreamChannelState>) {
+    this.store.dispatch(VStreamActions.updateChannel({ partialChannel }));
+  }
+
+  updateToken(token: VStreamTokenResponse) {
+    this.store.dispatch(VStreamActions.updateToken({ token }));
   }
 
   authenticatePubSub(token: string) {

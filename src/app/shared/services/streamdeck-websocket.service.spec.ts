@@ -12,9 +12,9 @@ describe('StreamDeckWebSocketService', () => {
   let logServiceStub: jasmine.SpyObj<LogService>;
 
   beforeEach(() => {
-    azuresttServiceStub = jasmine.createSpyObj('AzureSTTService', ['']);
-    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['']);
-    logServiceStub = jasmine.createSpyObj('LogService', ['']);
+    azuresttServiceStub = jasmine.createSpyObj('AzureSTTService', ['captureSpeech']);
+    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['togglePause']);
+    logServiceStub = jasmine.createSpyObj('LogService', ['add']);
 
     TestBed.configureTestingModule({
       providers: [

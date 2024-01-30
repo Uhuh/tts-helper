@@ -17,10 +17,10 @@ describe('GeneralSettingsComponent', () => {
   let ttsSubject: Subject<TtsType>;
 
   beforeEach(() => {
-    audioServiceStub = jasmine.createSpyObj('AudioService', ['']);
+    audioServiceStub = jasmine.createSpyObj('AudioService', ['playTts']);
 
     ttsSubject = new Subject();
-    configServiceStub = jasmine.createSpyObj('ConfigService', [''], {
+    configServiceStub = jasmine.createSpyObj('ConfigService', ['updateTts'], {
       configTts$: ttsSubject,
     });
 
@@ -42,5 +42,28 @@ describe('GeneralSettingsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should update tts', () => {
+    // Arrange
+    const tts: TtsType = 'tts-monster';
+
+    // Act
+    component.selectTts(tts);
+
+    // Assert
+    expect(configServiceStub.updateTts).toHaveBeenCalledOnceWith(tts);
+  });
+
+  it('should speak given text', () => {
+    // Arrange
+    const text = 'Hello World';
+    component.ttsControl.setValue(text);
+
+    // Act
+    component.speak();
+
+    // Assert
+    expect(audioServiceStub.playTts).toHaveBeenCalledOnceWith(text, '', 'tts-helper', 1000);
   });
 });

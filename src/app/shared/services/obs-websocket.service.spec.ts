@@ -4,10 +4,21 @@ import { PlaybackService } from './playback.service';
 import { AudioService } from './audio.service';
 import { LogService } from './logs.service';
 import { Subject } from 'rxjs';
-import { AudioItem } from '../state/audio/audio.feature';
+import { AudioItem, AudioStatus } from '../state/audio/audio.feature';
 
 describe('ObsWebSocketService', () => {
   let service: ObsWebSocketService;
+
+  const audioItems: AudioItem[] = [
+    {
+      id: 1,
+      text: 'Hello World!',
+      createdAt: new Date(),
+      username: 'panku',
+      state: AudioStatus.playing,
+      source: 'vstream',
+    },
+  ];
 
   let playbackServiceStub: jasmine.SpyObj<PlaybackService>;
   let audioServiceStub: jasmine.SpyObj<AudioService>;
@@ -50,5 +61,17 @@ describe('ObsWebSocketService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should send captions to obs', () => {
+    // Arrange
+    const captionsSpy = spyOn(service, 'sendCaptions').and.callThrough();
+
+    // Act
+    audioItemsSubject.next(audioItems);
+    audioStartedSubject.next(1);
+
+    // Assert
+    expect(captionsSpy).toHaveBeenCalled();
   });
 });

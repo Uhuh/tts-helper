@@ -1,19 +1,21 @@
 ﻿import { inject, Injectable } from '@angular/core';
 import { AudioService } from './audio.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Configuration, OpenAIApi } from 'openai';
+import { OpenAIApi } from 'openai';
 import { loreTemplateGenerator } from '../util/lore';
 import { LogService } from './logs.service';
 import { Store } from '@ngrx/store';
 import { GptChatState, GptPersonalityState, GptSettingsState, OpenAIFeature } from '../state/openai/openai.feature';
 import { OpenAIActions } from '../state/openai/openai.actions';
 import { ChatPermissions } from './chat.interface';
+import { OpenAIFactory } from './openai.factory';
 
 @Injectable()
 export class OpenAIService {
   private readonly store = inject(Store);
   private readonly audioService = inject(AudioService);
   private readonly logService = inject(LogService);
+  private readonly factory = inject(OpenAIFactory);
 
   public readonly state$ = this.store.select(OpenAIFeature.selectOpenAIFeatureState);
   public readonly chatSettings$ = this.store.select(OpenAIFeature.selectChatSettings);
@@ -29,7 +31,6 @@ export class OpenAIService {
 
   apiKey = '';
   systemLorePrompt: { role: 'system', content: string }[] = [];
-  chatGptConfig?: Configuration;
   openAIApi?: OpenAIApi;
 
   constructor() {
@@ -63,8 +64,7 @@ export class OpenAIService {
 
         this.apiKey = apiKey;
 
-        this.chatGptConfig = new Configuration({ apiKey });
-        this.openAIApi = new OpenAIApi(this.chatGptConfig);
+        this.openAIApi = this.factory.createApi({ apiKey });
 
         this.logService.add('Configuring OpenAI API', 'info', 'OpenAIService.constructor');
       });

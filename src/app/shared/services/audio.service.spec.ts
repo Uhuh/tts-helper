@@ -18,6 +18,7 @@ import {
 } from '../state/config/config.feature';
 import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { TwitchState } from '../state/twitch/twitch.feature';
+import { RequestAudioData } from './playback.interface';
 
 
 describe('AudioService', () => {
@@ -55,10 +56,11 @@ describe('AudioService', () => {
     audioStartedSubject = new Subject();
     audioFinishedSubject = new Subject();
 
-    playbackServiceStub = jasmine.createSpyObj('PlaybackService', [''], {
+    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['playAudio'], {
       audioStarted$: audioStartedSubject,
       audioFinished$: audioFinishedSubject,
     });
+    playbackServiceStub.playAudio.and.returnValue(Promise.resolve(1));
 
     elevenlabsStateSubject = new Subject();
 
@@ -72,7 +74,7 @@ describe('AudioService', () => {
       settings$: twitchSettingsSubject,
     });
 
-    logsServiceStub = jasmine.createSpyObj('LogService', ['']);
+    logsServiceStub = jasmine.createSpyObj('LogService', ['add']);
 
     TestBed.configureTestingModule({
       imports: [
@@ -92,9 +94,49 @@ describe('AudioService', () => {
 
     service = TestBed.inject(AudioService);
     store = TestBed.inject(MockStore);
+
+    service.bannedWords = [];
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should play audio', async () => {
+    // Arrange
+    const text = 'Hello world!';
+    service.tts = 'stream-elements';
+    service.streamElements = {
+      voice: 'brian',
+      language: 'english',
+    };
+
+    const requestData: RequestAudioData = {
+      type: 'streamElements',
+      voice: service.streamElements.voice,
+      text,
+    };
+
+    // Act
+    await service.playTts(text, 'panku', 'vstream', 9999);
+
+    // Assert
+    expect(playbackServiceStub.playAudio).toHaveBeenCalledOnceWith({ data: requestData });
+  });
+
+  it('should prevent banned messages from playing tts', () => {
+    // Arrange
+    service.bannedWords = ['hello', 'world'];
+    service.tts = 'stream-elements';
+    service.streamElements = {
+      voice: 'brian',
+      language: 'english',
+    };
+
+    // Act
+    service.playTts('hello bob!', 'panku', 'vstream', 9999);
+
+    // Assert
+    expect(playbackServiceStub.playAudio).toHaveBeenCalledTimes(0);
   });
 });

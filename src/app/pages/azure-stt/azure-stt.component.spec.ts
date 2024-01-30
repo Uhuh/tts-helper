@@ -17,9 +17,13 @@ describe('AzureSttComponent', () => {
   beforeEach(() => {
     stateSubject = new Subject();
 
-    azuresttServiceStub = jasmine.createSpyObj('AzureSTTService', [''], {
-      state$: stateSubject,
-    });
+    azuresttServiceStub = jasmine.createSpyObj(
+      'AzureSTTService',
+      ['updateGlobalHotKey', 'clearGlobalHotKoy'],
+      {
+        state$: stateSubject,
+      },
+    );
 
     TestBed.overrideComponent(AzureSttComponent, {
       set: {
@@ -38,5 +42,51 @@ describe('AzureSttComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should update hotkey after setting', () => {
+    // Arrange
+    component.isSettingHotKey = true;
+
+    // Act
+    component.toggleHotkey();
+
+    // Assert
+    expect(azuresttServiceStub.updateGlobalHotKey).toHaveBeenCalled();
+  });
+
+  it('should not update hotkey when setting', () => {
+    // Arrange
+    component.isSettingHotKey = false;
+
+    // Act
+    component.toggleHotkey();
+
+    // Assert
+    expect(azuresttServiceStub.updateGlobalHotKey).toHaveBeenCalledTimes(0);
+  });
+
+  it('should clear global hotkey', () => {
+    // Act
+    component.clearHotKey();
+
+    // Assert
+    expect(azuresttServiceStub.clearGlobalHotKoy).toHaveBeenCalled();
+  });
+
+  it('should update hotkey to Control + a', () => {
+    // Arrange
+    component.isSettingHotKey = true;
+
+    const event = {
+      key: 'a',
+      ctrlKey: true,
+    } as KeyboardEvent;
+
+    // Act
+    component.hotkeyBinding(event);
+
+    // Assert
+    expect(component.hotkey).toBe('Control+a');
   });
 });

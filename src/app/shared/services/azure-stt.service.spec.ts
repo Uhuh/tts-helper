@@ -8,6 +8,7 @@ import { LogService } from './logs.service';
 import { TwitchService } from './twitch.service';
 import { Subject } from 'rxjs';
 import { TwitchChannelInfo } from '../state/twitch/twitch.feature';
+import { SpeechConfig } from 'microsoft-cognitiveservices-speech-sdk';
 
 describe('AzureSttService', () => {
   let service: AzureSttService;
@@ -21,7 +22,7 @@ describe('AzureSttService', () => {
 
   beforeEach(() => {
     openaiServiceStub = jasmine.createSpyObj('OpenAIService', ['']);
-    logServiceStub = jasmine.createSpyObj('LogService', ['']);
+    logServiceStub = jasmine.createSpyObj('LogService', ['add']);
 
     channelInfoSubject = new Subject();
 
@@ -45,6 +46,10 @@ describe('AzureSttService', () => {
 
     service = TestBed.inject(AzureSttService);
     store = TestBed.inject(MockStore);
+
+    service.isEnabled = true;
+    service.isCurrentlyListening = false;
+    service.speechConfig = {} as SpeechConfig;
   });
 
   it('should be created', () => {

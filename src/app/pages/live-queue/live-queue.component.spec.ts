@@ -36,4 +36,12 @@ describe('LiveQueueComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should toggle pause for audio queue', () => {
+    // Act
+    component.togglePause();
+
+    // Arrange
+    expect(platbackServiceStub.togglePause).toHaveBeenCalled();
+  });
 });

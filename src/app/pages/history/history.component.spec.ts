@@ -5,6 +5,7 @@ import { LogService } from '../../shared/services/logs.service';
 import { PlaybackService } from '../../shared/services/playback.service';
 import { AsyncPipe } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Subject } from 'rxjs';
 
 describe('HistoryComponent', () => {
   let component: HistoryComponent;
@@ -13,9 +14,18 @@ describe('HistoryComponent', () => {
   let logServiceStub: jasmine.SpyObj<LogService>;
   let playbackServiceStub: jasmine.SpyObj<PlaybackService>;
 
+  let isPausedSubject: Subject<boolean>;
+
   beforeEach(() => {
-    logServiceStub = jasmine.createSpyObj('LogService', ['']);
-    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['']);
+    logServiceStub = jasmine.createSpyObj('LogService', ['add']);
+
+    isPausedSubject = new Subject();
+
+    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['togglePause'], {
+      isPaused$: isPausedSubject,
+    });
+
+    playbackServiceStub.togglePause.and.returnValue(Promise.resolve());
 
     TestBed.overrideComponent(HistoryComponent, {
       set: {
@@ -35,5 +45,13 @@ describe('HistoryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should toggle audio pause', () => {
+    // Act
+    component.togglePause();
+
+    // Assert
+    expect(playbackServiceStub.togglePause).toHaveBeenCalled();
   });
 });

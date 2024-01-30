@@ -14,10 +14,10 @@ import { AudioStatus } from '../../shared/state/audio/audio.feature';
   imports: [ButtonComponent, AudioListComponent, AsyncPipe],
 })
 export class HistoryComponent {
+  protected readonly AudioStatus = AudioStatus;
   private readonly logService = inject(LogService);
   private readonly playbackService = inject(PlaybackService);
-  protected readonly isPaused$ = this.playbackService.isPaused$;
-  protected readonly AudioStatus = AudioStatus;
+  readonly isPaused$ = this.playbackService.isPaused$;
 
   togglePause() {
     this.playbackService.togglePause()
