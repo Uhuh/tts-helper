@@ -13,7 +13,7 @@ describe('TwitchService', () => {
   let logServiceStub: jasmine.SpyObj<LogService>;
 
   beforeEach(() => {
-    logServiceStub = jasmine.createSpyObj('LogService', ['']);
+    logServiceStub = jasmine.createSpyObj('LogService', ['add']);
 
     TestBed.configureTestingModule({
       imports: [
