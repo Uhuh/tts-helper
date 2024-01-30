@@ -19,7 +19,7 @@ jobs:
         run: yarn install
 
       - name: Build Angular project
-        run: ng build --prod
+        run: yarn build --prod
 
       - name: Run tests
-        run: ng test
+        run: yarn test
