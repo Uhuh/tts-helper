@@ -11,18 +11,20 @@ describe('LiveQueueComponent', () => {
   let fixture: ComponentFixture<LiveQueueComponent>;
 
   let logServiceStub: jasmine.SpyObj<LogService>;
-  let platbackServiceStub: jasmine.SpyObj<PlaybackService>;
+  let playbackServiceStub: jasmine.SpyObj<PlaybackService>;
 
   beforeEach(() => {
     logServiceStub = jasmine.createSpyObj('LogService', ['']);
-    platbackServiceStub = jasmine.createSpyObj('PlaybackService', ['']);
+    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['togglePause']);
+
+    playbackServiceStub.togglePause.and.returnValue(Promise.resolve());
 
     TestBed.overrideComponent(LiveQueueComponent, {
       set: {
         imports: [AsyncPipe],
         providers: [
           { provide: LogService, useValue: logServiceStub },
-          { provide: PlaybackService, useValue: platbackServiceStub },
+          { provide: PlaybackService, useValue: playbackServiceStub },
         ],
         schemas: [NO_ERRORS_SCHEMA],
       },
@@ -42,6 +44,6 @@ describe('LiveQueueComponent', () => {
     component.togglePause();
 
     // Arrange
-    expect(platbackServiceStub.togglePause).toHaveBeenCalled();
+    expect(playbackServiceStub.togglePause).toHaveBeenCalled();
   });
 });
