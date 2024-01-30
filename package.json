@@ -1,6 +1,6 @@
 {
   "name": "tts-helper",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "author": {
     "email": "dylanwarren19@gmail.com",
     "name": "Dylan Warren",
@@ -10,6 +10,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "test": "ng test",
     "build": "ng build",
     "tauri:dev": "yarn tauri dev",
     "watch": "ng build --watch --configuration development",

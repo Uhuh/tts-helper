@@ -6,12 +6,13 @@ describe('VariableTableComponent', () => {
   let component: VariableTableComponent;
   let fixture: ComponentFixture<VariableTableComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [VariableTableComponent]
-    })
-    .compileComponents();
-    
+  beforeEach(() => {
+    TestBed.overrideComponent(VariableTableComponent, {
+      set: {
+        imports: [],
+      },
+    });
+
     fixture = TestBed.createComponent(VariableTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

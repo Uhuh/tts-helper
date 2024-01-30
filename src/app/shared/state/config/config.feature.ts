@@ -83,7 +83,7 @@ const defaultTtsState = {
   voice: '',
 };
 
-export const initialState: ConfigState = {
+const initialState: ConfigState = {
   bannedWords: [],
   tts: 'stream-elements',
   url: 'https://api.streamelements.com/kappa/v2/speech',

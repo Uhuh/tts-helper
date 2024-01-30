@@ -30,7 +30,7 @@ export interface OpenAIState {
   settings: GptSettingsState;
 }
 
-const initialState: OpenAIState = {
+export const initialState: OpenAIState = {
   chatSettings: {
     command: '!ask',
     permissions: {

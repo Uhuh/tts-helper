@@ -1,11 +1,10 @@
-﻿import { inject, Injectable } from '@angular/core';
+﻿import { DestroyRef, inject, Injectable } from '@angular/core';
 import { PlaybackService } from './playback.service';
 import { AudioService } from './audio.service';
 import { webSocket } from 'rxjs/webSocket';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AudioItem } from '../state/audio/audio.feature';
 import { LogService } from './logs.service';
-import { retry } from 'rxjs';
+import { first, retry, tap } from 'rxjs';
 
 type ObsEvent = {
   id: string;
@@ -18,19 +17,19 @@ export class ObsWebSocketService {
   private readonly playbackService = inject(PlaybackService);
   private readonly audioService = inject(AudioService);
   private readonly logService = inject(LogService);
+  private readonly destroyRef = inject(DestroyRef);
 
+  private readonly audioItems$ = this.audioService.audioItems$;
   private readonly connection = 'ws://localhost:37891';
   private socket$ = webSocket(this.connection);
-  private audioItems: AudioItem[] = [];
 
   constructor() {
-    this.audioService.audioItems$
-      .pipe(takeUntilDestroyed())
-      .subscribe(audioItems => this.audioItems = audioItems);
-
     this.playbackService.audioStarted$
-      .pipe(takeUntilDestroyed())
-      .subscribe(id => this.sendCaptions(id));
+      .pipe(
+        takeUntilDestroyed(),
+        tap(id => this.sendCaptions(id)),
+      )
+      .subscribe();
 
     this.playbackService.audioFinished$
       .pipe(takeUntilDestroyed())
@@ -61,23 +60,30 @@ export class ObsWebSocketService {
       });
   }
 
-  private sendCaptions(id: number) {
-    const item = this.audioItems.find(i => i.id === id);
+  sendCaptions(id: number) {
+    return this.audioItems$
+      .pipe(
+        first(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(audioItems => {
+        const item = audioItems.find(i => i.id === id);
 
-    if (!item) {
-      return this.logService.add(`Can't find audio item for OBS captions.`, 'error', 'ObsWebSocketService.audioStarted$');
-    }
+        if (!item) {
+          return this.logService.add(`Can't find audio item for OBS captions.`, 'error', 'ObsWebSocketService.audioStarted$');
+        }
 
-    const event: ObsEvent = {
-      id: 'tts-helper',
-      event: 'add-captions',
-      text: item.text,
-    };
+        const event: ObsEvent = {
+          id: 'tts-helper',
+          event: 'add-captions',
+          text: item.text,
+        };
 
-    this.socket$.next(event);
+        this.socket$.next(event);
+      });
   }
 
-  private removeCaptions() {
+  removeCaptions() {
     const event: ObsEvent = {
       id: 'tts-helper',
       event: 'remove-captions',

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogActions, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { LabelBlockComponent } from '../../../../shared/components/input-block/label-block.component';
 import { SelectorComponent } from '../../../../shared/components/selector/selector.component';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,7 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-edit-widget',
   standalone: true,
-  imports: [CommonModule, LabelBlockComponent, SelectorComponent, MatDialogContent, MatDialogTitle, MatDialogActions, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ToggleComponent],
+  imports: [CommonModule, LabelBlockComponent, SelectorComponent, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ToggleComponent],
   templateUrl: './edit-widget.component.html',
   styleUrl: './edit-widget.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

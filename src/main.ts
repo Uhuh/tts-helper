@@ -33,6 +33,7 @@ import { TwitchService } from './app/shared/services/twitch.service';
 import { VStreamService } from './app/shared/services/vstream.service';
 import { VStreamPubSubService } from './app/shared/services/vstream-pubsub.service';
 import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
+import { OpenAIFactory } from './app/shared/services/openai.factory';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -72,6 +73,7 @@ bootstrapApplication(AppComponent, {
     VStreamService,
     VStreamPubSubService,
     VTubeStudioService,
+    OpenAIFactory,
   ],
 })
   .catch((err) => console.error(err));
