@@ -4,6 +4,7 @@ import { combineLatest, debounceTime, filter, first, map, switchMap } from 'rxjs
 import { webSocket } from 'rxjs/webSocket';
 import {
   VStreamEventChatCreated,
+  VStreamEventLivestreamStartedEvent,
   VStreamEventMeteorShower,
   VStreamEventNewFollower,
   VStreamEvents,
@@ -26,6 +27,7 @@ import { AudioService } from './audio.service';
 import { generateWidgetsHtml } from '../../pages/vstream/overlays/utils/generateBrowserSource';
 import { CommandService } from './command.service';
 import { Commands } from './command.interface';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class VStreamPubSubService {
@@ -36,6 +38,7 @@ export class VStreamPubSubService {
   private readonly audioService = inject(AudioService);
   private readonly logService = inject(LogService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly http = inject(HttpClient);
 
   private socketUrl = 'wss://events.vstream.com/channels';
   vstreamSocket$ = webSocket(this.socketUrl);
@@ -151,6 +154,9 @@ export class VStreamPubSubService {
         break;
       case 'shower_received':
         this.handleMeteorShower(event);
+        break;
+      case 'livestream_started':
+        this.handleLiveStream(event);
         break;
       default:
         return;
@@ -363,6 +369,50 @@ export class VStreamPubSubService {
         this.logService.add(`User "${chatter.displayName}" ran a chat command "${command.command}"`, 'info', 'VStreamPubSub.handleChatMessage');
 
         this.commandService.handleCommand(command, permissions, text);
+      });
+  }
+
+  async handleLiveStream(livestream: VStreamEventLivestreamStartedEvent) {
+    // This isn't a great validator
+    if (!this.vstreamSettings.discordWebhook) {
+      return;
+    }
+
+    const { data } = livestream;
+
+    const thumbnailURL = `https://images.vstream.com/videos/${data.id}.png`;
+    const tags = data.tags.length ? `\n\n${data.tags.map(t => `#${t}`).join(' ')}` : '';
+    const description = data.description ?? `Come watch me.`;
+
+    const params = {
+      username: `VStream live notification.`,
+      embeds: [
+        {
+          title: data.title ?? `I'm live on VStream!`,
+          type: 'rich',
+          description: description + tags,
+          color: 15258703,
+          url: data.url,
+          footer: {
+            text: 'Sent from TTS Helper.',
+          },
+          image: {
+            url: thumbnailURL,
+            // Not what proxy is for, but we'll keep it for now.
+            proxy_url: 'https://vstream.com/build/_assets/default-preview-MUL2QTIW.png',
+          },
+        },
+      ],
+    };
+
+    this.http.post(this.vstreamSettings.discordWebhook, params)
+      .subscribe({
+        next: () => {
+          this.logService.add(`Sent livestream notification through webhook.`, 'info', 'VStreamPubSubService.handleLiveStream');
+        },
+        error: (err) => {
+          this.logService.add(`Failed to send webhook message: ${JSON.stringify(err, null, 2)}.`, 'error', 'VStreamPubSubService.handleLiveStream');
+        },
       });
   }
 

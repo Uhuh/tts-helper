@@ -36,6 +36,7 @@ export class VStreamService {
   readonly meteorShowerSettings$ = this.store.select(VStreamFeature.selectMeteorShower);
   readonly followerSettings$ = this.store.select(VStreamFeature.selectFollowers);
   readonly commands$ = this.store.select(VStreamFeature.selectCommands);
+
   /**
    * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
    */

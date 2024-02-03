@@ -30,6 +30,7 @@ export type VStreamToken = {
 
 export type VStreamSettingsState = {
   randomChance: number;
+  discordWebhook: string;
 };
 
 export type VStreamChannelState = {
@@ -150,6 +151,7 @@ const initialState: VStreamState = {
   },
   settings: {
     randomChance: 0,
+    discordWebhook: '',
   },
   uplift: {
     ...initialCustomMessage,

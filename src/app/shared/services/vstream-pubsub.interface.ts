@@ -189,6 +189,28 @@ export type VStreamEventMeteorShower = {
   }
 };
 
+export type VStreamEventLivestreamStartedEvent = {
+  type: 'livestream_started';
+  data: {
+    channelID: VStreamChannelID;
+    contentWarning: string;
+    deletedAt: null,
+    title: string;
+    description: string,
+    id: VStreamVideoID,
+    tags: string[],
+    cancelledAt: null,
+    endedAt: null,
+    liveAt: string; // datetime iso string
+    scheduledTime: string; // datetime iso string
+    status: string;
+    type: 'livestream';
+    url: string; // Link to livestream
+    vodVisibility: string; // public?
+  };
+  timestamp: string;
+};
+
 export type VStreamEvents =
   VStreamEventUpLift
   | VStreamEventKeepAlive
@@ -196,4 +218,5 @@ export type VStreamEvents =
   | VStreamEventNewFollower
   | VStreamEventSubscriptionRenew
   | VStreamEventSubscriptionGifted
-  | VStreamEventMeteorShower;
+  | VStreamEventMeteorShower
+  | VStreamEventLivestreamStartedEvent;

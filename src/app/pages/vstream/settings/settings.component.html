@@ -12,3 +12,14 @@
     [control]="randomChance"
   />
 </app-label-block>
+
+<app-label-block>
+  <div header><span class="yellow">Discord</span> Going Live Announcement</div>
+  <div sub-text>When you go live, TTS Helper will announce it for you.</div>
+  <div sub-text>Place the webhook URL here.</div>
+  <app-input
+    placeholder="Your Discord Webhook"
+    type="text"
+    [control]="webhookControl"
+  />
+</app-label-block>

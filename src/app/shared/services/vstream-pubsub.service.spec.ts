@@ -16,6 +16,7 @@ import {
   VStreamToken,
   VStreamWidget,
 } from '../state/vstream/vstream.feature';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('VStreamPubSubService', () => {
   let service: VStreamPubSubService;
@@ -74,6 +75,7 @@ describe('VStreamPubSubService', () => {
     logServiceStub = jasmine.createSpyObj('LogService', ['add']);
 
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       providers: [
         VStreamPubSubService,
         { provide: VStreamService, useValue: vstreamServiceStub },
