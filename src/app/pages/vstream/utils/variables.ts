@@ -21,6 +21,7 @@ export const VStreamEventVariables: {
   },
   chat_created: { header: '', variables: [], result: '', example: '' },
   keep_alive: { header: '', variables: [], result: '', example: '' },
+  livestream_started: { header: '', variables: [], result: '', example: '' },
   new_follower: {
     header: 'Use variables to reference info related to the follow.',
     example: 'Thanks <span class="var">username</span> for following!',
