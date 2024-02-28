@@ -79,7 +79,6 @@ export class VStreamApi {
       .set('redirect_uri', this.redirectUri)
       .set('client_id', this.clientId);
 
-
     return this.http.post<VStreamTokenResponse>(url, params, {
       headers,
     });

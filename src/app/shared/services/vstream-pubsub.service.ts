@@ -91,15 +91,22 @@ export class VStreamPubSubService {
           return this.vstreamService.authenticatePubSub(token.accessToken);
         }),
       )
-      .subscribe(token => {
-        this.vstreamSocket$.complete();
+      .subscribe({
+        next: token => {
+          this.logService.add(`Authenticated PubSub, attempted WS connection.`, 'info', 'VStreamPubSub.socket.authenticatePubSub');
 
-        this.vstreamSocket$ = webSocket(`${this.socketUrl}/${this.channelInfo.channelId}/events?authorization=${token.data.token}`);
+          this.vstreamSocket$.unsubscribe();
 
-        this.vstreamSocket$.subscribe({
-          next: (event) => this.handleEvent(event as VStreamEvents),
-          error: e => console.error(e),
-        });
+          this.vstreamSocket$ = webSocket(`${this.socketUrl}/${this.channelInfo.channelId}/events?authorization=${token.data.token}`);
+
+          this.vstreamSocket$.subscribe({
+            next: (event) => this.handleEvent(event as VStreamEvents),
+            error: e => this.logService.add(`VStreamPubSub socket error: ${JSON.stringify(e, null, 2)}`, 'error', 'VStreamPubSub.socket.subscribe'),
+          });
+        },
+        error: err => {
+          this.logService.add(`Failed to authenticate with pubsub. ${JSON.stringify(err, null, 2)}`, 'error', 'VStreamPubSub.authenticatePubSub');
+        },
       });
 
     /**
@@ -136,6 +143,8 @@ export class VStreamPubSubService {
   }
 
   handleEvent(event: VStreamEvents) {
+    this.logService.add(`Message received: ${JSON.stringify(event, undefined, 2)}`, 'info', 'VStreamPubSub.onEvent');
+
     switch (event.type) {
       case 'chat_created':
         this.handleChatMessage(event);
@@ -161,8 +170,6 @@ export class VStreamPubSubService {
       default:
         return;
     }
-
-    this.logService.add(`Message received: ${JSON.stringify(event, undefined, 2)}`, 'info', 'VStreamPubSub.onEvent');
   }
 
   handleCustomMessage(text: string, username: string, settings: Pick<VStreamCustomMessageState, 'enabled' | 'enabledChat' | 'enabledGpt'>) {
