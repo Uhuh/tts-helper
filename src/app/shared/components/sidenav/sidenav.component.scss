@@ -34,7 +34,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   // Download SVG
   & > img {
     height: 42px;
@@ -43,7 +43,7 @@
     cursor: pointer;
     transition: background-color 0.2s;
     border-radius: 6px;
-    
+
     &:hover {
       background-color: var(--white-5);
     }
@@ -54,72 +54,76 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  overflow-y: auto;
 }
 
 .nav-group {
   display: flex;
   flex-direction: column;
   gap: 14px;
+
+  & > span {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 10px 0;
+    padding-left: 10px;
+  }
+
+  & > a {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: var(--header);
+    filter: brightness(0.9);
+    font-size: 16px;
+
+    padding: 2px 10px;
+    border-left: 2px solid transparent;
+
+    transition: all 0.2s;
+
+    &:hover {
+      color: var(--text);
+      border-left: 2px solid var(--text-inactive);
+    }
+
+    .tts-icon {
+      width: 16px;
+      height: 16px;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+    }
+
+    &.active {
+      filter: brightness(1);
+      color: var(--text);
+      border-left: 2px solid var(--blue);
+    }
+
+  }
 }
 
 .bottom {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin-top: auto;
-  padding: 5px 10px;
-  
-  .support {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    font-size: 16px;
-    
-    a {
-      transition: color 0.2s;
-    }
-    
-    a:hover {
-      transition: color 0.2s;
-      color: var(--blue);
-    }
+  padding: 10px;
+
+  transition: all 0.3s;
+
+  & > a {
+    transition: all 0.3s;
   }
   
+  & > a:hover {
+    color: var(--blue);
+  }
+
   .version {
     font-size: 14px;
-  }
-}
-
-.nav-header {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 10px 0;
-  padding-left: 10px;
-}
-
-.nav-link {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  color: var(--header);
-  filter: brightness(0.9);
-  font-size: 16px;
-
-  padding: 2px 10px;
-  border-left: 2px solid transparent;
-
-  transition: all 0.2s;
-  &:hover {
-    color: var(--text);
-    border-left: 2px solid var(--text-inactive);
-  }
-
-  .tts-icon {
-    width: 16px;
-    height: 16px;
-    font-size: 17px;
-    display: flex;
-    align-items: center;
   }
 }
 
@@ -129,12 +133,6 @@
     color: var(--blue);
     margin-left: auto;
   }
-}
-
-.active {
-  filter: brightness(1);
-  color: var(--text);
-  border-left: 2px solid var(--blue);
 }
 
 .disabled {
