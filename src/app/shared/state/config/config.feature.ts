@@ -1,6 +1,7 @@
 import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { GlobalConfigActions } from './config.actions';
 import { ChatPermissions, ChatState } from '../../services/chat.interface';
+import { VoiceId } from '@aws-sdk/client-polly';
 
 export type TtsType =
   | 'stream-elements'
@@ -19,7 +20,7 @@ export interface AmazonPollyData {
   region: string;
   poolId: string;
   language: string;
-  voice: string;
+  voice: VoiceId;
 }
 
 export interface TtsMonsterData {
@@ -107,6 +108,7 @@ const initialState: ConfigState = {
     ...defaultTtsState,
     poolId: '',
     region: '',
+    voice: 'Amy',
   },
   // Set a default value for SE since it's the default TTS option.
   streamElements: {

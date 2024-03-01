@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { TtsSelectorComponent } from '../../../shared/components/tts-selector/tts-selector.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { SelectorComponent } from '../../../shared/components/selector/selector.component';
+import { VoiceId } from '@aws-sdk/client-polly';
 
 @Component({
   selector: 'app-amazon-polly',
@@ -39,7 +40,7 @@ export class AmazonPollyComponent {
     region: new FormControl(this.regions[0].value, { nonNullable: true }),
     poolId: new FormControl('', { nonNullable: true }),
     language: new FormControl('', { nonNullable: true }),
-    voice: new FormControl('', { nonNullable: true }),
+    voice: new FormControl<VoiceId>('Amy', { nonNullable: true }),
   });
 
   constructor() {
