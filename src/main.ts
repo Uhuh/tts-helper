@@ -34,12 +34,15 @@ import { VStreamService } from './app/shared/services/vstream.service';
 import { VStreamPubSubService } from './app/shared/services/vstream-pubsub.service';
 import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
 import { OpenAIFactory } from './app/shared/services/openai.factory';
+import { AppSettingsFeature } from './app/shared/state/app-settings/app-settings.feature';
+import { AppSettingsService } from './app/shared/services/app-settings.service';
 
 bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(BrowserModule,
       // Inject reducer manager
       StoreModule.forRoot({}),
+      StoreModule.forFeature(AppSettingsFeature),
       StoreModule.forFeature(AudioFeature),
       StoreModule.forFeature(AzureFeature),
       StoreModule.forFeature(ConfigFeature),
@@ -52,10 +55,12 @@ bootstrapApplication(AppComponent, {
       StoreDevtoolsModule.instrument({
         maxAge: 25,
         logOnly: !isDevMode(),
-      })),
+      }),
+    ),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideRouter(routes),
+    AppSettingsService,
     AzureSttService,
     AudioService,
     ChatService,

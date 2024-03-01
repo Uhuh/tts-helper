@@ -1,150 +1,107 @@
 <div class="wrapper">
   <div class="home-download">
-    <a [routerLink]="['home']" (click)="close()">
-      <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107"/>
+    <a [routerLink]="['home']">
+      <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107" />
     </a>
     @if (newVersion) {
-      <img alt="download-button" (click)="update()" src="assets/download.svg"/>
+      <img alt="download-button" (click)="update()" src="assets/download.svg" />
     }
   </div>
   <div class="nav-groups">
+    @if (connections$ | async; as connections) {
+      <div class="nav-group">
+        <span>My Connections</span>
+        <a [routerLink]="['twitch']" [ngClass]="{ hide: !connections.twitchEnabled }" routerLinkActive="active">
+          <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21" />
+          <span>Twitch</span>
+          <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
+        </a>
+        <a [routerLink]="['vstream']" [ngClass]="{ hide: !connections.vstreamEnabled }" routerLinkActive="active">
+          <img alt="vstream-logo" ngSrc="assets/vstream.svg" height="22" width="21" />
+          <span>VStream</span>
+          <div class="connection" [ngClass]="{'connected': isVStreamConnected$ | async }"></div>
+        </a>
+        <a
+          [routerLink]="['vtubestudio']"
+          [ngClass]="{ hide: !connections.vtubestudioEnabled }"
+          routerLinkActive="active"
+        >
+          <img alt="youtube-logo" ngSrc="assets/vts_logo_transparent.png" height="25" width="25" />
+          <span>VTubeStudio</span>
+          <div class="connection" [ngClass]="{'connected': isVTSConnected$ | async }"></div>
+        </a>
+        @if (unavailableConnections(connections)) {
+          <div class="empty">
+            Enable connections in <a [routerLink]="['app-settings']">app settings</a>
+          </div>
+        }
+      </div>
+    }
+    <hr />
     <div class="nav-group">
-      <span class="nav-header">My Connections</span>
-      <a
-        class="nav-link"
-        [routerLink]="['twitch']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
-        <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21"/>
-        <span>Twitch</span>
-        <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
-      </a>
-      <a
-        class="nav-link"
-        [routerLink]="['vstream']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
-        <img alt="vstream-logo" ngSrc="assets/vstream.svg" height="22" width="21"/>
-        <span>VStream</span>
-        <div class="connection" [ngClass]="{'connected': isVStreamConnected$ | async }"></div>
-      </a>
-      <a
-        class="nav-link"
-        [routerLink]="['vtubestudio']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
-        <img alt="youtube-logo" ngSrc="assets/vts_logo_transparent.png" height="25" width="25"/>
-        <span>VTubeStudio</span>
-        <div class="connection" [ngClass]="{'connected': isVTSConnected$ | async }"></div>
-      </a>
-    </div>
-    <div class="nav-group">
-      <span class="nav-header">Text to Speech</span>
-      <a
-        class="nav-link"
-        [routerLink]="['settings']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
+      <span>Text to Speech</span>
+      <a [routerLink]="['settings']" routerLinkActive="active">
         <mat-icon class="tts-icon">settings</mat-icon>
         <span>Settings</span>
       </a>
-      <a
-        class="nav-link"
-        [routerLink]="['chat-gpt']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
+      <a [routerLink]="['chat-gpt']" routerLinkActive="active">
         <mat-icon class="tts-icon">smart_toy</mat-icon>
         <span>ChatGPT</span>
       </a>
-      <a
-        class="nav-link"
-        [routerLink]="['chat-settings']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
+      <a [routerLink]="['chat-settings']" routerLinkActive="active">
         <mat-icon class="tts-icon">chat</mat-icon>
         <span>Chat Settings</span>
       </a>
-      <a
-        class="nav-link"
-        [routerLink]="['moderation']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
+      <a [routerLink]="['moderation']" routerLinkActive="active">
         <mat-icon class="tts-icon">construction</mat-icon>
         <span>Moderation</span>
       </a>
-      <a
-        class="nav-link"
-        [routerLink]="['history']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
-        <img alt="history-logo" class="tts-icon" ngSrc="assets/history.svg" height="17" width="17"/>
+      <a [routerLink]="['history']" routerLinkActive="active">
+        <img alt="history-logo" class="tts-icon" ngSrc="assets/history.svg" height="17" width="17" />
         <span>History</span>
       </a>
-      <a
-        class="nav-link"
-        [routerLink]="['queue']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
-        <img alt="queue-logo" class="tts-icon" ngSrc="assets/clock.svg" height="17" width="17"/>
+      <a [routerLink]="['queue']" routerLinkActive="active">
+        <img alt="queue-logo" class="tts-icon" ngSrc="assets/clock.svg" height="17" width="17" />
         <span>Queue</span>
       </a>
     </div>
+    <hr />
     <div class="nav-group">
-      <span class="nav-header">Speech to Text</span>
-      <a
-        class="nav-link"
-        [routerLink]="['azure-settings']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
+      <span>Speech to Text</span>
+      <a [routerLink]="['azure-settings']" routerLinkActive="active">
         <mat-icon class="tts-icon">campaign</mat-icon>
         <span>Settings</span>
       </a>
     </div>
+    <hr />
     <div class="nav-group">
-      <span class="nav-header">Misc</span>
-      <a
-        class="nav-link"
-        [routerLink]="['logs']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
+      <span>Misc</span>
+      <a [routerLink]="['logs']" routerLinkActive="active">
         <mat-icon class="tts-icon">description</mat-icon>
         <span>Logs</span>
       </a>
-      <a
-        class="nav-link"
-        [routerLink]="['tools']"
-        routerLinkActive="active"
-        (click)="close()"
-      >
+      <a [routerLink]="['tools']" routerLinkActive="active">
         <mat-icon class="tts-icon">construction</mat-icon>
         <span>Tools</span>
       </a>
-      <a class="nav-link" href="https://ko-fi.com/panku" target="_blank">
+      <a href="https://ko-fi.com/panku" target="_blank">
         <mat-icon class="tts-icon">coffee</mat-icon>
         <span>Ko-fi</span>
       </a>
-      <a class="nav-link" href="https://discord.gg/jNDjNVeuJp" target="_blank">
+      <a href="https://discord.gg/jNDjNVeuJp" target="_blank">
         <mat-icon class="tts-icon">discord</mat-icon>
         <span>Discord</span>
       </a>
-      <a class="nav-link" href="https://github.com/Uhuh/tts-helper/releases/latest/" target="_blank">
+      <a href="https://github.com/Uhuh/tts-helper/releases/latest/" target="_blank">
         <mat-icon class="tts-icon">terminal</mat-icon>
         <span>GitHub</span>
       </a>
     </div>
   </div>
   <div class="bottom">
+    <a [routerLink]="['app-settings']" class="app-settings">
+      <mat-icon>settings</mat-icon>
+    </a>
     <div class="version">v{{ appVersion }}</div>
   </div>
 </div>

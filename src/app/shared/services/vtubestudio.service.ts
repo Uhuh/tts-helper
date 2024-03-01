@@ -66,7 +66,7 @@ export class VTubeStudioService {
   /**
    * @TODO - When audio is skipped this never gets cleared since AudioFinished never fires
    */
-  randomMouthInterval?: NodeJS.Timer = undefined;
+  randomMouthInterval?: ReturnType<typeof setInterval> = undefined;
 
   constructor() {
     this.port$.pipe(takeUntilDestroyed())

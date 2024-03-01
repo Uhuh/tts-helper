@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.empty {
+  padding: 20px;
+  height: fit-content;
+  align-items: flex-start;
+  
+  span {
+    display: flex;
+    gap: 10px;
+  }
+}

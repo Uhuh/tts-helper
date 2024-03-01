@@ -2,6 +2,10 @@
   <span>Logs for debugging</span>
 </div>
 <div class="section">
+  <div class="action-row">
+    <app-button (click)="downloadLog()">Download</app-button>
+    <app-button [style]="'danger'" (click)="deleteLogs()">Delete all logs</app-button>
+  </div>
   <div class="logs-text">
     @for (log of logs$ | async; track log.createdAt) {
       <div class="log">
@@ -10,9 +14,5 @@
     } @empty {
       Logs are empty.
     }
-  </div>
-  <div class="action-row">
-    <app-button (click)="downloadLog()">Download</app-button>
-    <app-button [style]="'danger'" (click)="deleteLogs()">Delete all logs</app-button>
   </div>
 </div>

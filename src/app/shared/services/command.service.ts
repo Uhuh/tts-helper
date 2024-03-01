@@ -7,6 +7,7 @@ import { concat, filter, first, map, of, switchMap, tap, timer } from 'rxjs';
 import { ChatService } from './chat.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AudioService } from './audio.service';
+import { NodeJSFileSystem } from '@angular/compiler-cli';
 
 @Injectable()
 export class CommandService {
@@ -26,7 +27,7 @@ export class CommandService {
 
   readonly autoredeems = new Map<string, {
     interval: number,
-    timer: NodeJS.Timer,
+    timer: ReturnType<typeof setInterval>,
   }>();
 
   constructor() {

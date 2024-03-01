@@ -1,6 +1,4 @@
-use std::net::Ipv4Addr;
-
-use axum::{extract::Path, response::Html, routing::get, Extension, Router, Server};
+use axum::{extract::Path, response::Html, routing::get, Extension, Router};
 use tauri::{AppHandle, Manager};
 use tokio::runtime::Builder;
 use tracing::{debug, error, instrument};
@@ -27,11 +25,9 @@ async fn listen(app: AppHandle) -> anyhow::Result<()> {
         .route("/auth/:provider", get(auth_get).post(auth_post))
         .layer(Extension(app));
 
-    // Run server
     const PORT: u16 = 12583;
-    Server::bind(&(Ipv4Addr::UNSPECIFIED, PORT).into())
-        .serve(app.into_make_service())
-        .await?;
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{PORT}")).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 
     Ok(())
 }

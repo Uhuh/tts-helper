@@ -25,6 +25,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/tts-helper",
+            "sourceMap": true,
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [

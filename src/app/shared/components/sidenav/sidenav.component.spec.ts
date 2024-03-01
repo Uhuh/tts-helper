@@ -6,6 +6,7 @@ import { VTubeStudioService } from '../../services/vtubestudio.service';
 import { VStreamService } from '../../services/vstream.service';
 import { AsyncPipe } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { AppSettingsService } from '../../services/app-settings.service';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -14,11 +15,13 @@ describe('SidenavComponent', () => {
   let twitchServiceStub: jasmine.SpyObj<TwitchService>;
   let vtubeStudioServiceStub: jasmine.SpyObj<VTubeStudioService>;
   let vstreamServiceStub: jasmine.SpyObj<VStreamService>;
+  let appSettingsServiceStub: jasmine.SpyObj<AppSettingsService>;
 
   beforeEach(() => {
     twitchServiceStub = jasmine.createSpyObj('TwitchService', ['']);
     vtubeStudioServiceStub = jasmine.createSpyObj('VTubeStudioService', ['']);
     vstreamServiceStub = jasmine.createSpyObj('VStreamService', ['']);
+    appSettingsServiceStub = jasmine.createSpyObj('AppSettingsService', ['']);
 
     TestBed.overrideComponent(SidenavComponent, {
       set: {
@@ -27,6 +30,7 @@ describe('SidenavComponent', () => {
           { provide: TwitchService, useValue: twitchServiceStub },
           { provide: VTubeStudioService, useValue: vtubeStudioServiceStub },
           { provide: VStreamService, useValue: vstreamServiceStub },
+          { provide: AppSettingsService, useValue: appSettingsServiceStub },
         ],
         schemas: [NO_ERRORS_SCHEMA],
       },

@@ -24,12 +24,15 @@ serde_json = { workspace = true }
 
 # Web
 tokio = { version = "1", features = ["rt"] }
-axum = { version = "0.6", default-features = false, features = [
+axum = { version = "0.7", default-features = false, features = [
     "http1",
     "tokio",
+    "json",
     "tracing",
     "ws",
 ] }
+tower-http = { version = "0.5", features = ["cors"] }
+http = "1"
 futures = "0.3"
 tower = { version = "0.4", features = ["util"] }
 static_assertions = "1.1.0"

@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, Input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { getVersion } from '@tauri-apps/api/app';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { TwitchService } from '../../services/twitch.service';
 import { VTubeStudioService } from '../../services/vtubestudio.service';
@@ -11,7 +11,8 @@ import { VStreamService } from '../../services/vstream.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangelogDialogComponent } from './changelog-dialog/changelog-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { of } from 'rxjs';
+import { AppSettingsService } from '../../services/app-settings.service';
+import { AppSettingsFeatureState } from '../../state/app-settings/app-settings.feature';
 
 @Component({
   selector: 'app-sidenav',
@@ -26,11 +27,14 @@ export class SidenavComponent {
   private readonly vstreamService = inject(VStreamService);
   private readonly matDialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
+  private readonly appSettingsService = inject(AppSettingsService);
 
   @Input({ required: true }) nav!: MatSidenav;
   @Input() isMobile = false;
   appVersion = '';
 
+  readonly connections$ = this.appSettingsService.connections$;
   readonly isTwitchTokenValid$ = this.twitchService.isTokenValid$;
   readonly isVTSConnected$ = this.vtsService.isConnected$;
   readonly isVStreamConnected$ = this.vstreamService.isTokenValid$;
@@ -39,6 +43,14 @@ export class SidenavComponent {
 
   constructor() {
     getVersion().then((v) => (this.appVersion = v));
+
+    this.router.events.subscribe(event => {
+      if (!(event instanceof NavigationEnd)) {
+        return;
+      }
+
+      this.close();
+    });
 
     this.checkForUpdate();
   }
@@ -55,6 +67,10 @@ export class SidenavComponent {
     this.newVersion = true;
 
     this.update();
+  }
+
+  unavailableConnections(connections: AppSettingsFeatureState['connections']) {
+    return !connections.vtubestudioEnabled && !connections.vstreamEnabled && !connections.twitchEnabled;
   }
 
   close() {
