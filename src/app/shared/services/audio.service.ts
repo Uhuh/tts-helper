@@ -25,6 +25,8 @@ import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchService } from './twitch.service';
+import { listen } from '@tauri-apps/api/event';
+import { SynthesizeSpeechInput } from '@aws-sdk/client-polly/dist-types/models/models_0';
 
 @Injectable()
 export class AudioService {
@@ -77,6 +79,14 @@ export class AudioService {
     this.playback.audioFinished$
       .pipe(takeUntilDestroyed())
       .subscribe(id => this.store.dispatch(AudioActions.updateAudioState({ id, audioState: AudioStatus.finished })));
+
+    listen('api:play_tts', (event) => {
+      const data = event.payload as { username: string, platform: AudioSource, text: string, charLimit: number };
+
+      this.playTts(data.text, data.username, data.platform, data.charLimit);
+    }).catch(e => {
+      this.logService.add(`Failed to play tts for api request. ${JSON.stringify(e, null, 2)}`, 'error', 'AudioService.listen(api:play_tts)');
+    });
   }
 
   requeue(audio: AudioItem) {
@@ -228,7 +238,7 @@ export class AudioService {
       Text: audioText,
       TextType: 'text',
       VoiceId: this.amazonPolly.voice,
-    };
+    } satisfies SynthesizeSpeechInput;
 
     try {
       const url = await getSynthesizeSpeechUrl({

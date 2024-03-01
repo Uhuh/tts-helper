@@ -6,6 +6,7 @@ mod services;
 
 use anyhow::Context;
 
+use services::tts_listener::run_tts_server;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter, Registry};
 use crate::services::{run_auth_server, start_ws_server};
 
@@ -31,6 +32,9 @@ fn main() -> anyhow::Result<()> {
             // Run auth server
             let handle = app.handle();
             std::thread::spawn(move || run_auth_server(handle));
+            let handle = app.handle();
+            std::thread::spawn(move || run_tts_server(handle));
+            
             tauri::async_runtime::spawn(start_ws_server(obs_port));
             tauri::async_runtime::spawn(start_ws_server(streamdeck_port));
             tauri::async_runtime::spawn(start_ws_server(vstream_overlays_port));

@@ -1,8 +1,8 @@
 use bytes::Bytes;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// A request to play audio.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PlayAudioRequest {
     /// The audio data.
@@ -10,7 +10,7 @@ pub struct PlayAudioRequest {
 }
 
 /// The audio data for a [`PlayAudioRequest`].
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(tag = "type", rename_all = "camelCase")]
 pub enum RequestAudioData {
     /// Raw audio data.
@@ -26,7 +26,7 @@ pub enum RequestAudioData {
 }
 
 /// Raw audio data.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RawAudioData {
     /// The audio data.
@@ -34,7 +34,7 @@ pub struct RawAudioData {
 }
 
 /// StreamElements request data.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StreamElementsData {
     /// The text to speak.
     pub text: String,
@@ -43,7 +43,7 @@ pub struct StreamElementsData {
 }
 
 /// TikTok request data.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct TikTokData {
     /// The text to speak.
     pub text: String,
@@ -52,14 +52,14 @@ pub struct TikTokData {
 }
 
 /// AmazonPolly request data.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct AmazonPollyData {
     /// Possible AmazonPolly URL.
     pub url: Option<String>,
 }
 
 /// ElevenLabs request data
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ElevenLabsData {
     /// The TTS URL
     pub url: String,
