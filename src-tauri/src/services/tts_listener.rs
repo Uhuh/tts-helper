@@ -27,9 +27,7 @@ async fn listen(app: AppHandle) -> anyhow::Result<()> {
         .allow_origin("*".parse::<HeaderValue>().unwrap());
 
     let app = Router::new()
-        .route("/authenticate", post(auth_app))
         .route("/tts", post(play_tts))
-        .route("/ping", get(ping_pong))
         .layer(ServiceBuilder::new().layer(cors).layer(Extension(app)));
 
     const PORT: u16 = 12589;
