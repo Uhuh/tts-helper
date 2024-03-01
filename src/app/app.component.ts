@@ -32,6 +32,8 @@ import { VStreamState } from './shared/state/vstream/vstream.feature';
 import { VStreamActions } from './shared/state/vstream/vstream.actions';
 import { VStreamPubSubService } from './shared/services/vstream-pubsub.service';
 import { CounterCommand } from './shared/services/command.interface';
+import { AppSettingsService } from './shared/services/app-settings.service';
+import { AppSettingsActions, AppSettingsFeatureState } from './shared/state/app-settings/app-settings.feature';
 
 @Component({
   selector: 'app-root',
@@ -42,6 +44,7 @@ import { CounterCommand } from './shared/services/command.interface';
 })
 export class AppComponent {
   private readonly store = inject(Store);
+  private readonly appSettingsService = inject(AppSettingsService);
   private readonly azureService = inject(AzureSttService);
   private readonly elevenLabsService = inject(ElevenLabsService);
   private readonly configService = inject(ConfigService);
@@ -73,6 +76,7 @@ export class AppComponent {
       this.storageService.getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs'),
       this.storageService.getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio'),
       this.storageService.getFromStore<VStreamState>(this.settingsLocation, 'vstream'),
+      this.storageService.getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings'),
     ])
       .pipe(takeUntilDestroyed())
       .subscribe(([
@@ -83,6 +87,7 @@ export class AppComponent {
         elevenLabs,
         vtubeStudio,
         vstream,
+        appSettings,
       ]) => {
         this.handleGlobalData(config);
         this.handleOpenAIData(openai);
@@ -91,6 +96,7 @@ export class AppComponent {
         this.handleElevenLabsData(elevenLabs);
         this.handleVTubeStudioData(vtubeStudio);
         this.handleVStreamData(vstream);
+        this.handleAppSettings(appSettings);
       });
 
     /**
@@ -139,6 +145,22 @@ export class AppComponent {
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'vstream', state);
       });
+    
+    this.appSettingsService.state$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => {
+        this.storageService.saveToStore(this.settingsLocation, 'app-settings', state);
+      })
+  }
+  
+  handleAppSettings(data: { value: AppSettingsFeatureState } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+    
+    this.store.dispatch(
+      AppSettingsActions.updateState({ partialState: data.value })
+    )
   }
 
   handleGlobalData(data: { value: ConfigState } | null) {

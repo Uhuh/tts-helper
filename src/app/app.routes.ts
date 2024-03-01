@@ -54,6 +54,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/tools/tools.component'),
   },
   {
+    path: 'app-settings',
+    loadComponent: () => import('./pages/app-settings/app-settings.component'),
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',
