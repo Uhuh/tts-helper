@@ -1,31 +1,43 @@
 <div class="wrapper">
   <div class="home-download">
     <a [routerLink]="['home']">
-      <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107"/>
+      <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107" />
     </a>
     @if (newVersion) {
-      <img alt="download-button" (click)="update()" src="assets/download.svg"/>
+      <img alt="download-button" (click)="update()" src="assets/download.svg" />
     }
   </div>
   <div class="nav-groups">
-    <div class="nav-group">
-      <span>My Connections</span>
-      <a [routerLink]="['twitch']" routerLinkActive="active">
-        <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21"/>
-        <span>Twitch</span>
-        <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
-      </a>
-      <a [routerLink]="['vstream']" routerLinkActive="active">
-        <img alt="vstream-logo" ngSrc="assets/vstream.svg" height="22" width="21"/>
-        <span>VStream</span>
-        <div class="connection" [ngClass]="{'connected': isVStreamConnected$ | async }"></div>
-      </a>
-      <a [routerLink]="['vtubestudio']" routerLinkActive="active">
-        <img alt="youtube-logo" ngSrc="assets/vts_logo_transparent.png" height="25" width="25"/>
-        <span>VTubeStudio</span>
-        <div class="connection" [ngClass]="{'connected': isVTSConnected$ | async }"></div>
-      </a>
-    </div>
+    @if (connections$ | async; as connections) {
+      <div class="nav-group">
+        <span>My Connections</span>
+        <a [routerLink]="['twitch']" [ngClass]="{ hide: !connections.twitchEnabled }" routerLinkActive="active">
+          <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21" />
+          <span>Twitch</span>
+          <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
+        </a>
+        <a [routerLink]="['vstream']" [ngClass]="{ hide: !connections.vstreamEnabled }" routerLinkActive="active">
+          <img alt="vstream-logo" ngSrc="assets/vstream.svg" height="22" width="21" />
+          <span>VStream</span>
+          <div class="connection" [ngClass]="{'connected': isVStreamConnected$ | async }"></div>
+        </a>
+        <a
+          [routerLink]="['vtubestudio']"
+          [ngClass]="{ hide: !connections.vtubestudioEnabled }"
+          routerLinkActive="active"
+        >
+          <img alt="youtube-logo" ngSrc="assets/vts_logo_transparent.png" height="25" width="25" />
+          <span>VTubeStudio</span>
+          <div class="connection" [ngClass]="{'connected': isVTSConnected$ | async }"></div>
+        </a>
+        @if (unavailableConnections(connections)) {
+          <div class="empty">
+            Enable connections in <a [routerLink]="['app-settings']">app settings</a>
+          </div>
+        }
+      </div>
+    }
+    <hr />
     <div class="nav-group">
       <span>Text to Speech</span>
       <a [routerLink]="['settings']" routerLinkActive="active">
@@ -45,14 +57,15 @@
         <span>Moderation</span>
       </a>
       <a [routerLink]="['history']" routerLinkActive="active">
-        <img alt="history-logo" class="tts-icon" ngSrc="assets/history.svg" height="17" width="17"/>
+        <img alt="history-logo" class="tts-icon" ngSrc="assets/history.svg" height="17" width="17" />
         <span>History</span>
       </a>
       <a [routerLink]="['queue']" routerLinkActive="active">
-        <img alt="queue-logo" class="tts-icon" ngSrc="assets/clock.svg" height="17" width="17"/>
+        <img alt="queue-logo" class="tts-icon" ngSrc="assets/clock.svg" height="17" width="17" />
         <span>Queue</span>
       </a>
     </div>
+    <hr />
     <div class="nav-group">
       <span>Speech to Text</span>
       <a [routerLink]="['azure-settings']" routerLinkActive="active">
@@ -60,6 +73,7 @@
         <span>Settings</span>
       </a>
     </div>
+    <hr />
     <div class="nav-group">
       <span>Misc</span>
       <a [routerLink]="['logs']" routerLinkActive="active">
@@ -85,7 +99,7 @@
     </div>
   </div>
   <div class="bottom">
-    <a [routerLink]="['app-settings']">
+    <a [routerLink]="['app-settings']" class="app-settings">
       <mat-icon>settings</mat-icon>
     </a>
     <div class="version">v{{ appVersion }}</div>

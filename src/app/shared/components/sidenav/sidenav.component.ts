@@ -11,6 +11,8 @@ import { VStreamService } from '../../services/vstream.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangelogDialogComponent } from './changelog-dialog/changelog-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AppSettingsService } from '../../services/app-settings.service';
+import { AppSettingsFeatureState } from '../../state/app-settings/app-settings.feature';
 
 @Component({
   selector: 'app-sidenav',
@@ -26,11 +28,13 @@ export class SidenavComponent {
   private readonly matDialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly appSettingsService = inject(AppSettingsService);
 
   @Input({ required: true }) nav!: MatSidenav;
   @Input() isMobile = false;
   appVersion = '';
 
+  readonly connections$ = this.appSettingsService.connections$;
   readonly isTwitchTokenValid$ = this.twitchService.isTokenValid$;
   readonly isVTSConnected$ = this.vtsService.isConnected$;
   readonly isVStreamConnected$ = this.vstreamService.isTokenValid$;
@@ -63,6 +67,10 @@ export class SidenavComponent {
     this.newVersion = true;
 
     this.update();
+  }
+
+  unavailableConnections(connections: AppSettingsFeatureState['connections']) {
+    return !connections.vtubestudioEnabled && !connections.vstreamEnabled && !connections.twitchEnabled;
   }
 
   close() {

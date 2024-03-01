@@ -23,9 +23,9 @@
   }
 
   hr {
-    width: 100%;
-    margin: 15px 0;
-    color: var(--text-inactive);
+    max-width: -webkit-fill-available;
+    margin: 15px 10px;
+    border: 1px solid var(--white-20);
     filter: opacity(0.5);
   }
 }
@@ -53,7 +53,7 @@
 .nav-groups {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  // gap: 2rem;
   overflow-y: auto;
 }
 
@@ -63,10 +63,11 @@
   gap: 14px;
 
   & > span {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     margin: 10px 0;
     padding-left: 10px;
+    text-transform: uppercase;
   }
 
   & > a {
@@ -81,7 +82,13 @@
     border-left: 2px solid transparent;
 
     transition: all 0.2s;
+    
+    animation: slide-right 0.3s forwards;
 
+    &.hide {
+      animation: slide-left 0.3s forwards;
+    }
+    
     &:hover {
       color: var(--text);
       border-left: 2px solid var(--text-inactive);
@@ -140,6 +147,27 @@
   filter: brightness(0.4);
 }
 
+.empty {
+  height: 100px;
+}
+
+.empty a {
+  color: var(--blue);
+  transition: color 0.2s;
+  
+  &:hover {
+    color: var(--blue-20);
+  }
+}
+
+.app-settings {
+  display: flex;
+  
+  &:hover {
+    animation: 2s spin-cog 2s forwards;
+  }
+}
+
 .connection {
   margin-left: auto;
   border-radius: 50%;
@@ -150,4 +178,45 @@
 
 .connected {
   background-color: var(--green);
+}
+
+@keyframes slide-right {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-left {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  90% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-10px);
+    display: none;
+  }
+}
+
+@keyframes spin-cog {
+  0% {
+    transform: rotate(0);
+  }
+  
+  80% {
+    transform: rotate(400deg);
+  }
+  
+  100% {
+    transform: rotate(360deg);
+  }
 }
