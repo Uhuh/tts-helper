@@ -242,7 +242,7 @@ export class TwitchPubSub implements OnDestroy {
 
     // If the streamer has GPT enabled, forward all TTS to ChatGPT.
     if (this.gptSettings?.enabled && this.redeemInfo()?.gptRedeem === rewardId) {
-      this.openaiService.generateOpenAIResponse(userDisplayName, input, true);
+      this.openaiService.generateOpenAIResponse(userDisplayName, input);
     }
   }
 
