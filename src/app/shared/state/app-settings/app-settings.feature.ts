@@ -9,7 +9,7 @@ export interface AppSettingsFeatureState {
 }
 
 export const AppSettingsActions = createActionGroup({
-  source: 'AppSEttings',
+  source: 'AppSettings',
   events: {
     'Update State': props<{ partialState: Partial<AppSettingsFeatureState> }>(),
     'Update Connections': props<{ partialConnections: Partial<AppSettingsFeatureState['connections']> }>(),
