@@ -6,6 +6,7 @@ import {
   GeneralChatState,
   StreamElementsData,
   TtsType,
+  UserListState,
 } from './config.feature';
 import { ChatPermissions } from '../../services/chat.interface';
 
@@ -28,6 +29,7 @@ export const GlobalConfigActions = createActionGroup({
     'Update Tik Tok Voice': props<{ voice: string }>(),
     'Update Tik Tok Language': props<{ language: string }>(),
     'Update Tts Monster Overlay': props<{ overlay: string; key: string; userId: string }>(),
+    'Update User List': props<{ userListState: UserListState }>(),
     'Reset State': emptyProps(),
   },
 });

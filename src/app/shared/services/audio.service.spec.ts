@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { AudioService } from './audio.service';
 import { MockStore } from '@ngrx/store/testing';
 import { StoreModule } from '@ngrx/store';
@@ -8,13 +8,14 @@ import { PlaybackService } from './playback.service';
 import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchService } from './twitch.service';
 import { LogService } from './logs.service';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import {
   AmazonPollyData,
   StreamElementsData,
   TikTokData,
   TtsMonsterData,
   TtsType,
+  UserListState,
 } from '../state/config/config.feature';
 import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { TwitchState } from '../state/twitch/twitch.feature';
@@ -24,6 +25,9 @@ import { RequestAudioData } from './playback.interface';
 describe('AudioService', () => {
   let service: AudioService;
   let store: MockStore;
+
+  const text = 'Hello world!';
+  const username = 'panku';
 
   let configServiceStub: jasmine.SpyObj<ConfigService>;
   let playbackServiceStub: jasmine.SpyObj<PlaybackService>;
@@ -45,12 +49,18 @@ describe('AudioService', () => {
   let elevenlabsStateSubject: Subject<ElevenLabsState>;
   let audioStartedSubject: Subject<number>;
   let audioFinishedSubject: Subject<number>;
+  let userListStateSubject: BehaviorSubject<UserListState>;
 
   beforeEach(() => {
     configAudioSettingsSubject = new Subject();
+    userListStateSubject = new BehaviorSubject<UserListState>({
+      usernames: [],
+      shouldBlockUser: true,
+    });
 
     configServiceStub = jasmine.createSpyObj('ConfigService', [''], {
       audioSettings$: configAudioSettingsSubject,
+      userListState$: userListStateSubject,
     });
 
     audioStartedSubject = new Subject();
@@ -96,47 +106,95 @@ describe('AudioService', () => {
     store = TestBed.inject(MockStore);
 
     service.bannedWords = [];
+
+    service.tts = 'stream-elements';
+    service.streamElements = {
+      voice: 'brian',
+      language: 'english',
+    };
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should play audio', async () => {
+  it('should play audio', fakeAsync(() => {
     // Arrange
-    const text = 'Hello world!';
-    service.tts = 'stream-elements';
-    service.streamElements = {
-      voice: 'brian',
-      language: 'english',
-    };
-
     const requestData: RequestAudioData = {
       type: 'streamElements',
       voice: service.streamElements.voice,
       text,
     };
 
-    // Act
-    await service.playTts(text, 'panku', 'vstream', 9999);
-
-    // Assert
-    expect(playbackServiceStub.playAudio).toHaveBeenCalledOnceWith({ data: requestData });
-  });
-
-  it('should prevent banned messages from playing tts', () => {
-    // Arrange
-    service.bannedWords = ['hello', 'world'];
-    service.tts = 'stream-elements';
-    service.streamElements = {
-      voice: 'brian',
-      language: 'english',
+    const userListState: UserListState = {
+      shouldBlockUser: true,
+      usernames: [],
     };
 
     // Act
-    service.playTts('hello bob!', 'panku', 'vstream', 9999);
+    userListStateSubject.next(userListState);
+
+    service.playTts(text, username, 'vstream', 9999);
+
+    tick(200);
+
+    // Assert
+    expect(playbackServiceStub.playAudio).toHaveBeenCalledOnceWith({ data: requestData });
+  }));
+
+  it('should prevent banned messages from playing tts', fakeAsync(() => {
+    // Arrange
+    service.bannedWords = ['hello', 'world'];
+
+    const userListState: UserListState = {
+      shouldBlockUser: true,
+      usernames: [],
+    };
+
+    // Act
+    userListStateSubject.next(userListState);
+
+    service.playTts(text, username, 'vstream', 9999);
+
+    tick(200);
 
     // Assert
     expect(playbackServiceStub.playAudio).toHaveBeenCalledTimes(0);
-  });
+  }));
+
+  it('should prevent blocked users from playing tts', fakeAsync(() => {
+    // Arrange
+    const userListState: UserListState = {
+      shouldBlockUser: true,
+      usernames: [username],
+    };
+
+    // Act
+    userListStateSubject.next(userListState);
+
+    service.playTts(text, username, 'vstream', 9999);
+
+    tick(200);
+
+    // Assert
+    expect(playbackServiceStub.playAudio).toHaveBeenCalledTimes(0);
+  }));
+
+  it('should play "allowed" users tts request', fakeAsync(() => {
+    // Arrange
+    const userListState: UserListState = {
+      shouldBlockUser: false,
+      usernames: [username],
+    };
+
+    // Act
+    userListStateSubject.next(userListState);
+
+    service.playTts(text, username, 'vstream', 9999);
+
+    tick(200);
+
+    // Assert
+    expect(playbackServiceStub.playAudio).toHaveBeenCalled();
+  }));
 });

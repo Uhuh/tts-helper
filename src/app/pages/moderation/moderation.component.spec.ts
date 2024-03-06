@@ -5,6 +5,7 @@ import { ConfigService } from '../../shared/services/config.service';
 import { LogService } from '../../shared/services/logs.service';
 import { Subject } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { UserListState } from '../../shared/state/config/config.feature';
 
 describe('ModerationComponent', () => {
   let component: ModerationComponent;
@@ -14,12 +15,15 @@ describe('ModerationComponent', () => {
   let logServiceStub: jasmine.SpyObj<LogService>;
 
   let bannedWordsSubject: Subject<string[]>;
+  let userListStateSubject: Subject<UserListState>;
 
   beforeEach(() => {
     bannedWordsSubject = new Subject();
+    userListStateSubject = new Subject();
 
     configServiceStub = jasmine.createSpyObj('ConfigService', [''], {
       bannedWords$: bannedWordsSubject,
+      userListState$: userListStateSubject,
     });
     logServiceStub = jasmine.createSpyObj('LogService', ['']);
 
