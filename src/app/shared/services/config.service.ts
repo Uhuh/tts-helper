@@ -29,6 +29,7 @@ export class ConfigService {
   public readonly authTokens$ = this.store.select(ConfigFeature.selectAuthTokens);
   public readonly audioDelay$ = this.store.select(ConfigFeature.selectAudioDelay);
   public readonly audioSettings$ = this.store.select(ConfigFeature.selectAudioSettings);
+  public readonly userListState$ = this.store.select(ConfigFeature.selectUserListState);
 
   updateVTSToken(vtsAuthToken: string) {
     this.store.dispatch(GlobalConfigActions.updateTokens({ tokens: { vtsAuthToken } }));
@@ -41,6 +42,17 @@ export class ConfigService {
       .map((w) => w.trim());
 
     this.store.dispatch(GlobalConfigActions.updateBannedWords({ bannedWords: words }));
+  }
+
+  updateUserList(userListSettings: { usernames: string, shouldBlockUser: boolean }) {
+    const usernames = userListSettings.usernames.toLowerCase().split(',').filter(u => !!u).map(u => u.trim());
+
+    this.store.dispatch(GlobalConfigActions.updateUserList({
+      userListState: {
+        usernames,
+        shouldBlockUser: userListSettings.shouldBlockUser,
+      },
+    }));
   }
 
   updateGeneralChat(generalChat: Partial<GeneralChatState>) {

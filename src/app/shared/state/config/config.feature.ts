@@ -49,6 +49,11 @@ export type AuthTokens = {
   vtsAuthToken: string;
 };
 
+export interface UserListState {
+  shouldBlockUser: boolean;
+  usernames: string[];
+}
+
 export interface ConfigState {
   tts: TtsType;
   url: string;
@@ -63,6 +68,7 @@ export interface ConfigState {
   amazonPolly: AmazonPollyData;
   tikTok: TikTokData;
   bannedWords: string[];
+  userListState: UserListState;
 }
 
 const defaultChatPermissions: ChatPermissions = {
@@ -116,6 +122,11 @@ const initialState: ConfigState = {
     voice: 'en-US-Standard-E',
   },
   tikTok: defaultTtsState,
+  userListState: {
+    shouldBlockUser: true,
+    // Common bot names
+    usernames: ['streamelements', 'botrix', 'nightbot'],
+  },
 };
 
 export const ConfigFeature = createFeature({
@@ -213,6 +224,13 @@ export const ConfigFeature = createFeature({
     on(GlobalConfigActions.updateAudioDelay, (state, { audioDelay }) => ({
       ...state,
       audioDelay,
+    })),
+    on(GlobalConfigActions.updateUserList, (state, { userListState }) => ({
+      ...state,
+      userListState: {
+        ...state.userListState,
+        ...userListState,
+      },
     })),
   ),
   extraSelectors: ({

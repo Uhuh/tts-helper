@@ -4,13 +4,28 @@
 <div class="section">
   <app-label-block>
     <div header>Banned words</div>
-    <div sub-text>Put words separated by commas.</div>
+    <div sub-text class="yellow">Put words separated by commas.</div>
     <div sub-text>Messages that contain any of these will be ignored entirely.</div>
     <app-toggle class="right" [control]="hideBannedWords" text="Blur" />
     <textarea
       [formControl]="bannedWords"
       class="banned-words hide"
       [ngClass]="{ show: !hideBannedWords.value }"
+    ></textarea>
+  </app-label-block>
+
+  <hr />
+
+  <app-label-block>
+    <div header>User block/allow list for TTS</div>
+    <div sub-text class="yellow">Put usernames separated by commas.</div>
+    <div sub-text>Toggle to block or allow!</div>
+    <app-toggle
+      class="right" [control]="userListSettings.controls.shouldBlockUser"
+      [text]="userListSettings.controls.shouldBlockUser.value ? 'Block' : 'Allow'"
+    />
+    <textarea
+      [formControl]="userListSettings.controls.usernames"
     ></textarea>
   </app-label-block>
 </div>

@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfigService } from './config.service';
@@ -20,7 +20,7 @@ import {
 } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
-import { map } from 'rxjs';
+import { first, map } from 'rxjs';
 import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
@@ -30,6 +30,7 @@ import { SynthesizeSpeechInput } from '@aws-sdk/client-polly/dist-types/models/m
 
 @Injectable()
 export class AudioService {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
   private readonly snackbar = inject(MatSnackBar);
@@ -37,6 +38,7 @@ export class AudioService {
   private readonly elevenLabsService = inject(ElevenLabsService);
   private readonly twitchService = inject(TwitchService);
   private readonly logService = inject(LogService);
+  private readonly userListState$ = this.configService.userListState$;
 
   public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
   public readonly queuedItems$ = this.audioItems$
@@ -96,60 +98,73 @@ export class AudioService {
     this.playTts(audio.text, audio.username, audio.source, 1000);
   }
 
-  async playTts(
+  playTts(
     text: string,
     username: string,
     source: AudioSource,
     charLimit: number,
   ) {
-    if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
-      return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
-    }
+    this.userListState$
+      .pipe(first(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(async (userListState) => {
+        if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
+          return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
+        }
 
-    // Trim played audio down, but keep full message in case stream wants to requeue it.
-    const audioText = text.substring(0, charLimit);
-    const data = await this.getRequestData(audioText);
+        console.log(userListState);
 
-    if (!data) {
-      this.snackbar.open(
-        `Failed to grab the required data for TTS service: ${this.tts}!`,
-        'Dismiss',
-        {
-          panelClass: 'notification-error',
-        },
-      );
+        const isUserInList = userListState.usernames.includes(username.toLowerCase());
+        if (userListState.shouldBlockUser && isUserInList ||
+          !userListState.shouldBlockUser && !isUserInList
+        ) {
+          return this.logService.add(`Ignoring message as the user is not valid for the block/allow list. Username: ${username}`, 'info', 'AudioService.playTts');
+        }
 
-      return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
-    }
+        // Trim played audio down, but keep full message in case stream wants to requeue it.
+        const audioText = text.substring(0, charLimit);
+        const data = await this.getRequestData(audioText);
 
-    this.playback
-      .playAudio({ data })
-      .then((id) => {
-        this.logService.add(`Played TTS.\n${JSON.stringify({
-          ...data,
-          username,
-          charLimit,
-        }, null, 1)}`, 'info', 'AudioService.playTts');
+        if (!data) {
+          this.snackbar.open(
+            `Failed to grab the required data for TTS service: ${this.tts}!`,
+            'Dismiss',
+            {
+              panelClass: 'notification-error',
+            },
+          );
 
-        this.addAudio({
-          id,
-          createdAt: new Date(),
-          source,
-          text,
-          username,
-          state: AudioStatus.queued,
-        });
-      })
-      .catch((e) => {
-        this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
+          return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
+        }
 
-        this.snackbar.open(
-          'Oops! We encountered an error while playing that.',
-          'Dismiss',
-          {
-            panelClass: 'notification-error',
-          },
-        );
+        this.playback
+          .playAudio({ data })
+          .then((id) => {
+            this.logService.add(`Played TTS.\n${JSON.stringify({
+              ...data,
+              username,
+              charLimit,
+            }, null, 1)}`, 'info', 'AudioService.playTts');
+
+            this.addAudio({
+              id,
+              createdAt: new Date(),
+              source,
+              text,
+              username,
+              state: AudioStatus.queued,
+            });
+          })
+          .catch((e) => {
+            this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
+
+            this.snackbar.open(
+              'Oops! We encountered an error while playing that.',
+              'Dismiss',
+              {
+                panelClass: 'notification-error',
+              },
+            );
+          });
       });
   }
 
