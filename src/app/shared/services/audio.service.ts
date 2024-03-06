@@ -111,8 +111,6 @@ export class AudioService {
           return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
         }
 
-        console.log(userListState);
-
         const isUserInList = userListState.usernames.includes(username.toLowerCase());
         if (userListState.shouldBlockUser && isUserInList ||
           !userListState.shouldBlockUser && !isUserInList
