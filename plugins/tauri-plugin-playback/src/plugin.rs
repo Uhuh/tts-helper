@@ -1,13 +1,13 @@
-use std::{io::Cursor, time::Duration};
+use std::io::Cursor;
 use base64::decode;
 
 use rodio::{Decoder, DevicesError, Source};
 use tauri::{
-    api::http::ClientBuilder,
     generate_handler,
     plugin::{Builder, TauriPlugin},
     AppHandle, Manager, State, Wry,
 };
+use tauri_plugin_http::reqwest::Client;
 use thiserror::Error;
 use tracing::{instrument, trace};
 use tts_helper_models::requests::{ApiError, ApiResult};
@@ -36,11 +36,7 @@ pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
     let device_service = DeviceService::init()?;
     let playback_service = PlaybackService::new(controller.clone());
     let now_playing_service = NowPlayingService::default();
-    let client = ClientBuilder::new()
-        .max_redirections(10)
-        .connect_timeout(Duration::from_secs(30))
-        .build()
-        .map_err(InitError::HttpClient)?;
+    let client = Client::new();
     let tts_service = TtsService::new(client.clone());
 
     // Setup playback
@@ -60,7 +56,7 @@ pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
             set_audio_state,
             list_audio,
         ])
-        .setup(|app| {
+        .setup(|app, _| {
             // Manage state
             app.manage(controller);
 
@@ -88,7 +84,7 @@ pub enum InitError {
 
     /// Failed to initialize the HTTP client.
     #[error("failed to initialize HTTP client")]
-    HttpClient(tauri::api::Error),
+    HttpClient(tauri::Error),
 }
 
 /// Gets a list of output devices.
@@ -162,6 +158,10 @@ async fn play_audio(
         }
     };
 
+    app.emit("emit-to-js", "Hello").unwrap();
+
+    println!("Hello world, Im going to play audio");
+
     // Decode source data
     let source = Decoder::new(Cursor::new(raw))?.convert_samples();
 
@@ -175,7 +175,7 @@ async fn play_audio(
             let app = app.clone();
             move || {
                 trace!(id = id.0, "started playing");
-                drop(app.emit_all("playback::audio::start", id));
+                drop(app.emit("playback::audio::start", id));
             }
         })
         .on_finish({
@@ -184,7 +184,7 @@ async fn play_audio(
             move || {
                 trace!(id = id.0, "finished playing");
                 now_playing_svc.remove(id);
-                drop(app.emit_all("playback::audio::finish", id));
+                drop(app.emit("playback::audio::finish", id));
             }
         });
     playback_svc.enqueue(Box::new(source), controller, events);
