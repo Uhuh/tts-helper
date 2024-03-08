@@ -7,7 +7,7 @@ import {
   SpeechConfig,
   SpeechRecognizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
-import { isRegistered, register, unregister } from '@tauri-apps/api/globalShortcut';
+import { isRegistered, register, unregister } from '@tauri-apps/plugin-global-shortcut';
 import { LogService } from './logs.service';
 import { Store } from '@ngrx/store';
 import { AzureFeature, AzureState } from '../state/azure/azure.feature';
