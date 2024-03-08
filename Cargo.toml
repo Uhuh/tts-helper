@@ -4,8 +4,18 @@ members = ["src-tauri", "plugins/*", "lib-backend/*"]
 
 [workspace.dependencies]
 # Tauri
-tauri = "1"
-tauri-build = "1"
+tauri = "2.0.0-beta.10"
+tauri-build = "2.0.0-beta.8"
+tauri-plugin = "2.0.0-beta.8"
+tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+tauri-plugin-window-state = "2.0.0-beta.2"
+tauri-plugin-cli = "2.0.0-beta.2"
+tauri-plugin-dialog = "2.0.0-beta.2"
+tauri-plugin-updater = "2.0.0-beta.2"
+tauri-plugin-http = "2.0.0-beta.2"
+tauri-plugin-app = "2.0.0-alpha.2"
+# tauri-plugin-fs = "2.0.0-beta.2"
+tauri-plugin-devtools = { git = "https://github.com/crabnebula-dev/devtools", version = "2.0.0-beta.0" }
 
 # Serialization
 serde = "1"
