@@ -8,15 +8,22 @@ repository = ""
 edition = "2021"
 publish = false
 
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
 [build-dependencies]
 tauri-build = { workspace = true, features = [] }
 
 [dependencies]
 # Tauri
-tauri = { workspace = true, features = ["shell-open", "updater", "global-shortcut-all", "devtools"] }
-tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
-tauri-plugin-window-state = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "dev" }
+tauri = { workspace = true }
 tauri-plugin-playback = { path = "../plugins/tauri-plugin-playback" }
+tauri-plugin-devtools = { workspace = true }
+tauri-plugin-store = { workspace = true }
+tauri-plugin-window-state = { workspace = true }
+tauri-plugin-http = { workspace = true }
+tauri-plugin-updater = { workspace = true }
 
 # Serialization
 serde = { workspace = true, features = ["derive"] }
