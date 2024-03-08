@@ -1,40 +1,22 @@
 {
+  "productName": "TTS Helper",
+  "version": "1.5.1",
+  "identifier": "com.panku.io",
+  "bundle": {
+    "active": true,
+    "icon": [
+      "icons/logo.ico"
+    ],
+    "targets": "all"
+  },
   "build": {
     "beforeDevCommand": "yarn start --port 1420",
     "beforeBuildCommand": "yarn build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist/tts-helper",
-    "withGlobalTauri": false
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist/tts-helper"
   },
-  "package": {
-    "productName": "TTS Helper",
-    "version": "1.5.1"
-  },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "globalShortcut": {
-        "all": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "icon": [
-        "icons/logo.ico"
-      ],
-      "identifier": "com.panku.io",
-      "targets": "all"
-    },
-    "security": {
-      "csp": null
-    },
+  "plugins": {
     "updater": {
-      "active": true,
-      "dialog": false,
       "endpoints": [
         "https://github.com/Uhuh/tts-helper/releases/latest/download/latest.json"
       ],
@@ -42,6 +24,12 @@
       "windows": {
         "installMode": "passive"
       }
+    }
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "security": {
+      "csp": null
     },
     "windows": [
       {
