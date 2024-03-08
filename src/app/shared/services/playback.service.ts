@@ -1,5 +1,4 @@
 import { ApplicationRef, inject, Injectable } from '@angular/core';
-import { invoke } from '@tauri-apps/api';
 import { listen } from '@tauri-apps/api/event';
 import { BehaviorSubject, from, Subject, tap } from 'rxjs';
 import {
@@ -15,6 +14,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { AudioActions } from '../state/audio/audio.actions';
 import { AudioStatus } from '../state/audio/audio.feature';
+import { invoke } from '@tauri-apps/api/core';
 
 @Injectable()
 export class PlaybackService {
