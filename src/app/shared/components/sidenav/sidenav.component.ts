@@ -6,7 +6,8 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/ro
 import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { TwitchService } from '../../services/twitch.service';
 import { VTubeStudioService } from '../../services/vtubestudio.service';
-import { checkUpdate, installUpdate, UpdateResult } from '@tauri-apps/api/updater';
+import { check, Update } from '@tauri-apps/plugin-updater';
+import { relaunch } from '@tauri-apps/plugin-process';
 import { VStreamService } from '../../services/vstream.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangelogDialogComponent } from './changelog-dialog/changelog-dialog.component';
@@ -39,7 +40,7 @@ export class SidenavComponent {
   readonly isVTSConnected$ = this.vtsService.isConnected$;
   readonly isVStreamConnected$ = this.vstreamService.isTokenValid$;
   newVersion = false;
-  updateInfo?: UpdateResult;
+  updater?: Update;
 
   constructor() {
     getVersion().then((v) => (this.appVersion = v));
@@ -56,17 +57,17 @@ export class SidenavComponent {
   }
 
   async checkForUpdate() {
-    const updater = await checkUpdate();
+    const update = await check();
 
-    if (!updater.shouldUpdate) {
+    if (!update?.available) {
       return;
     }
 
-    this.updateInfo = updater;
+    this.updater = update;
 
     this.newVersion = true;
 
-    this.update();
+    this.openUpdateDialog();
   }
 
   unavailableConnections(connections: AppSettingsFeatureState['connections']) {
@@ -81,21 +82,24 @@ export class SidenavComponent {
     this.nav.close();
   }
 
-  update() {
+  openUpdateDialog() {
     const dialogRef = this.matDialog.open(ChangelogDialogComponent, {
       width: '500px',
       data: {
-        version: this.updateInfo?.manifest?.version,
+        version: this.updater?.version,
       },
     });
 
     dialogRef.afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(update => {
-        // If the user clicked update in the dialog.
-        if (update) {
-          installUpdate();
+      .subscribe(async update => {
+        if (!update) {
+          return;
         }
+
+        await this.updater?.downloadAndInstall();
+
+        await relaunch();
       });
   }
 }
