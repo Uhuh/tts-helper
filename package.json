@@ -9,7 +9,7 @@
   "license": "LGPL-3.0-or-later",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 1420",
     "test": "ng test",
     "build": "ng build",
     "tauri:dev": "yarn tauri dev",
