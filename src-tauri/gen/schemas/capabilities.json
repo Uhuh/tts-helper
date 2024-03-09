@@ -23,7 +23,9 @@
       "playback:allow-set-output-volume",
       "playback:allow-set-playback-state",
       "playback:allow-list-output-devices",
-      "playback:allow-play-audio"
+      "playback:allow-play-audio",
+      "playback:allow-set-audio-state",
+      "shell:allow-open"
     ],
     "platforms": [
       "linux",
