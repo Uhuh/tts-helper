@@ -7,7 +7,6 @@ use tauri::{AppHandle, Manager};
 use tokio::runtime::Builder;
 use tracing::{error, instrument};
 
-
 #[instrument(skip_all)]
 pub fn run_tts_server(app: AppHandle) {
     fn run_server_inner(app: AppHandle) -> anyhow::Result<()> {
@@ -56,5 +55,5 @@ async fn play_tts(
 ) {
 	println!("received tts play request: {:?}", request);
 
-    drop(app.emit("api:play_tts", request));
+    let _ = app.emit("api:play_tts", request);
 }

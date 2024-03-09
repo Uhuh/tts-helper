@@ -19,6 +19,8 @@ pub fn run() -> anyhow::Result<()> {
         //.plugin(tauri_plugin_devtools::init())
         .plugin(tauri_plugin_updater::Builder::default().build())
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_window_state::Builder::default().build())
         .plugin(tauri_plugin_playback::init()?)
         .setup(|app| {
             // Run auth server
