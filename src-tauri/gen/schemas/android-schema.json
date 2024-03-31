@@ -265,12 +265,6 @@
                 "identifier": {
                   "oneOf": [
                     {
-                      "type": "string",
-                      "enum": [
-                        "shell:default"
-                      ]
-                    },
-                    {
                       "description": "shell:allow-execute -> Enables the execute command without any pre-configured scope.",
                       "type": "string",
                       "enum": [
@@ -335,7 +329,7 @@
                     "type": "object",
                     "required": [
                       "args",
-                      "cmd",
+                      "command",
                       "name",
                       "sidecar"
                     ],
@@ -348,7 +342,7 @@
                           }
                         ]
                       },
-                      "cmd": {
+                      "command": {
                         "description": "The command name. It can start with a variable that resolves to a system base directory. The variables are: `$AUDIO`, `$CACHE`, `$CONFIG`, `$DATA`, `$LOCALDATA`, `$DESKTOP`, `$DOCUMENT`, `$DOWNLOAD`, `$EXE`, `$FONT`, `$HOME`, `$PICTURE`, `$PUBLIC`, `$RUNTIME`, `$TEMPLATE`, `$VIDEO`, `$RESOURCE`, `$APP`, `$LOG`, `$TEMP`, `$APPCONFIG`, `$APPDATA`, `$APPLOCALDATA`, `$APPCACHE`, `$APPLOG`.",
                         "type": "string"
                       },
@@ -370,7 +364,7 @@
                     "type": "object",
                     "required": [
                       "args",
-                      "cmd",
+                      "command",
                       "name",
                       "sidecar"
                     ],
@@ -383,7 +377,7 @@
                           }
                         ]
                       },
-                      "cmd": {
+                      "command": {
                         "description": "The command name. It can start with a variable that resolves to a system base directory. The variables are: `$AUDIO`, `$CACHE`, `$CONFIG`, `$DATA`, `$LOCALDATA`, `$DESKTOP`, `$DOCUMENT`, `$DOWNLOAD`, `$EXE`, `$FONT`, `$HOME`, `$PICTURE`, `$PUBLIC`, `$RUNTIME`, `$TEMPLATE`, `$VIDEO`, `$RESOURCE`, `$APP`, `$LOG`, `$TEMP`, `$APPCONFIG`, `$APPDATA`, `$APPLOCALDATA`, `$APPCACHE`, `$APPLOG`.",
                         "type": "string"
                       },
@@ -631,6 +625,13 @@
           ]
         },
         {
+          "description": "image:allow-height -> Enables the height command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "image:allow-height"
+          ]
+        },
+        {
           "description": "image:allow-new -> Enables the new command without any pre-configured scope.",
           "type": "string",
           "enum": [
@@ -645,10 +646,10 @@
           ]
         },
         {
-          "description": "image:allow-size -> Enables the size command without any pre-configured scope.",
+          "description": "image:allow-width -> Enables the width command without any pre-configured scope.",
           "type": "string",
           "enum": [
-            "image:allow-size"
+            "image:allow-width"
           ]
         },
         {
@@ -666,6 +667,13 @@
           ]
         },
         {
+          "description": "image:deny-height -> Denies the height command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "image:deny-height"
+          ]
+        },
+        {
           "description": "image:deny-new -> Denies the new command without any pre-configured scope.",
           "type": "string",
           "enum": [
@@ -680,10 +688,10 @@
           ]
         },
         {
-          "description": "image:deny-size -> Denies the size command without any pre-configured scope.",
+          "description": "image:deny-width -> Denies the width command without any pre-configured scope.",
           "type": "string",
           "enum": [
-            "image:deny-size"
+            "image:deny-width"
           ]
         },
         {
@@ -1121,12 +1129,6 @@
           ]
         },
         {
-          "type": "string",
-          "enum": [
-            "playback:default"
-          ]
-        },
-        {
           "description": "playback:allow-list-audio -> Enables the list_audio command without any pre-configured scope.",
           "type": "string",
           "enum": [
@@ -1260,12 +1262,6 @@
           ]
         },
         {
-          "type": "string",
-          "enum": [
-            "shell:default"
-          ]
-        },
-        {
           "description": "shell:allow-execute -> Enables the execute command without any pre-configured scope.",
           "type": "string",
           "enum": [
@@ -1319,12 +1315,6 @@
           "type": "string",
           "enum": [
             "shell:deny-stdin-write"
-          ]
-        },
-        {
-          "type": "string",
-          "enum": [
-            "store:default"
           ]
         },
         {
@@ -1503,24 +1493,10 @@
           ]
         },
         {
-          "description": "tray:allow-get-by-id -> Enables the get_by_id command without any pre-configured scope.",
-          "type": "string",
-          "enum": [
-            "tray:allow-get-by-id"
-          ]
-        },
-        {
           "description": "tray:allow-new -> Enables the new command without any pre-configured scope.",
           "type": "string",
           "enum": [
             "tray:allow-new"
-          ]
-        },
-        {
-          "description": "tray:allow-remove-by-id -> Enables the remove_by_id command without any pre-configured scope.",
-          "type": "string",
-          "enum": [
-            "tray:allow-remove-by-id"
           ]
         },
         {
@@ -1580,24 +1556,10 @@
           ]
         },
         {
-          "description": "tray:deny-get-by-id -> Denies the get_by_id command without any pre-configured scope.",
-          "type": "string",
-          "enum": [
-            "tray:deny-get-by-id"
-          ]
-        },
-        {
           "description": "tray:deny-new -> Denies the new command without any pre-configured scope.",
           "type": "string",
           "enum": [
             "tray:deny-new"
-          ]
-        },
-        {
-          "description": "tray:deny-remove-by-id -> Denies the remove_by_id command without any pre-configured scope.",
-          "type": "string",
-          "enum": [
-            "tray:deny-remove-by-id"
           ]
         },
         {
@@ -2697,12 +2659,6 @@
           "type": "string",
           "enum": [
             "window:deny-unminimize"
-          ]
-        },
-        {
-          "type": "string",
-          "enum": [
-            "window-state:default"
           ]
         },
         {

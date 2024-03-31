@@ -114,12 +114,6 @@
     "permission_sets": {},
     "global_scope_schema": null
   },
-  "devtools": {
-    "default_permission": null,
-    "permissions": {},
-    "permission_sets": {},
-    "global_scope_schema": null
-  },
   "event": {
     "default_permission": {
       "identifier": "default",
@@ -341,12 +335,9 @@
       "permissions": [
         "allow-new",
         "allow-from-bytes",
-        "allow-from-png-bytes",
-        "allow-from-ico-bytes",
         "allow-from-path",
         "allow-rgba",
-        "allow-width",
-        "allow-height"
+        "allow-size"
       ]
     },
     "permissions": {
@@ -360,42 +351,12 @@
           "deny": []
         }
       },
-      "allow-from-ico-bytes": {
-        "identifier": "allow-from-ico-bytes",
-        "description": "Enables the from_ico_bytes command without any pre-configured scope.",
-        "commands": {
-          "allow": [
-            "from_ico_bytes"
-          ],
-          "deny": []
-        }
-      },
       "allow-from-path": {
         "identifier": "allow-from-path",
         "description": "Enables the from_path command without any pre-configured scope.",
         "commands": {
           "allow": [
             "from_path"
-          ],
-          "deny": []
-        }
-      },
-      "allow-from-png-bytes": {
-        "identifier": "allow-from-png-bytes",
-        "description": "Enables the from_png_bytes command without any pre-configured scope.",
-        "commands": {
-          "allow": [
-            "from_png_bytes"
-          ],
-          "deny": []
-        }
-      },
-      "allow-height": {
-        "identifier": "allow-height",
-        "description": "Enables the height command without any pre-configured scope.",
-        "commands": {
-          "allow": [
-            "height"
           ],
           "deny": []
         }
@@ -420,12 +381,12 @@
           "deny": []
         }
       },
-      "allow-width": {
-        "identifier": "allow-width",
-        "description": "Enables the width command without any pre-configured scope.",
+      "allow-size": {
+        "identifier": "allow-size",
+        "description": "Enables the size command without any pre-configured scope.",
         "commands": {
           "allow": [
-            "width"
+            "size"
           ],
           "deny": []
         }
@@ -440,16 +401,6 @@
           ]
         }
       },
-      "deny-from-ico-bytes": {
-        "identifier": "deny-from-ico-bytes",
-        "description": "Denies the from_ico_bytes command without any pre-configured scope.",
-        "commands": {
-          "allow": [],
-          "deny": [
-            "from_ico_bytes"
-          ]
-        }
-      },
       "deny-from-path": {
         "identifier": "deny-from-path",
         "description": "Denies the from_path command without any pre-configured scope.",
@@ -457,26 +408,6 @@
           "allow": [],
           "deny": [
             "from_path"
-          ]
-        }
-      },
-      "deny-from-png-bytes": {
-        "identifier": "deny-from-png-bytes",
-        "description": "Denies the from_png_bytes command without any pre-configured scope.",
-        "commands": {
-          "allow": [],
-          "deny": [
-            "from_png_bytes"
-          ]
-        }
-      },
-      "deny-height": {
-        "identifier": "deny-height",
-        "description": "Denies the height command without any pre-configured scope.",
-        "commands": {
-          "allow": [],
-          "deny": [
-            "height"
           ]
         }
       },
@@ -500,13 +431,13 @@
           ]
         }
       },
-      "deny-width": {
-        "identifier": "deny-width",
-        "description": "Denies the width command without any pre-configured scope.",
+      "deny-size": {
+        "identifier": "deny-size",
+        "description": "Denies the size command without any pre-configured scope.",
         "commands": {
           "allow": [],
           "deny": [
-            "width"
+            "size"
           ]
         }
       }
@@ -1483,7 +1414,7 @@
           ],
           "description": "The allowed arguments for the command execution."
         },
-        "command": {
+        "cmd": {
           "description": "The command name. It can start with a variable that resolves to a system base directory. The variables are: `$AUDIO`, `$CACHE`, `$CONFIG`, `$DATA`, `$LOCALDATA`, `$DESKTOP`, `$DOCUMENT`, `$DOWNLOAD`, `$EXE`, `$FONT`, `$HOME`, `$PICTURE`, `$PUBLIC`, `$RUNTIME`, `$TEMPLATE`, `$VIDEO`, `$RESOURCE`, `$APP`, `$LOG`, `$TEMP`, `$APPCONFIG`, `$APPDATA`, `$APPLOCALDATA`, `$APPCACHE`, `$APPLOG`.",
           "type": "string"
         },
@@ -1498,7 +1429,7 @@
       },
       "required": [
         "args",
-        "command",
+        "cmd",
         "name",
         "sidecar"
       ],
@@ -1760,12 +1691,32 @@
       "permissions": []
     },
     "permissions": {
+      "allow-get-by-id": {
+        "identifier": "allow-get-by-id",
+        "description": "Enables the get_by_id command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "get_by_id"
+          ],
+          "deny": []
+        }
+      },
       "allow-new": {
         "identifier": "allow-new",
         "description": "Enables the new command without any pre-configured scope.",
         "commands": {
           "allow": [
             "new"
+          ],
+          "deny": []
+        }
+      },
+      "allow-remove-by-id": {
+        "identifier": "allow-remove-by-id",
+        "description": "Enables the remove_by_id command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "remove_by_id"
           ],
           "deny": []
         }
@@ -1850,6 +1801,16 @@
           "deny": []
         }
       },
+      "deny-get-by-id": {
+        "identifier": "deny-get-by-id",
+        "description": "Denies the get_by_id command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "get_by_id"
+          ]
+        }
+      },
       "deny-new": {
         "identifier": "deny-new",
         "description": "Denies the new command without any pre-configured scope.",
@@ -1857,6 +1818,16 @@
           "allow": [],
           "deny": [
             "new"
+          ]
+        }
+      },
+      "deny-remove-by-id": {
+        "identifier": "deny-remove-by-id",
+        "description": "Denies the remove_by_id command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "remove_by_id"
           ]
         }
       },
