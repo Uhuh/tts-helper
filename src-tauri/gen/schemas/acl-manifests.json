@@ -114,6 +114,12 @@
     "permission_sets": {},
     "global_scope_schema": null
   },
+  "devtools": {
+    "default_permission": null,
+    "permissions": {},
+    "permission_sets": {},
+    "global_scope_schema": null
+  },
   "event": {
     "default_permission": {
       "identifier": "default",
