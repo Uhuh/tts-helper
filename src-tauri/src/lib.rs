@@ -13,14 +13,16 @@ pub fn run() -> anyhow::Result<()> {
     let obs_port = "37891";
     let streamdeck_port = "17448";
     let vstream_overlays_port = "37391";
-    
-    tauri::Builder::default()
+
+    let builder = tauri::Builder::default();
+
+    builder
         .plugin(tauri_plugin_http::init())
-        //.plugin(tauri_plugin_devtools::init())
         .plugin(tauri_plugin_updater::Builder::default().build())
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_window_state::Builder::default().build())
+		.plugin(tauri_plugin_devtools::init())
         .plugin(tauri_plugin_playback::init()?)
         .setup(|app| {
             // Run auth server
@@ -28,7 +30,7 @@ pub fn run() -> anyhow::Result<()> {
             std::thread::spawn(move || run_auth_server(handle));
             let handle = app.handle().clone();
             std::thread::spawn(move || run_tts_server(handle));
-            
+
             tauri::async_runtime::spawn(start_ws_server(obs_port));
             tauri::async_runtime::spawn(start_ws_server(streamdeck_port));
             tauri::async_runtime::spawn(start_ws_server(vstream_overlays_port));

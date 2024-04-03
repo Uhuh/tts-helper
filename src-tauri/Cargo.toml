@@ -20,7 +20,7 @@ tauri-build = { workspace = true, features = [] }
 tauri = { workspace = true }
 tauri-plugin-http = { workspace = true }
 tauri-plugin-playback = { path = "../plugins/tauri-plugin-playback" }
-# tauri-plugin-devtools = { git = "https://github.com/crabnebula-dev/devtools" }
+tauri-plugin-devtools = { git = "https://github.com/crabnebula-dev/devtools" }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 tauri-plugin-shell = "2.0.0-beta"
 tauri-plugin-updater = "2.0.0-beta"
