@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { DestroyRef, inject, Injectable } from '@angular/core';
 import { LogService } from './logs.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { v4 as uuid } from 'uuid';
@@ -14,7 +14,8 @@ import { PlaybackService } from './playback.service';
 import { Store } from '@ngrx/store';
 import { VTubeStudioFeature, VTubeStudioState } from '../state/vtubestudio/vtubestudio.feature.';
 import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
-import { BehaviorSubject, interval } from 'rxjs';
+import { BehaviorSubject, first } from 'rxjs';
+import { TtsType } from '../state/config/config.feature';
 
 @Injectable()
 export class VTubeStudioService {
@@ -23,6 +24,9 @@ export class VTubeStudioService {
   private readonly playbackService = inject(PlaybackService);
   private readonly configService = inject(ConfigService);
   private readonly snackbar = inject(MatSnackBar);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly ttsType$ = this.configService.configTts$;
 
   private readonly vtsBasics = {
     apiName: 'VTubeStudioPublicAPI',
@@ -45,12 +49,16 @@ export class VTubeStudioService {
 
   isMouthOpenEnabled = false;
   isMouthFormEnabled = false;
+  isAudioPlaying = false;
 
   // Try to connect to default.
   private port = 8001;
   private socket = new WebSocket(`ws://localhost:8001`);
   private vtsAuthToken = '';
   private authenticationRequestUUID = uuid();
+
+  // Easy way to clear all Ids when audio is skipped.
+  private mouthShapesTimeouts: ReturnType<typeof setTimeout>[] = [];
 
   /**
    * These intervals are for constantly requesting user mouth shape info so it can be sent to their model
@@ -62,11 +70,6 @@ export class VTubeStudioService {
   private mouthTrackingInterval = setInterval(() => {
     console.info('Initial interval for types sake. :)');
   }, 60);
-
-  /**
-   * @TODO - When audio is skipped this never gets cleared since AudioFinished never fires
-   */
-  randomMouthInterval?: ReturnType<typeof setInterval> = undefined;
 
   constructor() {
     this.port$.pipe(takeUntilDestroyed())
@@ -110,15 +113,25 @@ export class VTubeStudioService {
 
     this.playbackService.audioStarted$
       .pipe(takeUntilDestroyed())
-      .subscribe(() => this.randomMouth(true));
+      .subscribe(() => this.isAudioPlaying = true);
 
     this.playbackService.audioFinished$
       .pipe(takeUntilDestroyed())
-      .subscribe(() => this.randomMouth(false));
+      .subscribe(() => this.isAudioPlaying = false);
 
     this.playbackService.audioSkipped$
       .pipe(takeUntilDestroyed())
-      .subscribe(() => this.randomMouth(false));
+      .subscribe(() => {
+        this.isAudioPlaying = false;
+
+        for (const timeout of this.mouthShapesTimeouts) {
+          clearTimeout(timeout);
+        }
+      });
+
+    this.playbackService.audioMouthShapes$
+      .pipe(takeUntilDestroyed())
+      .subscribe((mouthShapes) => this.prepareVTSMouthParams(mouthShapes));
   }
 
   private get isTracking() {
@@ -222,7 +235,7 @@ export class VTubeStudioService {
    */
   private handleDefaultParams(data: { name: string, value: number }) {
     // If TTS is playing ignore users mouth movement.
-    if (this.randomMouthInterval) {
+    if (this.isAudioPlaying) {
       return;
     }
 
@@ -391,57 +404,70 @@ export class VTubeStudioService {
   }
 
   /**
-   * Turn on or off the random VTS mouth information
-   * @param enabled Whether to send mouth data to users model.
-   * @private
+   * Convert TTS type to number of milliseconds. These numbers are from "feels good", nothing based in fact.
+   * @param ttsType
    */
-  private randomMouth(enabled: boolean) {
-    const { readyState, CLOSED, CLOSING, CONNECTING } = this.socket;
-
-    if (!enabled || readyState === CLOSED || readyState === CLOSING || readyState === CONNECTING) {
-      clearInterval(this.randomMouthInterval);
-
-      return this.randomMouthInterval = undefined;
+  private getTtsSpeedInterval(ttsType: TtsType) {
+    switch (ttsType) {
+      case 'eleven-labs':
+        return 12;
+      default:
+        return 24;
     }
-
-    this.randomMouthInterval = setInterval(() => this.sendRandomMouthParams(), 150);
   }
 
-  private sendRandomMouthParams() {
+  /**
+   * Send mouth shapes to VTS over an interval that correlates to what seems good for specific TTS services.
+   * @param mouthShapes - Tuple array of data after FFT. [open, form]
+   */
+  private prepareVTSMouthParams(mouthShapes: [number, number][]) {
     if (!this.vtsAuthToken) {
       return;
     }
 
-    const mouthOpen = Math.random();
-    const mouthForm = 0.5;
+    this.ttsType$
+      .pipe(first(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(ttsType => {
+        const interval = this.getTtsSpeedInterval(ttsType);
+        this.iterateMouthShapes(mouthShapes, interval);
+      });
+  }
 
+  /**
+   * Send mouth parameters to VTS over a set interval.
+   * @param mouthShapes The open / form mouth shapes determined from FFT.
+   * @param interval The interval speeds to make VTS mouth match the speed of audio generated from TTS services.
+   */
+  private iterateMouthShapes(mouthShapes: [number, number][], interval: number) {
+    let delay = 0; // Add interval to this as a sum.
+
+    for (const [open, form] of mouthShapes) {
+      const timeout = setTimeout(() => {
+        this.sendVTSMouthShape({
+          id: TTSHelperParameterNames.TTSHelperMouthOpen,
+          value: open,
+        });
+
+        this.sendVTSMouthShape({
+          id: TTSHelperParameterNames.TTSHelperMouthForm,
+          value: form,
+        });
+      }, delay);
+
+      this.mouthShapesTimeouts.push(timeout);
+
+      delay += interval;
+    }
+  }
+
+  private sendVTSMouthShape(mouthInfo: { id: TTSHelperParameterNames, value: number }) {
     this.socket.send(JSON.stringify({
       ...this.vtsBasics,
       messageType: VTubeStudioMessageType.InjectParameterDataRequest,
       data: {
         faceFound: false,
         mode: 'set',
-        parameterValues: [
-          {
-            id: TTSHelperParameterNames.TTSHelperMouthOpen,
-            value: mouthOpen,
-          },
-        ],
-      },
-    }));
-
-    this.socket.send(JSON.stringify({
-      ...this.vtsBasics,
-      messageType: VTubeStudioMessageType.InjectParameterDataRequest,
-      data: {
-        faceFound: false,
-        mode: 'set',
-        parameterValues: [
-          {
-            id: TTSHelperParameterNames.TTSHelperMouthForm,
-            value: mouthForm,
-          },
-        ],
+        parameterValues: [mouthInfo],
       },
     }));
   }

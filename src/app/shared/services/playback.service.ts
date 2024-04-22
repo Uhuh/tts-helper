@@ -20,7 +20,7 @@ import { invoke } from '@tauri-apps/api/core';
 export class PlaybackService {
   private readonly store = inject(Store);
   private readonly ref = inject(ApplicationRef);
-  
+
   /**
    * Emits when an audio source starts playing.
    */
@@ -37,6 +37,12 @@ export class PlaybackService {
   readonly audioSkipped$ = new Subject<void>();
 
   /**
+   * Mouth shape data to be sent to mouth tracking software.
+   * Tuple in the shape of (mouth_open, mouth_form)
+   */
+  readonly audioMouthShapes$ = new Subject<[number, number][]>();
+
+  /**
    * Emits when an audio playback state changes.
    */
   readonly playbackState$ = new BehaviorSubject<PlaybackState | undefined>(undefined);
@@ -49,9 +55,14 @@ export class PlaybackService {
   constructor() {
     from(
       listen('playback::audio::start', (event) => {
-        const id = event.payload as AudioId;
-        this.audioStarted$.next(id);
-        this.currentlyPlaying = id;
+        const data = event.payload as {
+          id: AudioId,
+          mouth_shapes: [number, number][],
+        };
+
+        this.audioStarted$.next(data.id);
+        this.audioMouthShapes$.next(data.mouth_shapes);
+        this.currentlyPlaying = data.id;
 
         this.ref.tick();
       }),
