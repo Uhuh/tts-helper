@@ -37,3 +37,6 @@ tracing = { workspace = true }
 crossbeam = { workspace = true }
 static_assertions = { workspace = true }
 base64 = "0.21.0"
+spectrum-analyzer = "1.5.0"
+num-complex = "0.4.5"
+rustfft = "6.2.0"

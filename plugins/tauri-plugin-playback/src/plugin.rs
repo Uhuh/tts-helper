@@ -1,7 +1,11 @@
 use std::io::Cursor;
 use base64::decode;
 
+use num_complex::Complex64;
 use rodio::{Decoder, DevicesError, Source};
+use rustfft::FftPlanner;
+use serde::Serialize;
+use spectrum_analyzer::{samples_fft_to_spectrum, scaling::divide_by_N_sqrt, FrequencyLimit};
 use tauri::{
     generate_handler,
     plugin::{Builder, TauriPlugin},
@@ -19,10 +23,7 @@ use crate::{
         requests::{PlayAudioRequest, RequestAudioData, SetAudioState, SetPlaybackState},
     },
     services::{
-        devices::DeviceService,
-        now_playing::NowPlayingService,
-        playback::{PlaybackController, PlaybackService, SourceController, SourceEvents},
-        tts::TtsService,
+        devices::DeviceService, fft::{calculate_mouth, max_min_mouth}, now_playing::NowPlayingService, playback::{PlaybackController, PlaybackService, SourceController, SourceEvents}, tts::TtsService
     },
 };
 use crate::models::requests::PlaybackState;
@@ -112,7 +113,6 @@ fn set_output_device(
     Ok(())
 }
 
-
 /// Sets the output volume for the device.
 #[tauri::command(async)]
 #[instrument(skip_all)]
@@ -129,6 +129,12 @@ fn toggle_pause(playback_svc: State<'_, PlaybackService>) -> ApiResult<bool> {
     let paused = playback_svc.toggle_pause();
 
     Ok(paused)
+}
+
+#[derive(Serialize, Clone)]
+struct AudioStart {
+    id: AudioId,
+    mouth_shapes: Vec<(f64, f64)>
 }
 
 /// Enqueues audio to be played.
@@ -158,24 +164,63 @@ async fn play_audio(
         }
     };
 
-    app.emit("emit-to-js", "Hello").unwrap();
-
-    println!("Hello world, Im going to play audio");
-
     // Decode source data
-    let source = Decoder::new(Cursor::new(raw))?.convert_samples();
+    let source = Decoder::new(Cursor::new(raw.clone()))?.convert_samples();
+
+    let source_samples = Decoder::new(Cursor::new(raw.clone()))?.convert_samples();
+
+    let samples = source_samples.skip(0).step_by(1);
 
     // Enqueue source
     let controller = SourceController::default();
     let id = now_playing_svc.add(controller.clone());
 
+    let samples = samples.collect::<Vec<f32>>();
+        
+    let mut complex_data: Vec<Complex64> = Vec::with_capacity(samples.len());
+
+    // Convert samples to complex numbers
+    for sample in &samples {
+        complex_data.push(Complex64::new(*sample as f64, 0.0));
+    }
+
     // Enqueue source
     let events = SourceEvents::default()
         .on_start({
             let app = app.clone();
+
+            let mut planner = FftPlanner::new();
+            let fft = planner.plan_fft_forward(complex_data.len());
+
+            fft.process(&mut complex_data);
+
+            let mut start = 0;
+            // Creating slices of 512 size seem to look reasonable when sending mouth shape data to VTS.
+            let mut end = 512;
+
+            let mut mouth_shapes = Vec::<(f64, f64)>::new();
+
+            let mut previous_value = 0f64;
+
+            while end < complex_data.len() {
+                let (max, min) = max_min_mouth(&samples[start..end]);
+                let (form, prev) = calculate_mouth(&complex_data[start..end], previous_value);
+
+                let mouth = max - min;
+                previous_value = prev;
+
+                mouth_shapes.push((mouth, form));
+
+                start += 512;
+                end += 512;
+            }
+
             move || {
                 trace!(id = id.0, "started playing");
-                drop(app.emit("playback::audio::start", id));
+                drop(app.emit("playback::audio::start", AudioStart {
+                    id,
+                    mouth_shapes
+                }));
             }
         })
         .on_finish({

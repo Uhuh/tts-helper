@@ -23,6 +23,7 @@ pub fn run() -> anyhow::Result<()> {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_window_state::Builder::default().build())
 		.plugin(tauri_plugin_devtools::init())
+        .plugin(tauri_plugin_global_shortcut::Builder::default().build())
         .plugin(tauri_plugin_playback::init()?)
         .setup(|app| {
             // Run auth server

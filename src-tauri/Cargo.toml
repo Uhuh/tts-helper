@@ -25,6 +25,7 @@ tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", 
 tauri-plugin-shell = "2.0.0-beta"
 tauri-plugin-updater = "2.0.0-beta"
 tauri-plugin-window-state = "2.0.0-beta"
+tauri-plugin-global-shortcut = "2.0.0-beta"
 
 # Serialization
 serde = { workspace = true, features = ["derive"] }
