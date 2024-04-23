@@ -25,8 +25,8 @@ import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchService } from './twitch.service';
-import { listen } from '@tauri-apps/api/event';
 import { SynthesizeSpeechInput } from '@aws-sdk/client-polly/dist-types/models/models_0';
+import { listen } from '@tauri-apps/api/event';
 
 @Injectable()
 export class AudioService {

@@ -5,8 +5,7 @@ use tower_http::cors::CorsLayer;
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use tokio::runtime::Builder;
-use tracing::{debug, error, instrument};
-
+use tracing::{error, instrument};
 
 #[instrument(skip_all)]
 pub fn run_tts_server(app: AppHandle) {
@@ -28,7 +27,7 @@ async fn listen(app: AppHandle) -> anyhow::Result<()> {
 
     let app = Router::new()
         .route("/tts", post(play_tts))
-        .layer(ServiceBuilder::new().layer(cors).layer(Extension(app)));
+        .layer(ServiceBuilder::new().layer(cors).layer(Extension(app.clone())));
 
     const PORT: u16 = 12589;
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{PORT}")).await.unwrap();
@@ -56,5 +55,5 @@ async fn play_tts(
 ) {
 	println!("received tts play request: {:?}", request);
 
-    drop(app.emit_all("api:play_tts", request));
+    let _ = app.emit("api:play_tts", request);
 }

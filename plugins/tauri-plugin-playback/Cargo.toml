@@ -3,10 +3,15 @@ name = "tauri-plugin-playback"
 version = "0.1.0"
 edition = "2021"
 publish = false
+links = "tauri-plugin-playback"
+
+[build-dependencies]
+tauri-plugin = { workspace = true, features = ["build"] }
 
 [dependencies]
 # Tauri
 tauri = { workspace = true }
+tauri-plugin-http = { workspace = true }
 
 # Serialization
 serde = { workspace = true, features = ["derive", "rc"] }
@@ -32,3 +37,6 @@ tracing = { workspace = true }
 crossbeam = { workspace = true }
 static_assertions = { workspace = true }
 base64 = "0.21.0"
+spectrum-analyzer = "1.5.0"
+num-complex = "0.4.5"
+rustfft = "6.2.0"

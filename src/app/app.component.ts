@@ -145,22 +145,22 @@ export class AppComponent {
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'vstream', state);
       });
-    
+
     this.appSettingsService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'app-settings', state);
-      })
+      });
   }
-  
+
   handleAppSettings(data: { value: AppSettingsFeatureState } | null) {
     if (!data || !data.value) {
       return;
     }
-    
+
     this.store.dispatch(
-      AppSettingsActions.updateState({ partialState: data.value })
-    )
+      AppSettingsActions.updateState({ partialState: data.value }),
+    );
   }
 
   handleGlobalData(data: { value: ConfigState } | null) {

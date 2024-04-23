@@ -44,5 +44,5 @@ async fn auth_post(
     token: String,
 ) {
     debug!(provider, "got auth token");
-    drop(app.emit_all("access-token", AuthEvent { provider, token }));
+    drop(app.emit("access-token", AuthEvent { provider, token }));
 }

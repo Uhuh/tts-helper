@@ -1,19 +1,11 @@
-use std::collections::HashMap;
-
 use base64::{Engine as _, engine::general_purpose};
 use bytes::Bytes;
 use serde::Deserialize;
 use serde_json::json;
-use tauri::{
-    api::http::{Body, Client, HttpRequestBuilder},
-    http::{
-        header::HeaderValue,
-        method::Method, status::{InvalidStatusCode, StatusCode},
-    },
-};
+use tauri::http::status::{InvalidStatusCode, StatusCode};
 use thiserror::Error;
 use tracing::error;
-
+use tauri_plugin_http::reqwest::Client;
 use crate::models::requests::{AmazonPollyData, ElevenLabsData, StreamElementsData, TikTokData};
 
 const STREAM_ELEMENTS_API: &str = "https://api.streamelements.com/kappa/v2/speech";
@@ -53,29 +45,31 @@ impl TtsService {
         &self,
         data: ElevenLabsData,
     ) -> Result<Bytes, TtsRequestError> {
-        let req = HttpRequestBuilder::new(Method::POST.as_str(), data.url)?
-            .header("Content-Type", HeaderValue::from_static("application/json"))?
-            .header("xi-api-key", data.api_key)?
-            .body(Body::Json(json!(
+        let body = json!(
             {
                 "text": data.text,
                 "model_id": data.model_id,
                 "voice_settings": {
                     "stability": data.stability,
-                    "similarity_boost": data.similarity_boost, 
+                    "similarity_boost": data.similarity_boost,
                 }
             }
-        )));
+        );
 
-        let res = self.client.send(req).await?.bytes().await?;
+        let res = self.client
+            .post(data.url)
+            .json(&body)
+            .header("xi-api-key", data.api_key)
+            .send()
+            .await?;
 
         // Check status code
-        let status = StatusCode::from_u16(res.status)?;
+        let status = res.status();
         if status.is_client_error() || status.is_server_error() {
             return Err(TtsRequestError::BadStatusCode(status));
         }
 
-        Ok(res.data.into())
+        Ok(res.bytes().await?)
     }
 
     #[inline]
@@ -83,17 +77,20 @@ impl TtsService {
         &self,
         mut data: AmazonPollyData,
     ) -> Result<Bytes, TtsRequestError> {
-        let req = HttpRequestBuilder::new(Method::GET.as_str(), data.url.get_or_insert(String::from("")))?;
+        let url = data.url.get_or_insert(String::from(""));
 
-        let res = self.client.send(req).await?.bytes().await?;
+        let res = self.client
+            .get(url.clone())
+            .send()
+            .await?;
 
         // Check status code
-        let status = StatusCode::from_u16(res.status)?;
+        let status = res.status();
         if status.is_client_error() || status.is_server_error() {
             return Err(TtsRequestError::BadStatusCode(status));
         }
 
-        Ok(res.data.into())
+        Ok(res.bytes().await?)
     }
 
     #[inline]
@@ -101,23 +98,25 @@ impl TtsService {
         &self,
         data: TikTokData,
     ) -> Result<Bytes, TtsRequestError> {
-        let req = HttpRequestBuilder::new(Method::POST.as_str(), TIKTOK_API)?
-            .header("Content-Type", HeaderValue::from_static("application/json"))?
-            .body(Body::Json(json!(
+        let body = json!(
             {
                 "voice": data.voice,
                 "text": data.text
             }
-        )));
+        );
 
-        let res = self.client.send(req).await?.read().await?;
+        let res = self.client
+            .post(TIKTOK_API)
+            .json(&body)
+            .send()
+            .await?;
 
-        let status = StatusCode::from_u16(res.status)?;
+        let status = res.status();
         if status.is_client_error() || status.is_server_error() {
             return Err(TtsRequestError::BadStatusCode(status));
         }
 
-        let res = serde_json::from_value::<TikTokResponse>(res.data)?;
+        let res = serde_json::from_value::<TikTokResponse>(res.json().await?)?;
         let res = general_purpose::STANDARD_NO_PAD.decode(res.data).unwrap();
 
         Ok(res.into())
@@ -129,20 +128,22 @@ impl TtsService {
         &self,
         data: StreamElementsData,
     ) -> Result<Bytes, TtsRequestError> {
-        // Perform request
-        let req = HttpRequestBuilder::new(Method::GET.as_str(), STREAM_ELEMENTS_API)?.query(hm! {
-            "voice" => data.voice,
-            "text" => data.text,
-        });
-        let res = self.client.send(req).await?.bytes().await?;
+        let res = self.client
+            .get(STREAM_ELEMENTS_API)
+            .query(&vec![
+                ("voice", data.voice),
+                ("text", data.text),
+            ])
+            .send()
+            .await?;
 
         // Check status code
-        let status = StatusCode::from_u16(res.status)?;
+        let status = res.status();
         if status.is_client_error() || status.is_server_error() {
             return Err(TtsRequestError::BadStatusCode(status));
         }
 
-        Ok(res.data.into())
+        Ok(res.bytes().await?)
     }
 }
 
@@ -151,7 +152,7 @@ impl TtsService {
 pub enum TtsRequestError {
     /// The request failed.
     #[error("TTS request failed")]
-    RequestFailed(#[from] tauri::api::Error),
+    RequestFailed(#[from] tauri_plugin_http::reqwest::Error),
 
     /// The request returned an invalid status code.
     #[error("TTS request returned an invalid status code: {0}")]
