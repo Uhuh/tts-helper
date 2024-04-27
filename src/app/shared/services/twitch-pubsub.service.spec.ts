@@ -11,7 +11,7 @@ import {
   TwitchChannelInfo,
   TwitchRedeemState,
   TwitchState,
-  TwitchSubState,
+  TwitchSubscriptionState,
 } from '../state/twitch/twitch.feature';
 import { OpenAIState } from '../state/openai/openai.feature';
 
@@ -26,7 +26,7 @@ describe('TwitchPubSub', () => {
 
   let bitInfoSubject: Subject<TwitchBitState>;
   let redeemInfoSubject: Subject<TwitchRedeemState>;
-  let subsInfoSubject: Subject<TwitchSubState>;
+  let subsInfoSubject: Subject<TwitchSubscriptionState>;
   let twitchSettingsSubject: Subject<TwitchState>;
 
   let twitchTokenSubject: Subject<string>;
