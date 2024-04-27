@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, Validators } from '@angular/forms';
-import { debounceTime, filter } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { NgIf } from '@angular/common';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
+import { debounceTime, filter } from 'rxjs';
 
 @Component({
   selector: 'app-bits',
@@ -18,55 +18,35 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
 })
 export class BitsComponent {
   private readonly twitchService = inject(TwitchService);
-  readonly minBits = new FormControl(0, {
-    nonNullable: true,
-    validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
+
+  readonly settings = new FormGroup({
+    enabled: new FormControl(false, { nonNullable: true }),
+    exact: new FormControl(false, { nonNullable: true }),
+    minBits: new FormControl(0, {
+      nonNullable: true,
+      validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
+    }),
+    bitsCharacterLimit: new FormControl(0, {
+      nonNullable: true,
+      validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
+    }),
   });
-  readonly bitsCharLimit = new FormControl(300, {
-    nonNullable: true,
-    validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
-  });
-  readonly enabled = new FormControl(true, { nonNullable: true });
-  readonly exact = new FormControl(false, { nonNullable: true });
 
   constructor() {
     this.twitchService.bitInfo$
       .pipe(takeUntilDestroyed())
-      .subscribe((bitInfo) => {
-        this.minBits.patchValue(bitInfo.minBits, { emitEvent: false });
-        this.bitsCharLimit.patchValue(bitInfo.bitsCharacterLimit, {
-          emitEvent: false,
+      .subscribe((settings) => {
+        this.settings.setValue(settings, { emitEvent: false });
+      });
+
+    this.settings.valueChanges
+      .pipe(takeUntilDestroyed(), debounceTime(200), filter(() => this.settings.valid))
+      .subscribe(settings => {
+        this.twitchService.updateBitsSetting({
+          ...settings,
+          minBits: Number(settings.minBits),
+          bitsCharacterLimit: Number(settings.bitsCharacterLimit),
         });
-        this.enabled.patchValue(bitInfo.enabled, { emitEvent: false });
-        this.exact.patchValue(bitInfo.exact, { emitEvent: false });
       });
-
-    this.minBits.valueChanges
-      .pipe(
-        takeUntilDestroyed(),
-        debounceTime(1000),
-        filter(() => this.minBits.valid),
-      )
-      .subscribe((minBits) => {
-        this.twitchService.updateMinBits(Number(minBits));
-      });
-
-    this.bitsCharLimit.valueChanges
-      .pipe(
-        takeUntilDestroyed(),
-        debounceTime(1000),
-        filter(() => this.bitsCharLimit.valid),
-      )
-      .subscribe((bitsCharLimit) => {
-        this.twitchService.updateBitsCharLimit(Number(bitsCharLimit));
-      });
-
-    this.enabled.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((enabled) => this.twitchService.updateBitsEnabled(enabled));
-
-    this.exact.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((exact) => this.twitchService.updateBitsExact(exact));
   }
 }
