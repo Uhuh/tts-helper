@@ -3,36 +3,85 @@
 </div>
 
 <app-label-block>
-  <div header>Handle subscriptions</div>
+  <div header>Enable TTS</div>
   <div sub-text>Enable or disable TTS for all sub events.</div>
-  <app-toggle class="right" [control]="enabled"/>
+  <app-toggle class="right" [control]="renewSettings.controls.enabled" />
 </app-label-block>
 
-@if (enabled.value) {
-  <app-label-block>
-    <div header>Subs character limit</div>
-    <div sub-text>The max allowed characters we'll play for a sub event!</div>
-    <app-input placeholder="Enter a character limit" type="number" [control]="charLimit"/>
-    <mat-error>
-      @if (charLimit.hasError('min')) {
-        Minimum characters allowed is 0.
-      } @else if (charLimit.hasError('pattern')) {
-        Character limit must be a whole number.
-      }
-    </mat-error>
-  </app-label-block>
+<app-label-block>
+  <div header>Read message before TTS</div>
+  <div sub-text>If enabled, TTS will read messages attached to sub events.</div>
+  <app-toggle class="right" [control]="renewSettings.controls.readMessageEnabled" />
+</app-label-block>
 
-  <app-label-block>
-    <div header>Gift subs message</div>
-    <div sub-text>Customize what your TTS says when a user gifts subs!</div>
-    <app-variable-table [variables]="variables">
-      <span header>Use variables to reference info related to the gift</span>
-      <span example-text>Thanks <span class="var">username</span> for the <span class="var">amount</span> subs!</span>
-      <span result-text>Thanks Mei for the 2 subs!</span>
-    </app-variable-table>
-    <textarea
-      placeholder="Thanks {username} for the {amount} subs!"
-      [formControl]="giftMessage"
-    ></textarea>
-  </app-label-block>
-}
+<app-label-block>
+  <div header>Subs character limit</div>
+  <div sub-text>The max allowed characters we'll play for a sub event!</div>
+  <app-input placeholder="Enter a character limit" type="number" [control]="renewSettings.controls.characterLimit" />
+  <mat-error>
+    @if (renewSettings.controls.characterLimit.hasError('min')) {
+      Minimum characters allowed is 0.
+    } @else if (renewSettings.controls.characterLimit.hasError('pattern')) {
+      Character limit must be a whole number.
+    }
+  </mat-error>
+</app-label-block>
+
+<app-label-block>
+  <div header>Custom response</div>
+  <div sub-text>Customize what your TTS says when a user subs!</div>
+  <app-variable-table [variables]="renewVariables">
+    <span header>Use variables to reference info related to the sub</span>
+    <span example-text>Thanks <span class="var">username</span> for the tier <span class="var">tier</span> sub!</span>
+    <span result-text>Thanks Panku for the tier 2 sub!</span>
+  </app-variable-table>
+  <textarea
+    placeholder="Thanks {username} for the tier {amount} sub!"
+    [formControl]="renewSettings.controls.customMessage"
+  ></textarea>
+</app-label-block>
+
+<hr />
+
+<div class="header">
+  <span>Gift Subscription Settings</span>
+</div>
+
+<app-label-block>
+  <div header>Enable TTS</div>
+  <div sub-text>Enable or disable TTS for all sub events.</div>
+  <app-toggle class="right" [control]="giftSettings.controls.enabled" />
+</app-label-block>
+
+<app-label-block>
+  <div header>Read message before TTS</div>
+  <div sub-text>If enabled, TTS will read messages attached to sub events.</div>
+  <app-toggle class="right" [control]="giftSettings.controls.readMessageEnabled" />
+</app-label-block>
+
+<app-label-block>
+  <div header>Subs character limit</div>
+  <div sub-text>The max allowed characters we'll play for a sub event!</div>
+  <app-input placeholder="Enter a character limit" type="number" [control]="giftSettings.controls.characterLimit" />
+  <mat-error>
+    @if (giftSettings.controls.characterLimit.hasError('min')) {
+      Minimum characters allowed is 0.
+    } @else if (giftSettings.controls.characterLimit.hasError('pattern')) {
+      Character limit must be a whole number.
+    }
+  </mat-error>
+</app-label-block>
+
+<app-label-block>
+  <div header>Custom response</div>
+  <div sub-text>Customize what your TTS says when a user gifts subs!</div>
+  <app-variable-table [variables]="giftVariables">
+    <span header>Use variables to reference info related to the gift</span>
+    <span example-text>Thanks <span class="var">username</span> for the <span class="var">amount</span> subs!</span>
+    <span result-text>Thanks Panku for the 2 subs!</span>
+  </app-variable-table>
+  <textarea
+    placeholder="Thanks {username} for the {amount} subs!"
+    [formControl]="giftSettings.controls.customMessage"
+  ></textarea>
+</app-label-block>

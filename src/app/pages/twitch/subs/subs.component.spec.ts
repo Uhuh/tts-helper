@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SubsComponent } from './subs.component';
 import { TwitchService } from '../../../shared/services/twitch.service';
 import { Subject } from 'rxjs';
-import { TwitchSubState } from '../../../shared/state/twitch/twitch.feature';
+import { TwitchSubscriptionState } from '../../../shared/state/twitch/twitch.feature';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('SubsComponent', () => {
@@ -12,7 +12,7 @@ describe('SubsComponent', () => {
 
   let twitchServiceStub: jasmine.SpyObj<TwitchService>;
 
-  let subsSubject: Subject<TwitchSubState>;
+  let subsSubject: Subject<TwitchSubscriptionState>;
 
   beforeEach(() => {
     subsSubject = new Subject();
