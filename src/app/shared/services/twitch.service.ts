@@ -2,7 +2,13 @@ import { DestroyRef, inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { catchError, of, skip, switchMap } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
-import { TwitchFeature, TwitchRedeemState, TwitchSettingsState } from '../state/twitch/twitch.feature';
+import {
+  TwitchBitState,
+  TwitchCustomMessageSetting,
+  TwitchFeature,
+  TwitchRedeemState,
+  TwitchSettingsState,
+} from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LogService } from './logs.service';
@@ -24,7 +30,8 @@ export class TwitchService {
   public readonly channelInfo$ = this.store.select(TwitchFeature.selectChannelInfo);
   public readonly settings$ = this.store.select(TwitchFeature.selectSettings);
 
-  public readonly subsInfo$ = this.store.select(TwitchFeature.selectSubsInfo);
+  public readonly subscriptions$ = this.store.select(TwitchFeature.selectSubscriptions);
+  public readonly follower$ = this.store.select(TwitchFeature.selectFollower);
   public readonly redeemInfo$ = this.store.select(TwitchFeature.selectRedeemInfo);
   public readonly bitInfo$ = this.store.select(TwitchFeature.selectBitInfo);
 
@@ -155,35 +162,24 @@ export class TwitchService {
     this.store.dispatch(TwitchStateActions.updateSettings({ partialState }));
   }
 
-  updateRedeemInfo(redeemInfo: Partial<TwitchRedeemState>) {
-    this.store.dispatch(TwitchStateActions.updateRedeemInfo({ redeemInfo }));
+  updateFollowerSettings(partialSettings: Partial<TwitchCustomMessageSetting>) {
+    this.store.dispatch(TwitchStateActions.updateFollowSettings({ partialSettings }));
   }
 
-  updateMinBits(minBits: number) {
-    this.store.dispatch(TwitchStateActions.updateBitsMin({ minBits }));
+  updateBitsSetting(partialSettings: Partial<TwitchBitState>) {
+    this.store.dispatch(TwitchStateActions.updateBits({ partialSettings }));
   }
 
-  updateBitsCharLimit(bitsCharacterLimit: number) {
-    this.store.dispatch(TwitchStateActions.updateBitsCharLimit({ bitsCharacterLimit }));
+  updateRedeemsSettings(partialSettings: Partial<TwitchRedeemState>) {
+    this.store.dispatch(TwitchStateActions.updateRedeemsSettings({ partialSettings }));
   }
 
-  updateBitsEnabled(enabled: boolean) {
-    this.store.dispatch(TwitchStateActions.updateBitsEnabled({ enabled }));
-  }
-
-  updateBitsExact(exact: boolean) {
-    this.store.dispatch(TwitchStateActions.updateBitsExact({ exact }));
-  }
-
-  updateSubEnabled(enabled: boolean) {
-    this.store.dispatch(TwitchStateActions.updateSubEnabled({ enabled }));
-  }
-
-  updateGiftMessage(giftMessage: string) {
-    this.store.dispatch(TwitchStateActions.updateSubGiftMessage({ giftMessage }));
-  }
-
-  updateSubCharLimit(subCharacterLimit: number) {
-    this.store.dispatch(TwitchStateActions.updateSubCharLimit({ subCharacterLimit }));
+  updateSubscriptions(partialSettings: Partial<TwitchCustomMessageSetting>, type: 'renew' | 'gift') {
+    switch (type) {
+      case 'gift':
+        return this.store.dispatch(TwitchStateActions.updateGiftedSubscriptions({ partialSettings }));
+      case 'renew':
+        return this.store.dispatch(TwitchStateActions.updateRenewSubscriptions({ partialSettings }));
+    }
   }
 }
