@@ -1,0 +1,87 @@
+<div class="header">
+  <span>Advanced Settings</span>
+</div>
+
+<div class="warning">
+  <span>Tweaking these can result in unexpected generations.</span>
+  <span>Tweak the numbers and test it out!</span>
+</div>
+
+<app-label-block>
+  <div header>Frequency Penalty</div>
+  <div sub-text>Range of [-2.0, 2.0]. Positive values decrease the models likelihood to repeat the same line.</div>
+  <div sub-text>The recommended range is between [0.1, 1].</div>
+  <app-input
+    type="number"
+    placeholder="Enter a number between -2.0 and 2.0"
+    [control]="settings.controls.frequencyPenalty"
+    [hasError]="settings.controls.frequencyPenalty.errors !== null"
+  />
+  <mat-error>
+    @if (settings.controls.frequencyPenalty.hasError('min')) {
+      Frequency penalty cannot be below -2.0
+    } @else if (settings.controls.frequencyPenalty.hasError('max')) {
+      Frequency penalty cannot be above 2.0
+    }
+  </mat-error>
+</app-label-block>
+
+<app-label-block>
+  <div header>Presence Penalty</div>
+  <div sub-text>Range of [-2.0, 2.0]. Positive values increase the models likelihood to talk about new topics.</div>
+  <app-input
+    type="number"
+    placeholder="Enter a number between -2.0 and 2.0"
+    [control]="settings.controls.presencePenalty"
+    [hasError]="settings.controls.presencePenalty.errors !== null"
+  />
+  <mat-error>
+    @if (settings.controls.presencePenalty.hasError('min')) {
+      Presence penalty cannot be below -2.0
+    } @else if (settings.controls.presencePenalty.hasError('max')) {
+      Presence penalty cannot be above 2.0
+    }
+  </mat-error>
+</app-label-block>
+
+<app-label-block>
+  <div header>Temperature</div>
+  <div sub-text>Range of [0, 2.0].</div>
+  <div sub-text>Higher values like 0.8 will make the output more random.</div>
+  <div sub-text>Lower values like 0.2 will make the output more focused and deterministic.</div>
+  <app-input
+    type="number"
+    placeholder="Enter a number between 0 and 2.0"
+    [control]="settings.controls.temperature"
+    [hasError]="settings.controls.temperature.errors !== null"
+  />
+  <mat-error>
+    @if (settings.controls.temperature.hasError('min')) {
+      Temperature cannot be below 0
+    } @else if (settings.controls.temperature.hasError('max')) {
+      Temperature cannot be above 2.0
+    }
+  </mat-error>
+</app-label-block>
+
+<div class="warning">
+  <span>OpenAI can and will generate text up to a limit and cut off if it reaches the max.</span>
+  <span>This can cause unnatural sounding cut offs.</span>
+</div>
+
+<app-label-block>
+  <div header>Max Tokens</div>
+  <div sub-text>On average 1 token = 4 characters.</div>
+  <div sub-text>This can be a good way to limit responses size.</div>
+  <app-input
+    type="number"
+    placeholder="Enter how many tokens you wish to use in generation."
+    [control]="settings.controls.maxTokens"
+    [hasError]="settings.controls.maxTokens.errors !== null"
+  />
+  <mat-error>
+    @if (settings.controls.maxTokens.hasError('min')) {
+      You can't have negative max tokens.
+    }
+  </mat-error>
+</app-label-block>

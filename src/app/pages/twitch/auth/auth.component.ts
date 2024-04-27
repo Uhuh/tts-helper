@@ -51,7 +51,6 @@ export class AuthComponent {
             `You haven't used the app for a long time, to keep your account secure we time out our sessions after two weeks of no activity.`,
           );
         }
-
       });
   }
 
