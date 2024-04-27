@@ -1,0 +1,23 @@
+<div class="header">
+  <span>Follower Settings</span>
+</div>
+
+<app-label-block>
+  <div header class="enabled-text" [ngClass]="{ 'enabled': settings.controls.enabled.value }">Enable TTS</div>
+  <div sub-text>Enable or disable TTS events for bits.</div>
+  <app-toggle class="right" [control]="settings.controls.enabled" />
+</app-label-block>
+
+<app-label-block>
+  <div header>Custom response</div>
+  <div sub-text>Customize what your TTS says when a user gifts subs!</div>
+  <app-variable-table [variables]="variables">
+    <span header>Use variables to reference info related to the follower</span>
+    <span example-text>Thanks <span class="var">username</span> for following!</span>
+    <span result-text>Thanks Panku for following!</span>
+  </app-variable-table>
+  <textarea
+    placeholder="Thanks {username} for following!"
+    [formControl]="settings.controls.customMessage"
+  ></textarea>
+</app-label-block>
