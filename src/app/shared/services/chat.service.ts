@@ -29,9 +29,15 @@ export class ChatService {
       .subscribe(chatSettings => this.openAIChat = chatSettings);
   }
 
+  /**
+   * Check if user has chat settings enabled or GPT chat settings enabled.
+   * @param user The user that sent the message
+   * @param source Platform that the message came from
+   * @return boolean If user message was played as TTS
+   */
   async onMessage(user: ChatUserMessage, source: AudioSource) {
     if (!this.generalChat.enabled && !this.openAIChat.enabled) {
-      return;
+      return false;
     }
 
     const generalCooldownID = `${source}-general`;

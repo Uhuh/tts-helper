@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,46 +32,51 @@ import {
 export class SubsComponent {
   private readonly twitchService = inject(TwitchService);
 
-  readonly charLimit = new FormControl(300, {
-    nonNullable: true,
-    validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
+  readonly renewSettings = new FormGroup({
+    enabled: new FormControl(false, { nonNullable: true }),
+    readMessageEnabled: new FormControl(false, { nonNullable: true }),
+    customMessage: new FormControl('', { nonNullable: true }),
+    characterLimit: new FormControl(300, {
+      nonNullable: true,
+      validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
+    }),
   });
-  readonly enabled = new FormControl(true, { nonNullable: true });
-  readonly giftMessage = new FormControl('', { nonNullable: true });
 
-  readonly variables: VariableTableOption[] = [
-    { variable: 'amount', descriptor: 'The number of subs gifted' },
-    { variable: 'username', descriptor: 'The username of the gifter' },
+  readonly giftSettings = new FormGroup({
+    enabled: new FormControl(false, { nonNullable: true }),
+    readMessageEnabled: new FormControl(false, { nonNullable: true }),
+    customMessage: new FormControl('', { nonNullable: true }),
+    characterLimit: new FormControl(300, {
+      nonNullable: true,
+      validators: [Validators.min(0), Validators.pattern('^-?[0-9]+$')],
+    }),
+  });
+
+  readonly giftVariables: VariableTableOption[] = [
+    { variable: 'username', descriptor: 'The username of the gifter.' },
+    { variable: 'amount', descriptor: 'The number of subs gifted.' },
+    { variable: 'cumulative', descriptor: 'The number of total subs gifted by this user.' },
+  ];
+
+  readonly renewVariables: VariableTableOption[] = [
+    { variable: 'username', descriptor: 'The username of the subscriber.' },
+    { variable: 'tier', descriptor: 'The tier of the sub.' },
   ];
 
   constructor() {
-    this.twitchService.subsInfo$
+    this.twitchService.subscriptions$
       .pipe(takeUntilDestroyed())
-      .subscribe((subsInfo) => {
-        this.charLimit.patchValue(subsInfo.subCharacterLimit, {
-          emitEvent: false,
-        });
-        this.enabled.patchValue(subsInfo.enabled, { emitEvent: false });
-        this.giftMessage.patchValue(subsInfo.giftMessage, { emitEvent: false });
+      .subscribe((subscriptions) => {
+        this.renewSettings.setValue(subscriptions.renew, { emitEvent: false });
+        this.giftSettings.setValue(subscriptions.gift, { emitEvent: false });
       });
 
-    this.enabled.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((enabled) => this.twitchService.updateSubEnabled(enabled));
+    this.renewSettings.valueChanges
+      .pipe(filter(() => this.renewSettings.valid), takeUntilDestroyed())
+      .subscribe(partialSettings => this.twitchService.updateSubscriptions(partialSettings, 'renew'));
 
-    this.charLimit.valueChanges
-      .pipe(
-        takeUntilDestroyed(),
-        filter(() => this.charLimit.valid),
-      )
-      .subscribe((charLimit) =>
-        this.twitchService.updateSubCharLimit(Number(charLimit)),
-      );
-
-    this.giftMessage.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((giftMessage) =>
-        this.twitchService.updateGiftMessage(giftMessage),
-      );
+    this.giftSettings.valueChanges
+      .pipe(filter(() => this.giftSettings.valid), takeUntilDestroyed())
+      .subscribe(partialSettings => this.twitchService.updateSubscriptions(partialSettings, 'gift'));
   }
 }

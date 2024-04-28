@@ -1,10 +1,13 @@
 ﻿import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import {
+  TwitchBitState,
   TwitchChannelInfo,
+  TwitchCustomMessageSetting,
   TwitchRedeemInfo,
   TwitchRedeemState,
   TwitchSettingsState,
   TwitchState,
+  TwitchSubscriptionType,
 } from './twitch.feature';
 
 export const TwitchStateActions = createActionGroup({
@@ -16,14 +19,13 @@ export const TwitchStateActions = createActionGroup({
     'Update State': props<{ twitchState: TwitchState }>(),
     'Update Is Token Valid': props<{ isTokenValid: boolean }>(),
     'Update Channel Info': props<{ channelInfo: TwitchChannelInfo }>(),
-    'Update Sub Enabled': props<{ enabled: boolean }>(),
-    'Update Sub Char Limit': props<{ subCharacterLimit: number }>(),
-    'Update Sub Gift Message': props<{ giftMessage: string }>(),
-    'Update Redeem Info': props<{ redeemInfo: Partial<TwitchRedeemState> }>(),
-    'Update Bits Enabled': props<{ enabled: boolean }>(),
-    'Update Bits Exact': props<{ exact: boolean }>(),
-    'Update Bits Min': props<{ minBits: number }>(),
-    'Update Bits Char Limit': props<{ bitsCharacterLimit: number }>(),
+
+    'Update Bits': props<{ partialSettings: Partial<TwitchBitState> }>(),
+    'Update Follow Settings': props<{ partialSettings: Partial<TwitchCustomMessageSetting> }>(),
+    'Update Redeems Settings': props<{ partialSettings: Partial<TwitchRedeemState> }>(),
+    'Update Gifted Subscriptions': props<{ partialSettings: Partial<TwitchSubscriptionType> }>(),
+    'Update Renew Subscriptions': props<{ partialSettings: Partial<TwitchSubscriptionType> }>(),
+
     'Reset State': emptyProps(),
   },
 });

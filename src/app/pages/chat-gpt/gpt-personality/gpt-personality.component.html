@@ -5,19 +5,19 @@
 <app-label-block>
   <div header>Your name</div>
   <div sub-text>How your want ChatGPT to refer to you.</div>
-  <app-input [control]="formGroup.controls.streamersIdentity" type="text" placeholder="Panku"/>
+  <app-input [control]="settings.controls.streamersIdentity" type="text" placeholder="Panku" />
 </app-label-block>
 
 <app-label-block>
   <div header>ChatGPT's name</div>
   <div sub-text>You can make ChatGPT change how it refers to itself.</div>
-  <app-input [control]="formGroup.controls.modelsIdentity" type="text" placeholder="Alphyx"/>
+  <app-input [control]="settings.controls.modelsIdentity" type="text" placeholder="Alphyx" />
 </app-label-block>
 
 <app-label-block>
   <div header>What should ChatGPT act like?</div>
   <div sub-text>A short description, example "The embodiment of chat".</div>
-  <app-input [control]="formGroup.controls.modelsCoreIdentity" type="text" placeholder="Chat"/>
+  <app-input [control]="settings.controls.modelsCoreIdentity" type="text" placeholder="Chat" />
 </app-label-block>
 
 <app-label-block>
@@ -25,7 +25,7 @@
   <div sub-text>A zany animal who loves to spread chaos.</div>
   <textarea
     placeholder="An annoyance"
-    [formControl]="formGroup.controls.streamersThoughtsOnModel"
+    [formControl]="settings.controls.streamersThoughtsOnModel"
   ></textarea>
 </app-label-block>
 
@@ -34,7 +34,7 @@
   <div sub-text>Create a "connection" between you and ChatGPT.</div>
   <textarea
     placeholder="[ChatGPT name] thinks I'm stinky, silly and dumb!"
-    [formControl]="formGroup.controls.streamerModelRelation"
+    [formControl]="settings.controls.streamerModelRelation"
   ></textarea>
 </app-label-block>
 
@@ -43,6 +43,6 @@
   <div sub-text>Give ChatGPT a background / history / story. Customize it! Be as detailed as possible.</div>
   <textarea
     placeholder="[ChatGPT's name] is a goofy sidekick that loves to play tricks."
-    [formControl]="formGroup.controls.modelsBackground"
+    [formControl]="settings.controls.modelsBackground"
   ></textarea>
 </app-label-block>

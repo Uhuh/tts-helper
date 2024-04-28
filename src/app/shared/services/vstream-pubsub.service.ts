@@ -226,7 +226,6 @@ export class VStreamPubSubService {
     const parsedInput = customMessage
       .replaceAll(/{username}/g, username);
 
-
     this.handleCustomMessage(parsedInput, username, this.followerSettings);
 
     const event = {

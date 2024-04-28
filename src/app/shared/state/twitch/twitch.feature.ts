@@ -1,6 +1,12 @@
 ﻿import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { TwitchStateActions } from './twitch.actions';
 
+export interface TwitchCustomMessageSetting {
+  enabled: boolean;
+  enabledGpt: boolean;
+  customMessage: string;
+}
+
 export interface TwitchRedeemInfo {
   id: string;
   title: string;
@@ -35,10 +41,16 @@ export interface TwitchBitState {
   bitsCharacterLimit: number;
 }
 
-export interface TwitchSubState {
+export type TwitchSubscriptionType = {
   enabled: boolean;
-  giftMessage: string;
-  subCharacterLimit: number;
+  readMessageEnabled: boolean;
+  customMessage: string;
+  characterLimit: number;
+};
+
+export interface TwitchSubscriptionState {
+  renew: TwitchSubscriptionType;
+  gift: TwitchSubscriptionType;
 }
 
 export interface TwitchSettingsState {
@@ -50,7 +62,8 @@ export interface TwitchState {
   isTokenValid: boolean;
   channelInfo: TwitchChannelInfo;
   settings: TwitchSettingsState;
-  subsInfo: TwitchSubState;
+  subscriptions: TwitchSubscriptionState;
+  follower: TwitchCustomMessageSetting;
   bitInfo: TwitchBitState;
   redeemInfo: TwitchRedeemState;
 }
@@ -61,10 +74,24 @@ const initialState: TwitchState = {
   settings: {
     randomChance: 0,
   },
-  subsInfo: {
-    enabled: true,
-    giftMessage: '',
-    subCharacterLimit: 300,
+  subscriptions: {
+    gift: {
+      enabled: true,
+      readMessageEnabled: false,
+      characterLimit: 300,
+      customMessage: 'Thanks {username} for the {amount} subs!',
+    },
+    renew: {
+      enabled: true,
+      readMessageEnabled: false,
+      characterLimit: 300,
+      customMessage: 'Thanks {username} for the tier {amount} sub!',
+    },
+  },
+  follower: {
+    enabled: false,
+    enabledGpt: false,
+    customMessage: 'Thanks {username} for following',
   },
   channelInfo: {
     channelId: '',
@@ -103,6 +130,13 @@ export const TwitchFeature = createFeature({
         ...partialState,
       },
     })),
+    on(TwitchStateActions.updateFollowSettings, (state, { partialSettings }) => ({
+      ...state,
+      follower: {
+        ...state.follower,
+        ...partialSettings,
+      },
+    })),
     on(TwitchStateActions.updateToken, (state, { token }) => ({
       ...state,
       token,
@@ -124,53 +158,31 @@ export const TwitchFeature = createFeature({
         redeems,
       },
     })),
-    on(TwitchStateActions.updateSubEnabled, (state, { enabled }) => ({
+    on(TwitchStateActions.updateRenewSubscriptions, (state, { partialSettings }) => ({
       ...state,
-      subsInfo: {
-        ...state.subsInfo,
-        enabled,
+      subscriptions: {
+        ...state.subscriptions,
+        renew: {
+          ...state.subscriptions.renew,
+          ...partialSettings,
+        },
       },
     })),
-    on(TwitchStateActions.updateSubCharLimit, (state, { subCharacterLimit }) => ({
+    on(TwitchStateActions.updateGiftedSubscriptions, (state, { partialSettings }) => ({
       ...state,
-      subsInfo: {
-        ...state.subsInfo,
-        subCharacterLimit,
+      subscriptions: {
+        ...state.subscriptions,
+        gift: {
+          ...state.subscriptions.gift,
+          ...partialSettings,
+        },
       },
     })),
-    on(TwitchStateActions.updateSubGiftMessage, (state, { giftMessage }) => ({
-      ...state,
-      subsInfo: {
-        ...state.subsInfo,
-        giftMessage,
-      },
-    })),
-    on(TwitchStateActions.updateBitsEnabled, (state, { enabled }) => ({
-      ...state,
-      bitInfo: {
-        ...state.bitInfo,
-        enabled,
-      },
-    })),
-    on(TwitchStateActions.updateBitsMin, (state, { minBits }) => ({
-      ...state,
-      bitInfo: {
-        ...state.bitInfo,
-        minBits,
-      },
-    })),
-    on(TwitchStateActions.updateBitsCharLimit, (state, { bitsCharacterLimit }) => ({
-      ...state,
-      bitInfo: {
-        ...state.bitInfo,
-        bitsCharacterLimit,
-      },
-    })),
-    on(TwitchStateActions.updateRedeemInfo, (state, { redeemInfo }) => ({
+    on(TwitchStateActions.updateRedeemsSettings, (state, { partialSettings }) => ({
       ...state,
       redeemInfo: {
         ...state.redeemInfo,
-        ...redeemInfo,
+        ...partialSettings,
       },
     })),
     on(TwitchStateActions.resetState, () => ({
@@ -178,46 +190,8 @@ export const TwitchFeature = createFeature({
     })),
   ),
   extraSelectors: ({
-    selectRedeemInfo,
     selectChannelInfo,
-    selectBitInfo,
-    selectSubsInfo,
   }) => ({
-    selectRedeems: createSelector(
-      selectChannelInfo,
-      (channelInfo) => channelInfo.redeems,
-    ),
-    selectSubEnabed: createSelector(
-      selectSubsInfo,
-      (subInfo) => subInfo.enabled,
-    ),
-    selectSubsCharLimit: createSelector(
-      selectSubsInfo,
-      (subInfo) => subInfo.subCharacterLimit,
-    ),
-    selectRedeemsEnabled: createSelector(
-      selectRedeemInfo,
-      (redeemInfo) => redeemInfo.enabled,
-    ),
-    selectSelectedRedeem: createSelector(
-      selectRedeemInfo,
-      (redeemInfo) => redeemInfo.redeem,
-    ),
-    selectRedeemCharLimit: createSelector(
-      selectRedeemInfo,
-      (redeemInfo) => redeemInfo.redeemCharacterLimit,
-    ),
-    selectBitsEnabled: createSelector(
-      selectBitInfo,
-      (bitInfo) => bitInfo.enabled,
-    ),
-    selectBitsMin: createSelector(
-      selectBitInfo,
-      (bitInfo) => bitInfo.minBits,
-    ),
-    selectBitsCharLimit: createSelector(
-      selectBitInfo,
-      (bitInfo) => bitInfo.bitsCharacterLimit,
-    ),
+    selectRedeems: createSelector(selectChannelInfo, channelInfo => channelInfo.redeems),
   }),
 });

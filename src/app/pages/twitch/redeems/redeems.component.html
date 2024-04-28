@@ -2,50 +2,48 @@
   <span>Redeem Settings</span>
 </div>
 
-@if ((redeems$ | async)?.length) {
-  <app-label-block>
-    <div header></div>
-    <div sub-text></div>
-  </app-label-block>
-
-  <app-label-block>
-    <div header>Handle redeems</div>
-    <div sub-text>Enable or disable TTS events for redeems.</div>
-    <app-toggle class="right" [control]="redeemInfo.controls.enabled" />
-  </app-label-block>
-
-  @if (redeemInfo.controls.enabled.value) {
-    <app-label-block>
-      <div header>Redeem</div>
-      <div sub-text>This redeem will trigger TTS with user input.</div>
-      <app-selector placeholder="Select a redeem option" [control]="redeemInfo.controls.redeem" [options]="(redeemOptions$ | async) ?? []" />
-    </app-label-block>
-
-    @if (gptEnabled$ | async) {
-      <app-label-block>
-        <div header>ChatGPT Redeem</div>
-        <div sub-text>This redeem will trigger a ChatGPT response.</div>
-        <app-selector placeholder="Select a redeem option" [control]="redeemInfo.controls.gptRedeem" [options]="(redeemOptions$ | async) ?? []" />
-      </app-label-block>
-    }
-
-    <app-label-block>
-      <div header>Redeem character limit</div>
-      <div sub-text>The max allowed characters we'll play for the redeem.</div>
-      <app-input placeholder="Set min bits" type="number" [control]="redeemInfo.controls.redeemCharacterLimit"/>
-      <mat-error>
-        @if (redeemInfo.controls.redeemCharacterLimit.hasError('min')) {
-          Minimum characters allowed is 0.
-        } @else if (redeemInfo.controls.redeemCharacterLimit.hasError('pattern')) {
-          Character limit must be a whole number.
-        }
-      </mat-error>
-    </app-label-block>
-  }
-} @else {
+@if (!(redeems$ | async)?.length) {
   <div class="warning">
     <span>Detected no Twitch redeems.</span>
     <span>If you're a Twitch affiliate with redeems, try signing out and signing in again.</span>
     <span>If this continues to be an issue please join the <a href="https://discord.gg/jNDjNVeuJp" target="_blank">support server</a>.</span>
   </div>
 }
+
+<app-label-block>
+  <div header>Enable TTS</div>
+  <div sub-text>Enable or disable TTS events for redeems.</div>
+  <app-toggle class="right" [control]="settings.controls.enabled" />
+</app-label-block>
+
+<app-label-block>
+  <div header>Redeem</div>
+  <div sub-text>This redeem will trigger TTS with user input.</div>
+  <app-selector
+    placeholder="Select a redeem option" [control]="settings.controls.redeem"
+    [options]="(redeemOptions$ | async) ?? []"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>ChatGPT Redeem</div>
+  <div sub-text>This redeem will trigger a ChatGPT response.</div>
+  <app-selector
+    placeholder="Select a redeem option" [control]="settings.controls.gptRedeem"
+    [options]="(redeemOptions$ | async) ?? []"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Redeem character limit</div>
+  <div sub-text>The max allowed characters we'll play for the redeem.</div>
+  <app-input placeholder="Set min bits" type="number" [control]="settings.controls.redeemCharacterLimit" />
+  <mat-error>
+    @if (settings.controls.redeemCharacterLimit.hasError('min')) {
+      Minimum characters allowed is 0.
+    } @else if (settings.controls.redeemCharacterLimit.hasError('pattern')) {
+      Character limit must be a whole number.
+    }
+  </mat-error>
+</app-label-block>
+  

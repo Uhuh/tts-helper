@@ -30,7 +30,7 @@ export class RedeemsComponent {
   private readonly twitchService = inject(TwitchService);
   private readonly openAIService = inject(OpenAIService);
 
-  readonly redeemInfo = new FormGroup({
+  readonly settings = new FormGroup({
     enabled: new FormControl(true, { nonNullable: true }),
     redeem: new FormControl('', { nonNullable: true }),
     gptRedeem: new FormControl('', { nonNullable: true }),
@@ -42,7 +42,7 @@ export class RedeemsComponent {
 
   readonly gptEnabled$ = this.openAIService.enabled$;
   readonly redeems$ = this.twitchService.redeems$;
-  readonly redeemOptions$ = this.twitchService.redeems$
+  readonly redeemOptions$ = this.redeems$
     .pipe(
       map(redeems => redeems.map<TTSOption>(r => ({ displayName: r.title, value: r.id }))),
     );
@@ -51,13 +51,13 @@ export class RedeemsComponent {
     this.twitchService.redeemInfo$
       .pipe(takeUntilDestroyed())
       .subscribe((redeemInfo) => {
-        this.redeemInfo.setValue(redeemInfo, { emitEvent: false });
+        this.settings.setValue(redeemInfo, { emitEvent: false });
       });
 
-    this.redeemInfo.valueChanges
+    this.settings.valueChanges
       .pipe(takeUntilDestroyed(), debounceTime(500))
       .subscribe(redeemInfo => {
-        this.twitchService.updateRedeemInfo(redeemInfo);
+        this.twitchService.updateRedeemsSettings(redeemInfo);
       });
   }
 }
