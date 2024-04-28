@@ -14,7 +14,6 @@ import {
   TwitchSubscriptionState,
 } from '../state/twitch/twitch.feature';
 import { OpenAIState } from '../state/openai/openai.feature';
-import { AsyncPipe } from '@angular/common';
 
 describe('TwitchPubSub', () => {
   let service: TwitchPubSub;
@@ -27,7 +26,7 @@ describe('TwitchPubSub', () => {
 
   let bitInfoSubject: Subject<TwitchBitState>;
   let redeemInfoSubject: Subject<TwitchRedeemState>;
-  let subsInfoSubject: Subject<TwitchSubscriptionState>;
+  let subscriptionsSubject: Subject<TwitchSubscriptionState>;
   let twitchSettingsSubject: Subject<TwitchState>;
 
   let twitchTokenSubject: Subject<string>;
@@ -38,7 +37,7 @@ describe('TwitchPubSub', () => {
   beforeEach(() => {
     bitInfoSubject = new Subject();
     redeemInfoSubject = new Subject();
-    subsInfoSubject = new Subject();
+    subscriptionsSubject = new Subject();
     twitchSettingsSubject = new Subject();
     twitchTokenSubject = new Subject();
     twitchChannelInfoSubject = new Subject();
@@ -46,7 +45,7 @@ describe('TwitchPubSub', () => {
     twitchServiceStub = jasmine.createSpyObj('TwitchService', [''], {
       bitInfo$: bitInfoSubject,
       redeemInfo$: redeemInfoSubject,
-      subsInfo$: subsInfoSubject,
+      subscriptions$: subscriptionsSubject,
       settings$: twitchSettingsSubject,
       token$: twitchTokenSubject,
       channelInfo$: twitchChannelInfoSubject,
@@ -64,7 +63,6 @@ describe('TwitchPubSub', () => {
     chatServiceStub = jasmine.createSpyObj('ChatService', ['']);
 
     TestBed.configureTestingModule({
-      imports: [AsyncPipe],
       providers: [
         TwitchPubSub,
         { provide: TwitchService, useValue: twitchServiceStub },
