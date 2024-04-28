@@ -14,6 +14,7 @@ import {
   TwitchSubscriptionState,
 } from '../state/twitch/twitch.feature';
 import { OpenAIState } from '../state/openai/openai.feature';
+import { AsyncPipe } from '@angular/common';
 
 describe('TwitchPubSub', () => {
   let service: TwitchPubSub;
@@ -63,6 +64,7 @@ describe('TwitchPubSub', () => {
     chatServiceStub = jasmine.createSpyObj('ChatService', ['']);
 
     TestBed.configureTestingModule({
+      imports: [AsyncPipe],
       providers: [
         TwitchPubSub,
         { provide: TwitchService, useValue: twitchServiceStub },
