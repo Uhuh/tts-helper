@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import {
   AmazonPollyData,
   ConfigFeature,
+  CustomUserVoice,
   GeneralChatState,
   StreamElementsData,
   TtsType,
@@ -30,6 +31,8 @@ export class ConfigService {
   public readonly audioDelay$ = this.store.select(ConfigFeature.selectAudioDelay);
   public readonly audioSettings$ = this.store.select(ConfigFeature.selectAudioSettings);
   public readonly userListState$ = this.store.select(ConfigFeature.selectUserListState);
+  public readonly customUserVoices$ = this.store.select(ConfigFeature.selectCustomUserVoices);
+  public readonly customUserVoiceRedeem$ = this.store.select(ConfigFeature.selectCustomUserVoiceRedeem);
 
   updateVTSToken(vtsAuthToken: string) {
     this.store.dispatch(GlobalConfigActions.updateTokens({ tokens: { vtsAuthToken } }));
@@ -107,6 +110,22 @@ export class ConfigService {
     this.playbackService.setPlaybackState({ endDelay: audioDelay * 1000 });
 
     this.store.dispatch(GlobalConfigActions.updateAudioDelay({ audioDelay }));
+  }
+
+  createCustomUserVoice(partialSettings?: Partial<CustomUserVoice>) {
+    this.store.dispatch(GlobalConfigActions.createCustomUserVoice({ partialSettings }));
+  }
+
+  updateCustomUserVoice(id: string, partialSettings: Partial<CustomUserVoice>) {
+    this.store.dispatch(GlobalConfigActions.updateCustomUserVoice({ id, partialSettings }));
+  }
+
+  deleteCustomUserVoice(id: string) {
+    this.store.dispatch(GlobalConfigActions.deleteCustomUserVoice({ id }));
+  }
+
+  updateCustomUserVoiceRedeem(redeem: string) {
+    this.store.dispatch(GlobalConfigActions.updateCustomUserVoiceRedeem({ redeem }));
   }
 
   clearState() {

@@ -2,6 +2,8 @@ import { createFeature, createReducer, createSelector, on } from '@ngrx/store';
 import { GlobalConfigActions } from './config.actions';
 import { ChatPermissions, ChatState } from '../../services/chat.interface';
 import { VoiceId } from '@aws-sdk/client-polly';
+import { uuidv4 } from 'uuidv7';
+import { klona } from 'klona';
 
 export type TtsType =
   | 'stream-elements'
@@ -49,9 +51,21 @@ export type AuthTokens = {
   vtsAuthToken: string;
 };
 
+/**
+ * Allows streamers to setup block or allow list.
+ */
 export interface UserListState {
   shouldBlockUser: boolean;
   usernames: string[];
+}
+
+export interface CustomUserVoice {
+  /* Maybe not required... */
+  id: string;
+  username: string;
+  ttsType: TtsType;
+  voice: string;
+  language: string;
 }
 
 export interface ConfigState {
@@ -60,7 +74,7 @@ export interface ConfigState {
   authTokens: AuthTokens;
   audioDevice: number;
   deviceVolume: number;
-  // The delay in SECONDS. This will be converted to miliseconds when sent to rust.
+  // The delay in SECONDS. This will be converted to milliseconds when sent to rust.
   audioDelay: number;
   generalChat: GeneralChatState;
   streamElements: StreamElementsData;
@@ -69,6 +83,8 @@ export interface ConfigState {
   tikTok: TikTokData;
   bannedWords: string[];
   userListState: UserListState;
+  customUserVoices: CustomUserVoice[];
+  customUserVoiceRedeem: string;
 }
 
 const defaultChatPermissions: ChatPermissions = {
@@ -127,6 +143,8 @@ const initialState: ConfigState = {
     // Common bot names
     usernames: ['streamelements', 'botrix', 'nightbot'],
   },
+  customUserVoices: [],
+  customUserVoiceRedeem: '',
 };
 
 export const ConfigFeature = createFeature({
@@ -231,6 +249,61 @@ export const ConfigFeature = createFeature({
         ...state.userListState,
         ...userListState,
       },
+    })),
+    on(GlobalConfigActions.createCustomUserVoice, (state, { partialSettings }) => ({
+      ...state,
+      customUserVoices: [
+        ...state.customUserVoices,
+        {
+          id: uuidv4(),
+          language: 'English (US)',
+          voice: 'en-US-Standard-E',
+          ttsType: 'stream-elements',
+          username: '<not set>',
+          ...partialSettings,
+        } satisfies CustomUserVoice,
+      ],
+    })),
+    on(GlobalConfigActions.updateCustomUserVoice, (state, { id, partialSettings }) => {
+      const customerUserVoice = state.customUserVoices.find(c => c.id === id);
+
+      if (!customerUserVoice) {
+        return state;
+      }
+
+      const copiedCustomerUserVoices = klona(state.customUserVoices);
+      const index = state.customUserVoices.indexOf(customerUserVoice);
+
+      copiedCustomerUserVoices[index] = {
+        ...customerUserVoice,
+        ...partialSettings,
+      };
+
+      return {
+        ...state,
+        customUserVoices: copiedCustomerUserVoices,
+      };
+    }),
+    on(GlobalConfigActions.deleteCustomUserVoice, (state, { id }) => {
+      const customerUserVoice = state.customUserVoices.find(c => c.id === id);
+
+      if (!customerUserVoice) {
+        return state;
+      }
+
+      const copiedCustomerUserVoices = klona(state.customUserVoices);
+      const index = state.customUserVoices.indexOf(customerUserVoice);
+
+      copiedCustomerUserVoices.splice(index, 1);
+
+      return {
+        ...state,
+        customUserVoices: copiedCustomerUserVoices,
+      };
+    }),
+    on(GlobalConfigActions.updateCustomUserVoiceRedeem, (state, { redeem }) => ({
+      ...state,
+      customUserVoiceRedeem: redeem,
     })),
   ),
   extraSelectors: ({
