@@ -11,6 +11,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LogService } from './logs.service';
 import { OpenAIService } from './openai.service';
 import { ChatService } from './chat.service';
+import { ConfigService } from './config.service';
+import { TtsType } from '../state/config/config.feature';
 
 @Injectable()
 export class TwitchPubSub {
@@ -19,6 +21,7 @@ export class TwitchPubSub {
   private readonly logService = inject(LogService);
   private readonly openaiService = inject(OpenAIService);
   private readonly chatService = inject(ChatService);
+  private readonly configService = inject(ConfigService);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -210,6 +213,51 @@ export class TwitchPubSub {
   }
 
   onRedeem(redeem: TwitchRedeem) {
+    this.handleCustomUserVoiceRedeem(redeem);
+    this.handleRedeemTts(redeem);
+  }
+
+  /**
+   * If set, users from a stream can setup their own TTS voice options.
+   * @param redeem Any redeem coming from Twitch
+   * @private
+   */
+  private handleCustomUserVoiceRedeem(redeem: TwitchRedeem) {
+    const { rewardId, userDisplayName, input } = redeem;
+
+    this.configService.customUserVoiceRedeem$
+      .pipe(first())
+      .subscribe(customUserVoiceRedeem => {
+        if (rewardId !== customUserVoiceRedeem) {
+          return;
+        }
+
+        /**
+         * The user doesn't NEED to set the language... however, it makes the select dropdowns easier for the streamer
+         * if they ever want to view / change it.
+         */
+        const [tts, language, voice] = input.split(',');
+        let ttsType: TtsType = 'stream-elements';
+
+        switch (tts.toLowerCase()) {
+          case 'tiktok':
+            ttsType = 'stream-elements';
+            break;
+          case 'stream-elements':
+          default:
+            ttsType = 'stream-elements';
+        }
+
+        this.configService.createCustomUserVoice({
+          ttsType,
+          voice,
+          language,
+          username: userDisplayName,
+        });
+      });
+  }
+
+  private handleRedeemTts(redeem: TwitchRedeem) {
     const { rewardId, userDisplayName, input } = redeem;
 
     combineLatest([
