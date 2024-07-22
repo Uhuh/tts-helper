@@ -213,4 +213,38 @@ describe('AudioService', () => {
     // Assert
     expect(playbackServiceStub.playAudio).toHaveBeenCalled();
   }));
+
+  it('should play users custom tts', fakeAsync(() => {
+    // Arrange
+    const voice = 'brian';
+    const userListState: UserListState = {
+      shouldBlockUser: false,
+      usernames: [username],
+    };
+    const userVoices: CustomUserVoice[] = [
+      {
+        voice,
+        username: 'pankurs',
+        language: 'english',
+        ttsType: 'stream-elements',
+        id: '1234',
+      },
+    ];
+
+    // Act
+    userListStateSubject.next(userListState);
+    customUserVoicesSubject.next(userVoices);
+
+    service.playTts(text, username, 'twitch', 9999);
+    tick(200);
+
+    // Assert
+    expect(playbackServiceStub.playAudio).toHaveBeenCalledOnceWith({
+      data: {
+        text,
+        voice,
+        type: 'streamElements',
+      },
+    });
+  }));
 });
