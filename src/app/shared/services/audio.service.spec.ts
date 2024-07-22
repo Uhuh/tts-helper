@@ -11,6 +11,7 @@ import { LogService } from './logs.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import {
   AmazonPollyData,
+  CustomUserVoice,
   StreamElementsData,
   TikTokData,
   TtsMonsterData,
@@ -45,6 +46,7 @@ describe('AudioService', () => {
     elevenLabs: ElevenLabsState;
   }>;
 
+  let customUserVoicesSubject: Subject<CustomUserVoice[]>;
   let twitchSettingsSubject: Subject<TwitchState>;
   let elevenlabsStateSubject: Subject<ElevenLabsState>;
   let audioStartedSubject: Subject<number>;
@@ -53,6 +55,7 @@ describe('AudioService', () => {
 
   beforeEach(() => {
     configAudioSettingsSubject = new Subject();
+    customUserVoicesSubject = new BehaviorSubject<CustomUserVoice[]>([]);
     userListStateSubject = new BehaviorSubject<UserListState>({
       usernames: [],
       shouldBlockUser: true,
@@ -61,6 +64,7 @@ describe('AudioService', () => {
     configServiceStub = jasmine.createSpyObj('ConfigService', [''], {
       audioSettings$: configAudioSettingsSubject,
       userListState$: userListStateSubject,
+      customUserVoices$: customUserVoicesSubject,
     });
 
     audioStartedSubject = new Subject();
@@ -133,6 +137,7 @@ describe('AudioService', () => {
 
     // Act
     userListStateSubject.next(userListState);
+    customUserVoicesSubject.next([]);
 
     service.playTts(text, username, 'vstream', 9999);
 
@@ -153,6 +158,7 @@ describe('AudioService', () => {
 
     // Act
     userListStateSubject.next(userListState);
+    customUserVoicesSubject.next([]);
 
     service.playTts(text, username, 'vstream', 9999);
 
@@ -171,6 +177,7 @@ describe('AudioService', () => {
 
     // Act
     userListStateSubject.next(userListState);
+    customUserVoicesSubject.next([]);
 
     service.playTts(text, username, 'vstream', 9999);
 
@@ -186,12 +193,21 @@ describe('AudioService', () => {
       shouldBlockUser: false,
       usernames: [username],
     };
+    const userVoices: CustomUserVoice[] = [
+      {
+        voice: 'ayo',
+        username: 'pankurs',
+        language: 'english',
+        ttsType: 'tiktok',
+        id: '1234',
+      },
+    ];
 
     // Act
     userListStateSubject.next(userListState);
+    customUserVoicesSubject.next(userVoices);
 
-    service.playTts(text, username, 'vstream', 9999);
-
+    service.playTts(text, username, 'twitch', 9999);
     tick(200);
 
     // Assert
