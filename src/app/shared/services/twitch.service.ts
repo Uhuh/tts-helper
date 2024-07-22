@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { catchError, of, skip, switchMap } from 'rxjs';
+import { catchError, of, switchMap } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
 import {
   TwitchBitState,
@@ -37,8 +37,6 @@ export class TwitchService {
 
   constructor() {
     this.token$.pipe(
-      // Ignore default state.
-      skip(1),
       takeUntilDestroyed(),
       switchMap(token => {
         if (!token) {
