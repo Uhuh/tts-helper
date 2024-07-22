@@ -227,20 +227,44 @@ export class TwitchPubSub {
   private handleCustomUserVoiceRedeem(redeem: TwitchRedeem) {
     const { rewardId, userDisplayName: username, input } = redeem;
 
-    this.configService.customUserVoiceRedeem$
-      .pipe(first(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(customUserVoiceRedeem => {
-        if (rewardId !== customUserVoiceRedeem) {
+    combineLatest([
+      this.configService.customUserVoiceRedeem$,
+      this.configService.customUserVoices$,
+    ])
+      .pipe(
+        first(),
+        takeUntilDestroyed(this.destroyRef),
+        map(([redeemId, voices]) => ({
+          redeemId,
+          existingVoiceSettings: voices.find(v => v.username.toLowerCase() === username.toLowerCase()),
+        })),
+      )
+      .subscribe(userVoicesOptions => {
+        const { redeemId, existingVoiceSettings } = userVoicesOptions;
+
+        if (rewardId !== redeemId) {
           return;
         }
 
-        /**
-         * The user doesn't NEED to set the language... however, it makes the select dropdowns easier for the streamer
-         * if they ever want to view / change it.
-         * ... How do I do lang / voice validation? If they input wrong then the API request fail.
-         */
-        const [tts, userLang, userVoice] = input.split(',');
+        const [tts, userLang, userVoice] = input.split(/\s*,\s*/g);
         let ttsType: TtsType = 'stream-elements';
+
+        this.logService.add(`User is setting custom voice. ${JSON.stringify({
+          tts,
+          userLang,
+          userVoice,
+        })}`, 'info', 'TwitchPubSub.handleCustomUserVoiceRedeem');
+
+        if (!userLang || !userVoice) {
+          return this.logService.add(`User passed in invalid lang or voice options: ${JSON.stringify({
+              tts,
+              userLang,
+              userVoice,
+            })}`,
+            'error',
+            'TwitchPubSub.handleCustomUserVoiceRedeem',
+          );
+        }
 
         // Default to SE for now, might ignore request in the future.
         switch (tts.toLowerCase()) {
@@ -258,12 +282,24 @@ export class TwitchPubSub {
         const voices = ttsType === 'tiktok' ? tiktok_voices : stream_elements;
         const { language, voice } = this.validateTtsSelection(voices, userLang, userVoice);
 
-        this.configService.createCustomUserVoice({
+        this.logService.add(`Validated TTS selection: ${JSON.stringify({
+          ttsType,
+          language,
+          voice,
+        })}`, 'info', 'TwitchPubSub.handleCustomUserVoiceRedeem');
+
+        const options = {
           ttsType,
           voice,
           language,
           username,
-        });
+        };
+
+        if (existingVoiceSettings) {
+          this.configService.updateCustomUserVoice(existingVoiceSettings.id, options);
+        } else {
+          this.configService.createCustomUserVoice(options);
+        }
       });
   }
 
@@ -304,7 +340,7 @@ export class TwitchPubSub {
       voice: defaultVoice,
     };
   }
-  
+
   private handleRedeemTts(redeem: TwitchRedeem) {
     const { rewardId, userDisplayName, input } = redeem;
 
