@@ -2,6 +2,14 @@
   <span>TTS User Mapping</span>
 </div>
 
+<div class="warning orange">
+  <span>This feature is still being developed.</span>
+  <span>If a users voice assignment fails, it may require you to manually set their TTS.</span>
+  <span>If there are any issue please join the <a
+    href="https://discord.gg/jNDjNVeuJp" target="_blank"
+  >support server</a>.</span>
+</div>
+
 <div class="section">
   @if (!(redeems$ | async)?.length) {
     <div class="warning">
@@ -12,7 +20,7 @@
   }
 
   <app-label-block>
-    <div header>Redeem</div>
+    <div header>Twitch Redeem</div>
     <div sub-text>The redeem users will use to set their TTS "voice".</div>
     <app-selector
       placeholder="Select a redeem option" [control]="selectedRedeem"

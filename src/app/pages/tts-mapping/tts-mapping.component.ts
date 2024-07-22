@@ -33,7 +33,10 @@ export class TtsMappingComponent {
   readonly redeems$ = this.twitchService.redeems$;
   readonly redeemOptions$ = this.redeems$
     .pipe(
-      map(redeems => redeems.map<TTSOption>(r => ({ displayName: r.title, value: r.id }))),
+      map(redeems => redeems.map<TTSOption>(r => ({
+        displayName: r.title,
+        value: r.id,
+      })).concat([{ displayName: 'No redeem', value: '_' }])),
     );
 
   constructor() {
