@@ -46,11 +46,11 @@ describe('AudioService', () => {
     elevenLabs: ElevenLabsState;
   }>;
 
-  let customUserVoicesSubject: Subject<CustomUserVoice[]>;
   let twitchSettingsSubject: Subject<TwitchState>;
   let elevenlabsStateSubject: Subject<ElevenLabsState>;
   let audioStartedSubject: Subject<number>;
   let audioFinishedSubject: Subject<number>;
+  let customUserVoicesSubject: BehaviorSubject<CustomUserVoice[]>;
   let userListStateSubject: BehaviorSubject<UserListState>;
 
   beforeEach(() => {
