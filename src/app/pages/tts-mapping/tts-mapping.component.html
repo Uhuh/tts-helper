@@ -1,0 +1,52 @@
+<div class="header">
+  <span>TTS User Mapping</span>
+</div>
+
+<div class="warning orange">
+  <span>This feature is still being developed.</span>
+  <span><strong>Users can only choose from free TTS services currently.</strong></span>
+  <span>If a users voice assignment fails, it may require you to manually set their TTS.</span>
+  <span>If there are any issue please join the <a
+    href="https://discord.gg/jNDjNVeuJp" target="_blank"
+  >support server</a>.</span>
+</div>
+
+<div class="section">
+  @if (!(redeems$ | async)?.length) {
+    <div class="warning">
+      <span>Detected no Twitch redeems.</span>
+      <span>If you're a Twitch affiliate with redeems, try signing out and signing in again.</span>
+      <span>If this continues to be an issue please join the <a href="https://discord.gg/jNDjNVeuJp" target="_blank">support server</a>.</span>
+    </div>
+  }
+
+  <app-label-block>
+    <div header>Twitch Redeem</div>
+    <div sub-text>The redeem users will use to set their TTS "voice".</div>
+    <app-selector
+      placeholder="Select a redeem option" [control]="selectedRedeem"
+      [options]="(redeemOptions$ | async) ?? []"
+    />
+  </app-label-block>
+
+  <hr />
+
+  <div class="header">
+    <span>Users Assigned Voices</span>
+  </div>
+
+  <app-label-block>
+    <div header>Create user custom voice</div>
+    <div sub-text>To manually create a voice setting for a user.</div>
+    <app-button class="right" (click)="createCustomUserVoice()">Create</app-button>
+  </app-label-block>
+
+  @for (customUserVoice of customUserVoices$ | async; track customUserVoice.id) {
+    <app-user-accordion [customUserVoice]="customUserVoice" />
+  } @empty {
+    <div class="empty">
+      No custom user voices created!
+    </div>
+  }
+
+</div>

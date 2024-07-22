@@ -14,6 +14,7 @@ import {
   TwitchSubscriptionState,
 } from '../state/twitch/twitch.feature';
 import { OpenAIState } from '../state/openai/openai.feature';
+import { ConfigService } from './config.service';
 
 describe('TwitchPubSub', () => {
   let service: TwitchPubSub;
@@ -23,6 +24,7 @@ describe('TwitchPubSub', () => {
   let logServiceStub: jasmine.SpyObj<LogService>;
   let openaiServiceStub: jasmine.SpyObj<OpenAIService>;
   let chatServiceStub: jasmine.SpyObj<ChatService>;
+  let configServiceStub: jasmine.SpyObj<ConfigService>;
 
   let bitInfoSubject: Subject<TwitchBitState>;
   let redeemInfoSubject: Subject<TwitchRedeemState>;
@@ -62,6 +64,8 @@ describe('TwitchPubSub', () => {
 
     chatServiceStub = jasmine.createSpyObj('ChatService', ['']);
 
+    configServiceStub = jasmine.createSpyObj('ConfigService', ['']);
+
     TestBed.configureTestingModule({
       providers: [
         TwitchPubSub,
@@ -70,6 +74,7 @@ describe('TwitchPubSub', () => {
         { provide: LogService, useValue: logServiceStub },
         { provide: OpenAIService, useValue: openaiServiceStub },
         { provide: ChatService, useValue: chatServiceStub },
+        { provide: ConfigService, useValue: configServiceStub },
       ],
     });
 

@@ -11,6 +11,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LogService } from './logs.service';
 import { OpenAIService } from './openai.service';
 import { ChatService } from './chat.service';
+import { ConfigService } from './config.service';
+import { TtsType } from '../state/config/config.feature';
+import stream_elements from '../json/stream-elements.json';
+import tiktok_voices from '../json/tiktok.json';
 
 @Injectable()
 export class TwitchPubSub {
@@ -19,6 +23,7 @@ export class TwitchPubSub {
   private readonly logService = inject(LogService);
   private readonly openaiService = inject(OpenAIService);
   private readonly chatService = inject(ChatService);
+  private readonly configService = inject(ConfigService);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -210,6 +215,133 @@ export class TwitchPubSub {
   }
 
   onRedeem(redeem: TwitchRedeem) {
+    this.handleCustomUserVoiceRedeem(redeem);
+    this.handleRedeemTts(redeem);
+  }
+
+  /**
+   * If set, users from a stream can setup their own TTS voice options.
+   * @param redeem Any redeem coming from Twitch
+   * @private
+   */
+  private handleCustomUserVoiceRedeem(redeem: TwitchRedeem) {
+    const { rewardId, userDisplayName: username, input } = redeem;
+
+    combineLatest([
+      this.configService.customUserVoiceRedeem$,
+      this.configService.customUserVoices$,
+    ])
+      .pipe(
+        first(),
+        takeUntilDestroyed(this.destroyRef),
+        map(([redeemId, voices]) => ({
+          redeemId,
+          existingVoiceSettings: voices.find(v => v.username.toLowerCase() === username.toLowerCase()),
+        })),
+      )
+      .subscribe(userVoicesOptions => {
+        const { redeemId, existingVoiceSettings } = userVoicesOptions;
+
+        if (rewardId !== redeemId) {
+          return;
+        }
+
+        const [tts, userLang, userVoice] = input.split(/\s*,\s*/g);
+        let ttsType: TtsType = 'stream-elements';
+
+        this.logService.add(`User is setting custom voice. ${JSON.stringify({
+          tts,
+          userLang,
+          userVoice,
+        })}`, 'info', 'TwitchPubSub.handleCustomUserVoiceRedeem');
+
+        if (!userLang || !userVoice) {
+          return this.logService.add(`User passed in invalid lang or voice options: ${JSON.stringify({
+              tts,
+              userLang,
+              userVoice,
+            })}`,
+            'error',
+            'TwitchPubSub.handleCustomUserVoiceRedeem',
+          );
+        }
+
+        // Default to SE for now, might ignore request in the future.
+        switch (tts.toLowerCase()) {
+          case 'tiktok':
+          case 'tik-tok':
+            ttsType = 'tiktok';
+            break;
+          case 'stream-elements':
+          case 'streamelements':
+          default:
+            ttsType = 'stream-elements';
+        }
+
+        // Never trust users, validate it and get either default or assumed values
+        const voices = ttsType === 'tiktok' ? tiktok_voices : stream_elements;
+        const { language, voice } = this.validateTtsSelection(voices, userLang, userVoice);
+
+        this.logService.add(`Validated TTS selection: ${JSON.stringify({
+          ttsType,
+          language,
+          voice,
+        })}`, 'info', 'TwitchPubSub.handleCustomUserVoiceRedeem');
+
+        const options = {
+          ttsType,
+          voice,
+          language,
+          username,
+        };
+
+        if (existingVoiceSettings) {
+          this.configService.updateCustomUserVoice(existingVoiceSettings.id, options);
+        } else {
+          this.configService.createCustomUserVoice(options);
+        }
+      });
+  }
+
+  private validateTtsSelection(
+    voices: {
+      language: string,
+      options: { displayName: string, value: string }[]
+    }[],
+    langToCheck: string,
+    voiceToCheck: string,
+  ) {
+    // StreamElements doesn't have English first... but meh.
+    const defaultLang = voices[0].language;
+    const defaultVoice = voices[0].options[0].value;
+
+    for (const { language, options } of voices) {
+      if (!language.toLowerCase().startsWith(langToCheck.toLowerCase())) {
+        continue;
+      }
+
+      const voice = options.find(o =>
+        o.displayName.toLowerCase().startsWith(voiceToCheck.toLowerCase()),
+      )?.value;
+
+      // If the voice is somehow wrong, break out and just give the user the default.
+      if (!voice) {
+        break;
+      }
+
+      return {
+        language,
+        voice,
+      };
+    }
+
+    return {
+      language: defaultLang,
+      voice: defaultVoice,
+    };
+  }
+
+  private handleRedeemTts(redeem: TwitchRedeem) {
     const { rewardId, userDisplayName, input } = redeem;
 
     combineLatest([

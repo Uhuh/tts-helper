@@ -13,6 +13,7 @@ import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { AudioFeature, AudioItem, AudioSource, AudioStatus } from '../state/audio/audio.feature';
 import {
   AmazonPollyData,
+  CustomUserVoice,
   StreamElementsData,
   TikTokData,
   TtsMonsterData,
@@ -20,7 +21,7 @@ import {
 } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
-import { first, map } from 'rxjs';
+import { combineLatest, first, map } from 'rxjs';
 import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
@@ -39,6 +40,7 @@ export class AudioService {
   private readonly twitchService = inject(TwitchService);
   private readonly logService = inject(LogService);
   private readonly userListState$ = this.configService.userListState$;
+  private readonly customUserVoices$ = this.configService.customUserVoices$;
 
   public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
   public readonly queuedItems$ = this.audioItems$
@@ -104,9 +106,9 @@ export class AudioService {
     source: AudioSource,
     charLimit: number,
   ) {
-    this.userListState$
+    combineLatest([this.userListState$, this.customUserVoices$])
       .pipe(first(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(async (userListState) => {
+      .subscribe(async ([userListState, customUserVoices]) => {
         if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
           return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
         }
@@ -118,9 +120,11 @@ export class AudioService {
           return this.logService.add(`Ignoring message as the user is not valid for the block/allow list. Username: ${username}`, 'info', 'AudioService.playTts');
         }
 
+        const customUserVoice = customUserVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
+
         // Trim played audio down, but keep full message in case stream wants to requeue it.
         const audioText = text.substring(0, charLimit);
-        const data = await this.getRequestData(audioText);
+        const data = await this.getRequestData(audioText, customUserVoice);
 
         if (!data) {
           this.snackbar.open(
@@ -187,18 +191,20 @@ export class AudioService {
     });
   }
 
-  private async getRequestData(text: string): Promise<RequestAudioData | null> {
-    switch (this.tts) {
+  private async getRequestData(text: string, customUserVoice?: CustomUserVoice): Promise<RequestAudioData | null> {
+    const tts = customUserVoice?.ttsType ?? this.tts;
+
+    switch (tts) {
       case 'stream-elements':
         return {
           type: 'streamElements',
-          voice: this.streamElements.voice,
+          voice: customUserVoice?.voice ?? this.streamElements.voice,
           text,
         };
       case 'tiktok':
         return {
           type: 'tikTok',
-          voice: this.tikTok.voice,
+          voice: customUserVoice?.voice ?? this.tikTok.voice,
           text,
         };
       case 'amazon-polly': {

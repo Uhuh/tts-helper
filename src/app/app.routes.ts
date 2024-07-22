@@ -58,6 +58,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/app-settings/app-settings.component'),
   },
   {
+    path: 'tts-mapping',
+    loadComponent: () => import('./pages/tts-mapping/tts-mapping.component'),
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',

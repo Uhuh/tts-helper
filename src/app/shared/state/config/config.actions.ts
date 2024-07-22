@@ -3,6 +3,7 @@ import {
   AmazonPollyData,
   AuthTokens,
   ConfigState,
+  CustomUserVoice,
   GeneralChatState,
   StreamElementsData,
   TtsType,
@@ -30,6 +31,10 @@ export const GlobalConfigActions = createActionGroup({
     'Update Tik Tok Language': props<{ language: string }>(),
     'Update Tts Monster Overlay': props<{ overlay: string; key: string; userId: string }>(),
     'Update User List': props<{ userListState: UserListState }>(),
+    'Create Custom User Voice': props<{ partialSettings?: Partial<CustomUserVoice> }>(),
+    'Update Custom User Voice': props<{ id: string, partialSettings: Partial<CustomUserVoice> }>(),
+    'Delete Custom User Voice': props<{ id: string }>(),
+    'Update Custom User Voice Redeem': props<{ redeem: string }>(),
     'Reset State': emptyProps(),
   },
 });

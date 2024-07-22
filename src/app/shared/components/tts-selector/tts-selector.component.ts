@@ -43,6 +43,8 @@ export class TtsSelectorComponent implements OnChanges {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnChanges() {
+    this.languageVoiceMap.clear();
+    
     for (const voice of this.voices) {
       this.languageVoiceMap.set(voice.language, voice.options);
     }
@@ -63,7 +65,7 @@ export class TtsSelectorComponent implements OnChanges {
           this.languageVoiceMap.get(language) ?? [],
         );
 
-        this.voiceControl.patchValue(
+        this.voiceControl.setValue(
           `${this.languageVoiceOptions()[0].value}` ?? '',
         );
       });
