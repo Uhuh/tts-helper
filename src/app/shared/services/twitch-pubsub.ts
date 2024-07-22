@@ -13,6 +13,8 @@ import { OpenAIService } from './openai.service';
 import { ChatService } from './chat.service';
 import { ConfigService } from './config.service';
 import { TtsType } from '../state/config/config.feature';
+import stream_elements from '../json/stream-elements.json';
+import tiktok_voices from '../json/tiktok.json';
 
 @Injectable()
 export class TwitchPubSub {
@@ -223,10 +225,10 @@ export class TwitchPubSub {
    * @private
    */
   private handleCustomUserVoiceRedeem(redeem: TwitchRedeem) {
-    const { rewardId, userDisplayName, input } = redeem;
+    const { rewardId, userDisplayName: username, input } = redeem;
 
     this.configService.customUserVoiceRedeem$
-      .pipe(first())
+      .pipe(first(), takeUntilDestroyed(this.destroyRef))
       .subscribe(customUserVoiceRedeem => {
         if (rewardId !== customUserVoiceRedeem) {
           return;
@@ -235,28 +237,74 @@ export class TwitchPubSub {
         /**
          * The user doesn't NEED to set the language... however, it makes the select dropdowns easier for the streamer
          * if they ever want to view / change it.
+         * ... How do I do lang / voice validation? If they input wrong then the API request fail.
          */
-        const [tts, language, voice] = input.split(',');
+        const [tts, userLang, userVoice] = input.split(',');
         let ttsType: TtsType = 'stream-elements';
 
+        // Default to SE for now, might ignore request in the future.
         switch (tts.toLowerCase()) {
           case 'tiktok':
-            ttsType = 'stream-elements';
+          case 'tik-tok':
+            ttsType = 'tiktok';
             break;
           case 'stream-elements':
+          case 'streamelements':
           default:
             ttsType = 'stream-elements';
         }
+
+        // Never trust users, validate it and get either default or assumed values
+        const voices = ttsType === 'tiktok' ? tiktok_voices : stream_elements;
+        const { language, voice } = this.validateTtsSelection(voices, userLang, userVoice);
 
         this.configService.createCustomUserVoice({
           ttsType,
           voice,
           language,
-          username: userDisplayName,
+          username,
         });
       });
   }
 
+  private validateTtsSelection(
+    voices: {
+      language: string,
+      options: { displayName: string, value: string }[]
+    }[],
+    langToCheck: string,
+    voiceToCheck: string,
+  ) {
+    // StreamElements doesn't have English first... but meh.
+    const defaultLang = voices[0].language;
+    const defaultVoice = voices[0].options[0].value;
+
+    for (const { language, options } of voices) {
+      if (!language.toLowerCase().startsWith(langToCheck.toLowerCase())) {
+        continue;
+      }
+
+      const voice = options.find(o =>
+        o.displayName.toLowerCase().startsWith(voiceToCheck.toLowerCase()),
+      )?.value;
+
+      // If the voice is somehow wrong, break out and just give the user the default.
+      if (!voice) {
+        break;
+      }
+
+      return {
+        language,
+        voice,
+      };
+    }
+
+    return {
+      language: defaultLang,
+      voice: defaultVoice,
+    };
+  }
+  
   private handleRedeemTts(redeem: TwitchRedeem) {
     const { rewardId, userDisplayName, input } = redeem;
 
