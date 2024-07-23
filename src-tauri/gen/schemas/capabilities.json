@@ -25,6 +25,7 @@
       "playback:allow-list-output-devices",
       "playback:allow-play-audio",
       "playback:allow-set-audio-state",
+      "playback:allow-toggle-pause",
       "shell:allow-open",
       "global-shortcut:allow-is-registered",
       "global-shortcut:allow-register",
