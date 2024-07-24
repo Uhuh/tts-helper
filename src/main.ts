@@ -33,7 +33,6 @@ import { TwitchService } from './app/shared/services/twitch.service';
 import { VStreamService } from './app/shared/services/vstream.service';
 import { VStreamPubSubService } from './app/shared/services/vstream-pubsub.service';
 import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
-import { OpenAIFactory } from './app/shared/services/openai.factory';
 import { AppSettingsFeature } from './app/shared/state/app-settings/app-settings.feature';
 import { AppSettingsService } from './app/shared/services/app-settings.service';
 
@@ -78,7 +77,6 @@ bootstrapApplication(AppComponent, {
     VStreamService,
     VStreamPubSubService,
     VTubeStudioService,
-    OpenAIFactory,
   ],
 })
   .catch((err) => console.error(err));

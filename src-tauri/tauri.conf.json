@@ -1,6 +1,6 @@
 {
   "productName": "TTS Helper",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "identifier": "com.panku.io",
   "bundle": {
     "active": true,

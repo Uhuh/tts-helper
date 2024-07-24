@@ -27,6 +27,16 @@
   </app-label-block>
 
   <app-label-block>
+    <div header>Models</div>
+    <div sub-text>Select the GPT model you wish to use for generation.</div>
+    <app-selector
+      placeholder="Select a model"
+      [control]="settings.controls.model"
+      [options]="(models$ | async) ?? []"
+    />
+  </app-label-block>
+
+  <app-label-block>
     <div header>Character Limit</div>
     <div sub-text>The max amount of characters that will be converted into audio.</div>
     <app-input [control]="charLimit" placeholder="Enter character limit." type="number" />

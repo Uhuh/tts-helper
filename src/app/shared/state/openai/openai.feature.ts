@@ -16,6 +16,7 @@ export interface GptPersonalityState {
 
 export interface GptSettingsState {
   apiToken: string;
+  model: string;
   enabled: boolean;
   historyLimit: number;
   temperature: number;
@@ -52,6 +53,7 @@ export const initialState: OpenAIState = {
   },
   settings: {
     apiToken: '',
+    model: 'gpt-4o-mini',
     enabled: false,
     historyLimit: 10,
     frequencyPenalty: 0,
