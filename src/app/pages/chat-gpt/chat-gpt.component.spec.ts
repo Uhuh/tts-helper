@@ -5,6 +5,7 @@ import { OpenAIService } from '../../shared/services/openai.service';
 import { Subject } from 'rxjs';
 import { GptChatState, GptPersonalityState, GptSettingsState } from '../../shared/state/openai/openai.feature';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 
 describe('ChatGptComponent', () => {
   let component: ChatGptComponent;
@@ -29,7 +30,7 @@ describe('ChatGptComponent', () => {
 
     TestBed.overrideComponent(ChatGptComponent, {
       set: {
-        imports: [],
+        imports: [AsyncPipe],
         providers: [
           { provide: OpenAIService, useValue: openaiServiceStub },
         ],
