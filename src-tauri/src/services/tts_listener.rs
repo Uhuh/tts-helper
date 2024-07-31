@@ -3,7 +3,7 @@ use axum::{extract::Json, routing::{get, post}, Extension, Router};
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Emitter};
 use tokio::runtime::Builder;
 use tracing::{error, instrument};
 

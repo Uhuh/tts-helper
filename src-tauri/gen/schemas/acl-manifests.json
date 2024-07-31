@@ -30,6 +30,16 @@
           "deny": []
         }
       },
+      "allow-default-window-icon": {
+        "identifier": "allow-default-window-icon",
+        "description": "Enables the default_window_icon command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "default_window_icon"
+          ],
+          "deny": []
+        }
+      },
       "allow-name": {
         "identifier": "allow-name",
         "description": "Enables the name command without any pre-configured scope.",
@@ -77,6 +87,16 @@
           "allow": [],
           "deny": [
             "app_show"
+          ]
+        }
+      },
+      "deny-default-window-icon": {
+        "identifier": "deny-default-window-icon",
+        "description": "Denies the default_window_icon command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "default_window_icon"
           ]
         }
       },
@@ -217,7 +237,11 @@
     "global_scope_schema": null
   },
   "global-shortcut": {
-    "default_permission": null,
+    "default_permission": {
+      "identifier": "default",
+      "description": "No features are enabled by default, as we believe\nthe shortcuts can be inherently dangerous and it is\napplication specific if specific shortcuts should be\nregistered or unregistered.\n",
+      "permissions": []
+    },
     "permissions": {
       "allow-is-registered": {
         "identifier": "allow-is-registered",
@@ -326,7 +350,7 @@
   "http": {
     "default_permission": {
       "identifier": "default",
-      "description": "Allows all fetch operations",
+      "description": "This permission set configures what kind of\nfetch operations are available from the http plugin.\n\nThis enables all fetch operations but does not\nallow explicitly any origins to be fetched. This needs to\nbe manually configured before usage.\n\n#### Granted Permissions\n\nAll fetch operations are enabled.\n\n",
       "permissions": [
         "allow-fetch",
         "allow-fetch-cancel",
@@ -437,8 +461,8 @@
           "type": "object"
         }
       ],
-      "description": "HTTP scope entry object definition.",
-      "title": "ScopeEntry"
+      "description": "HTTP scope entry.",
+      "title": "HttpScopeEntry"
     }
   },
   "image": {
@@ -562,7 +586,30 @@
     "default_permission": {
       "identifier": "default",
       "description": "Default permissions for the plugin.",
-      "permissions": []
+      "permissions": [
+        "allow-new",
+        "allow-append",
+        "allow-prepend",
+        "allow-insert",
+        "allow-remove",
+        "allow-remove-at",
+        "allow-items",
+        "allow-get",
+        "allow-popup",
+        "allow-create-default",
+        "allow-set-as-app-menu",
+        "allow-set-as-window-menu",
+        "allow-text",
+        "allow-set-text",
+        "allow-is-enabled",
+        "allow-set-enabled",
+        "allow-set-accelerator",
+        "allow-set-as-windows-menu-for-nsapp",
+        "allow-set-as-help-menu-for-nsapp",
+        "allow-is-checked",
+        "allow-set-checked",
+        "allow-set-icon"
+      ]
     },
     "permissions": {
       "allow-append": {
@@ -1390,7 +1437,13 @@
     "global_scope_schema": null
   },
   "shell": {
-    "default_permission": null,
+    "default_permission": {
+      "identifier": "default",
+      "description": "This permission set configures which\nshell functionality is exposed by default.\n\n#### Granted Permissions\n\nIt allows to use the `open` functionality without any specific\nscope pre-configured. It will allow opening `http(s)://`,\n`tel:` and `mailto:` links.\n",
+      "permissions": [
+        "allow-open"
+      ]
+    },
     "permissions": {
       "allow-execute": {
         "identifier": "allow-execute",
@@ -1418,6 +1471,16 @@
         "commands": {
           "allow": [
             "open"
+          ],
+          "deny": []
+        }
+      },
+      "allow-spawn": {
+        "identifier": "allow-spawn",
+        "description": "Enables the spawn command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "spawn"
           ],
           "deny": []
         }
@@ -1459,6 +1522,16 @@
           "allow": [],
           "deny": [
             "open"
+          ]
+        }
+      },
+      "deny-spawn": {
+        "identifier": "deny-spawn",
+        "description": "Denies the spawn command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "spawn"
           ]
         }
       },
@@ -1551,7 +1624,24 @@
     }
   },
   "store": {
-    "default_permission": null,
+    "default_permission": {
+      "identifier": "default",
+      "description": "This permission set configures what kind of\noperations are available from the store plugin.\n\n#### Granted Permissions\n\nAll operations are enabled by default.\n\n",
+      "permissions": [
+        "allow-clear",
+        "allow-delete",
+        "allow-entries",
+        "allow-get",
+        "allow-has",
+        "allow-keys",
+        "allow-length",
+        "allow-load",
+        "allow-reset",
+        "allow-save",
+        "allow-set",
+        "allow-values"
+      ]
+    },
     "permissions": {
       "allow-clear": {
         "identifier": "allow-clear",
@@ -1801,7 +1891,19 @@
     "default_permission": {
       "identifier": "default",
       "description": "Default permissions for the plugin.",
-      "permissions": []
+      "permissions": [
+        "allow-new",
+        "allow-get-by-id",
+        "allow-remove-by-id",
+        "allow-set-icon",
+        "allow-set-menu",
+        "allow-set-tooltip",
+        "allow-set-title",
+        "allow-set-visible",
+        "allow-set-temp-dir-path",
+        "allow-set-icon-as-template",
+        "allow-set-show-menu-on-left-click"
+      ]
     },
     "permissions": {
       "allow-get-by-id": {
@@ -2031,9 +2133,11 @@
   "updater": {
     "default_permission": {
       "identifier": "default",
-      "description": "Allows checking for new updates and installing them",
+      "description": "This permission set configures which kind of\nupdater functions are exposed to the frontend.\n\n#### Granted Permissions\n\nThe full workflow from checking for updates to installing them\nis enabled.\n\n",
       "permissions": [
         "allow-check",
+        "allow-download",
+        "allow-install",
         "allow-download-and-install"
       ]
     },
@@ -2048,12 +2152,32 @@
           "deny": []
         }
       },
+      "allow-download": {
+        "identifier": "allow-download",
+        "description": "Enables the download command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "download"
+          ],
+          "deny": []
+        }
+      },
       "allow-download-and-install": {
         "identifier": "allow-download-and-install",
         "description": "Enables the download_and_install command without any pre-configured scope.",
         "commands": {
           "allow": [
             "download_and_install"
+          ],
+          "deny": []
+        }
+      },
+      "allow-install": {
+        "identifier": "allow-install",
+        "description": "Enables the install command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "install"
           ],
           "deny": []
         }
@@ -2068,6 +2192,16 @@
           ]
         }
       },
+      "deny-download": {
+        "identifier": "deny-download",
+        "description": "Denies the download command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "download"
+          ]
+        }
+      },
       "deny-download-and-install": {
         "identifier": "deny-download-and-install",
         "description": "Denies the download_and_install command without any pre-configured scope.",
@@ -2075,6 +2209,16 @@
           "allow": [],
           "deny": [
             "download_and_install"
+          ]
+        }
+      },
+      "deny-install": {
+        "identifier": "deny-install",
+        "description": "Denies the install command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "install"
           ]
         }
       }
@@ -2169,6 +2313,16 @@
         "commands": {
           "allow": [
             "set_webview_size"
+          ],
+          "deny": []
+        }
+      },
+      "allow-set-webview-zoom": {
+        "identifier": "allow-set-webview-zoom",
+        "description": "Enables the set_webview_zoom command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "set_webview_zoom"
           ],
           "deny": []
         }
@@ -2283,6 +2437,16 @@
           ]
         }
       },
+      "deny-set-webview-zoom": {
+        "identifier": "deny-set-webview-zoom",
+        "description": "Denies the set_webview_zoom command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "set_webview_zoom"
+          ]
+        }
+      },
       "deny-webview-close": {
         "identifier": "deny-webview-close",
         "description": "Denies the webview_close command without any pre-configured scope.",
@@ -2340,7 +2504,9 @@
         "allow-title",
         "allow-current-monitor",
         "allow-primary-monitor",
+        "allow-monitor-from-point",
         "allow-available-monitors",
+        "allow-cursor-position",
         "allow-theme",
         "allow-internal-toggle-maximize"
       ]
@@ -2392,6 +2558,16 @@
         "commands": {
           "allow": [
             "current_monitor"
+          ],
+          "deny": []
+        }
+      },
+      "allow-cursor-position": {
+        "identifier": "allow-cursor-position",
+        "description": "Enables the cursor_position command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "cursor_position"
           ],
           "deny": []
         }
@@ -2562,6 +2738,16 @@
         "commands": {
           "allow": [
             "minimize"
+          ],
+          "deny": []
+        }
+      },
+      "allow-monitor-from-point": {
+        "identifier": "allow-monitor-from-point",
+        "description": "Enables the monitor_from_point command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "monitor_from_point"
           ],
           "deny": []
         }
@@ -2846,6 +3032,16 @@
           "deny": []
         }
       },
+      "allow-set-size-constraints": {
+        "identifier": "allow-set-size-constraints",
+        "description": "Enables the set_size_constraints command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "set_size_constraints"
+          ],
+          "deny": []
+        }
+      },
       "allow-set-skip-taskbar": {
         "identifier": "allow-set-skip-taskbar",
         "description": "Enables the set_skip_taskbar command without any pre-configured scope.",
@@ -2862,6 +3058,16 @@
         "commands": {
           "allow": [
             "set_title"
+          ],
+          "deny": []
+        }
+      },
+      "allow-set-title-bar-style": {
+        "identifier": "allow-set-title-bar-style",
+        "description": "Enables the set_title_bar_style command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "set_title_bar_style"
           ],
           "deny": []
         }
@@ -2892,6 +3098,16 @@
         "commands": {
           "allow": [
             "start_dragging"
+          ],
+          "deny": []
+        }
+      },
+      "allow-start-resize-dragging": {
+        "identifier": "allow-start-resize-dragging",
+        "description": "Enables the start_resize_dragging command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "start_resize_dragging"
           ],
           "deny": []
         }
@@ -2993,6 +3209,16 @@
           "allow": [],
           "deny": [
             "current_monitor"
+          ]
+        }
+      },
+      "deny-cursor-position": {
+        "identifier": "deny-cursor-position",
+        "description": "Denies the cursor_position command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "cursor_position"
           ]
         }
       },
@@ -3163,6 +3389,16 @@
           "allow": [],
           "deny": [
             "minimize"
+          ]
+        }
+      },
+      "deny-monitor-from-point": {
+        "identifier": "deny-monitor-from-point",
+        "description": "Denies the monitor_from_point command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "monitor_from_point"
           ]
         }
       },
@@ -3446,6 +3682,16 @@
           ]
         }
       },
+      "deny-set-size-constraints": {
+        "identifier": "deny-set-size-constraints",
+        "description": "Denies the set_size_constraints command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "set_size_constraints"
+          ]
+        }
+      },
       "deny-set-skip-taskbar": {
         "identifier": "deny-set-skip-taskbar",
         "description": "Denies the set_skip_taskbar command without any pre-configured scope.",
@@ -3463,6 +3709,16 @@
           "allow": [],
           "deny": [
             "set_title"
+          ]
+        }
+      },
+      "deny-set-title-bar-style": {
+        "identifier": "deny-set-title-bar-style",
+        "description": "Denies the set_title_bar_style command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "set_title_bar_style"
           ]
         }
       },
@@ -3493,6 +3749,16 @@
           "allow": [],
           "deny": [
             "start_dragging"
+          ]
+        }
+      },
+      "deny-start-resize-dragging": {
+        "identifier": "deny-start-resize-dragging",
+        "description": "Denies the start_resize_dragging command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "start_resize_dragging"
           ]
         }
       },
@@ -3551,14 +3817,32 @@
     "global_scope_schema": null
   },
   "window-state": {
-    "default_permission": null,
+    "default_permission": {
+      "identifier": "default",
+      "description": "This permission set configures what kind of\noperations are available from the window state plugin.\n\n#### Granted Permissions\n\nAll operations are enabled by default.\n\n",
+      "permissions": [
+        "allow-filename",
+        "allow-restore-state",
+        "allow-save-window-state"
+      ]
+    },
     "permissions": {
-      "allow-restore-window-state": {
-        "identifier": "allow-restore-window-state",
-        "description": "Enables the restore_window_state command without any pre-configured scope.",
+      "allow-filename": {
+        "identifier": "allow-filename",
+        "description": "Enables the filename command without any pre-configured scope.",
         "commands": {
           "allow": [
-            "restore_window_state"
+            "filename"
+          ],
+          "deny": []
+        }
+      },
+      "allow-restore-state": {
+        "identifier": "allow-restore-state",
+        "description": "Enables the restore_state command without any pre-configured scope.",
+        "commands": {
+          "allow": [
+            "restore_state"
           ],
           "deny": []
         }
@@ -3573,13 +3857,23 @@
           "deny": []
         }
       },
-      "deny-restore-window-state": {
-        "identifier": "deny-restore-window-state",
-        "description": "Denies the restore_window_state command without any pre-configured scope.",
+      "deny-filename": {
+        "identifier": "deny-filename",
+        "description": "Denies the filename command without any pre-configured scope.",
         "commands": {
           "allow": [],
           "deny": [
-            "restore_window_state"
+            "filename"
+          ]
+        }
+      },
+      "deny-restore-state": {
+        "identifier": "deny-restore-state",
+        "description": "Denies the restore_state command without any pre-configured scope.",
+        "commands": {
+          "allow": [],
+          "deny": [
+            "restore_state"
           ]
         }
       },
