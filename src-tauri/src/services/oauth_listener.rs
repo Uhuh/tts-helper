@@ -1,5 +1,5 @@
 use axum::{extract::Path, response::Html, routing::get, Extension, Router};
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Emitter};
 use tokio::runtime::Builder;
 use tracing::{debug, error, instrument};
 

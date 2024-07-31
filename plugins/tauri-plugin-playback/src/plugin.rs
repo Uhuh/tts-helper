@@ -5,11 +5,11 @@ use num_complex::Complex64;
 use rodio::{Decoder, DevicesError, Source};
 use rustfft::FftPlanner;
 use serde::Serialize;
-use spectrum_analyzer::{samples_fft_to_spectrum, scaling::divide_by_N_sqrt, FrequencyLimit};
 use tauri::{
     generate_handler,
     plugin::{Builder, TauriPlugin},
     AppHandle, Manager, State, Wry,
+    Emitter,
 };
 use tauri_plugin_http::reqwest::Client;
 use thiserror::Error;
