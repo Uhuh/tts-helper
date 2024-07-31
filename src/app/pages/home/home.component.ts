@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 import { RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,7 @@ import { RouterLink } from '@angular/router';
   imports: [
     LabelBlockComponent,
     RouterLink,
+    MatIconModule,
   ],
 })
 export class HomeComponent {}

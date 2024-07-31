@@ -1,0 +1,48 @@
+<app-accordion>
+  <div accordion-header>{{ multiVoice().customName }}</div>
+
+  <div class="header">
+    <span>Basics</span>
+    <app-button [style]="'danger'" (click)="delete()">
+      Delete
+    </app-button>
+  </div>
+
+  <app-label-block>
+    <div header><span class="yellow">Name</span></div>
+    <div sub-text>This is how users will use it.</div>
+    <div sub-text>Example: "Female | US" is the TikTok voice, but it's easier to say it's "jessica".</div>
+    <app-input
+      placeholder="Panku"
+      type="text"
+      [control]="settings.controls.customName"
+    />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>TTS Service</div>
+    <div sub-text>Which TTS service to use.</div>
+    <app-selector
+      [control]="settings.controls.ttsType" [options]="ttsOptions" placeholder="Select a TTS type"
+    />
+  </app-label-block>
+
+  @if (settings.controls.ttsType.value !== 'eleven-labs') {
+    <app-tts-selector
+      [languageControl]="settings.controls.language"
+      [voiceControl]="settings.controls.voice"
+      [voices]="voices()"
+    />
+  } @else if (settings.controls.ttsType.value === 'eleven-labs') {
+    <app-label-block>
+      <div header>Voice</div>
+      <div sub-text>Select which voice will be used for TTS.</div>
+      <app-selector
+        placeholder="Select a voice"
+        [control]="settings.controls.voice"
+        [options]="(elevenLabVoices$ | async) ?? []"
+      />
+    </app-label-block>
+  }
+
+</app-accordion>

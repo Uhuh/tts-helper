@@ -1,58 +1,34 @@
-<cdk-accordion>
-  <cdk-accordion-item
-    #accordionItem="cdkAccordionItem"
-    role="button"
-    tabindex="0"
-    [attr.aria-expanded]="accordionItem.expanded"
-  >
-    <div class="user-voice-header" (click)="accordionItem.toggle()">
-      <div>
-        {{ customUserVoice.username }}
-      </div>
-      <mat-icon>
-        {{ accordionItem.expanded ? 'expand_more' : 'chevron_left' }}
-      </mat-icon>
-    </div>
-    <div
-      role="region"
-      [style.display]="accordionItem.expanded ? 'block' : 'none'"
-    >
-      <div class="user-voice-body">
-        <hr />
+<app-accordion>
+  <div accordion-header>{{ customUserVoice().username }}</div>
 
-        <div class="header">
-          <span>Basics</span>
-          <app-button [style]="'danger'" (click)="delete()">
-            Delete
-          </app-button>
-        </div>
+  <div class="header">
+    <span>Basics</span>
+    <app-button [style]="'danger'" (click)="delete()">
+      Delete
+    </app-button>
+  </div>
 
-        <app-label-block>
-          <div header><span class="yellow">Username</span></div>
-          <div sub-text>The username of the user...</div>
-          <app-input
-            placeholder="Panku"
-            type="text"
-            [control]="settings.controls.username"
-          />
-        </app-label-block>
+  <app-label-block>
+    <div header><span class="yellow">Username</span></div>
+    <div sub-text>The username of the user...</div>
+    <app-input
+      placeholder="Panku"
+      type="text"
+      [control]="settings.controls.username"
+    />
+  </app-label-block>
 
-        <app-label-block>
-          <div header>TTS Service</div>
-          <div sub-text>Which TTS service to use.</div>
-          <app-selector
-            [control]="settings.controls.ttsType" [options]="ttsOptions" placeholder="Select a TTS type"
-          />
-        </app-label-block>
+  <app-label-block>
+    <div header>TTS Service</div>
+    <div sub-text>Which TTS service to use.</div>
+    <app-selector
+      [control]="settings.controls.ttsType" [options]="ttsOptions" placeholder="Select a TTS type"
+    />
+  </app-label-block>
 
-        <app-tts-selector
-          [languageControl]="settings.controls.language"
-          [voiceControl]="settings.controls.voice"
-          [voices]="voices()"
-        />
-
-      </div>
-    </div>
-  </cdk-accordion-item>
-</cdk-accordion>
-
+  <app-tts-selector
+    [languageControl]="settings.controls.language"
+    [voiceControl]="settings.controls.voice"
+    [voices]="voices()"
+  />
+</app-accordion>

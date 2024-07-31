@@ -5,6 +5,7 @@ import {
   ConfigFeature,
   CustomUserVoice,
   GeneralChatState,
+  MultiVoice,
   StreamElementsData,
   TtsType,
 } from '../state/config/config.feature';
@@ -33,6 +34,7 @@ export class ConfigService {
   public readonly userListState$ = this.store.select(ConfigFeature.selectUserListState);
   public readonly customUserVoices$ = this.store.select(ConfigFeature.selectCustomUserVoices);
   public readonly customUserVoiceRedeem$ = this.store.select(ConfigFeature.selectCustomUserVoiceRedeem);
+  public readonly multiVoices$ = this.store.select(ConfigFeature.selectMultiVoices);
 
   updateVTSToken(vtsAuthToken: string) {
     this.store.dispatch(GlobalConfigActions.updateTokens({ tokens: { vtsAuthToken } }));
@@ -126,6 +128,18 @@ export class ConfigService {
 
   updateCustomUserVoiceRedeem(redeem: string) {
     this.store.dispatch(GlobalConfigActions.updateCustomUserVoiceRedeem({ redeem }));
+  }
+
+  createMultiVoice(partialSettings?: Partial<MultiVoice>) {
+    this.store.dispatch(GlobalConfigActions.createMultiVoice({ partialSettings }));
+  }
+
+  updateMultiVoice(id: string, partialSettings: Partial<MultiVoice>) {
+    this.store.dispatch(GlobalConfigActions.updateMultiVoice({ id, partialSettings }));
+  }
+
+  deleteMultiVoice(id: string) {
+    this.store.dispatch(GlobalConfigActions.deleteMultiVoice({ id }));
   }
 
   clearState() {

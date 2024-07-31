@@ -1,0 +1,37 @@
+<div class="header">
+  <span>Multi Voices</span>
+</div>
+
+<div class="warning">
+  <span>This feature is designed to allow your users use multiple voices from any of the voices you add below.</span>
+  <span>You must add the voices below, this allows you to restrict which voices users can use.</span>
+  <span>Example usage from a user (imagine this is a Twitch redeem)</span>
+  <span>
+    <code>
+      /tts (brian): Hello world! I'm Brian! (ivy): And I'm Ivy!
+    </code>
+  </span>
+  <span>Any voice inside parenthesis will all be assumed lowercase, so casing in the name you set does not matter.</span>
+</div>
+
+<hr />
+
+<div class="section">
+  <div class="header">
+    <span>Multi Voices</span>
+  </div>
+
+  <app-label-block>
+    <div header>Create multi voice</div>
+    <div sub-text>Expose a TTS voice to be used.</div>
+    <app-button class="right" (click)="createMultiVoice()">Create</app-button>
+  </app-label-block>
+
+  @for (multiVoice of multiVoices$ | async; track multiVoice.id) {
+    <app-multi-voice-accordion [multiVoice]="multiVoice" />
+  } @empty {
+    <div class="empty">
+      No multi voices created!
+    </div>
+  }
+</div>

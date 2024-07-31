@@ -14,6 +14,7 @@ import { AudioFeature, AudioItem, AudioSource, AudioStatus } from '../state/audi
 import {
   AmazonPollyData,
   CustomUserVoice,
+  MultiVoice,
   StreamElementsData,
   TikTokData,
   TtsMonsterData,
@@ -41,6 +42,7 @@ export class AudioService {
   private readonly logService = inject(LogService);
   private readonly userListState$ = this.configService.userListState$;
   private readonly customUserVoices$ = this.configService.customUserVoices$;
+  private readonly multiVoices$ = this.configService.multiVoices$;
 
   public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
   public readonly queuedItems$ = this.audioItems$
@@ -106,9 +108,9 @@ export class AudioService {
     source: AudioSource,
     charLimit: number,
   ) {
-    combineLatest([this.userListState$, this.customUserVoices$])
+    combineLatest([this.userListState$, this.customUserVoices$, this.multiVoices$])
       .pipe(first(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(async ([userListState, customUserVoices]) => {
+      .subscribe(async ([userListState, customUserVoices, allowedMultiVoices]) => {
         if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
           return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
         }
@@ -120,54 +122,114 @@ export class AudioService {
           return this.logService.add(`Ignoring message as the user is not valid for the block/allow list. Username: ${username}`, 'info', 'AudioService.playTts');
         }
 
-        const customUserVoice = customUserVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
-
         // Trim played audio down, but keep full message in case stream wants to requeue it.
         const audioText = text.substring(0, charLimit);
-        const data = await this.getRequestData(audioText, customUserVoice);
+        const multiVoices = this.parseMultiVoices(audioText, allowedMultiVoices);
+        const customUserVoice = customUserVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
 
-        if (!data) {
-          this.snackbar.open(
-            `Failed to grab the required data for TTS service: ${this.tts}!`,
-            'Dismiss',
-            {
-              panelClass: 'notification-error',
-            },
-          );
+        // If we couldn't parse out any multi voices let's assume it's a normal TTS request.
+        if (!multiVoices.length) {
+          const data = await this.getRequestData(audioText, customUserVoice);
 
-          return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
+          return await this.playAudio(data, {
+            username,
+            text,
+            source,
+            charLimit,
+          });
         }
 
-        this.playback
-          .playAudio({ data })
-          .then((id) => {
-            this.logService.add(`Played TTS.\n${JSON.stringify({
-              ...data,
-              username,
-              charLimit,
-            }, null, 1)}`, 'info', 'AudioService.playTts');
+        // Otherwise... let's hope it WAS a multivoice request.
+        for (const { text, voice, ttsType } of multiVoices) {
+          const data = await this.getRequestData(text, { voice, ttsType });
 
-            this.addAudio({
-              id,
-              createdAt: new Date(),
-              source,
-              text,
-              username,
-              state: AudioStatus.queued,
-            });
-          })
-          .catch((e) => {
-            this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
-
-            this.snackbar.open(
-              'Oops! We encountered an error while playing that.',
-              'Dismiss',
-              {
-                panelClass: 'notification-error',
-              },
-            );
+          await this.playAudio(data, {
+            username,
+            text,
+            source,
+            charLimit,
           });
+        }
       });
+  }
+
+  private async playAudio(
+    data: RequestAudioData | null,
+    { username, charLimit, source, text }: { username: string, charLimit: number, source: AudioSource, text: string },
+  ) {
+    if (!data) {
+      this.snackbar.open(
+        `Failed to grab the required data for TTS service: ${this.tts}!`,
+        'Dismiss',
+        {
+          panelClass: 'notification-error',
+        },
+      );
+
+      return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
+    }
+
+    return this.playback
+      .playAudio({ data })
+      .then((id) => {
+        this.logService.add(`Played TTS.\n${JSON.stringify({
+          ...data,
+          username,
+          charLimit,
+        }, null, 1)}`, 'info', 'AudioService.playTts');
+
+        this.addAudio({
+          id,
+          createdAt: new Date(),
+          source,
+          text,
+          username,
+          state: AudioStatus.queued,
+        });
+      })
+      .catch((e) => {
+        this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
+
+        this.snackbar.open(
+          'Oops! We encountered an error while playing that.',
+          'Dismiss',
+          {
+            panelClass: 'notification-error',
+          },
+        );
+      });
+  }
+
+  private parseMultiVoices(text: string, allowedMultiVoices: MultiVoice[]) {
+    /**
+     * To handle users doing the following:
+     * (brian): Hello world I'm Brian! (ivy): My name is Ivy. (shadow): And I'm Shadow!
+     */
+    const regex = /\((?<speaker>\w+)\):\s*(?<message>[^(]*)/g;
+    const matches = [];
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      /**
+       * What if a user want to use the default voice at the start?
+       * EX: Hello world I'm default! (brian): Hello world I'm Brian!
+       */
+      if (!matches.length && match.index > 0) {
+        matches.push({
+          voice: undefined,
+          text: text.substring(0, match.index),
+        });
+      }
+
+      const speaker = match.groups?.['speaker'].toLowerCase();
+      const multiVoice = allowedMultiVoices.find(m => m.customName.toLowerCase() === speaker);
+
+      const voice = speaker === 'default' || !multiVoice ? undefined : multiVoice.voice;
+
+      matches.push({ voice, text: match.groups?.['message'] ?? '', ttsType: multiVoice?.ttsType });
+    }
+
+    return matches;
   }
 
   playSoundFile(fileURL: string) {
@@ -191,7 +253,7 @@ export class AudioService {
     });
   }
 
-  private async getRequestData(text: string, customUserVoice?: CustomUserVoice): Promise<RequestAudioData | null> {
+  private async getRequestData(text: string, customUserVoice?: Partial<CustomUserVoice>): Promise<RequestAudioData | null> {
     const tts = customUserVoice?.ttsType ?? this.tts;
 
     switch (tts) {
@@ -221,7 +283,7 @@ export class AudioService {
         };
       }
       case 'eleven-labs': {
-        const url = `${this.elevenLabsService.apiUrl}/text-to-speech/${this.elevenLabs.voiceId}`;
+        const url = `${this.elevenLabsService.apiUrl}/text-to-speech/${customUserVoice?.voice ?? this.elevenLabs.voiceId}`;
 
         return {
           type: 'elevenLabs',

@@ -1,0 +1,30 @@
+:host {
+  width: 100%;
+  padding: 20px;
+
+  border-radius: 10px;
+  border: 2px solid var(--blue-20);
+}
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+}
+
+.accordion-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  hr {
+    margin: 10px 0;
+  }
+}
+
+.yellow {
+  color: var(--yellow);
+}
