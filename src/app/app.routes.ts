@@ -62,6 +62,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/tts-mapping/tts-mapping.component'),
   },
   {
+    path: 'multi-voices',
+    loadComponent: () => import('./pages/multi-voices/multi-voices.component'),
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',

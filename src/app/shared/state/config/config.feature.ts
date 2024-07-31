@@ -60,12 +60,21 @@ export interface UserListState {
 }
 
 export interface CustomUserVoice {
-  /* Maybe not required... */
   id: string;
   username: string;
   ttsType: TtsType;
   voice: string;
   language: string;
+}
+
+export type MultiVoice = {
+  id: string;
+  // This voice ID associated with what APIs care about.
+  voice: string;
+  language: string;
+  // How users will use the voice. (brian): vs (brain-english-us-1234):
+  customName: string;
+  ttsType: TtsType;
 }
 
 export interface ConfigState {
@@ -85,6 +94,7 @@ export interface ConfigState {
   userListState: UserListState;
   customUserVoices: CustomUserVoice[];
   customUserVoiceRedeem: string;
+  multiVoices: MultiVoice[];
 }
 
 const defaultChatPermissions: ChatPermissions = {
@@ -145,6 +155,7 @@ const initialState: ConfigState = {
   },
   customUserVoices: [],
   customUserVoiceRedeem: '',
+  multiVoices: [],
 };
 
 export const ConfigFeature = createFeature({
@@ -305,6 +316,59 @@ export const ConfigFeature = createFeature({
       ...state,
       customUserVoiceRedeem: redeem,
     })),
+    on(GlobalConfigActions.createMultiVoice, (state, { partialSettings }) => ({
+      ...state,
+      multiVoices: [
+        ...state.multiVoices,
+        {
+          id: uuidv4(),
+          language: 'English (US)',
+          voice: 'en-US-Standard-E',
+          ttsType: 'stream-elements',
+          customName: '<not set>',
+          ...partialSettings,
+        } satisfies MultiVoice,
+      ],
+    })),
+    on(GlobalConfigActions.updateMultiVoice, (state, { id, partialSettings }) => {
+      const multiVoice = state.multiVoices.find(c => c.id === id);
+
+      if (!multiVoice) {
+        return state;
+      }
+
+      const copiedMultiVoices = klona(state.multiVoices);
+      const index = state.multiVoices.indexOf(multiVoice);
+
+      copiedMultiVoices[index] = {
+        ...multiVoice,
+        ...partialSettings,
+      };
+
+      return {
+        ...state,
+        multiVoices: copiedMultiVoices,
+      };
+    }),
+    on(GlobalConfigActions.deleteMultiVoice, (state, { id }) => {
+      const multiVoice = state.multiVoices.find(c => c.id === id);
+
+      console.log(multiVoice, id);
+
+      if (!multiVoice) {
+        return state;
+      }
+
+      const copiedMultiVoices = klona(state.multiVoices);
+      const index = state.multiVoices.indexOf(multiVoice);
+
+      copiedMultiVoices.splice(index, 1);
+
+      return {
+        ...state,
+        multiVoices: copiedMultiVoices,
+      };
+    }),
   ),
   extraSelectors: ({
     selectBannedWords,

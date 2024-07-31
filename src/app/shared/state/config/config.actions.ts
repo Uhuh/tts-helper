@@ -5,6 +5,7 @@ import {
   ConfigState,
   CustomUserVoice,
   GeneralChatState,
+  MultiVoice,
   StreamElementsData,
   TtsType,
   UserListState,
@@ -35,6 +36,9 @@ export const GlobalConfigActions = createActionGroup({
     'Update Custom User Voice': props<{ id: string, partialSettings: Partial<CustomUserVoice> }>(),
     'Delete Custom User Voice': props<{ id: string }>(),
     'Update Custom User Voice Redeem': props<{ redeem: string }>(),
+    'Create Multi Voice': props<{ partialSettings?: Partial<MultiVoice> }>(),
+    'Update Multi Voice': props<{ id: string, partialSettings: Partial<MultiVoice> }>(),
+    'Delete Multi Voice': props<{ id: string }>(),
     'Reset State': emptyProps(),
   },
 });
