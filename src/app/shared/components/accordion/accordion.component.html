@@ -1,0 +1,26 @@
+<cdk-accordion>
+  <cdk-accordion-item
+    #accordionItem="cdkAccordionItem"
+    role="button"
+    tabindex="0"
+    [attr.aria-expanded]="accordionItem.expanded"
+  >
+    <div class="accordion-header" (click)="accordionItem.toggle()">
+      <ng-content select="[accordion-header]" />
+      <mat-icon>
+        {{ accordionItem.expanded ? 'expand_more' : 'chevron_left' }}
+      </mat-icon>
+    </div>
+    <div
+      role="region"
+      [style.display]="accordionItem.expanded ? 'block' : 'none'"
+    >
+      <div class="accordion-body">
+        <hr />
+
+        <ng-content />
+      </div>
+    </div>
+  </cdk-accordion-item>
+</cdk-accordion>
+

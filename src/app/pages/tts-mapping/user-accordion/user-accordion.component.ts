@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, signal, SimpleChanges } from '@angular/core';
+import { Component, inject, input, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { ChoiceCommandComponent } from '../../vstream/commands/edit-command/choice-command/choice-command.component';
@@ -22,6 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import streamelementsVoices from '../../../shared/json/stream-elements.json';
 import tiktokVoices from '../../../shared/json/tiktok.json';
 import { InputComponent } from '../../../shared/components/input/input.component';
+import { AccordionComponent } from '../../../shared/components/accordion/accordion.component';
 
 @Component({
   selector: 'app-user-accordion',
@@ -39,6 +40,7 @@ import { InputComponent } from '../../../shared/components/input/input.component
     AsyncPipe,
     InputComponent,
     TtsSelectorComponent,
+    AccordionComponent,
   ],
   templateUrl: './user-accordion.component.html',
   styleUrl: './user-accordion.component.scss',
@@ -51,7 +53,8 @@ export class UserAccordionComponent implements OnChanges {
   ]);
 
   // Default to SE.
-  voices = signal<Voices[]>(streamelementsVoices);
+  readonly voices = signal<Voices[]>(streamelementsVoices);
+  readonly customUserVoice = input.required<CustomUserVoice>();
 
   readonly ttsOptions: Array<TTSOption> = [
     {
@@ -71,13 +74,11 @@ export class UserAccordionComponent implements OnChanges {
     language: new FormControl('', { nonNullable: true }),
   });
 
-  @Input({ required: true }) customUserVoice!: CustomUserVoice;
-
   constructor() {
     this.settings.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(settings => {
-        this.configService.updateCustomUserVoice(this.customUserVoice.id, settings);
+        this.configService.updateCustomUserVoice(this.customUserVoice().id, settings);
       });
 
     this.settings.controls.ttsType.valueChanges
@@ -102,6 +103,6 @@ export class UserAccordionComponent implements OnChanges {
   }
 
   delete() {
-    this.configService.deleteCustomUserVoice(this.customUserVoice.id);
+    this.configService.deleteCustomUserVoice(this.customUserVoice().id);
   }
 }
