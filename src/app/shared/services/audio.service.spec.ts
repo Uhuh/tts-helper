@@ -12,6 +12,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import {
   AmazonPollyData,
   CustomUserVoice,
+  MultiVoice,
   StreamElementsData,
   TikTokData,
   TtsMonsterData,
@@ -51,11 +52,13 @@ describe('AudioService', () => {
   let audioStartedSubject: Subject<number>;
   let audioFinishedSubject: Subject<number>;
   let customUserVoicesSubject: BehaviorSubject<CustomUserVoice[]>;
+  let multiVoicesSubject: BehaviorSubject<MultiVoice[]>;
   let userListStateSubject: BehaviorSubject<UserListState>;
 
   beforeEach(() => {
     configAudioSettingsSubject = new Subject();
     customUserVoicesSubject = new BehaviorSubject<CustomUserVoice[]>([]);
+    multiVoicesSubject = new BehaviorSubject<MultiVoice[]>([]);
     userListStateSubject = new BehaviorSubject<UserListState>({
       usernames: [],
       shouldBlockUser: true,
@@ -65,6 +68,7 @@ describe('AudioService', () => {
       audioSettings$: configAudioSettingsSubject,
       userListState$: userListStateSubject,
       customUserVoices$: customUserVoicesSubject,
+      multiVoices$: multiVoicesSubject,
     });
 
     audioStartedSubject = new Subject();
