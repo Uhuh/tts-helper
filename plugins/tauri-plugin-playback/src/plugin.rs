@@ -1,5 +1,5 @@
-use std::io::Cursor;
-use base64::decode;
+use std::{io::{BufWriter, Cursor}, time::Instant};
+use base64::prelude::*;
 
 use num_complex::Complex64;
 use rodio::{Decoder, DevicesError, Source};
@@ -15,12 +15,18 @@ use tauri_plugin_http::reqwest::Client;
 use thiserror::Error;
 use tracing::{instrument, trace};
 use tts_helper_models::requests::{ApiError, ApiResult};
+use xcap::Monitor;
+
+use image::{codecs::png::PngEncoder, DynamicImage, Rgba};
+use image::io::Reader as ImageReader;
+use image::{ExtendedColorType, ImageEncoder};
+
+use fast_image_resize::{CpuExtensions, FilterType, IntoImageView, ResizeAlg, ResizeOptions, Resizer};
+use fast_image_resize::images::Image;
 
 use crate::{
     models::{
-        audio::AudioId,
-        devices::{DeviceId, OutputDeviceList},
-        requests::{PlayAudioRequest, RequestAudioData, SetAudioState, SetPlaybackState},
+        audio::AudioId, common::WithId, devices::{DeviceId, DeviceInfo, OutputDeviceList}, requests::{PlayAudioRequest, RequestAudioData, SetAudioState, SetPlaybackState}
     },
     services::{
         devices::DeviceService, fft::{calculate_mouth, max_min_mouth}, now_playing::NowPlayingService, playback::{PlaybackController, PlaybackService, SourceController, SourceEvents}, tts::TtsService
@@ -49,6 +55,8 @@ pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
     let plugin = Builder::new("playback")
         .invoke_handler(generate_handler![
             list_output_devices,
+            list_monitors,
+            snapshot_monitor,
             set_output_device,
             play_audio,
             set_playback_state,
@@ -94,6 +102,89 @@ pub enum InitError {
 fn list_output_devices(device_svc: State<'_, DeviceService>) -> OutputDeviceList {
     let output_devices = device_svc.output_devices();
     OutputDeviceList { output_devices }
+}
+
+fn normalized(name: &str) -> String {
+    name
+        .replace("|", "")
+        .replace("\\", "")
+        .replace(":", "")
+        .replace("/", "")
+        .replace(".", "")
+}
+
+/// Gets a list of output devices.
+#[tauri::command(async)]
+#[instrument(skip_all)]
+fn list_monitors() -> Vec<WithId<DeviceInfo, u32>> {
+    let monitors = Monitor::all().unwrap();
+
+    let monitors = monitors
+        .iter()
+        .map(|device| WithId {
+            id: device.id(),
+            inner: DeviceInfo {
+                is_default: false,
+                name: normalized(device.name()).into()
+            }
+        })
+        .collect();
+
+    println!("{:?}", monitors);
+
+    monitors
+}
+
+cpufeatures::new!(cpuid_avx2, "avx2");
+cpufeatures::new!(cpuid_sse4_1, "sse4.1");
+
+#[tauri::command(async)]
+#[instrument(skip_all)]
+fn snapshot_monitor(monitor_id: u32) -> ApiResult<String> {
+    let before = Instant::now();
+    let monitors = Monitor::all().unwrap();
+    let monitor = monitors.iter().find(|d| d.id() == monitor_id).unwrap();
+
+    println!("Elapsed time to find monitor: {:.2?}", before.elapsed());
+
+    let image = monitor.capture_image().unwrap();
+    let image = DynamicImage::from(image);
+    let pixel_type = image.pixel_type().unwrap();
+
+    let mut resized_image = Image::new(1280, 720, pixel_type);
+    let mut resizer = Resizer::new();
+
+    if cpuid_sse4_1::get() {
+        // SAFETY: We're checking if the users CPU supports SEE4_1, and if so, set it.
+        println!("enabling sse4.1");
+        unsafe {
+            resizer.set_cpu_extensions(CpuExtensions::Sse4_1);
+        }
+    }
+    if cpuid_avx2::get() {
+        // SAFETY: We're checking if the users CPU supports AVX2, and if so, set it.
+        println!("enabling avx2");
+        unsafe {
+            resizer.set_cpu_extensions(CpuExtensions::Avx2);
+        }
+    }
+
+    resizer.resize(&image, &mut resized_image, Some(&ResizeOptions::new().resize_alg(ResizeAlg::Convolution(FilterType::Box)))).unwrap();
+    
+    let mut image_data = Vec::new();
+
+    PngEncoder::new(&mut Cursor::new(&mut image_data))
+        .write_image(
+            resized_image.buffer(),
+            resized_image.width(),
+            resized_image.height(),
+            image.color().into(),
+        )
+        .unwrap();
+
+    println!("Elapsed time for resizing: {:.2?}", before.elapsed());
+
+    Ok(BASE64_STANDARD.encode(image_data))
 }
 
 /// Sets the output device.
@@ -149,7 +240,7 @@ async fn play_audio(
 ) -> ApiResult<AudioId> {
     // Get source data
     let raw = match request.data {
-        RequestAudioData::Raw(raw) => decode(raw.data).unwrap(),
+        RequestAudioData::Raw(raw) => BASE64_STANDARD.decode(raw.data).unwrap(),
         RequestAudioData::StreamElements(stream_elements) => {
             tts_svc.stream_elements(stream_elements).await?.to_vec()
         }

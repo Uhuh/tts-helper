@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-snapshot-monitor"
+description = "Enables the snapshot_monitor command without any pre-configured scope."
+commands.allow = ["snapshot_monitor"]
+
+[[permission]]
+identifier = "deny-snapshot-monitor"
+description = "Denies the snapshot_monitor command without any pre-configured scope."
+commands.deny = ["snapshot_monitor"]

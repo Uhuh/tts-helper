@@ -1,0 +1,65 @@
+<div class="header">
+  <span>GPT Vision</span>
+
+  @if (settings.controls.monitorId.value) {
+    <app-button (click)="captureScreen()" [style]="'active'">
+      Check monitor screenshot.
+    </app-button>
+  }
+</div>
+
+<div class="warning orange">
+  <span>This feature can be a little slow for now.</span>
+  <span>Sending images and generating responses from OpenAI is slow.</span>
+  <span>Sending those lengthy response to TTS services to generate audio is slow.</span>
+</div>
+
+<img style="display: none" id="screenshot" src="" />
+
+<app-label-block>
+  <div header>Select Monitor</div>
+  <div sub-text>Select which monitor will be screenshotted for OpenAI</div>
+  <app-selector
+    placeholder="Select a device"
+    [control]="settings.controls.monitorId"
+    [options]="(monitors$ | async) ?? []"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Global hotkey</div>
+  <div sub-text>This is a global hotkey used to send a screenshot to OpenAI</div>
+  <div class="hotkey">
+    @if (hotkey) {
+      <app-display-label>
+        {{ hotkey }}
+      </app-display-label>
+    } @else {
+      <app-display-label>
+        No hotkey set
+      </app-display-label>
+    }
+
+    <div class="actions">
+      @if (hotkey) {
+        <app-button (click)="clearHotKey()">Clear hotkey</app-button>
+      }
+      <app-button
+        (click)="toggleHotkey()"
+        [style]="isSettingHotKey ? 'active' : 'primary'"
+      >
+        {{ isSettingHotKey ? 'Save hotkey' : 'Set hotkey' }}
+      </app-button>
+    </div>
+  </div>
+</app-label-block>
+
+<app-label-block>
+  <div header>Prompts for image generation</div>
+  <div sub-text>These prompts can help guide OpenAI to generate responses that you want when it sees the image.</div>
+  <div sub-text>Use commas to separate prompts and we'll pick one at random when generating.</div>
+  <textarea
+    placeholder="What's in this image?"
+    [formControl]="settings.controls.potentialPrompts"
+  ></textarea>
+</app-label-block>

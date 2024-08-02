@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-list-monitors"
+description = "Enables the list_monitors command without any pre-configured scope."
+commands.allow = ["list_monitors"]
+
+[[permission]]
+identifier = "deny-list-monitors"
+description = "Denies the list_monitors command without any pre-configured scope."
+commands.deny = ["list_monitors"]

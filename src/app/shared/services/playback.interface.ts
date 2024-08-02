@@ -46,6 +46,11 @@ export interface PlaybackState {
   paused: boolean;
 }
 
+export interface MonitorDevice {
+  id: number;
+  name: string;
+}
+
 export interface AudioState {
   skipped: boolean;
 }

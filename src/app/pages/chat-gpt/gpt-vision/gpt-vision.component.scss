@@ -1,0 +1,22 @@
+:host {
+  display: contents;
+}
+
+img {
+  max-width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hotkey, .actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hotkey {
+  justify-content: space-between;
+}
