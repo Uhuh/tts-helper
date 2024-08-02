@@ -114,8 +114,7 @@ export class VStreamService {
             }),
           );
         }),
-      )
-      .subscribe();
+      );
 
     /**
      * Check if the user is currently live on VStream so that they can use the chat message feature
@@ -145,8 +144,7 @@ export class VStreamService {
 
           return of(null);
         }),
-      )
-      .subscribe();
+      );
   }
 
   updateChannelInfo(partialChannel: Partial<VStreamChannelState>) {
