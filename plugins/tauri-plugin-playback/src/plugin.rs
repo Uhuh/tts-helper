@@ -1,4 +1,4 @@
-use std::{io::{BufWriter, Cursor}, time::Instant};
+use std::{io::Cursor, time::Instant};
 use base64::prelude::*;
 
 use num_complex::Complex64;
@@ -17,9 +17,8 @@ use tracing::{instrument, trace};
 use tts_helper_models::requests::{ApiError, ApiResult};
 use xcap::{Monitor, Window};
 
-use image::{codecs::png::PngEncoder, DynamicImage, ImageBuffer, Rgba};
-use image::io::Reader as ImageReader;
-use image::{ExtendedColorType, ImageEncoder};
+use image::{codecs::png::PngEncoder, DynamicImage};
+use image::ImageEncoder;
 
 use fast_image_resize::{CpuExtensions, FilterType, IntoImageView, ResizeAlg, ResizeOptions, Resizer};
 use fast_image_resize::images::Image;
@@ -147,9 +146,6 @@ fn list_viewing_devices() -> Vec<WithId<DeviceInfo, String>> {
     monitors
 }
 
-cpufeatures::new!(cpuid_avx2, "avx2");
-cpufeatures::new!(cpuid_sse4_1, "sse4.1");
-
 #[tauri::command(async)]
 #[instrument(skip_all)]
 fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
@@ -186,18 +182,39 @@ fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
     let mut resized_image = Image::new(1280, 720, pixel_type);
     let mut resizer = Resizer::new();
 
-    if cpuid_sse4_1::get() {
+    #[cfg(target_arch = "x86_64")]
+    if CpuExtensions::Sse4_1.is_supported() {
         // SAFETY: We're checking if the users CPU supports SEE4_1, and if so, set it.
         println!("enabling sse4.1");
         unsafe {
             resizer.set_cpu_extensions(CpuExtensions::Sse4_1);
         }
     }
-    if cpuid_avx2::get() {
+    
+    #[cfg(target_arch = "x86_64")]
+    if CpuExtensions::Avx2.is_supported() {
         // SAFETY: We're checking if the users CPU supports AVX2, and if so, set it.
         println!("enabling avx2");
         unsafe {
             resizer.set_cpu_extensions(CpuExtensions::Avx2);
+        }
+    }
+
+    #[cfg(target_arch = "aarch64")]
+    if CpuExtensions::Neon.is_supported() {
+        // SAFETY: We're checking if the users CPU supports AVX2, and if so, set it.
+        println!("enabling neon");
+        unsafe {
+            resizer.set_cpu_extensions(CpuExtensions::Neon);
+        }
+    }
+
+    #[cfg(target_arch = "wasm32")]
+    if CpuExtensions::Sim128.is_supported() {
+        // SAFETY: We're checking if the users CPU supports AVX2, and if so, set it.
+        println!("enabling sim128");
+        unsafe {
+            resizer.set_cpu_extensions(CpuExtensions::Sim128);
         }
     }
 

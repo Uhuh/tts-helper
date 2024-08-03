@@ -11,14 +11,6 @@ use crate::models::requests::{AmazonPollyData, ElevenLabsData, StreamElementsDat
 const STREAM_ELEMENTS_API: &str = "https://api.streamelements.com/kappa/v2/speech";
 const TIKTOK_API: &str = "https://tiktok-tts.weilnet.workers.dev/api/generation";
 
-macro_rules! hm {
-    ($($key:expr => $value:expr),* $(,)?) => {{
-        let mut map = HashMap::new();
-        $(map.insert($key.into(), $value.into());)*
-        map
-    }};
-}
-
 /// A service for interacting with various TTS APIs.
 #[derive(Clone, Debug)]
 pub struct TtsService {
@@ -27,9 +19,7 @@ pub struct TtsService {
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct TikTokResponse {
-    pub success: bool,
     pub data: String,
-    pub error: Option<String>,
 }
 
 impl TtsService {
