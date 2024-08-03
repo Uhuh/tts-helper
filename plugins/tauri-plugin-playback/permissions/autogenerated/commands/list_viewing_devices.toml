@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-list-viewing-devices"
+description = "Enables the list_viewing_devices command without any pre-configured scope."
+commands.allow = ["list_viewing_devices"]
+
+[[permission]]
+identifier = "deny-list-viewing-devices"
+description = "Denies the list_viewing_devices command without any pre-configured scope."
+commands.deny = ["list_viewing_devices"]

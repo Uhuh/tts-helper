@@ -8,10 +8,6 @@ repository = ""
 edition = "2021"
 publish = false
 
-[lib]
-name = "app_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
-
 [build-dependencies]
 tauri-build = { workspace = true, features = [] }
 
@@ -22,10 +18,10 @@ tauri-plugin-http = { workspace = true }
 tauri-plugin-playback = { path = "../plugins/tauri-plugin-playback" }
 tauri-plugin-devtools = { git = "https://github.com/crabnebula-dev/devtools" }
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
-tauri-plugin-shell = "2.0.0-beta"
-tauri-plugin-updater = "2.0.0-beta"
-tauri-plugin-window-state = "2.0.0-beta"
-tauri-plugin-global-shortcut = "2.0.0-beta"
+tauri-plugin-shell = "2.0.0-rc"
+tauri-plugin-updater = "2.0.0-rc"
+tauri-plugin-window-state = "2.0.0-rc"
+tauri-plugin-global-shortcut = "2.0.0-rc"
 
 # Serialization
 serde = { workspace = true, features = ["derive"] }
