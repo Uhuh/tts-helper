@@ -1,10 +1,13 @@
-﻿use http::{header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE}, HeaderValue, Method};
-use axum::{extract::Json, routing::post, Extension, Router};
-use tower::ServiceBuilder;
-use tower_http::cors::CorsLayer;
+﻿use axum::{extract::Json, routing::post, Extension, Router};
+use http::{
+    header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
+    HeaderValue, Method,
+};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Emitter};
 use tokio::runtime::Builder;
+use tower::ServiceBuilder;
+use tower_http::cors::CorsLayer;
 use tracing::{error, instrument};
 
 #[instrument(skip_all)]
@@ -25,12 +28,16 @@ async fn listen(app: AppHandle) -> anyhow::Result<()> {
         .allow_headers(vec![CONTENT_TYPE, AUTHORIZATION, ACCEPT])
         .allow_origin("*".parse::<HeaderValue>().unwrap());
 
-    let app = Router::new()
-        .route("/tts", post(play_tts))
-        .layer(ServiceBuilder::new().layer(cors).layer(Extension(app.clone())));
+    let app = Router::new().route("/tts", post(play_tts)).layer(
+        ServiceBuilder::new()
+            .layer(cors)
+            .layer(Extension(app.clone())),
+    );
 
     const PORT: u16 = 12589;
-    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{PORT}")).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{PORT}"))
+        .await
+        .unwrap();
     axum::serve(listener, app).await.unwrap();
 
     Ok(())
@@ -46,14 +53,11 @@ pub struct TtsRequest {
 }
 
 /**
- * @TODO - Handle RAW sound bytes
- EG: VStream sound commands
- */
-async fn play_tts(
-    Extension(app): Extension<AppHandle>,
-    Json(request): Json<TtsRequest>
-) {
-	println!("received tts play request: {:?}", request);
+* @TODO - Handle RAW sound bytes
+EG: VStream sound commands
+*/
+async fn play_tts(Extension(app): Extension<AppHandle>, Json(request): Json<TtsRequest>) {
+    println!("received tts play request: {:?}", request);
 
     let _ = app.emit("api:play_tts", request);
 }

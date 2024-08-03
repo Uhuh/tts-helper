@@ -26,7 +26,9 @@ async fn listen(app: AppHandle) -> anyhow::Result<()> {
         .layer(Extension(app));
 
     const PORT: u16 = 12583;
-    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{PORT}")).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{PORT}"))
+        .await
+        .unwrap();
     axum::serve(listener, app).await.unwrap();
 
     Ok(())
@@ -37,7 +39,7 @@ async fn auth_get() -> Html<&'static str> {
     const BODY: &'static str = include_str!("auth_get.html");
     Html(BODY)
 }
-    
+
 async fn auth_post(
     Path(provider): Path<String>,
     Extension(app): Extension<AppHandle>,

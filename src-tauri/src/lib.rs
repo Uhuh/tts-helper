@@ -6,8 +6,8 @@ mod services;
 
 use anyhow::Context;
 
-use services::tts_listener::run_tts_server;
 use crate::services::{run_auth_server, start_ws_server};
+use services::tts_listener::run_tts_server;
 
 pub fn run() -> anyhow::Result<()> {
     let obs_port = "37891";
@@ -21,7 +21,7 @@ pub fn run() -> anyhow::Result<()> {
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_window_state::Builder::default().build())
-		.plugin(tauri_plugin_devtools::init())
+        .plugin(tauri_plugin_devtools::init())
         .plugin(tauri_plugin_global_shortcut::Builder::default().build())
         .plugin(tauri_plugin_playback::init()?)
         .setup(|app| {
