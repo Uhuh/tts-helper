@@ -1,0 +1,75 @@
+<div class="header">
+  <span>GPT Vision</span>
+
+  @if (settings.controls.viewingDevice.value) {
+    <app-button (click)="captureScreen()" [style]="'active'">
+      Check screenshot.
+    </app-button>
+  }
+</div>
+
+<div class="warning orange">
+  <span>This feature can be a little slow.</span>
+  <span>Minimizing a window will make it "invisible" when trying to screenshot.</span>
+  <span>The global hotkey WILL block that input, make sure it's something you only use for this.</span>
+</div>
+
+@if (imageError) {
+  <div class="warning red">
+    <span>Failed to load screenshot.</span>
+    <span>Make sure the window is open and not minimized.</span>
+    <span>If capturing monitor, make sure it's plugged in.</span>
+  </div>
+}
+<img style="display: none" id="screenshot" src="" />
+
+<app-label-block>
+  <div header>Select Viewer</div>
+  <div sub-text>Select what will be screenshotted for OpenAI</div>
+  <app-button (click)="refreshList()" class="right">
+    Refresh list.
+  </app-button>
+  <app-selector
+    placeholder="Select a device"
+    [control]="settings.controls.viewingDevice"
+    [options]="(viewingDevices$ | async) ?? []"
+  />
+</app-label-block>
+
+<app-label-block>
+  <div header>Global hotkey</div>
+  <div sub-text>This is a global hotkey used to send a screenshot to OpenAI</div>
+  <div class="hotkey">
+    @if (hotkey) {
+      <app-display-label>
+        {{ hotkey }}
+      </app-display-label>
+    } @else {
+      <app-display-label>
+        No hotkey set
+      </app-display-label>
+    }
+
+    <div class="actions">
+      @if (hotkey) {
+        <app-button (click)="clearHotKey()">Clear hotkey</app-button>
+      }
+      <app-button
+        (click)="toggleHotkey()"
+        [style]="isSettingHotKey ? 'active' : 'primary'"
+      >
+        {{ isSettingHotKey ? 'Save hotkey' : 'Set hotkey' }}
+      </app-button>
+    </div>
+  </div>
+</app-label-block>
+
+<app-label-block>
+  <div header>Prompts for image generation</div>
+  <div sub-text>These prompts can help guide OpenAI to generate responses that you want when it sees the image.</div>
+  <div sub-text>Use commas to separate prompts and we'll pick one at random when generating.</div>
+  <textarea
+    placeholder="What's in this image?"
+    [formControl]="settings.controls.potentialPrompts"
+  ></textarea>
+</app-label-block>

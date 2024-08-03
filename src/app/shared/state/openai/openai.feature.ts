@@ -25,10 +25,17 @@ export interface GptSettingsState {
   maxTokens: number;
 }
 
+export interface GptVisionState {
+  viewingDevice: string;
+  potentialPrompts: string[];
+  globalHotkey: string;
+}
+
 export interface OpenAIState {
   chatSettings: GptChatState;
   personality: GptPersonalityState;
   settings: GptSettingsState;
+  vision: GptVisionState;
 }
 
 export const initialState: OpenAIState = {
@@ -60,6 +67,11 @@ export const initialState: OpenAIState = {
     presencePenalty: 0,
     maxTokens: 100,
     temperature: 1,
+  },
+  vision: {
+    globalHotkey: '',
+    potentialPrompts: [],
+    viewingDevice: '',
   },
 };
 
@@ -95,6 +107,13 @@ export const OpenAIFeature = createFeature({
       ...state,
       settings: {
         ...state.settings,
+        ...settings,
+      },
+    })),
+    on(OpenAIActions.updateVision, (state, { settings }) => ({
+      ...state,
+      vision: {
+        ...state.vision,
         ...settings,
       },
     })),

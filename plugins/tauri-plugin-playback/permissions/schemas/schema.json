@@ -309,6 +309,20 @@
           ]
         },
         {
+          "description": "allow-list-monitors -> Enables the list_monitors command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "allow-list-monitors"
+          ]
+        },
+        {
+          "description": "deny-list-monitors -> Denies the list_monitors command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "deny-list-monitors"
+          ]
+        },
+        {
           "description": "allow-list-output-devices -> Enables the list_output_devices command without any pre-configured scope.",
           "type": "string",
           "enum": [
@@ -320,6 +334,20 @@
           "type": "string",
           "enum": [
             "deny-list-output-devices"
+          ]
+        },
+        {
+          "description": "allow-list-viewing-devices -> Enables the list_viewing_devices command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "allow-list-viewing-devices"
+          ]
+        },
+        {
+          "description": "deny-list-viewing-devices -> Denies the list_viewing_devices command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "deny-list-viewing-devices"
           ]
         },
         {
@@ -390,6 +418,20 @@
           "type": "string",
           "enum": [
             "deny-set-playback-state"
+          ]
+        },
+        {
+          "description": "allow-snapshot-monitor -> Enables the snapshot_monitor command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "allow-snapshot-monitor"
+          ]
+        },
+        {
+          "description": "deny-snapshot-monitor -> Denies the snapshot_monitor command without any pre-configured scope.",
+          "type": "string",
+          "enum": [
+            "deny-snapshot-monitor"
           ]
         },
         {

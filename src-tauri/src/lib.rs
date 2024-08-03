@@ -12,7 +12,6 @@ use crate::services::{run_auth_server, start_ws_server};
 pub fn run() -> anyhow::Result<()> {
     let obs_port = "37891";
     let streamdeck_port = "17448";
-    let vstream_overlays_port = "37391";
 
     let builder = tauri::Builder::default();
 
@@ -34,7 +33,6 @@ pub fn run() -> anyhow::Result<()> {
 
             tauri::async_runtime::spawn(start_ws_server(obs_port));
             tauri::async_runtime::spawn(start_ws_server(streamdeck_port));
-            tauri::async_runtime::spawn(start_ws_server(vstream_overlays_port));
 
             Ok(())
         })

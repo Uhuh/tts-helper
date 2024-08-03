@@ -36,6 +36,32 @@ Denies the list_audio command without any pre-configured scope.
 <tr>
 <td>
 
+`playback:allow-list-monitors`
+
+</td>
+<td>
+
+Enables the list_monitors command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`playback:deny-list-monitors`
+
+</td>
+<td>
+
+Denies the list_monitors command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 `playback:allow-list-output-devices`
 
 </td>
@@ -55,6 +81,32 @@ Enables the list_output_devices command without any pre-configured scope.
 <td>
 
 Denies the list_output_devices command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`playback:allow-list-viewing-devices`
+
+</td>
+<td>
+
+Enables the list_viewing_devices command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`playback:deny-list-viewing-devices`
+
+</td>
+<td>
+
+Denies the list_viewing_devices command without any pre-configured scope.
 
 </td>
 </tr>
@@ -185,6 +237,32 @@ Enables the set_playback_state command without any pre-configured scope.
 <td>
 
 Denies the set_playback_state command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`playback:allow-snapshot-monitor`
+
+</td>
+<td>
+
+Enables the snapshot_monitor command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`playback:deny-snapshot-monitor`
+
+</td>
+<td>
+
+Denies the snapshot_monitor command without any pre-configured scope.
 
 </td>
 </tr>

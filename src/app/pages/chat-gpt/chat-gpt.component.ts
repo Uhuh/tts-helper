@@ -13,6 +13,7 @@ import { OpenAIService } from '../../shared/services/openai.service';
 import { AdvancedSettingsComponent } from './advanced-settings/advanced-settings.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Option, SelectorComponent } from '../../shared/components/selector/selector.component';
+import { GptVisionComponent } from './gpt-vision/gpt-vision.component';
 
 export interface GptPersonalityFormGroup {
   streamersIdentity: FormControl<string>;
@@ -26,7 +27,7 @@ export interface GptPersonalityFormGroup {
 @Component({
   selector: 'app-chat-gpt',
   standalone: true,
-  imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent, MatInputModule, MatSliderModule, ReactiveFormsModule, LabelBlockComponent, AdvancedSettingsComponent, MatTabsModule, SelectorComponent],
+  imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent, MatInputModule, MatSliderModule, ReactiveFormsModule, LabelBlockComponent, AdvancedSettingsComponent, MatTabsModule, SelectorComponent, GptVisionComponent],
   templateUrl: './chat-gpt.component.html',
   styleUrls: ['./chat-gpt.component.scss'],
 })
