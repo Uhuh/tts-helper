@@ -26,7 +26,7 @@ export interface GptSettingsState {
 }
 
 export interface GptVisionState {
-  monitorId: number;
+  viewingDevice: string;
   potentialPrompts: string[];
   globalHotkey: string;
 }
@@ -71,7 +71,7 @@ export const initialState: OpenAIState = {
   vision: {
     globalHotkey: '',
     potentialPrompts: [],
-    monitorId: -1,
+    viewingDevice: '',
   },
 };
 

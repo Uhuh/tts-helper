@@ -14,10 +14,21 @@ import {
 } from '../state/openai/openai.feature';
 import { OpenAIActions } from '../state/openai/openai.actions';
 import { ChatPermissions } from './chat.interface';
-import { BehaviorSubject, combineLatest, first, from, of, shareReplay, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  first,
+  from,
+  map,
+  of,
+  shareReplay,
+  switchMap,
+} from 'rxjs';
 import { isRegistered, register, unregister } from '@tauri-apps/plugin-global-shortcut';
 import { invoke } from '@tauri-apps/api/core';
-import { DeviceId, DeviceInfo, MonitorDevice, WithId } from './playback.interface';
+import { DeviceInfo, MonitorDevice, WithId } from './playback.interface';
 
 @Injectable()
 export class OpenAIService {
@@ -34,8 +45,8 @@ export class OpenAIService {
   public readonly token$ = this.store.select(OpenAIFeature.selectToken);
   public readonly enabled$ = this.store.select(OpenAIFeature.selectEnabled);
 
-  private readonly monitorsSubject = new BehaviorSubject<MonitorDevice[]>([]);
-  public readonly monitors$ = this.monitorsSubject.asObservable();
+  private readonly viewingDeviceSubject = new BehaviorSubject<MonitorDevice[]>([]);
+  public readonly viewingDevices$ = this.viewingDeviceSubject.asObservable();
 
   private chatSettings?: GptChatState;
   private settings?: GptSettingsState;
@@ -85,7 +96,33 @@ export class OpenAIService {
         this.logService.add('Configuring OpenAI API', 'info', 'OpenAIService.constructor');
       });
 
-    this.getMonitorDevices();
+    this.vision$
+      .pipe(
+        takeUntilDestroyed(),
+        map(v => v.globalHotkey),
+        filter(h => !!h),
+        distinctUntilChanged(),
+      )
+      .subscribe(hotkey => this.checkHotKey(hotkey));
+
+    this.getViewingDevices();
+  }
+
+  async checkHotKey(hotkey: string) {
+    /**
+     * Due to the user being able to CTRL + R we need to re register it or else it'll break if they CTRL + R.
+     */
+    await unregister(hotkey)
+      .catch(e => console.error(`Failed to unregister hotkey for screen capture: [${hotkey}] ${JSON.stringify(e)}`));
+
+    await register(hotkey, (event) => {
+      if (event.state === 'Pressed') {
+        this.captureScreen();
+      }
+    }).then(() => {
+      this.logService.add(`Successfully checked hotkey ${hotkey}`, 'info', 'OpenAI.checkHotKey');
+      this.updateVisionSettings({ globalHotkey: hotkey });
+    });
   }
 
   updateChatPermissions(permissions: Partial<ChatPermissions>) {
@@ -140,39 +177,39 @@ export class OpenAIService {
     this.updateVisionSettings({ globalHotkey: '' });
   }
 
-  async getMonitorDevices() {
-    const monitors = await invoke('plugin:playback|list_monitors') as WithId<DeviceInfo, DeviceId>[];
+  async getViewingDevices() {
+    const monitors = await invoke('plugin:playback|list_viewing_devices') as WithId<DeviceInfo, string>[];
 
-    this.monitorsSubject.next(monitors);
+    this.viewingDeviceSubject.next(monitors);
   }
 
-  async testMonitorCapture(monitorId: number) {
+  async testMonitorCapture(captureName: string) {
     this.logService.add(`Testing users selected monitor for capture`, 'info', 'PlaybackService.testMonitorCapture');
-    const imageB64Data = await invoke('plugin:playback|snapshot_monitor', { monitorId });
+    const imageB64Data = await invoke('plugin:playback|snapshot_monitor', { captureName });
     this.logService.add(`Captured users selected monitor`, 'info', 'PlaybackService.testMonitorCapture');
 
     return imageB64Data;
   }
 
   async captureScreen() {
-    combineLatest([this.vision$, this.monitors$])
+    combineLatest([this.vision$, this.viewingDevices$])
       .pipe(
         first(),
         takeUntilDestroyed(this.destroyRef),
-        switchMap(([vision, monitors]) => {
-          const { monitorId } = vision;
+        switchMap(([vision, viewingDevices]) => {
+          const { viewingDevice } = vision;
 
-          if (!monitors.find(m => m.id === monitorId)) {
+          if (!viewingDevices.find(m => m.id === viewingDevice)) {
             this.logService.add(`Couldn't find users selected monitor to capture. Is it possible they unplugged? ${JSON.stringify({
-              selectedMonitorId: monitorId,
-              monitors,
+              selectedMonitorId: viewingDevice,
+              viewingDevices,
             })}`, 'error', 'OpenAI.captureScreen');
 
             return of(null);
           }
 
           this.logService.add(`Capturing users selected monitor`, 'info', 'PlaybackService.captureScreen');
-          return invoke<string>('plugin:playback|snapshot_monitor', { monitorId });
+          return invoke<string>('plugin:playback|snapshot_monitor', { captureName: viewingDevice });
         }),
         switchMap(imageB64Data => {
           if (!imageB64Data) {
@@ -183,71 +220,74 @@ export class OpenAIService {
           this.logService.add(`Captured users selected monitor`, 'info', 'PlaybackService.captureScreen');
           return this.generateResponseToImage(imageB64Data);
         }),
-      );
+      )
+      .subscribe();
   }
 
   async generateResponseToImage(dataB64: string) {
-    if (
-      !this.settings ||
-      !this.chatSettings ||
-      !this.openAIApi
-    ) {
-      return;
-    }
+    this.vision$
+      .pipe(first(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(async (vision) => {
+        if (
+          !this.settings ||
+          !this.chatSettings ||
+          !this.openAIApi
+        ) {
+          return this.logService.add(`Missing config required for OpenAI image.`, 'error', 'OpenAI.generateResponseToImage');
+        }
 
-    try {
-      const response = await this.openAIApi.chat.completions.create({
-        model: this.settings.model,
-        temperature: this.settings.temperature,
-        presence_penalty: this.settings.presencePenalty,
-        frequency_penalty: this.settings.frequencyPenalty,
-        max_tokens: this.settings.maxTokens,
-        messages: [
-          ...this.systemLorePrompt,
-          ...this.gptHistory,
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: `Give a short description about what's in this image, or a snarky remark about the contents of it.`,
-              },
-              {
-                type: 'image_url',
-                image_url: {
-                  url: dataB64,
+        const promptsLength = vision.potentialPrompts.length;
+        const imageContext = vision.potentialPrompts[Math.floor(Math.random() * promptsLength)] ?? `Give a short description about what's in this image, or a snarky remark about the contents of it.`;
+
+        const response = await this.openAIApi.chat.completions.create({
+          model: this.settings.model,
+          temperature: this.settings.temperature,
+          presence_penalty: this.settings.presencePenalty,
+          frequency_penalty: this.settings.frequencyPenalty,
+          max_tokens: this.settings.maxTokens,
+          messages: [
+            ...this.systemLorePrompt,
+            ...this.gptHistory,
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'text',
+                  text: imageContext,
                 },
-              },
-            ],
-          },
-        ],
+                {
+                  type: 'image_url',
+                  image_url: {
+                    url: `data:image/png;base64, ${dataB64}`,
+                  },
+                },
+              ],
+            },
+          ],
+        });
+
+        const { message } = response.choices[0];
+
+        if (!message || !message.content) {
+          this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(message, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
+          return console.info('OpenAI failed to respond.');
+        }
+
+        this.logService.add(`Generated response: ${message.content}.`, 'info', 'OpenAI.generateOpenAIResponse');
+
+        this.gptHistory.push({
+          role: 'user',
+          content: 'I sent an image, remember it.',
+        }, {
+          role: 'assistant',
+          content: message.content,
+        });
+
+        // Continue to slice the history to save the user tokens when making request.
+        this.gptHistory = this.gptHistory.slice(-1 * (this.settings?.historyLimit ?? 0));
+
+        this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.chatSettings.charLimit);
       });
-
-      const { message } = response.choices[0];
-
-      if (!message || !message.content) {
-        this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(message, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
-        return console.info('OpenAI failed to respond.');
-      }
-
-      this.logService.add(`Generated response: ${message.content}.`, 'info', 'OpenAI.generateOpenAIResponse');
-
-      this.gptHistory.push({
-        role: 'user',
-        content: 'some image lol',
-      }, {
-        role: 'assistant',
-        content: message.content,
-      });
-
-      // Continue to slice the history to save the user tokens when making request.
-      this.gptHistory = this.gptHistory.slice(-1 * (this.settings?.historyLimit ?? 0));
-
-      this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.chatSettings.charLimit);
-
-    } catch (e) {
-      console.log(e);
-    }
   }
 
   async generateOpenAIResponse(user: string, text: string, isCommand = false) {

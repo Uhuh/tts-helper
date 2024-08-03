@@ -28,30 +28,42 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class GptVisionComponent {
   private readonly openaiService = inject(OpenAIService);
 
-  readonly monitors$ = this.openaiService.monitors$
+  readonly viewingDevices$ = this.openaiService.viewingDevices$
     .pipe(
-      map(devices => devices.map<Option<number>>(d => ({
-        value: d.id,
-        displayName: d.name,
-      }))),
+      map(devices => devices
+        .filter(d => !!d.id)
+        .map<Option<string>>(d => ({
+          value: d.id,
+          displayName: d.name,
+        }))),
     );
 
   readonly settings = new FormGroup({
-    monitorId: new FormControl(0, { nonNullable: true }),
+    viewingDevice: new FormControl('', { nonNullable: true }),
     potentialPrompts: new FormControl('', { nonNullable: true }),
     globalHotkey: new FormControl('', { nonNullable: true }),
   });
 
   isSettingHotKey = false;
   hotkey = '';
+  currentHotkey = '';
+  imageError = false;
 
   constructor() {
     this.openaiService.vision$
       .pipe(takeUntilDestroyed())
-      .subscribe(vision => this.settings.setValue({
-        ...vision,
-        potentialPrompts: vision.potentialPrompts.join(', '),
-      }, { emitEvent: false }));
+      .subscribe(vision => {
+        if (!this.isSettingHotKey) {
+          this.hotkey = vision.globalHotkey ?? 'No hotkey set.';
+          this.currentHotkey = vision.globalHotkey;
+        }
+
+        this.settings.setValue({
+          viewingDevice: vision.viewingDevice,
+          globalHotkey: vision.globalHotkey,
+          potentialPrompts: vision.potentialPrompts.join(','),
+        }, { emitEvent: false });
+      });
 
     this.settings.valueChanges
       .pipe(takeUntilDestroyed())
@@ -93,6 +105,7 @@ export class GptVisionComponent {
       return;
     }
 
+    this.openaiService.clearGlobalHotKoy(this.currentHotkey);
     this.openaiService.updateGlobalHotKey(this.hotkey);
   }
 
@@ -100,11 +113,17 @@ export class GptVisionComponent {
     this.openaiService.clearGlobalHotKoy(this.hotkey);
   }
 
+  refreshList() {
+    this.openaiService.getViewingDevices();
+  }
+
   async captureScreen() {
-    const b64 = await this.openaiService.testMonitorCapture(this.settings.controls.monitorId.value);
+    const b64 = await this.openaiService.testMonitorCapture(this.settings.controls.viewingDevice.value);
+    this.imageError = !b64;
 
     const img = document.getElementById('screenshot') as HTMLImageElement;
     const dataB64 = `data:image/png;base64, ${b64}`;
+
     img.src = dataB64;
     img.style.display = 'block';
   }
