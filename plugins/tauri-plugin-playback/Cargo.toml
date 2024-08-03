@@ -43,4 +43,3 @@ rustfft = "6.2.0"
 xcap = "0.0.10"
 image = "0.25"
 fast_image_resize = { version = "4.2", features = ["image"] }
-cpufeatures = "0.2"

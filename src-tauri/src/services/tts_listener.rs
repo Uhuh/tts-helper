@@ -1,5 +1,5 @@
 ﻿use http::{header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE}, HeaderValue, Method};
-use axum::{extract::Json, routing::{get, post}, Extension, Router};
+use axum::{extract::Json, routing::post, Extension, Router};
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use serde::{Deserialize, Serialize};
