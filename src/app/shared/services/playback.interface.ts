@@ -47,7 +47,7 @@ export interface PlaybackState {
 }
 
 export interface MonitorDevice {
-  id: number;
+  id: string;
   name: string;
 }
 
