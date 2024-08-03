@@ -15,9 +15,9 @@ use tauri_plugin_http::reqwest::Client;
 use thiserror::Error;
 use tracing::{instrument, trace};
 use tts_helper_models::requests::{ApiError, ApiResult};
-use xcap::Monitor;
+use xcap::{Monitor, Window};
 
-use image::{codecs::png::PngEncoder, DynamicImage, Rgba};
+use image::{codecs::png::PngEncoder, DynamicImage, ImageBuffer, Rgba};
 use image::io::Reader as ImageReader;
 use image::{ExtendedColorType, ImageEncoder};
 
@@ -55,7 +55,7 @@ pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
     let plugin = Builder::new("playback")
         .invoke_handler(generate_handler![
             list_output_devices,
-            list_monitors,
+            list_viewing_devices,
             snapshot_monitor,
             set_output_device,
             play_audio,
@@ -116,13 +116,14 @@ fn normalized(name: &str) -> String {
 /// Gets a list of output devices.
 #[tauri::command(async)]
 #[instrument(skip_all)]
-fn list_monitors() -> Vec<WithId<DeviceInfo, u32>> {
+fn list_viewing_devices() -> Vec<WithId<DeviceInfo, String>> {
     let monitors = Monitor::all().unwrap();
+    let windows = Window::all().unwrap();
 
-    let monitors = monitors
+    let mut monitors: Vec<WithId<DeviceInfo, String>> = monitors
         .iter()
         .map(|device| WithId {
-            id: device.id(),
+            id: device.name().to_string(),
             inner: DeviceInfo {
                 is_default: false,
                 name: normalized(device.name()).into()
@@ -130,7 +131,18 @@ fn list_monitors() -> Vec<WithId<DeviceInfo, u32>> {
         })
         .collect();
 
-    println!("{:?}", monitors);
+    let windows: Vec<WithId<DeviceInfo, String>> = windows
+        .iter()
+        .map(|device| WithId {
+            id: device.app_name().to_string(),
+            inner: DeviceInfo {
+                is_default: false,
+                name: normalized(device.app_name()).into()
+            }
+        })
+        .collect();
+    
+    monitors.extend(windows);
 
     monitors
 }
@@ -140,15 +152,35 @@ cpufeatures::new!(cpuid_sse4_1, "sse4.1");
 
 #[tauri::command(async)]
 #[instrument(skip_all)]
-fn snapshot_monitor(monitor_id: u32) -> ApiResult<String> {
+fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
     let before = Instant::now();
     let monitors = Monitor::all().unwrap();
-    let monitor = monitors.iter().find(|d| d.id() == monitor_id).unwrap();
+    let windows = Window::all().unwrap();
 
-    println!("Elapsed time to find monitor: {:.2?}", before.elapsed());
+    let monitor = monitors.iter().find(|d| d.name() == capture_name);
+    let window = windows.iter().find(|w| w.app_name() == capture_name);
 
-    let image = monitor.capture_image().unwrap();
-    let image = DynamicImage::from(image);
+    let capture_device = match (monitor, window) {
+        (Some(monitor), None) => (Some(monitor), None),
+        (None, Some(window)) => (None, Some(window)),
+        _ => (None, None),
+    };
+
+    println!("Elapsed time to find monitor or window: {:.2?}", before.elapsed());
+
+    let image = if let Some(device) = capture_device.0 {
+        device.capture_image().ok()
+    } else if let Some(device) = capture_device.1 {
+        device.capture_image().ok()
+    } else {
+        None
+    };
+
+    if image.is_none() {
+        return Ok("".to_string());
+    }
+
+    let image = DynamicImage::from(image.unwrap());
     let pixel_type = image.pixel_type().unwrap();
 
     let mut resized_image = Image::new(1280, 720, pixel_type);
