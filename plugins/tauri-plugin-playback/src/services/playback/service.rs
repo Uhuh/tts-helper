@@ -1,7 +1,7 @@
 use std::{error::Error, sync::Arc};
 
 use crossbeam::channel::{Receiver, Sender};
-use rodio::{Device, OutputStream, Sink, Source, source::Zero};
+use rodio::{source::Zero, Device, OutputStream, Sink, Source};
 use tracing::{error, info_span, trace};
 
 use tts_helper_audio::sources::SourceExt;
@@ -28,7 +28,7 @@ impl PlaybackService {
     #[inline]
     pub fn enqueue(
         &self,
-        source: Box<dyn Source<Item=f32> + Send + 'static>,
+        source: Box<dyn Source<Item = f32> + Send + 'static>,
         controller: SourceController,
         events: SourceEvents,
     ) {
@@ -103,9 +103,7 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
                     (Some(stream), Some(sink))
                 };
             }
-            AudioEvent::SetVolume {
-                volume
-            } => {
+            AudioEvent::SetVolume { volume } => {
                 let Some(sink) = sink.as_mut() else {
                     trace!("no audio device set, skipping audio");
                     continue;
@@ -113,9 +111,7 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
 
                 sink.set_volume(volume);
             }
-            AudioEvent::Pause {
-                sender
-            } => {
+            AudioEvent::Pause { sender } => {
                 let Some(sink) = sink.as_mut() else {
                     trace!("no audio device set, skipping audio");
                     continue;
@@ -179,7 +175,7 @@ enum AudioEvent {
         sender: Sender<bool>,
     },
     Play {
-        source: Box<dyn Source<Item=f32> + Send>,
+        source: Box<dyn Source<Item = f32> + Send>,
         controller: SourceController,
         events: SourceEvents,
     },

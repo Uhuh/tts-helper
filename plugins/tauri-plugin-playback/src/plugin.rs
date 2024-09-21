@@ -1,5 +1,5 @@
-use std::{io::Cursor, time::Instant};
 use base64::prelude::*;
+use std::{io::Cursor, time::Instant};
 
 use num_complex::Complex64;
 use rodio::{Decoder, DevicesError, Source};
@@ -8,8 +8,7 @@ use serde::Serialize;
 use tauri::{
     generate_handler,
     plugin::{Builder, TauriPlugin},
-    AppHandle, Manager, State, Wry,
-    Emitter,
+    AppHandle, Emitter, Manager, State, Wry,
 };
 use tauri_plugin_http::reqwest::Client;
 use thiserror::Error;
@@ -17,21 +16,30 @@ use tracing::{instrument, trace};
 use tts_helper_models::requests::{ApiError, ApiResult};
 use xcap::{Monitor, Window};
 
-use image::{codecs::png::PngEncoder, DynamicImage};
 use image::ImageEncoder;
+use image::{codecs::png::PngEncoder, DynamicImage};
 
-use fast_image_resize::{CpuExtensions, FilterType, IntoImageView, ResizeAlg, ResizeOptions, Resizer};
 use fast_image_resize::images::Image;
+use fast_image_resize::{
+    CpuExtensions, FilterType, IntoImageView, ResizeAlg, ResizeOptions, Resizer,
+};
 
+use crate::models::requests::PlaybackState;
 use crate::{
     models::{
-        audio::AudioId, common::WithId, devices::{DeviceId, DeviceInfo, OutputDeviceList}, requests::{PlayAudioRequest, RequestAudioData, SetAudioState, SetPlaybackState}
+        audio::AudioId,
+        common::WithId,
+        devices::{DeviceId, DeviceInfo, OutputDeviceList},
+        requests::{PlayAudioRequest, RequestAudioData, SetAudioState, SetPlaybackState},
     },
     services::{
-        devices::DeviceService, fft::{calculate_mouth, max_min_mouth}, now_playing::NowPlayingService, playback::{PlaybackController, PlaybackService, SourceController, SourceEvents}, tts::TtsService
+        devices::DeviceService,
+        fft::{calculate_mouth, max_min_mouth},
+        now_playing::NowPlayingService,
+        playback::{PlaybackController, PlaybackService, SourceController, SourceEvents},
+        tts::TtsService,
     },
 };
-use crate::models::requests::PlaybackState;
 
 /// Initializes the plugin.
 pub fn init() -> Result<TauriPlugin<Wry>, InitError> {
@@ -104,8 +112,7 @@ fn list_output_devices(device_svc: State<'_, DeviceService>) -> OutputDeviceList
 }
 
 fn normalized(name: &str) -> String {
-    name
-        .replace("|", "")
+    name.replace("|", "")
         .replace("\\", "")
         .replace(":", "")
         .replace("/", "")
@@ -125,8 +132,8 @@ fn list_viewing_devices() -> Vec<WithId<DeviceInfo, String>> {
             id: device.name().to_string(),
             inner: DeviceInfo {
                 is_default: false,
-                name: normalized(device.name()).into()
-            }
+                name: normalized(device.name()).into(),
+            },
         })
         .collect();
 
@@ -136,11 +143,11 @@ fn list_viewing_devices() -> Vec<WithId<DeviceInfo, String>> {
             id: device.app_name().to_string(),
             inner: DeviceInfo {
                 is_default: false,
-                name: normalized(device.app_name()).into()
-            }
+                name: normalized(device.app_name()).into(),
+            },
         })
         .collect();
-    
+
     monitors.extend(windows);
 
     monitors
@@ -150,8 +157,8 @@ fn list_viewing_devices() -> Vec<WithId<DeviceInfo, String>> {
 #[instrument(skip_all)]
 fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
     let before = Instant::now();
-    let monitors = Monitor::all().unwrap();
-    let windows = Window::all().unwrap();
+    let monitors = Monitor::all()?;
+    let windows = Window::all()?;
 
     let monitor = monitors.iter().find(|d| d.name() == capture_name);
     let window = windows.iter().find(|w| w.app_name() == capture_name);
@@ -162,7 +169,10 @@ fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
         _ => (None, None),
     };
 
-    println!("Elapsed time to find monitor or window: {:.2?}", before.elapsed());
+    println!(
+        "Elapsed time to find monitor or window: {:.2?}",
+        before.elapsed()
+    );
 
     let image = if let Some(device) = capture_device.0 {
         device.capture_image().ok()
@@ -190,7 +200,7 @@ fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
             resizer.set_cpu_extensions(CpuExtensions::Sse4_1);
         }
     }
-    
+
     #[cfg(target_arch = "x86_64")]
     if CpuExtensions::Avx2.is_supported() {
         // SAFETY: We're checking if the users CPU supports AVX2, and if so, set it.
@@ -218,8 +228,13 @@ fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
         }
     }
 
-    resizer.resize(&image, &mut resized_image, Some(&ResizeOptions::new().resize_alg(ResizeAlg::Convolution(FilterType::Box)))).unwrap();
-    
+    resizer
+        .resize(
+            &image,
+            &mut resized_image,
+            Some(&ResizeOptions::new().resize_alg(ResizeAlg::Convolution(FilterType::Box))),
+        )?;
+
     let mut image_data = Vec::new();
 
     PngEncoder::new(&mut Cursor::new(&mut image_data))
@@ -228,8 +243,7 @@ fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
             resized_image.width(),
             resized_image.height(),
             image.color().into(),
-        )
-        .unwrap();
+        )?;
 
     println!("Elapsed time for resizing: {:.2?}", before.elapsed());
 
@@ -274,7 +288,7 @@ fn toggle_pause(playback_svc: State<'_, PlaybackService>) -> ApiResult<bool> {
 #[derive(Serialize, Clone)]
 struct AudioStart {
     id: AudioId,
-    mouth_shapes: Vec<(f64, f64)>
+    mouth_shapes: Vec<(f64, f64)>,
 }
 
 /// Enqueues audio to be played.
@@ -289,13 +303,11 @@ async fn play_audio(
 ) -> ApiResult<AudioId> {
     // Get source data
     let raw = match request.data {
-        RequestAudioData::Raw(raw) => BASE64_STANDARD.decode(raw.data).unwrap(),
+        RequestAudioData::Raw(raw) => BASE64_STANDARD.decode(raw.data)?,
         RequestAudioData::StreamElements(stream_elements) => {
             tts_svc.stream_elements(stream_elements).await?.to_vec()
         }
-        RequestAudioData::TikTok(tiktok) => {
-            tts_svc.tiktok(tiktok).await?.to_vec()
-        }
+        RequestAudioData::TikTok(tiktok) => tts_svc.tiktok(tiktok).await?.to_vec(),
         RequestAudioData::AmazonPolly(amazon_polly) => {
             tts_svc.amazon_polly(amazon_polly).await?.to_vec()
         }
@@ -316,7 +328,7 @@ async fn play_audio(
     let id = now_playing_svc.add(controller.clone());
 
     let samples = samples.collect::<Vec<f32>>();
-        
+
     let mut complex_data: Vec<Complex64> = Vec::with_capacity(samples.len());
 
     // Convert samples to complex numbers
@@ -357,10 +369,7 @@ async fn play_audio(
 
             move || {
                 trace!(id = id.0, "started playing");
-                drop(app.emit("playback::audio::start", AudioStart {
-                    id,
-                    mouth_shapes
-                }));
+                drop(app.emit("playback::audio::start", AudioStart { id, mouth_shapes }));
             }
         })
         .on_finish({
@@ -380,7 +389,10 @@ async fn play_audio(
 /// Sets the global playback state.
 #[tauri::command(async)]
 #[instrument(skip_all)]
-fn set_playback_state(state: SetPlaybackState, playback_controller: State<'_, PlaybackController>) -> ApiResult<PlaybackState> {
+fn set_playback_state(
+    state: SetPlaybackState,
+    playback_controller: State<'_, PlaybackController>,
+) -> ApiResult<PlaybackState> {
     state.apply(playback_controller.inner());
     let playback_state = SetPlaybackState::state(playback_controller.inner());
 

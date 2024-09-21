@@ -40,7 +40,7 @@ impl SetPlaybackState {
             controller.set_paused(paused);
         }
     }
-    
+
     #[inline]
     pub fn state(controller: &PlaybackController) -> PlaybackState {
         PlaybackState {
