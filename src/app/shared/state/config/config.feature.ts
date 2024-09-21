@@ -25,16 +25,6 @@ export interface AmazonPollyData {
   voice: VoiceId;
 }
 
-export interface TtsMonsterData {
-  overlay: string;
-  userId: string;
-  key: string;
-  ai: boolean;
-  details: {
-    provider: 'tts-helper';
-  };
-}
-
 export interface TikTokData {
   voice: string;
   language: string;
@@ -44,8 +34,7 @@ export interface TikTokData {
  * TODO Support multiple TTS redeems that can be configured to different services.
  */
 
-export interface GeneralChatState extends ChatState {
-}
+export type GeneralChatState = ChatState;
 
 export type AuthTokens = {
   vtsAuthToken: string;
@@ -75,7 +64,7 @@ export type MultiVoice = {
   // How users will use the voice. (brian): vs (brain-english-us-1234):
   customName: string;
   ttsType: TtsType;
-}
+};
 
 export interface ConfigState {
   tts: TtsType;
@@ -87,7 +76,6 @@ export interface ConfigState {
   audioDelay: number;
   generalChat: GeneralChatState;
   streamElements: StreamElementsData;
-  ttsMonster: TtsMonsterData;
   amazonPolly: AmazonPollyData;
   tikTok: TikTokData;
   bannedWords: string[];
@@ -127,15 +115,6 @@ const initialState: ConfigState = {
     vtsAuthToken: '',
   },
   generalChat: defaultChatState,
-  ttsMonster: {
-    overlay: '',
-    userId: '',
-    key: '',
-    ai: false,
-    details: {
-      provider: 'tts-helper',
-    },
-  },
   amazonPolly: {
     ...defaultTtsState,
     poolId: '',
@@ -220,15 +199,6 @@ export const ConfigFeature = createFeature({
       tikTok: {
         ...state.tikTok,
         voice,
-      },
-    })),
-    on(GlobalConfigActions.updateTtsMonsterOverlay, (state, { overlay, key, userId }) => ({
-      ...state,
-      ttsMonster: {
-        ...state.ttsMonster,
-        overlay,
-        key,
-        userId,
       },
     })),
     on(GlobalConfigActions.updateSelectedTtsUrl, (state, { url }) => ({
@@ -353,8 +323,6 @@ export const ConfigFeature = createFeature({
     on(GlobalConfigActions.deleteMultiVoice, (state, { id }) => {
       const multiVoice = state.multiVoices.find(c => c.id === id);
 
-      console.log(multiVoice, id);
-
       if (!multiVoice) {
         return state;
       }
@@ -374,7 +342,6 @@ export const ConfigFeature = createFeature({
     selectBannedWords,
     selectTts,
     selectStreamElements,
-    selectTtsMonster,
     selectAmazonPolly,
     selectTikTok,
   }) => ({
@@ -386,11 +353,10 @@ export const ConfigFeature = createFeature({
       selectTts,
       selectBannedWords,
       selectStreamElements,
-      selectTtsMonster,
       selectAmazonPolly,
       selectTikTok,
-      (tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok) => ({
-        bannedWords, tts, streamElements, ttsMonster, amazonPolly, tikTok,
+      (tts, bannedWords, streamElements, amazonPolly, tikTok) => ({
+        bannedWords, tts, streamElements, amazonPolly, tikTok,
       }),
     ),
   }),

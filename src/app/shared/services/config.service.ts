@@ -19,7 +19,6 @@ export class ConfigService {
   private readonly playbackService = inject(PlaybackService);
   public readonly state$ = this.store.select(ConfigFeature.selectGlobalConfigState);
   public readonly streamElements$ = this.store.select(ConfigFeature.selectStreamElements);
-  public readonly ttsMonster$ = this.store.select(ConfigFeature.selectTtsMonster);
   public readonly amazonPolly$ = this.store.select(ConfigFeature.selectAmazonPolly);
   public readonly tikTok$ = this.store.select(ConfigFeature.selectTikTok);
   public readonly selectedDevice$ = this.store.select(ConfigFeature.selectAudioDevice);
@@ -82,14 +81,6 @@ export class ConfigService {
 
   updateTikTokLanguage(language: string) {
     this.store.dispatch(GlobalConfigActions.updateTikTokLanguage({ language }));
-  }
-
-  updateTtsMonsterOverlayInfo(partial: {
-    overlay: string;
-    userId: string;
-    key: string;
-  }) {
-    this.store.dispatch(GlobalConfigActions.updateTtsMonsterOverlay({ ...partial }));
   }
 
   updateTts(tts: TtsType) {

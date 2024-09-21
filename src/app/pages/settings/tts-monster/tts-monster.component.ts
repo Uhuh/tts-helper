@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ConfigService } from 'src/app/shared/services/config.service';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { FormControl } from '@angular/forms';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
+import { TtsMonsterStateService } from '../../../shared/services/tts-monster.service';
 
 @Component({
   selector: 'app-tts-monster',
@@ -13,34 +13,18 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
   imports: [InputComponent, LabelBlockComponent],
 })
 export class TtsMonsterComponent {
-  private readonly configService = inject(ConfigService);
-  readonly overlay = new FormControl('', { nonNullable: true });
-  readonly ai = new FormControl(false, { nonNullable: true });
+  private readonly ttsMonsterStateService = inject(TtsMonsterStateService);
+  readonly voices$ = this.ttsMonsterStateService.voices$;
+
+  readonly apiKey = new FormControl('', { nonNullable: true });
 
   constructor() {
-    this.configService.ttsMonster$
+    this.ttsMonsterStateService.apiKey$
       .pipe(takeUntilDestroyed())
-      .subscribe((ttsMonster) => {
-        this.overlay.patchValue(ttsMonster.overlay, { emitEvent: false });
-        this.ai.patchValue(ttsMonster.ai, { emitEvent: false });
-      });
+      .subscribe((apiKey) => this.apiKey.patchValue(apiKey, { emitEvent: false }));
 
-    this.overlay.valueChanges
+    this.apiKey.valueChanges
       .pipe(takeUntilDestroyed())
-      .subscribe((overlay) => {
-        let [key, userId] = overlay.split('/').reverse();
-
-        // If one is invalid then make both empty string.
-        if (!key || !userId) {
-          key = '';
-          userId = '';
-        }
-
-        this.configService.updateTtsMonsterOverlayInfo({
-          key,
-          userId,
-          overlay,
-        });
-      });
+      .subscribe((apiKey) => this.ttsMonsterStateService.updateSettings({ apiKey }));
   }
 }

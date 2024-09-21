@@ -65,7 +65,6 @@ export class SettingsComponent {
     {
       displayValue: 'TTS Monster',
       value: 'tts-monster',
-      disabled: true,
     },
   ];
 

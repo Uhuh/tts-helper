@@ -17,7 +17,6 @@ import {
   MultiVoice,
   StreamElementsData,
   TikTokData,
-  TtsMonsterData,
   TtsType,
 } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
@@ -52,7 +51,6 @@ export class AudioService {
 
   tts: TtsType = 'stream-elements';
   streamElements!: StreamElementsData;
-  ttsMonster!: TtsMonsterData;
   amazonPolly!: AmazonPollyData;
   tikTok!: TikTokData;
   elevenLabs!: ElevenLabsState;
@@ -61,11 +59,10 @@ export class AudioService {
   constructor() {
     this.configService.audioSettings$.pipe(takeUntilDestroyed())
       .subscribe((audioSettings) => {
-        const { tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok } = audioSettings;
+        const { tts, bannedWords, streamElements, amazonPolly, tikTok } = audioSettings;
         this.tts = tts;
         this.bannedWords = bannedWords;
         this.streamElements = streamElements;
-        this.ttsMonster = ttsMonster;
         this.amazonPolly = amazonPolly;
         this.tikTok = tikTok;
       });

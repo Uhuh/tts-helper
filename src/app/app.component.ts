@@ -34,6 +34,7 @@ import { VStreamPubSubService } from './shared/services/vstream-pubsub.service';
 import { CounterCommand } from './shared/services/command.interface';
 import { AppSettingsService } from './shared/services/app-settings.service';
 import { AppSettingsActions, AppSettingsFeatureState } from './shared/state/app-settings/app-settings.feature';
+import { TtsMonsterState, TtsMonsterStateService } from './shared/services/tts-monster.service';
 
 @Component({
   selector: 'app-root',
@@ -58,6 +59,7 @@ export class AppComponent {
   private readonly vtubeStudioService = inject(VTubeStudioService);
   private readonly vstreamService = inject(VStreamService);
   private readonly vstreamPubSub = inject(VStreamPubSubService);
+  private readonly ttsMonsterStateService = inject(TtsMonsterStateService);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -77,6 +79,7 @@ export class AppComponent {
       this.storageService.getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio'),
       this.storageService.getFromStore<VStreamState>(this.settingsLocation, 'vstream'),
       this.storageService.getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings'),
+      this.storageService.getFromStore<Omit<TtsMonsterState, 'voices'>>(this.settingsLocation, 'tts-monster'),
     ])
       .pipe(takeUntilDestroyed())
       .subscribe(([
@@ -88,6 +91,7 @@ export class AppComponent {
         vtubeStudio,
         vstream,
         appSettings,
+        ttsMonster,
       ]) => {
         this.handleGlobalData(config);
         this.handleOpenAIData(openai);
@@ -96,7 +100,8 @@ export class AppComponent {
         this.handleElevenLabsData(elevenLabs);
         this.handleVTubeStudioData(vtubeStudio);
         this.handleVStreamData(vstream);
-        this.handleAppSettings(appSettings);
+        this.handleAppSettingsData(appSettings);
+        this.handleTtsMonsterData(ttsMonster);
       });
 
     /**
@@ -151,9 +156,15 @@ export class AppComponent {
       .subscribe(state => {
         this.storageService.saveToStore(this.settingsLocation, 'app-settings', state);
       });
+
+    this.ttsMonsterStateService.apiKey$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(apiKey => {
+        this.storageService.saveToStore(this.settingsLocation, 'tts-monster', { apiKey });
+      });
   }
 
-  handleAppSettings(data: { value: AppSettingsFeatureState } | null) {
+  handleAppSettingsData(data: { value: AppSettingsFeatureState } | null) {
     if (!data || !data.value) {
       return;
     }
@@ -230,6 +241,14 @@ export class AppComponent {
     );
   }
 
+  handleTtsMonsterData(data: { value: Omit<TtsMonsterState, 'voices'> } | null) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.ttsMonsterStateService.updateSettings(data.value);
+  }
+
   handleVStreamData(data: { value: VStreamState } | null) {
     if (!data || !data.value) {
       return;
@@ -252,27 +271,6 @@ export class AppComponent {
         for (const command of commands) {
           this.vstreamService.updateCommandSettings({ value: 0, type: 'counter' }, command.id);
         }
-      });
-
-    /**
-     * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
-     */
-    combineLatest([
-      this.vstreamService.commands$,
-      this.vstreamService.chatCommands$,
-    ])
-      .pipe(first(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(([commands, chatCommands]) => {
-        const commandNames = commands.map(c => c.command);
-        // Make sure we're not bringing over unnamed commands and already same named.
-        const nonMigratedCommands = chatCommands.filter(c => !!c.command && !commandNames.includes(c.command));
-
-        for (const command of nonMigratedCommands) {
-          this.vstreamService.migrateChatCommands(command);
-        }
-
-        // Once the commands have been migrated, PURGE
-        this.vstreamService.removeOldChatCommands();
       });
   }
 }

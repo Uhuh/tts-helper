@@ -35,6 +35,8 @@ import { VStreamPubSubService } from './app/shared/services/vstream-pubsub.servi
 import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
 import { AppSettingsFeature } from './app/shared/state/app-settings/app-settings.feature';
 import { AppSettingsService } from './app/shared/services/app-settings.service';
+import { TtsMonsterStateService } from './app/shared/services/tts-monster.service';
+import { TtsMonsterApi } from './app/shared/api/tts-monster/tts-monster.api';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -77,6 +79,8 @@ bootstrapApplication(AppComponent, {
     VStreamService,
     VStreamPubSubService,
     VTubeStudioService,
+    TtsMonsterApi,
+    TtsMonsterStateService,
   ],
 })
   .catch((err) => console.error(err));

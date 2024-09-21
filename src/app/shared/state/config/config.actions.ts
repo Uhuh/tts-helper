@@ -30,7 +30,6 @@ export const GlobalConfigActions = createActionGroup({
     'Update Stream Elements': props<{ streamElements: Partial<StreamElementsData> }>(),
     'Update Tik Tok Voice': props<{ voice: string }>(),
     'Update Tik Tok Language': props<{ language: string }>(),
-    'Update Tts Monster Overlay': props<{ overlay: string; key: string; userId: string }>(),
     'Update User List': props<{ userListState: UserListState }>(),
     'Create Custom User Voice': props<{ partialSettings?: Partial<CustomUserVoice> }>(),
     'Update Custom User Voice': props<{ id: string, partialSettings: Partial<CustomUserVoice> }>(),

@@ -15,7 +15,6 @@ import {
   MultiVoice,
   StreamElementsData,
   TikTokData,
-  TtsMonsterData,
   TtsType,
   UserListState,
 } from '../state/config/config.feature';
@@ -41,7 +40,6 @@ describe('AudioService', () => {
     bannedWords: string[];
     tts: TtsType;
     streamElements: StreamElementsData;
-    ttsMonster: TtsMonsterData;
     amazonPolly: AmazonPollyData;
     tikTok: TikTokData;
     elevenLabs: ElevenLabsState;
