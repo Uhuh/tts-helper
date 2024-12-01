@@ -2,7 +2,6 @@ import { Component, HostListener, inject } from '@angular/core';
 import { OpenAIService } from '../../../shared/services/openai.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
-import { InputComponent } from '../../../shared/components/input/input.component';
 import { Option, SelectorComponent } from '../../../shared/components/selector/selector.component';
 import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -11,18 +10,17 @@ import { DisplayLabelComponent } from '../../../shared/components/display-label/
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: 'app-gpt-vision',
-    imports: [
-        LabelBlockComponent,
-        InputComponent,
-        ReactiveFormsModule,
-        SelectorComponent,
-        AsyncPipe,
-        ButtonComponent,
-        DisplayLabelComponent,
-    ],
-    templateUrl: './gpt-vision.component.html',
-    styleUrl: './gpt-vision.component.scss'
+  selector: 'app-gpt-vision',
+  imports: [
+    LabelBlockComponent,
+    ReactiveFormsModule,
+    SelectorComponent,
+    AsyncPipe,
+    ButtonComponent,
+    DisplayLabelComponent,
+  ],
+  templateUrl: './gpt-vision.component.html',
+  styleUrl: './gpt-vision.component.scss',
 })
 export class GptVisionComponent {
   private readonly openaiService = inject(OpenAIService);

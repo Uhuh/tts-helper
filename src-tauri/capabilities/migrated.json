@@ -8,9 +8,7 @@
   "permissions": [
     "core:default",
     "updater:default",
-    "store:allow-get",
-    "store:allow-set",
-    "store:allow-save",
+    "store:default",
     "playback:allow-set-output-device",
     "playback:allow-set-output-volume",
     "playback:allow-set-playback-state",

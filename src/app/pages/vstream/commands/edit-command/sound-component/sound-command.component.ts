@@ -5,7 +5,6 @@ import { LabelBlockComponent } from '../../../../../shared/components/input-bloc
 import { MatTabsModule } from '@angular/material/tabs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToggleComponent } from '../../../../../shared/components/toggle/toggle.component';
-import { VariableTableComponent } from '../../../../../shared/components/variable-table/variable-table.component';
 import { VStreamService } from '../../../../../shared/services/vstream.service';
 import { SoundCommand } from '../../../../../shared/services/command.interface';
 import { filter } from 'rxjs';
@@ -13,10 +12,10 @@ import { ButtonComponent } from '../../../../../shared/components/button/button.
 import { ChainCommandComponent } from '../chain-command/chain-command.component';
 
 @Component({
-    selector: 'app-sound-command',
-    imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, VariableTableComponent, ButtonComponent, ChainCommandComponent],
-    templateUrl: './sound-command.component.html',
-    styleUrl: './sound-command.component.scss'
+  selector: 'app-sound-command',
+  imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, ButtonComponent, ChainCommandComponent],
+  templateUrl: './sound-command.component.html',
+  styleUrl: './sound-command.component.scss',
 })
 export class SoundCommandComponent implements OnChanges {
   private readonly vstreamService = inject(VStreamService);

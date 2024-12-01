@@ -18,17 +18,17 @@ export interface Voices {
 }
 
 @Component({
-    selector: 'app-tts-selector',
-    imports: [
-        CommonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        LabelBlockComponent,
-        SelectorComponent,
-    ],
-    templateUrl: './tts-selector.component.html',
-    styleUrls: ['./tts-selector.component.scss']
+  selector: 'app-tts-selector',
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    LabelBlockComponent,
+    SelectorComponent,
+  ],
+  templateUrl: './tts-selector.component.html',
+  styleUrls: ['./tts-selector.component.scss'],
 })
 export class TtsSelectorComponent implements OnChanges {
   @Input({ required: true }) languageControl!: FormControl<string>;
@@ -43,7 +43,7 @@ export class TtsSelectorComponent implements OnChanges {
 
   ngOnChanges() {
     this.languageVoiceMap.clear();
-    
+
     for (const voice of this.voices) {
       this.languageVoiceMap.set(voice.language, voice.options);
     }
@@ -65,7 +65,7 @@ export class TtsSelectorComponent implements OnChanges {
         );
 
         this.voiceControl.setValue(
-          `${this.languageVoiceOptions()[0].value}` ?? '',
+          `${this.languageVoiceOptions()[0].value}`,
         );
       });
   }

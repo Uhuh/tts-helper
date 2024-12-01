@@ -22,21 +22,21 @@ interface TtsOption {
 }
 
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.component.html',
-    styleUrls: ['./settings.component.scss'],
-    imports: [
-        InputComponent,
-        ButtonComponent,
-        DeviceComponent,
-        CommonModule,
-        StreamElementsComponent,
-        AmazonPollyComponent,
-        TtsMonsterComponent,
-        TiktokComponent,
-        LabelBlockComponent,
-        ElevenLabsComponent,
-    ]
+  selector: 'app-settings',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.scss'],
+  imports: [
+    InputComponent,
+    ButtonComponent,
+    DeviceComponent,
+    CommonModule,
+    StreamElementsComponent,
+    AmazonPollyComponent,
+    TtsMonsterComponent,
+    TiktokComponent,
+    LabelBlockComponent,
+    ElevenLabsComponent,
+  ],
 })
 export class SettingsComponent {
   private readonly audioService = inject(AudioService);

@@ -2,10 +2,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, Input, OnInit }
 import { CommonModule } from '@angular/common';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { LabelBlockComponent } from '../../../../shared/components/input-block/label-block.component';
-import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { InputComponent } from '../../../../shared/components/input/input.component';
 import { VStreamService } from '../../../../shared/services/vstream.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -18,11 +16,11 @@ import { CounterCommandComponent } from './counter-command/counter-command.compo
 import { SoundCommandComponent } from './sound-component/sound-command.component';
 
 @Component({
-    selector: 'app-edit-command',
-    imports: [CommonModule, CdkAccordionModule, LabelBlockComponent, ToggleComponent, MatIconModule, ReactiveFormsModule, InputComponent, ButtonComponent, MatTabsModule, TextCommandComponent, SelectorComponent, ChoiceCommandComponent, CounterCommandComponent, SoundCommandComponent],
-    templateUrl: './edit-command.component.html',
-    styleUrl: './edit-command.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-edit-command',
+  imports: [CommonModule, CdkAccordionModule, LabelBlockComponent, MatIconModule, ReactiveFormsModule, ButtonComponent, MatTabsModule, TextCommandComponent, SelectorComponent, ChoiceCommandComponent, CounterCommandComponent, SoundCommandComponent],
+  templateUrl: './edit-command.component.html',
+  styleUrl: './edit-command.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditCommandComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);

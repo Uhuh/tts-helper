@@ -1,6 +1,5 @@
 import { Component, inject, Input, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonComponent } from '../../../../../shared/components/button/button.component';
 import { InputComponent } from '../../../../../shared/components/input/input.component';
 import { LabelBlockComponent } from '../../../../../shared/components/input-block/label-block.component';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -12,10 +11,10 @@ import { ChatCommand } from '../../../../../shared/services/command.interface';
 import { ChainCommandComponent } from '../chain-command/chain-command.component';
 
 @Component({
-    selector: 'app-text-command',
-    imports: [CommonModule, ButtonComponent, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, ChainCommandComponent],
-    templateUrl: './text-command.component.html',
-    styleUrl: './text-command.component.scss'
+  selector: 'app-text-command',
+  imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, ChainCommandComponent],
+  templateUrl: './text-command.component.html',
+  styleUrl: './text-command.component.scss',
 })
 export class TextCommandComponent implements OnChanges {
   private readonly vstreamService = inject(VStreamService);

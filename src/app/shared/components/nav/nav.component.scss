@@ -71,6 +71,13 @@ mat-sidenav-content {
   width: 100%;
 }
 
+// Idk why, mat-sidenav is defaulting the margin to 110px until the user resizes the app.
+// The current sidenav size is 250, so just enforce it when not in "mobile" view.
+.content-wide-view {
+  margin-left: 250px !important;
+}
+
 mat-sidenav {
-  border-right: 0px;
+  border-right: 0;
+  width: auto;
 }

@@ -10,7 +10,7 @@
     <textarea
       [formControl]="bannedWords"
       class="banned-words hide"
-      [ngClass]="{ show: !hideBannedWords.value }"
+      [class.show]="!hideBannedWords.value"
     ></textarea>
   </app-label-block>
 

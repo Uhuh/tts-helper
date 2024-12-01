@@ -5,7 +5,6 @@ import { filter } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InputComponent } from '../../../shared/components/input/input.component';
-import { NgIf } from '@angular/common';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import {
@@ -14,19 +13,18 @@ import {
 } from '../../../shared/components/variable-table/variable-table.component';
 
 @Component({
-    selector: 'app-subs',
-    templateUrl: './subs.component.html',
-    styleUrls: ['./subs.component.scss'],
-    imports: [
-        ToggleComponent,
-        NgIf,
-        InputComponent,
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        LabelBlockComponent,
-        VariableTableComponent,
-    ]
+  selector: 'app-subs',
+  templateUrl: './subs.component.html',
+  styleUrls: ['./subs.component.scss'],
+  imports: [
+    ToggleComponent,
+    InputComponent,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    LabelBlockComponent,
+    VariableTableComponent,
+  ],
 })
 export class SubsComponent {
   private readonly twitchService = inject(TwitchService);

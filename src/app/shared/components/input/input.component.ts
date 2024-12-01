@@ -1,12 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-input',
-    templateUrl: './input.component.html',
-    styleUrls: ['./input.component.scss'],
-    imports: [FormsModule, ReactiveFormsModule, NgClass]
+  selector: 'app-input',
+  templateUrl: './input.component.html',
+  styleUrls: ['./input.component.scss'],
+  imports: [FormsModule, ReactiveFormsModule],
 })
 export class InputComponent<TKey extends string | number> {
   @Input() placeholder = 'Put something here...';

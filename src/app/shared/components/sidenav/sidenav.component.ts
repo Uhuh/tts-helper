@@ -3,7 +3,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { getVersion } from '@tauri-apps/api/app';
 import { MatIconModule } from '@angular/material/icon';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { AsyncPipe, NgClass, NgOptimizedImage } from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 import { TwitchService } from '../../services/twitch.service';
 import { VTubeStudioService } from '../../services/vtubestudio.service';
 import { check, Update } from '@tauri-apps/plugin-updater';
@@ -16,10 +16,10 @@ import { AppSettingsService } from '../../services/app-settings.service';
 import { AppSettingsFeatureState } from '../../state/app-settings/app-settings.feature';
 
 @Component({
-    selector: 'app-sidenav',
-    templateUrl: './sidenav.component.html',
-    styleUrls: ['./sidenav.component.scss'],
-    imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, NgClass, AsyncPipe]
+  selector: 'app-sidenav',
+  templateUrl: './sidenav.component.html',
+  styleUrls: ['./sidenav.component.scss'],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, AsyncPipe],
 })
 export class SidenavComponent {
   private readonly twitchService = inject(TwitchService);

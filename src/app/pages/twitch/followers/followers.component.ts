@@ -1,11 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { InputComponent } from '../../../shared/components/input/input.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 import { TwitchService } from '../../../shared/services/twitch.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgClass } from '@angular/common';
 import {
   VariableTableComponent,
   VariableTableOption,
@@ -13,19 +11,17 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: 'app-followers',
-    imports: [
-        InputComponent,
-        LabelBlockComponent,
-        MatFormFieldModule,
-        ToggleComponent,
-        NgClass,
-        FormsModule,
-        VariableTableComponent,
-        ReactiveFormsModule,
-    ],
-    templateUrl: './followers.component.html',
-    styleUrl: './followers.component.scss'
+  selector: 'app-followers',
+  imports: [
+    LabelBlockComponent,
+    MatFormFieldModule,
+    ToggleComponent,
+    FormsModule,
+    VariableTableComponent,
+    ReactiveFormsModule,
+  ],
+  templateUrl: './followers.component.html',
+  styleUrl: './followers.component.scss',
 })
 export class FollowersComponent {
   private readonly twitchService = inject(TwitchService);

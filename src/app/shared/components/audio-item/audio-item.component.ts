@@ -1,18 +1,18 @@
 import { ApplicationRef, ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AudioService } from 'src/app/shared/services/audio.service';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
 import { AudioItem, AudioStatus } from '../../state/audio/audio.feature';
 import { LogService } from '../../services/logs.service';
 import { ButtonComponent } from '../button/button.component';
 
 @Component({
-    selector: 'app-audio-item',
-    templateUrl: './audio-item.component.html',
-    styleUrls: ['./audio-item.component.scss'],
-    imports: [ButtonComponent, NgClass, DatePipe],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-audio-item',
+  templateUrl: './audio-item.component.html',
+  styleUrls: ['./audio-item.component.scss'],
+  imports: [ButtonComponent, DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AudioItemComponent {
   private readonly audioService = inject(AudioService);

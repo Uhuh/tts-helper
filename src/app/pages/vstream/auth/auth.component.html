@@ -2,7 +2,7 @@
   <div header>Connection Status</div>
   <div sub-text>{{ connectionMessage() }}</div>
   <div class="action-row">
-    <span class="status" [ngClass]="{ valid: isTokenValid() }">
+    <span class="status" [class.valid]="isTokenValid()">
       {{ connectionStatus() }}
     </span>
 

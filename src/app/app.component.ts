@@ -1,9 +1,8 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { TwitchPubSub } from './shared/services/twitch-pubsub';
-import { StorageService } from './shared/services/storage.service';
 import { Store } from '@ngrx/store';
 import { TwitchService } from './shared/services/twitch.service';
-import { combineLatest, debounceTime, first, map } from 'rxjs';
+import { combineLatest, debounceTime, first, from, map } from 'rxjs';
 import { ConfigService } from './shared/services/config.service';
 import { PlaybackService } from './shared/services/playback.service';
 import { TwitchState } from './shared/state/twitch/twitch.feature';
@@ -34,12 +33,28 @@ import { VStreamPubSubService } from './shared/services/vstream-pubsub.service';
 import { CounterCommand } from './shared/services/command.interface';
 import { AppSettingsService } from './shared/services/app-settings.service';
 import { AppSettingsActions, AppSettingsFeatureState } from './shared/state/app-settings/app-settings.feature';
+import { load } from '@tauri-apps/plugin-store';
+
+async function saveToStore<T>(file: string, key: string, data: T) {
+  const store = await load(file);
+
+  await store.set(key, { value: data });
+  await store.save();
+}
+
+async function getFromStore<T>(file: string, key: string): Promise<{ value: T } | undefined> {
+  const store = await load(file);
+
+  console.log();
+
+  return store.get<{ value: T }>(key);
+}
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    imports: [NavComponent, RouterOutlet]
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  imports: [NavComponent, RouterOutlet],
 })
 export class AppComponent {
   private readonly store = inject(Store);
@@ -51,7 +66,6 @@ export class AppComponent {
   private readonly obsSocketService = inject(ObsWebSocketService);
   private readonly streamDeckSocketService = inject(StreamDeckWebSocketService);
   private readonly playbackService = inject(PlaybackService);
-  private readonly storageService = inject(StorageService);
   private readonly twitchPubSub = inject(TwitchPubSub);
   private readonly twitchService = inject(TwitchService);
   private readonly vtubeStudioService = inject(VTubeStudioService);
@@ -68,14 +82,14 @@ export class AppComponent {
    */
   constructor() {
     combineLatest([
-      this.storageService.getFromStore<ConfigState>(this.settingsLocation, 'config'),
-      this.storageService.getFromStore<OpenAIState>(this.settingsLocation, 'openai'),
-      this.storageService.getFromStore<TwitchState>(this.settingsLocation, 'twitch'),
-      this.storageService.getFromStore<AzureState>(this.settingsLocation, 'azure'),
-      this.storageService.getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs'),
-      this.storageService.getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio'),
-      this.storageService.getFromStore<VStreamState>(this.settingsLocation, 'vstream'),
-      this.storageService.getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings'),
+      from(getFromStore<ConfigState>(this.settingsLocation, 'config')),
+      from(getFromStore<OpenAIState>(this.settingsLocation, 'openai')),
+      from(getFromStore<TwitchState>(this.settingsLocation, 'twitch')),
+      from(getFromStore<AzureState>(this.settingsLocation, 'azure')),
+      from(getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs')),
+      from(getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio')),
+      from(getFromStore<VStreamState>(this.settingsLocation, 'vstream')),
+      from(getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings')),
     ])
       .pipe(takeUntilDestroyed())
       .subscribe(([
@@ -88,6 +102,8 @@ export class AppComponent {
         vstream,
         appSettings,
       ]) => {
+
+        console.log(config);
         this.handleGlobalData(config);
         this.handleOpenAIData(openai);
         this.handleTwitchData(twitch);
@@ -105,54 +121,38 @@ export class AppComponent {
 
     this.configService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
-      .subscribe((state) => {
-        this.storageService.saveToStore(this.settingsLocation, 'config', state);
-      });
+      .subscribe((state) => saveToStore(this.settingsLocation, 'config', state));
 
     this.twitchService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
-      .subscribe((state) => {
-        this.storageService.saveToStore(this.settingsLocation, 'twitch', state);
-      });
+      .subscribe((state) => saveToStore(this.settingsLocation, 'twitch', state));
 
     this.azureService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
-      .subscribe(state => {
-        this.storageService.saveToStore(this.settingsLocation, 'azure', state);
-      });
+      .subscribe(state => saveToStore(this.settingsLocation, 'azure', state));
 
     this.elevenLabsService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
-      .subscribe(state => {
-        this.storageService.saveToStore(this.settingsLocation, 'eleven-labs', state);
-      });
+      .subscribe(state => saveToStore(this.settingsLocation, 'eleven-labs', state));
 
     this.vtubeStudioService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
-      .subscribe(state => {
-        this.storageService.saveToStore(this.settingsLocation, 'vtube-studio', state);
-      });
+      .subscribe(state => saveToStore(this.settingsLocation, 'vtube-studio', state));
 
     this.openAIService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
-      .subscribe(state => {
-        this.storageService.saveToStore(this.settingsLocation, 'openai', state);
-      });
+      .subscribe(state => saveToStore(this.settingsLocation, 'openai', state));
 
     this.vstreamService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
-      .subscribe(state => {
-        this.storageService.saveToStore(this.settingsLocation, 'vstream', state);
-      });
+      .subscribe(state => saveToStore(this.settingsLocation, 'vstream', state));
 
     this.appSettingsService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
-      .subscribe(state => {
-        this.storageService.saveToStore(this.settingsLocation, 'app-settings', state);
-      });
+      .subscribe(state => saveToStore(this.settingsLocation, 'app-settings', state));
   }
 
-  handleAppSettings(data: { value: AppSettingsFeatureState } | null) {
+  handleAppSettings(data: { value: AppSettingsFeatureState } | undefined) {
     if (!data || !data.value) {
       return;
     }
@@ -162,7 +162,7 @@ export class AppComponent {
     );
   }
 
-  handleGlobalData(data: { value: ConfigState } | null) {
+  handleGlobalData(data: { value: ConfigState } | undefined) {
     if (!data || !data.value) {
       return;
     }
@@ -179,7 +179,7 @@ export class AppComponent {
     );
   }
 
-  handleOpenAIData(data: { value: OpenAIState } | null) {
+  handleOpenAIData(data: { value: OpenAIState } | undefined) {
     if (!data || !data.value) {
       return;
     }
@@ -189,7 +189,7 @@ export class AppComponent {
     );
   }
 
-  handleTwitchData(data: { value: TwitchState } | null) {
+  handleTwitchData(data: { value: TwitchState } | undefined) {
     if (!data || !data.value) {
       return this.twitchService.clearState();
     }
@@ -199,7 +199,7 @@ export class AppComponent {
     );
   }
 
-  handleAzureData(data: { value: AzureState } | null) {
+  handleAzureData(data: { value: AzureState } | undefined) {
     if (!data || !data.value) {
       return;
     }
@@ -209,7 +209,7 @@ export class AppComponent {
     );
   }
 
-  handleElevenLabsData(data: { value: ElevenLabsState } | null) {
+  handleElevenLabsData(data: { value: ElevenLabsState } | undefined) {
     if (!data || !data.value) {
       return;
     }
@@ -219,7 +219,7 @@ export class AppComponent {
     );
   }
 
-  handleVTubeStudioData(data: { value: VTubeStudioState } | null) {
+  handleVTubeStudioData(data: { value: VTubeStudioState } | undefined) {
     if (!data || !data.value) {
       return;
     }
@@ -229,7 +229,7 @@ export class AppComponent {
     );
   }
 
-  handleVStreamData(data: { value: VStreamState } | null) {
+  handleVStreamData(data: { value: VStreamState } | undefined) {
     if (!data || !data.value) {
       return;
     }
@@ -251,27 +251,6 @@ export class AppComponent {
         for (const command of commands) {
           this.vstreamService.updateCommandSettings({ value: 0, type: 'counter' }, command.id);
         }
-      });
-
-    /**
-     * @TODO - REMOVE THIS AFTER A FEW VERSIONS SO USERS HAVE TIME TO GET THEIR COMMANDS MIGRATED
-     */
-    combineLatest([
-      this.vstreamService.commands$,
-      this.vstreamService.chatCommands$,
-    ])
-      .pipe(first(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(([commands, chatCommands]) => {
-        const commandNames = commands.map(c => c.command);
-        // Make sure we're not bringing over unnamed commands and already same named.
-        const nonMigratedCommands = chatCommands.filter(c => !!c.command && !commandNames.includes(c.command));
-
-        for (const command of nonMigratedCommands) {
-          this.vstreamService.migrateChatCommands(command);
-        }
-
-        // Once the commands have been migrated, PURGE
-        this.vstreamService.removeOldChatCommands();
       });
   }
 }

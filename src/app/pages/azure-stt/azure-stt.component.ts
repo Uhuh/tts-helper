@@ -10,13 +10,12 @@ import { ToggleComponent } from '../../shared/components/toggle/toggle.component
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { DisplayLabelComponent } from '../../shared/components/display-label/display-label.component';
-import { RouterLink } from '@angular/router';
 
 @Component({
-    selector: 'app-azure-stt',
-    imports: [CommonModule, LabelBlockComponent, InputComponent, SelectorComponent, ToggleComponent, ButtonComponent, DisplayLabelComponent, RouterLink],
-    templateUrl: './azure-stt.component.html',
-    styleUrls: ['./azure-stt.component.scss']
+  selector: 'app-azure-stt',
+  imports: [CommonModule, LabelBlockComponent, InputComponent, SelectorComponent, ToggleComponent, ButtonComponent, DisplayLabelComponent],
+  templateUrl: './azure-stt.component.html',
+  styleUrls: ['./azure-stt.component.scss'],
 })
 export class AzureSttComponent {
   private readonly azureService = inject(AzureSttService);

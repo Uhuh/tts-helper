@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
-import { InputComponent } from '../../../shared/components/input/input.component';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 import {
   VariableTableComponent,
@@ -13,10 +12,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
-    selector: 'app-meteor-shower',
-    imports: [CommonModule, LabelBlockComponent, InputComponent, ToggleComponent, ReactiveFormsModule, VariableTableComponent],
-    templateUrl: './meteor-shower.component.html',
-    styleUrl: './meteor-shower.component.scss'
+  selector: 'app-meteor-shower',
+  imports: [CommonModule, LabelBlockComponent, ToggleComponent, ReactiveFormsModule, VariableTableComponent],
+  templateUrl: './meteor-shower.component.html',
+  styleUrl: './meteor-shower.component.scss',
 })
 export class MeteorShowerComponent {
   private readonly vstreamService = inject(VStreamService);

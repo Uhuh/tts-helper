@@ -1,5 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { AudioItemComponent } from '../audio-item/audio-item.component';
 import { map } from 'rxjs';
 import { AudioStatus } from '../../state/audio/audio.feature';
@@ -7,10 +7,10 @@ import { AudioService } from '../../services/audio.service';
 import { LabelBlockComponent } from '../input-block/label-block.component';
 
 @Component({
-    selector: 'app-audio-list',
-    templateUrl: './audio-list.component.html',
-    styleUrls: ['./audio-list.component.scss'],
-    imports: [NgIf, AudioItemComponent, NgFor, NgClass, AsyncPipe, LabelBlockComponent]
+  selector: 'app-audio-list',
+  templateUrl: './audio-list.component.html',
+  styleUrls: ['./audio-list.component.scss'],
+  imports: [AudioItemComponent, AsyncPipe, LabelBlockComponent],
 })
 export class AudioListComponent {
   @Input() filters?: AudioStatus[];

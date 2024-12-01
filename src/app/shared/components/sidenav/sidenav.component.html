@@ -11,24 +11,24 @@
     @if (connections$ | async; as connections) {
       <div class="nav-group">
         <span>My Connections</span>
-        <a [routerLink]="['twitch']" [ngClass]="{ hide: !connections.twitchEnabled }" routerLinkActive="active">
+        <a [routerLink]="['twitch']" [class.hide]="!connections.twitchEnabled" routerLinkActive="active">
           <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21" />
           <span>Twitch</span>
-          <div class="connection" [ngClass]="{'connected': isTwitchTokenValid$ | async }"></div>
+          <div class="connection" [class.connected]="isTwitchTokenValid$ | async"></div>
         </a>
-        <a [routerLink]="['vstream']" [ngClass]="{ hide: !connections.vstreamEnabled }" routerLinkActive="active">
+        <a [routerLink]="['vstream']" [class.hide]="!connections.vstreamEnabled" routerLinkActive="active">
           <img alt="vstream-logo" ngSrc="assets/vstream.svg" height="22" width="21" />
           <span>VStream</span>
-          <div class="connection" [ngClass]="{'connected': isVStreamConnected$ | async }"></div>
+          <div class="connection" [class.connected]="isVStreamConnected$ | async"></div>
         </a>
         <a
           [routerLink]="['vtubestudio']"
-          [ngClass]="{ hide: !connections.vtubestudioEnabled }"
+          [class.hide]="!connections.vtubestudioEnabled"
           routerLinkActive="active"
         >
           <img alt="youtube-logo" ngSrc="assets/vts_logo_transparent.png" height="25" width="25" />
           <span>VTubeStudio</span>
-          <div class="connection" [ngClass]="{'connected': isVTSConnected$ | async }"></div>
+          <div class="connection" [class.connected]="isVTSConnected$ | async"></div>
         </a>
         @if (unavailableConnections(connections)) {
           <div class="empty">

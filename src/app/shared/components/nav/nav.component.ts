@@ -5,26 +5,24 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ButtonComponent } from '../button/button.component';
 import { PlaybackService } from '../../services/playback.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: 'app-nav',
-    templateUrl: './nav.component.html',
-    styleUrls: ['./nav.component.scss'],
-    imports: [
-        NgIf,
-        MatToolbarModule,
-        MatButtonModule,
-        MatIconModule,
-        MatSidenavModule,
-        SidenavComponent,
-        NgClass,
-        ButtonComponent,
-        AsyncPipe,
-    ]
+  selector: 'app-nav',
+  templateUrl: './nav.component.html',
+  styleUrls: ['./nav.component.scss'],
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
+    SidenavComponent,
+    ButtonComponent,
+    AsyncPipe,
+  ],
 })
 export class NavComponent implements OnInit {
   private readonly breakpoint = inject(BreakpointObserver);

@@ -12,7 +12,8 @@
   </mat-sidenav>
   <mat-sidenav-content
     class="content"
-    [ngClass]="{ openedMobile: isMobile && nav.opened }"
+    [class.openedMobile]="isMobile && nav.opened"
+    [class.content-wide-view]="!isMobile"
   >
     <!-- Eventually figure out a smarter, global component for more than pauses. -->
     @if (isPaused$ | async) {

@@ -1,6 +1,6 @@
 {
   "name": "tts-helper",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "author": {
     "email": "dylanwarren19@gmail.com",
     "name": "Dylan Warren",
@@ -33,11 +33,12 @@
     "@aws-sdk/polly-request-presigner": "^3.325.0",
     "@ngrx/store": "^18.1.1",
     "@ngrx/store-devtools": "^18.1.1",
-    "@tauri-apps/api": "^2.0.0-rc.0",
+    "@tauri-apps/api": "^2.1.1",
     "@tauri-apps/plugin-app": "^2.0.0-alpha.1",
-    "@tauri-apps/plugin-global-shortcut": "^2.0.0-rc.0",
-    "@tauri-apps/plugin-process": "^2.0.0-rc.0",
-    "@tauri-apps/plugin-updater": "^2.0.0-rc.0",
+    "@tauri-apps/plugin-global-shortcut": "^2.0.0",
+    "@tauri-apps/plugin-process": "^2.0.0",
+    "@tauri-apps/plugin-store": "^2.1.0",
+    "@tauri-apps/plugin-updater": "^2.0.0",
     "@twurple/api": "^7.1.0",
     "@twurple/auth": "^7.1.0",
     "@twurple/chat": "^7.1.0",
@@ -53,7 +54,6 @@
     "openai": "^4.53.0",
     "recordrtc": "^5.6.2",
     "rxjs": "~7.8.0",
-    "tauri-plugin-store-api": "https://github.com/tauri-apps/tauri-plugin-store#v2",
     "tslib": "^2.3.0",
     "typeid-js": "^0.3.0",
     "uuid": "^9.0.1",
@@ -68,7 +68,7 @@
     "@angular-eslint/template-parser": "19.0.0",
     "@angular/cli": "~19.0.2",
     "@angular/compiler-cli": "^19.0.1",
-    "@tauri-apps/cli": "^2.0.0-rc.0",
+    "@tauri-apps/cli": "^2.1.0",
     "@types/jasmine": "~4.3.0",
     "@types/uuid": "^9.0.5",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -80,6 +80,6 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "typescript": "^5.5.4"
+    "typescript": "5.6.3"
   }
 }

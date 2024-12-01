@@ -17,11 +17,11 @@ tauri = { workspace = true }
 tauri-plugin-http = { workspace = true }
 tauri-plugin-playback = { path = "../plugins/tauri-plugin-playback" }
 tauri-plugin-devtools = { git = "https://github.com/crabnebula-dev/devtools" }
-tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
-tauri-plugin-shell = "2.0.0-rc"
-tauri-plugin-updater = "2.0.0-rc"
-tauri-plugin-window-state = "2.0.0-rc"
-tauri-plugin-global-shortcut = "2.0.0-rc"
+tauri-plugin-store = "2.1.0"
+tauri-plugin-shell = "2.0.2"
+tauri-plugin-updater = "2.0.2"
+tauri-plugin-window-state = "2.0.2"
+tauri-plugin-global-shortcut = "2.0.1"
 
 # Serialization
 serde = { workspace = true, features = ["derive"] }

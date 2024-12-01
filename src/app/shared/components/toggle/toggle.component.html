@@ -3,7 +3,7 @@
   <span class="slider round"></span>
 </label>
 @if (text) {
-  <span class="disabled" [ngClass]="{ enabled: control.value }">
+  <span class="disabled" [class.enabled]="control.value">
     {{ text }}
   </span>
 }

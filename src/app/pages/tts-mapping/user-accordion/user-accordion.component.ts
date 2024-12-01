@@ -1,13 +1,9 @@
 import { Component, inject, input, OnChanges, signal, SimpleChanges } from '@angular/core';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { CdkAccordionModule } from '@angular/cdk/accordion';
-import { ChoiceCommandComponent } from '../../vstream/commands/edit-command/choice-command/choice-command.component';
-import { CounterCommandComponent } from '../../vstream/commands/edit-command/counter-command/counter-command.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { MatIconModule } from '@angular/material/icon';
 import { SelectorComponent } from '../../../shared/components/selector/selector.component';
-import { SoundCommandComponent } from '../../vstream/commands/edit-command/sound-component/sound-command.component';
-import { TextCommandComponent } from '../../vstream/commands/edit-command/text-command/text-command.component';
 import { CustomUserVoice, TtsType } from '../../../shared/state/config/config.feature';
 import { ConfigService } from '../../../shared/services/config.service';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -16,7 +12,6 @@ import {
   TtsSelectorComponent,
   Voices,
 } from '../../../shared/components/tts-selector/tts-selector.component';
-import { AsyncPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import streamelementsVoices from '../../../shared/json/stream-elements.json';
@@ -25,24 +20,19 @@ import { InputComponent } from '../../../shared/components/input/input.component
 import { AccordionComponent } from '../../../shared/components/accordion/accordion.component';
 
 @Component({
-    selector: 'app-user-accordion',
-    imports: [
-        ButtonComponent,
-        CdkAccordionModule,
-        ChoiceCommandComponent,
-        CounterCommandComponent,
-        LabelBlockComponent,
-        MatIconModule,
-        SelectorComponent,
-        SoundCommandComponent,
-        TextCommandComponent,
-        AsyncPipe,
-        InputComponent,
-        TtsSelectorComponent,
-        AccordionComponent,
-    ],
-    templateUrl: './user-accordion.component.html',
-    styleUrl: './user-accordion.component.scss'
+  selector: 'app-user-accordion',
+  imports: [
+    ButtonComponent,
+    CdkAccordionModule,
+    LabelBlockComponent,
+    MatIconModule,
+    SelectorComponent,
+    InputComponent,
+    TtsSelectorComponent,
+    AccordionComponent,
+  ],
+  templateUrl: './user-accordion.component.html',
+  styleUrl: './user-accordion.component.scss',
 })
 export class UserAccordionComponent implements OnChanges {
   private readonly configService = inject(ConfigService);

@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InputComponent } from '../../../shared/components/input/input.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
@@ -13,10 +12,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
-    selector: 'app-subscription',
-    imports: [CommonModule, InputComponent, LabelBlockComponent, ReactiveFormsModule, ToggleComponent, VariableTableComponent],
-    templateUrl: './subscription.component.html',
-    styleUrl: './subscription.component.scss'
+  selector: 'app-subscription',
+  imports: [CommonModule, LabelBlockComponent, ReactiveFormsModule, ToggleComponent, VariableTableComponent],
+  templateUrl: './subscription.component.html',
+  styleUrl: './subscription.component.scss',
 })
 export class SubscriptionComponent {
   private readonly vstreamService = inject(VStreamService);

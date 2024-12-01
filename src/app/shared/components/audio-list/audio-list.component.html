@@ -11,7 +11,7 @@
   <hr/>
   
   @for(audio of audioItems$ | async; track audio.id) {
-    <app-audio-item [audio]="audio" [ngClass]="{ queued: audio.state === AudioState.queued }"/>
+    <app-audio-item [audio]="audio" [class.queued]="audio.state === AudioState.queued"/>
   } @empty {
     <div class="empty">Nothing redeemed.</div>
   }

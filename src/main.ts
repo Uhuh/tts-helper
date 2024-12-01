@@ -27,7 +27,6 @@ import { OpenAIService } from './app/shared/services/openai.service';
 import { ObsWebSocketService } from './app/shared/services/obs-websocket.service';
 import { StreamDeckWebSocketService } from './app/shared/services/streamdeck-websocket.service';
 import { PlaybackService } from './app/shared/services/playback.service';
-import { StorageService } from './app/shared/services/storage.service';
 import { TwitchPubSub } from './app/shared/services/twitch-pubsub';
 import { TwitchService } from './app/shared/services/twitch.service';
 import { VStreamService } from './app/shared/services/vstream.service';
@@ -54,7 +53,8 @@ bootstrapApplication(AppComponent, {
       StoreDevtoolsModule.instrument({
         maxAge: 25,
         logOnly: !isDevMode(),
-      connectInZone: true}),
+        connectInZone: true,
+      }),
     ),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
@@ -71,7 +71,6 @@ bootstrapApplication(AppComponent, {
     ObsWebSocketService,
     StreamDeckWebSocketService,
     PlaybackService,
-    StorageService,
     TwitchPubSub,
     TwitchService,
     VStreamService,

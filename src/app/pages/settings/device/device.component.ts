@@ -4,7 +4,6 @@ import { debounceTime, filter, take } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatOptionModule } from '@angular/material/core';
-import { NgFor } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,21 +15,20 @@ import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.
 import { InputComponent } from '../../../shared/components/input/input.component';
 
 @Component({
-    selector: 'app-device',
-    templateUrl: './device.component.html',
-    styleUrls: ['./device.component.scss'],
-    imports: [
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgFor,
-        MatOptionModule,
-        MatSliderModule,
-        LabelBlockComponent,
-        SelectorComponent,
-        InputComponent,
-    ]
+  selector: 'app-device',
+  templateUrl: './device.component.html',
+  styleUrls: ['./device.component.scss'],
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatOptionModule,
+    MatSliderModule,
+    LabelBlockComponent,
+    SelectorComponent,
+    InputComponent,
+  ],
 })
 export class DeviceComponent {
   private readonly configService = inject(ConfigService);

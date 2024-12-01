@@ -12,14 +12,14 @@
     <app-button
       class="requeue"
       (click)="requeue()"
-      [ngClass]="{ disabled: playing }"
+      [class.disabled]="playing"
       [disabled]="playing"
     >
       Requeue
     </app-button>
     <app-button
       class="action"
-      [ngClass]="{ disabled: skipped || finished }"
+      [class.disabled]="skipped || finished"
       [disabled]="skipped || finished"
       (click)="skip()"
     >

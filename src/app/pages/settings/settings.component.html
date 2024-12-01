@@ -6,27 +6,27 @@
     <div header>Play TTS locally</div>
     <div sub-text>These show up in the history tab.</div>
     <div class="action-row">
-      <app-input type="text" [control]="ttsControl" placeholder="Enter something to say." />
+      <app-input type="text" [control]="ttsControl" placeholder="Enter something to say."/>
       <app-button (click)="speak()" [disabled]="isDisabled">Send</app-button>
     </div>
   </app-label-block>
-  
+
   <hr/>
   <app-device></app-device>
   <hr/>
-  
+
   <div class="header">
     <span>TTS Settings</span>
   </div>
-  
+
   <app-label-block>
     <div header>Select TTS service</div>
     <div sub-text>Decide which TTS service to use.</div>
     <div class="action-row flex-wrap">
       @for (option of ttsOptions; track option.value) {
-        <app-button 
+        <app-button
           (click)="selectTts(option.value)"
-          [ngClass]="{ disabled: option.disabled }"
+          [class.disabled]="option.disabled"
           [style]="selectedTts.value === option.value ? 'active' : 'primary'"
         >
           {{ option.displayValue }}
@@ -34,7 +34,7 @@
       }
     </div>
   </app-label-block>
-  
+
   <hr/>
 
   @switch (selectedTts.value) {

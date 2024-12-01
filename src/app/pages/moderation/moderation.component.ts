@@ -3,17 +3,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs';
 import { ConfigService } from 'src/app/shared/services/config.service';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
-import { NgClass } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LogService } from '../../shared/services/logs.service';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 import { User } from 'microsoft-cognitiveservices-speech-sdk';
 
 @Component({
-    selector: 'app-moderation',
-    templateUrl: './moderation.component.html',
-    styleUrls: ['./moderation.component.scss'],
-    imports: [FormsModule, ReactiveFormsModule, NgClass, ToggleComponent, LabelBlockComponent]
+  selector: 'app-moderation',
+  templateUrl: './moderation.component.html',
+  styleUrls: ['./moderation.component.scss'],
+  imports: [FormsModule, ReactiveFormsModule, ToggleComponent, LabelBlockComponent],
 })
 export class ModerationComponent {
   private readonly configService = inject(ConfigService);

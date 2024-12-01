@@ -3,13 +3,13 @@
     [placeholder]="placeholder"
     [formControl]="control"
     type="number"
-    [ngClass]="{ error: hasError }"
+    [class.error]="hasError"
   />
 } @else {
   <input
     [placeholder]="placeholder"
     [formControl]="control"
     [type]="type"
-    [ngClass]="{ error: hasError }"
+    [class.error]="hasError"
   />
 }

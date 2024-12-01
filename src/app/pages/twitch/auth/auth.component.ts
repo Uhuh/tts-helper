@@ -2,16 +2,15 @@ import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
 import { TwitchService } from 'src/app/shared/services/twitch.service';
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
 
 @Component({
-    selector: 'app-auth',
-    templateUrl: './auth.component.html',
-    styleUrls: ['./auth.component.scss'],
-    imports: [NgClass, NgIf, LabelBlockComponent, AsyncPipe]
+  selector: 'app-auth',
+  templateUrl: './auth.component.html',
+  styleUrls: ['./auth.component.scss'],
+  imports: [LabelBlockComponent],
 })
 export class AuthComponent {
   private readonly twitchService = inject(TwitchService);

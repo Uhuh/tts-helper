@@ -3,16 +3,16 @@ import { CommonModule } from '@angular/common';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { SelectorComponent } from '../../../shared/components/selector/selector.component';
-import { TTSOption, TtsSelectorComponent } from '../../../shared/components/tts-selector/tts-selector.component';
+import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ElevenLabsService } from '../../../shared/services/eleven-labs.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-    selector: 'app-eleven-labs',
-    imports: [CommonModule, InputComponent, LabelBlockComponent, SelectorComponent, TtsSelectorComponent],
-    templateUrl: './eleven-labs.component.html',
-    styleUrl: './eleven-labs.component.scss'
+  selector: 'app-eleven-labs',
+  imports: [CommonModule, InputComponent, LabelBlockComponent, SelectorComponent],
+  templateUrl: './eleven-labs.component.html',
+  styleUrl: './eleven-labs.component.scss',
 })
 export class ElevenLabsComponent {
   private readonly elevenLabsService = inject(ElevenLabsService);

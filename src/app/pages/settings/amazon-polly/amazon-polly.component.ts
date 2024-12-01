@@ -4,7 +4,6 @@ import voices from '../../../shared/json/amazon-polly.json';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { MatOptionModule } from '@angular/material/core';
-import { NgFor } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,21 +13,20 @@ import { SelectorComponent } from '../../../shared/components/selector/selector.
 import { VoiceId } from '@aws-sdk/client-polly';
 
 @Component({
-    selector: 'app-amazon-polly',
-    templateUrl: './amazon-polly.component.html',
-    styleUrls: ['./amazon-polly.component.scss'],
-    imports: [
-        MatFormFieldModule,
-        MatSelectModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgFor,
-        MatOptionModule,
-        InputComponent,
-        TtsSelectorComponent,
-        LabelBlockComponent,
-        SelectorComponent,
-    ]
+  selector: 'app-amazon-polly',
+  templateUrl: './amazon-polly.component.html',
+  styleUrls: ['./amazon-polly.component.scss'],
+  imports: [
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatOptionModule,
+    InputComponent,
+    TtsSelectorComponent,
+    LabelBlockComponent,
+    SelectorComponent,
+  ],
 })
 export class AmazonPollyComponent {
   private readonly configService = inject(ConfigService);
