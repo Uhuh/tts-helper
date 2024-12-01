@@ -10,11 +10,10 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
 import { debounceTime, filter } from 'rxjs';
 
 @Component({
-  selector: 'app-bits',
-  templateUrl: './bits.component.html',
-  styleUrls: ['./bits.component.scss'],
-  standalone: true,
-  imports: [ToggleComponent, NgIf, InputComponent, MatFormFieldModule, LabelBlockComponent],
+    selector: 'app-bits',
+    templateUrl: './bits.component.html',
+    styleUrls: ['./bits.component.scss'],
+    imports: [ToggleComponent, NgIf, InputComponent, MatFormFieldModule, LabelBlockComponent]
 })
 export class BitsComponent {
   private readonly twitchService = inject(TwitchService);

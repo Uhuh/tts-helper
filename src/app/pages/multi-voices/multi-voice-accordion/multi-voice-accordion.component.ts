@@ -20,19 +20,18 @@ import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'app-multi-voice-accordion',
-  standalone: true,
-  imports: [
-    AccordionComponent,
-    ButtonComponent,
-    InputComponent,
-    LabelBlockComponent,
-    SelectorComponent,
-    TtsSelectorComponent,
-    AsyncPipe,
-  ],
-  templateUrl: './multi-voice-accordion.component.html',
-  styleUrl: './multi-voice-accordion.component.scss',
+    selector: 'app-multi-voice-accordion',
+    imports: [
+        AccordionComponent,
+        ButtonComponent,
+        InputComponent,
+        LabelBlockComponent,
+        SelectorComponent,
+        TtsSelectorComponent,
+        AsyncPipe,
+    ],
+    templateUrl: './multi-voice-accordion.component.html',
+    styleUrl: './multi-voice-accordion.component.scss'
 })
 export class MultiVoiceAccordionComponent implements OnChanges {
   private readonly configService = inject(ConfigService);

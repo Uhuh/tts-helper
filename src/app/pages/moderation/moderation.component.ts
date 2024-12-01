@@ -10,11 +10,10 @@ import { LabelBlockComponent } from '../../shared/components/input-block/label-b
 import { User } from 'microsoft-cognitiveservices-speech-sdk';
 
 @Component({
-  selector: 'app-moderation',
-  templateUrl: './moderation.component.html',
-  styleUrls: ['./moderation.component.scss'],
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgClass, ToggleComponent, LabelBlockComponent],
+    selector: 'app-moderation',
+    templateUrl: './moderation.component.html',
+    styleUrls: ['./moderation.component.scss'],
+    imports: [FormsModule, ReactiveFormsModule, NgClass, ToggleComponent, LabelBlockComponent]
 })
 export class ModerationComponent {
   private readonly configService = inject(ConfigService);

@@ -8,11 +8,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { FollowersComponent } from './followers/followers.component';
 
 @Component({
-  selector: 'app-twitch',
-  templateUrl: './twitch.component.html',
-  styleUrls: ['./twitch.component.scss'],
-  standalone: true,
-  imports: [AuthComponent, RedeemsComponent, BitsComponent, SubsComponent, SettingsComponent, MatTabsModule, FollowersComponent],
+    selector: 'app-twitch',
+    templateUrl: './twitch.component.html',
+    styleUrls: ['./twitch.component.scss'],
+    imports: [AuthComponent, RedeemsComponent, BitsComponent, SubsComponent, SettingsComponent, MatTabsModule, FollowersComponent]
 })
 export class TwitchComponent {}
 

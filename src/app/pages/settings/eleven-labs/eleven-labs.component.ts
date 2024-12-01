@@ -9,11 +9,10 @@ import { ElevenLabsService } from '../../../shared/services/eleven-labs.service'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-eleven-labs',
-  standalone: true,
-  imports: [CommonModule, InputComponent, LabelBlockComponent, SelectorComponent, TtsSelectorComponent],
-  templateUrl: './eleven-labs.component.html',
-  styleUrl: './eleven-labs.component.scss',
+    selector: 'app-eleven-labs',
+    imports: [CommonModule, InputComponent, LabelBlockComponent, SelectorComponent, TtsSelectorComponent],
+    templateUrl: './eleven-labs.component.html',
+    styleUrl: './eleven-labs.component.scss'
 })
 export class ElevenLabsComponent {
   private readonly elevenLabsService = inject(ElevenLabsService);

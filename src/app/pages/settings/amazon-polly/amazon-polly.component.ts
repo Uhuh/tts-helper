@@ -14,22 +14,21 @@ import { SelectorComponent } from '../../../shared/components/selector/selector.
 import { VoiceId } from '@aws-sdk/client-polly';
 
 @Component({
-  selector: 'app-amazon-polly',
-  templateUrl: './amazon-polly.component.html',
-  styleUrls: ['./amazon-polly.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgFor,
-    MatOptionModule,
-    InputComponent,
-    TtsSelectorComponent,
-    LabelBlockComponent,
-    SelectorComponent,
-  ],
+    selector: 'app-amazon-polly',
+    templateUrl: './amazon-polly.component.html',
+    styleUrls: ['./amazon-polly.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgFor,
+        MatOptionModule,
+        InputComponent,
+        TtsSelectorComponent,
+        LabelBlockComponent,
+        SelectorComponent,
+    ]
 })
 export class AmazonPollyComponent {
   private readonly configService = inject(ConfigService);

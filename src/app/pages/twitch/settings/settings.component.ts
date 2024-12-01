@@ -8,11 +8,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, take } from 'rxjs';
 
 @Component({
-  selector: 'app-settings',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent, InputComponent],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss',
+    selector: 'app-settings',
+    imports: [CommonModule, LabelBlockComponent, InputComponent],
+    templateUrl: './settings.component.html',
+    styleUrl: './settings.component.scss'
 })
 export class SettingsComponent {
   private readonly twitchService = inject(TwitchService);

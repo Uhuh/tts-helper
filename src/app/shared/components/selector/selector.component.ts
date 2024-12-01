@@ -11,11 +11,10 @@ export type Option<T> = {
 };
 
 @Component({
-  selector: 'app-selector',
-  standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatOptionModule, MatSelectModule, ReactiveFormsModule],
-  templateUrl: './selector.component.html',
-  styleUrls: ['./selector.component.scss'],
+    selector: 'app-selector',
+    imports: [CommonModule, MatFormFieldModule, MatOptionModule, MatSelectModule, ReactiveFormsModule],
+    templateUrl: './selector.component.html',
+    styleUrls: ['./selector.component.scss']
 })
 export class SelectorComponent<T> {
   @Input({ required: true }) options!: Option<T>[];

@@ -9,11 +9,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-settings',
-  standalone: true,
-  imports: [CommonModule, InputComponent, LabelBlockComponent, RouterLink],
-  templateUrl: './settings.component.html',
-  styleUrl: './settings.component.scss',
+    selector: 'app-settings',
+    imports: [CommonModule, InputComponent, LabelBlockComponent, RouterLink],
+    templateUrl: './settings.component.html',
+    styleUrl: './settings.component.scss'
 })
 export class SettingsComponent {
   private readonly vstreamService = inject(VStreamService);

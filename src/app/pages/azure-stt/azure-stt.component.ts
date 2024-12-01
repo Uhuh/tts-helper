@@ -13,11 +13,10 @@ import { DisplayLabelComponent } from '../../shared/components/display-label/dis
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-azure-stt',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent, InputComponent, SelectorComponent, ToggleComponent, ButtonComponent, DisplayLabelComponent, RouterLink],
-  templateUrl: './azure-stt.component.html',
-  styleUrls: ['./azure-stt.component.scss'],
+    selector: 'app-azure-stt',
+    imports: [CommonModule, LabelBlockComponent, InputComponent, SelectorComponent, ToggleComponent, ButtonComponent, DisplayLabelComponent, RouterLink],
+    templateUrl: './azure-stt.component.html',
+    styleUrls: ['./azure-stt.component.scss']
 })
 export class AzureSttComponent {
   private readonly azureService = inject(AzureSttService);

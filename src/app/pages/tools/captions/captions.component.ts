@@ -12,11 +12,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-captions',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent, InputComponent, ColorChromeModule, ButtonComponent],
-  templateUrl: './captions.component.html',
-  styleUrl: './captions.component.scss',
+    selector: 'app-captions',
+    imports: [CommonModule, LabelBlockComponent, InputComponent, ColorChromeModule, ButtonComponent],
+    templateUrl: './captions.component.html',
+    styleUrl: './captions.component.scss'
 })
 export class CaptionsComponent {
   private readonly twitchService = inject(TwitchService);

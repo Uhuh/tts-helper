@@ -7,11 +7,10 @@ import { AudioService } from '../../services/audio.service';
 import { LabelBlockComponent } from '../input-block/label-block.component';
 
 @Component({
-  selector: 'app-audio-list',
-  templateUrl: './audio-list.component.html',
-  styleUrls: ['./audio-list.component.scss'],
-  standalone: true,
-  imports: [NgIf, AudioItemComponent, NgFor, NgClass, AsyncPipe, LabelBlockComponent],
+    selector: 'app-audio-list',
+    templateUrl: './audio-list.component.html',
+    styleUrls: ['./audio-list.component.scss'],
+    imports: [NgIf, AudioItemComponent, NgFor, NgClass, AsyncPipe, LabelBlockComponent]
 })
 export class AudioListComponent {
   @Input() filters?: AudioStatus[];

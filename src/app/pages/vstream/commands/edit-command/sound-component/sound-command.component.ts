@@ -13,11 +13,10 @@ import { ButtonComponent } from '../../../../../shared/components/button/button.
 import { ChainCommandComponent } from '../chain-command/chain-command.component';
 
 @Component({
-  selector: 'app-sound-command',
-  standalone: true,
-  imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, VariableTableComponent, ButtonComponent, ChainCommandComponent],
-  templateUrl: './sound-command.component.html',
-  styleUrl: './sound-command.component.scss',
+    selector: 'app-sound-command',
+    imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, VariableTableComponent, ButtonComponent, ChainCommandComponent],
+    templateUrl: './sound-command.component.html',
+    styleUrl: './sound-command.component.scss'
 })
 export class SoundCommandComponent implements OnChanges {
   private readonly vstreamService = inject(VStreamService);

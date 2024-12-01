@@ -7,11 +7,10 @@ import { PlaybackService } from '../../shared/services/playback.service';
 import { AudioStatus } from '../../shared/state/audio/audio.feature';
 
 @Component({
-  selector: 'app-live-queue',
-  standalone: true,
-  imports: [CommonModule, AudioListComponent, ButtonComponent],
-  templateUrl: './live-queue.component.html',
-  styleUrls: ['./live-queue.component.scss'],
+    selector: 'app-live-queue',
+    imports: [CommonModule, AudioListComponent, ButtonComponent],
+    templateUrl: './live-queue.component.html',
+    styleUrls: ['./live-queue.component.scss']
 })
 export class LiveQueueComponent {
   private readonly logService = inject(LogService);

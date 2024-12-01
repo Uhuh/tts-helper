@@ -8,11 +8,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OpenAIService } from '../../../shared/services/openai.service';
 
 @Component({
-  selector: 'app-gpt-personality',
-  standalone: true,
-  imports: [CommonModule, InputComponent, ReactiveFormsModule, LabelBlockComponent],
-  templateUrl: './gpt-personality.component.html',
-  styleUrls: ['./gpt-personality.component.scss'],
+    selector: 'app-gpt-personality',
+    imports: [CommonModule, InputComponent, ReactiveFormsModule, LabelBlockComponent],
+    templateUrl: './gpt-personality.component.html',
+    styleUrls: ['./gpt-personality.component.scss']
 })
 export class GptPersonalityComponent {
   private readonly openaiService = inject(OpenAIService);

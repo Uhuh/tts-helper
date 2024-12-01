@@ -13,20 +13,19 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-followers',
-  standalone: true,
-  imports: [
-    InputComponent,
-    LabelBlockComponent,
-    MatFormFieldModule,
-    ToggleComponent,
-    NgClass,
-    FormsModule,
-    VariableTableComponent,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './followers.component.html',
-  styleUrl: './followers.component.scss',
+    selector: 'app-followers',
+    imports: [
+        InputComponent,
+        LabelBlockComponent,
+        MatFormFieldModule,
+        ToggleComponent,
+        NgClass,
+        FormsModule,
+        VariableTableComponent,
+        ReactiveFormsModule,
+    ],
+    templateUrl: './followers.component.html',
+    styleUrl: './followers.component.scss'
 })
 export class FollowersComponent {
   private readonly twitchService = inject(TwitchService);

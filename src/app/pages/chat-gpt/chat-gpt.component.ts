@@ -25,11 +25,10 @@ export interface GptPersonalityFormGroup {
 }
 
 @Component({
-  selector: 'app-chat-gpt',
-  standalone: true,
-  imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent, MatInputModule, MatSliderModule, ReactiveFormsModule, LabelBlockComponent, AdvancedSettingsComponent, MatTabsModule, SelectorComponent, GptVisionComponent],
-  templateUrl: './chat-gpt.component.html',
-  styleUrls: ['./chat-gpt.component.scss'],
+    selector: 'app-chat-gpt',
+    imports: [CommonModule, InputComponent, ToggleComponent, GptPersonalityComponent, MatInputModule, MatSliderModule, ReactiveFormsModule, LabelBlockComponent, AdvancedSettingsComponent, MatTabsModule, SelectorComponent, GptVisionComponent],
+    templateUrl: './chat-gpt.component.html',
+    styleUrls: ['./chat-gpt.component.scss']
 })
 export class ChatGptComponent {
   private readonly openAIService = inject(OpenAIService);

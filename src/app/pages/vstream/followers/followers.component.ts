@@ -12,11 +12,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
-  selector: 'app-followers',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent, ReactiveFormsModule, ToggleComponent, VariableTableComponent],
-  templateUrl: './followers.component.html',
-  styleUrl: './followers.component.scss',
+    selector: 'app-followers',
+    imports: [CommonModule, LabelBlockComponent, ReactiveFormsModule, ToggleComponent, VariableTableComponent],
+    templateUrl: './followers.component.html',
+    styleUrl: './followers.component.scss'
 })
 export class FollowersComponent {
   private readonly vstreamService = inject(VStreamService);

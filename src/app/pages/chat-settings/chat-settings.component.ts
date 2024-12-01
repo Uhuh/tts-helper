@@ -23,11 +23,10 @@ export interface ChatSettingsFormGroup {
 }
 
 @Component({
-  selector: 'app-chat-settings',
-  standalone: true,
-  imports: [CommonModule, InputComponent, UserPermsComponent, ToggleComponent, LabelBlockComponent],
-  templateUrl: './chat-settings.component.html',
-  styleUrls: ['./chat-settings.component.scss'],
+    selector: 'app-chat-settings',
+    imports: [CommonModule, InputComponent, UserPermsComponent, ToggleComponent, LabelBlockComponent],
+    templateUrl: './chat-settings.component.html',
+    styleUrls: ['./chat-settings.component.scss']
 })
 export class ChatSettingsComponent {
   private readonly configService = inject(ConfigService);

@@ -18,18 +18,17 @@ export interface Voices {
 }
 
 @Component({
-  selector: 'app-tts-selector',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    ReactiveFormsModule,
-    LabelBlockComponent,
-    SelectorComponent,
-  ],
-  templateUrl: './tts-selector.component.html',
-  styleUrls: ['./tts-selector.component.scss'],
+    selector: 'app-tts-selector',
+    imports: [
+        CommonModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        LabelBlockComponent,
+        SelectorComponent,
+    ],
+    templateUrl: './tts-selector.component.html',
+    styleUrls: ['./tts-selector.component.scss']
 })
 export class TtsSelectorComponent implements OnChanges {
   @Input({ required: true }) languageControl!: FormControl<string>;

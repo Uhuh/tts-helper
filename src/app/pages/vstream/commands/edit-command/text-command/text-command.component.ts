@@ -12,11 +12,10 @@ import { ChatCommand } from '../../../../../shared/services/command.interface';
 import { ChainCommandComponent } from '../chain-command/chain-command.component';
 
 @Component({
-  selector: 'app-text-command',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, ChainCommandComponent],
-  templateUrl: './text-command.component.html',
-  styleUrl: './text-command.component.scss',
+    selector: 'app-text-command',
+    imports: [CommonModule, ButtonComponent, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, ChainCommandComponent],
+    templateUrl: './text-command.component.html',
+    styleUrl: './text-command.component.scss'
 })
 export class TextCommandComponent implements OnChanges {
   private readonly vstreamService = inject(VStreamService);

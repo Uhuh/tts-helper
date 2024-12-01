@@ -9,11 +9,10 @@ import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { getTauriVersion, getVersion } from '@tauri-apps/api/app';
 
 @Component({
-  selector: 'app-app-settings',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent, ToggleComponent],
-  templateUrl: './app-settings.component.html',
-  styleUrl: './app-settings.component.scss',
+    selector: 'app-app-settings',
+    imports: [CommonModule, LabelBlockComponent, ToggleComponent],
+    templateUrl: './app-settings.component.html',
+    styleUrl: './app-settings.component.scss'
 })
 export class AppSettingsComponent {
   private readonly appSettingsService = inject(AppSettingsService);

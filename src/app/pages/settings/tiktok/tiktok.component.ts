@@ -7,11 +7,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-tiktok',
-  standalone: true,
-  templateUrl: './tiktok.component.html',
-  styleUrls: ['./tiktok.component.scss'],
-  imports: [CommonModule, TtsSelectorComponent],
+    selector: 'app-tiktok',
+    templateUrl: './tiktok.component.html',
+    styleUrls: ['./tiktok.component.scss'],
+    imports: [CommonModule, TtsSelectorComponent]
 })
 export class TiktokComponent {
   private readonly configService = inject(ConfigService);

@@ -6,11 +6,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-changelog-dialog',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent],
-  templateUrl: './changelog-dialog.component.html',
-  styleUrl: './changelog-dialog.component.scss',
+    selector: 'app-changelog-dialog',
+    imports: [CommonModule, ButtonComponent],
+    templateUrl: './changelog-dialog.component.html',
+    styleUrl: './changelog-dialog.component.scss'
 })
 export class ChangelogDialogComponent implements OnInit {
   public readonly dialogRef = inject(MatDialogRef<ChangelogDialogComponent>);

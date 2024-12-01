@@ -16,22 +16,21 @@ import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.
 import { InputComponent } from '../../../shared/components/input/input.component';
 
 @Component({
-  selector: 'app-device',
-  templateUrl: './device.component.html',
-  styleUrls: ['./device.component.scss'],
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatSelectModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgFor,
-    MatOptionModule,
-    MatSliderModule,
-    LabelBlockComponent,
-    SelectorComponent,
-    InputComponent,
-  ],
+    selector: 'app-device',
+    templateUrl: './device.component.html',
+    styleUrls: ['./device.component.scss'],
+    imports: [
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgFor,
+        MatOptionModule,
+        MatSliderModule,
+        LabelBlockComponent,
+        SelectorComponent,
+        InputComponent,
+    ]
 })
 export class DeviceComponent {
   private readonly configService = inject(ConfigService);

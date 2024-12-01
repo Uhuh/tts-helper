@@ -11,21 +11,20 @@ import { PlaybackService } from '../../services/playback.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-nav',
-  templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.scss'],
-  standalone: true,
-  imports: [
-    NgIf,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSidenavModule,
-    SidenavComponent,
-    NgClass,
-    ButtonComponent,
-    AsyncPipe,
-  ],
+    selector: 'app-nav',
+    templateUrl: './nav.component.html',
+    styleUrls: ['./nav.component.scss'],
+    imports: [
+        NgIf,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSidenavModule,
+        SidenavComponent,
+        NgClass,
+        ButtonComponent,
+        AsyncPipe,
+    ]
 })
 export class NavComponent implements OnInit {
   private readonly breakpoint = inject(BreakpointObserver);

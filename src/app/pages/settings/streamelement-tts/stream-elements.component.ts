@@ -6,11 +6,10 @@ import { TtsSelectorComponent } from '../../../shared/components/tts-selector/tt
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-stream-elements',
-  templateUrl: './stream-elements.component.html',
-  styleUrls: ['./stream-elements.component.scss'],
-  standalone: true,
-  imports: [TtsSelectorComponent],
+    selector: 'app-stream-elements',
+    templateUrl: './stream-elements.component.html',
+    styleUrls: ['./stream-elements.component.scss'],
+    imports: [TtsSelectorComponent]
 })
 export class StreamElementsComponent {
   private readonly configService = inject(ConfigService);

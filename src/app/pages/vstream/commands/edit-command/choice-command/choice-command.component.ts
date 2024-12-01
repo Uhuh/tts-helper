@@ -15,11 +15,10 @@ import {
 import { ChainCommandComponent } from '../chain-command/chain-command.component';
 
 @Component({
-  selector: 'app-choice-command',
-  standalone: true,
-  imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, VariableTableComponent, ChainCommandComponent],
-  templateUrl: './choice-command.component.html',
-  styleUrl: './choice-command.component.scss',
+    selector: 'app-choice-command',
+    imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, VariableTableComponent, ChainCommandComponent],
+    templateUrl: './choice-command.component.html',
+    styleUrl: './choice-command.component.scss'
 })
 export class ChoiceCommandComponent implements OnChanges {
   private readonly vstreamService = inject(VStreamService);

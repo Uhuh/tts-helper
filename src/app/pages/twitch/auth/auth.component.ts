@@ -8,11 +8,10 @@ import { LabelBlockComponent } from '../../../shared/components/input-block/labe
 export type ConnectionType = 'Connected' | 'Disconnected' | 'Expired';
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.scss'],
-  standalone: true,
-  imports: [NgClass, NgIf, LabelBlockComponent, AsyncPipe],
+    selector: 'app-auth',
+    templateUrl: './auth.component.html',
+    styleUrls: ['./auth.component.scss'],
+    imports: [NgClass, NgIf, LabelBlockComponent, AsyncPipe]
 })
 export class AuthComponent {
   private readonly twitchService = inject(TwitchService);

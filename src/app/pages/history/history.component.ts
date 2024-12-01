@@ -7,11 +7,10 @@ import { AudioListComponent } from '../../shared/components/audio-list/audio-lis
 import { AudioStatus } from '../../shared/state/audio/audio.feature';
 
 @Component({
-  selector: 'app-history',
-  templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss'],
-  standalone: true,
-  imports: [ButtonComponent, AudioListComponent, AsyncPipe],
+    selector: 'app-history',
+    templateUrl: './history.component.html',
+    styleUrls: ['./history.component.scss'],
+    imports: [ButtonComponent, AudioListComponent, AsyncPipe]
 })
 export class HistoryComponent {
   protected readonly AudioStatus = AudioStatus;

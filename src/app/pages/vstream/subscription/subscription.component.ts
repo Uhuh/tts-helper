@@ -13,11 +13,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
-  selector: 'app-subscription',
-  standalone: true,
-  imports: [CommonModule, InputComponent, LabelBlockComponent, ReactiveFormsModule, ToggleComponent, VariableTableComponent],
-  templateUrl: './subscription.component.html',
-  styleUrl: './subscription.component.scss',
+    selector: 'app-subscription',
+    imports: [CommonModule, InputComponent, LabelBlockComponent, ReactiveFormsModule, ToggleComponent, VariableTableComponent],
+    templateUrl: './subscription.component.html',
+    styleUrl: './subscription.component.scss'
 })
 export class SubscriptionComponent {
   private readonly vstreamService = inject(VStreamService);

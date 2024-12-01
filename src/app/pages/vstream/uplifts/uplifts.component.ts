@@ -12,11 +12,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
-  selector: 'app-uplifts',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent, ToggleComponent, ReactiveFormsModule, VariableTableComponent],
-  templateUrl: './uplifts.component.html',
-  styleUrl: './uplifts.component.scss',
+    selector: 'app-uplifts',
+    imports: [CommonModule, LabelBlockComponent, ToggleComponent, ReactiveFormsModule, VariableTableComponent],
+    templateUrl: './uplifts.component.html',
+    styleUrl: './uplifts.component.scss'
 })
 export class UpliftsComponent {
   private readonly vstreamService = inject(VStreamService);

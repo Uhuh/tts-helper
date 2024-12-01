@@ -16,11 +16,10 @@ import { AppSettingsService } from '../../services/app-settings.service';
 import { AppSettingsFeatureState } from '../../state/app-settings/app-settings.feature';
 
 @Component({
-  selector: 'app-sidenav',
-  templateUrl: './sidenav.component.html',
-  styleUrls: ['./sidenav.component.scss'],
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, NgClass, AsyncPipe],
+    selector: 'app-sidenav',
+    templateUrl: './sidenav.component.html',
+    styleUrls: ['./sidenav.component.scss'],
+    imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, NgClass, AsyncPipe]
 })
 export class SidenavComponent {
   private readonly twitchService = inject(TwitchService);

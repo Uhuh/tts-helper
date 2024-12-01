@@ -12,17 +12,16 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-tts-mapping',
-  standalone: true,
-  imports: [
-    AsyncPipe,
-    LabelBlockComponent,
-    SelectorComponent,
-    UserAccordionComponent,
-    ButtonComponent,
-  ],
-  templateUrl: './tts-mapping.component.html',
-  styleUrl: './tts-mapping.component.scss',
+    selector: 'app-tts-mapping',
+    imports: [
+        AsyncPipe,
+        LabelBlockComponent,
+        SelectorComponent,
+        UserAccordionComponent,
+        ButtonComponent,
+    ],
+    templateUrl: './tts-mapping.component.html',
+    styleUrl: './tts-mapping.component.scss'
 })
 export class TtsMappingComponent {
   private readonly configService = inject(ConfigService);

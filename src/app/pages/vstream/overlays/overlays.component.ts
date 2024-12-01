@@ -11,11 +11,10 @@ import { VStreamPubSubService } from '../../../shared/services/vstream-pubsub.se
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-overlays',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent, LabelBlockComponent, EditWidgetComponent],
-  templateUrl: './overlays.component.html',
-  styleUrl: './overlays.component.scss',
+    selector: 'app-overlays',
+    imports: [CommonModule, ButtonComponent, LabelBlockComponent, EditWidgetComponent],
+    templateUrl: './overlays.component.html',
+    styleUrl: './overlays.component.scss'
 })
 export class OverlaysComponent {
   private readonly vstreamService = inject(VStreamService);

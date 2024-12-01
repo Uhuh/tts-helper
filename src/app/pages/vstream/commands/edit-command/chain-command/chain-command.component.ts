@@ -9,12 +9,11 @@ import { LabelBlockComponent } from '../../../../../shared/components/input-bloc
 import { EditChainCommandComponent } from './edit-chain-command/edit-chain-command.component';
 
 @Component({
-  selector: 'app-chain-command',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent, LabelBlockComponent, EditChainCommandComponent],
-  templateUrl: './chain-command.component.html',
-  styleUrl: './chain-command.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-chain-command',
+    imports: [CommonModule, ButtonComponent, LabelBlockComponent, EditChainCommandComponent],
+    templateUrl: './chain-command.component.html',
+    styleUrl: './chain-command.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChainCommandComponent {
   private readonly vstreamService = inject(VStreamService);

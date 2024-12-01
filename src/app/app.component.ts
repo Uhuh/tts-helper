@@ -36,11 +36,10 @@ import { AppSettingsService } from './shared/services/app-settings.service';
 import { AppSettingsActions, AppSettingsFeatureState } from './shared/state/app-settings/app-settings.feature';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  standalone: true,
-  imports: [NavComponent, RouterOutlet],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    imports: [NavComponent, RouterOutlet]
 })
 export class AppComponent {
   private readonly store = inject(Store);

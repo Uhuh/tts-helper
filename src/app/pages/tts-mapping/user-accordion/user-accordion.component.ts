@@ -25,25 +25,24 @@ import { InputComponent } from '../../../shared/components/input/input.component
 import { AccordionComponent } from '../../../shared/components/accordion/accordion.component';
 
 @Component({
-  selector: 'app-user-accordion',
-  standalone: true,
-  imports: [
-    ButtonComponent,
-    CdkAccordionModule,
-    ChoiceCommandComponent,
-    CounterCommandComponent,
-    LabelBlockComponent,
-    MatIconModule,
-    SelectorComponent,
-    SoundCommandComponent,
-    TextCommandComponent,
-    AsyncPipe,
-    InputComponent,
-    TtsSelectorComponent,
-    AccordionComponent,
-  ],
-  templateUrl: './user-accordion.component.html',
-  styleUrl: './user-accordion.component.scss',
+    selector: 'app-user-accordion',
+    imports: [
+        ButtonComponent,
+        CdkAccordionModule,
+        ChoiceCommandComponent,
+        CounterCommandComponent,
+        LabelBlockComponent,
+        MatIconModule,
+        SelectorComponent,
+        SoundCommandComponent,
+        TextCommandComponent,
+        AsyncPipe,
+        InputComponent,
+        TtsSelectorComponent,
+        AccordionComponent,
+    ],
+    templateUrl: './user-accordion.component.html',
+    styleUrl: './user-accordion.component.scss'
 })
 export class UserAccordionComponent implements OnChanges {
   private readonly configService = inject(ConfigService);

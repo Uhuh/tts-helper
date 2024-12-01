@@ -13,11 +13,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VStreamEventVariables } from '../utils/variables';
 
 @Component({
-  selector: 'app-meteor-shower',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent, InputComponent, ToggleComponent, ReactiveFormsModule, VariableTableComponent],
-  templateUrl: './meteor-shower.component.html',
-  styleUrl: './meteor-shower.component.scss',
+    selector: 'app-meteor-shower',
+    imports: [CommonModule, LabelBlockComponent, InputComponent, ToggleComponent, ReactiveFormsModule, VariableTableComponent],
+    templateUrl: './meteor-shower.component.html',
+    styleUrl: './meteor-shower.component.scss'
 })
 export class MeteorShowerComponent {
   private readonly vstreamService = inject(VStreamService);

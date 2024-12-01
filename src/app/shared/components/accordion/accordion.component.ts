@@ -6,17 +6,16 @@ import { SelectorComponent } from '../selector/selector.component';
 import { TtsSelectorComponent } from '../tts-selector/tts-selector.component';
 
 @Component({
-  selector: 'app-accordion',
-  standalone: true,
-  imports: [
-    ButtonComponent,
-    CdkAccordionModule,
-    MatIconModule,
-    SelectorComponent,
-    TtsSelectorComponent,
-  ],
-  templateUrl: './accordion.component.html',
-  styleUrl: './accordion.component.scss',
+    selector: 'app-accordion',
+    imports: [
+        ButtonComponent,
+        CdkAccordionModule,
+        MatIconModule,
+        SelectorComponent,
+        TtsSelectorComponent,
+    ],
+    templateUrl: './accordion.component.html',
+    styleUrl: './accordion.component.scss'
 })
 export class AccordionComponent {
 

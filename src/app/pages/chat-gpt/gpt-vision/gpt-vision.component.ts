@@ -11,19 +11,18 @@ import { DisplayLabelComponent } from '../../../shared/components/display-label/
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-gpt-vision',
-  standalone: true,
-  imports: [
-    LabelBlockComponent,
-    InputComponent,
-    ReactiveFormsModule,
-    SelectorComponent,
-    AsyncPipe,
-    ButtonComponent,
-    DisplayLabelComponent,
-  ],
-  templateUrl: './gpt-vision.component.html',
-  styleUrl: './gpt-vision.component.scss',
+    selector: 'app-gpt-vision',
+    imports: [
+        LabelBlockComponent,
+        InputComponent,
+        ReactiveFormsModule,
+        SelectorComponent,
+        AsyncPipe,
+        ButtonComponent,
+        DisplayLabelComponent,
+    ],
+    templateUrl: './gpt-vision.component.html',
+    styleUrl: './gpt-vision.component.scss'
 })
 export class GptVisionComponent {
   private readonly openaiService = inject(OpenAIService);

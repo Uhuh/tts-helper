@@ -16,11 +16,10 @@ import { ChainCommandComponent } from '../chain-command/chain-command.component'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-counter-command',
-  standalone: true,
-  imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, VariableTableComponent, ChainCommandComponent],
-  templateUrl: './counter-command.component.html',
-  styleUrl: './counter-command.component.scss',
+    selector: 'app-counter-command',
+    imports: [CommonModule, InputComponent, LabelBlockComponent, MatTabsModule, ReactiveFormsModule, ToggleComponent, VariableTableComponent, ChainCommandComponent],
+    templateUrl: './counter-command.component.html',
+    styleUrl: './counter-command.component.scss'
 })
 export class CounterCommandComponent implements OnChanges {
   private readonly vstreamService = inject(VStreamService);

@@ -8,12 +8,11 @@ import { LogService } from '../../services/logs.service';
 import { ButtonComponent } from '../button/button.component';
 
 @Component({
-  selector: 'app-audio-item',
-  templateUrl: './audio-item.component.html',
-  styleUrls: ['./audio-item.component.scss'],
-  standalone: true,
-  imports: [ButtonComponent, NgClass, DatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-audio-item',
+    templateUrl: './audio-item.component.html',
+    styleUrls: ['./audio-item.component.scss'],
+    imports: [ButtonComponent, NgClass, DatePipe],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AudioItemComponent {
   private readonly audioService = inject(AudioService);

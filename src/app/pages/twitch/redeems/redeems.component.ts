@@ -13,18 +13,17 @@ import { MatInputModule } from '@angular/material/input';
 import { OpenAIService } from '../../../shared/services/openai.service';
 
 @Component({
-  selector: 'app-redeems',
-  templateUrl: './redeems.component.html',
-  styleUrls: ['./redeems.component.scss'],
-  standalone: true,
-  imports: [
-    ToggleComponent,
-    InputComponent,
-    LabelBlockComponent,
-    SelectorComponent,
-    AsyncPipe,
-    MatInputModule,
-  ],
+    selector: 'app-redeems',
+    templateUrl: './redeems.component.html',
+    styleUrls: ['./redeems.component.scss'],
+    imports: [
+        ToggleComponent,
+        InputComponent,
+        LabelBlockComponent,
+        SelectorComponent,
+        AsyncPipe,
+        MatInputModule,
+    ]
 })
 export class RedeemsComponent {
   private readonly twitchService = inject(TwitchService);

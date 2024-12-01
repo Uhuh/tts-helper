@@ -7,11 +7,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
 
 @Component({
-  selector: 'app-user-logs',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent],
-  templateUrl: './user-logs.component.html',
-  styleUrls: ['./user-logs.component.scss'],
+    selector: 'app-user-logs',
+    imports: [CommonModule, ButtonComponent],
+    templateUrl: './user-logs.component.html',
+    styleUrls: ['./user-logs.component.scss']
 })
 export class UserLogsComponent {
   private readonly logService = inject(LogService);

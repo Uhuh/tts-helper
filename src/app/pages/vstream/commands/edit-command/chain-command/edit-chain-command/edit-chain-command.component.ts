@@ -8,11 +8,10 @@ import { Option, SelectorComponent } from '../../../../../../shared/components/s
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-chain-command',
-  standalone: true,
-  imports: [CommonModule, ButtonComponent, SelectorComponent],
-  templateUrl: './edit-chain-command.component.html',
-  styleUrl: './edit-chain-command.component.scss',
+    selector: 'app-edit-chain-command',
+    imports: [CommonModule, ButtonComponent, SelectorComponent],
+    templateUrl: './edit-chain-command.component.html',
+    styleUrl: './edit-chain-command.component.scss'
 })
 export class EditChainCommandComponent implements OnInit {
   private readonly vstreamService = inject(VStreamService);

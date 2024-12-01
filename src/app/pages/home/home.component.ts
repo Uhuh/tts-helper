@@ -4,15 +4,14 @@ import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  standalone: true,
-  imports: [
-    LabelBlockComponent,
-    RouterLink,
-    MatIconModule,
-  ],
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    imports: [
+        LabelBlockComponent,
+        RouterLink,
+        MatIconModule,
+    ]
 })
 export class HomeComponent {}
 

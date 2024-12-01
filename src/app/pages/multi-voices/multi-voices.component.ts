@@ -9,19 +9,18 @@ import { ConfigService } from '../../shared/services/config.service';
 import { MultiVoiceAccordionComponent } from './multi-voice-accordion/multi-voice-accordion.component';
 
 @Component({
-  selector: 'app-multi-voices',
-  standalone: true,
-  imports: [
-    AccordionComponent,
-    AsyncPipe,
-    ButtonComponent,
-    LabelBlockComponent,
-    SelectorComponent,
-    UserAccordionComponent,
-    MultiVoiceAccordionComponent,
-  ],
-  templateUrl: './multi-voices.component.html',
-  styleUrl: './multi-voices.component.scss',
+    selector: 'app-multi-voices',
+    imports: [
+        AccordionComponent,
+        AsyncPipe,
+        ButtonComponent,
+        LabelBlockComponent,
+        SelectorComponent,
+        UserAccordionComponent,
+        MultiVoiceAccordionComponent,
+    ],
+    templateUrl: './multi-voices.component.html',
+    styleUrl: './multi-voices.component.scss'
 })
 export class MultiVoicesComponent {
   private readonly configService = inject(ConfigService);

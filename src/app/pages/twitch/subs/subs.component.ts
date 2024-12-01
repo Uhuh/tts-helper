@@ -14,20 +14,19 @@ import {
 } from '../../../shared/components/variable-table/variable-table.component';
 
 @Component({
-  selector: 'app-subs',
-  templateUrl: './subs.component.html',
-  styleUrls: ['./subs.component.scss'],
-  standalone: true,
-  imports: [
-    ToggleComponent,
-    NgIf,
-    InputComponent,
-    MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-    LabelBlockComponent,
-    VariableTableComponent,
-  ],
+    selector: 'app-subs',
+    templateUrl: './subs.component.html',
+    styleUrls: ['./subs.component.scss'],
+    imports: [
+        ToggleComponent,
+        NgIf,
+        InputComponent,
+        MatFormFieldModule,
+        FormsModule,
+        ReactiveFormsModule,
+        LabelBlockComponent,
+        VariableTableComponent,
+    ]
 })
 export class SubsComponent {
   private readonly twitchService = inject(TwitchService);

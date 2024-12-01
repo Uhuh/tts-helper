@@ -6,11 +6,10 @@ import { ChatPermissionsFormGroup } from '../chat-settings.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 @Component({
-  selector: 'app-user-perms',
-  standalone: true,
-  imports: [CommonModule, ToggleComponent, LabelBlockComponent],
-  templateUrl: './user-perms.component.html',
-  styleUrls: ['./user-perms.component.scss'],
+    selector: 'app-user-perms',
+    imports: [CommonModule, ToggleComponent, LabelBlockComponent],
+    templateUrl: './user-perms.component.html',
+    styleUrls: ['./user-perms.component.scss']
 })
 export class UserPermsComponent {
   @Input({ required: true }) formGroup!: FormGroup<ChatPermissionsFormGroup>;

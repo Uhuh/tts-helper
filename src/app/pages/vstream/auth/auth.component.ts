@@ -6,11 +6,10 @@ import { VStreamService } from '../../../shared/services/vstream.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-auth',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent],
-  templateUrl: './auth.component.html',
-  styleUrl: './auth.component.scss',
+    selector: 'app-auth',
+    imports: [CommonModule, LabelBlockComponent],
+    templateUrl: './auth.component.html',
+    styleUrl: './auth.component.scss'
 })
 export class AuthComponent {
   private readonly vStreamService = inject(VStreamService);

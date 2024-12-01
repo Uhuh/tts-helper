@@ -6,11 +6,10 @@ import { FormControl } from '@angular/forms';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 
 @Component({
-  selector: 'app-tts-monster',
-  templateUrl: './tts-monster.component.html',
-  styleUrls: ['./tts-monster.component.scss'],
-  standalone: true,
-  imports: [InputComponent, LabelBlockComponent],
+    selector: 'app-tts-monster',
+    templateUrl: './tts-monster.component.html',
+    styleUrls: ['./tts-monster.component.scss'],
+    imports: [InputComponent, LabelBlockComponent]
 })
 export class TtsMonsterComponent {
   private readonly configService = inject(ConfigService);

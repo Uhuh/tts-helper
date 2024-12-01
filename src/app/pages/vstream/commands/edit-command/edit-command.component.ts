@@ -18,12 +18,11 @@ import { CounterCommandComponent } from './counter-command/counter-command.compo
 import { SoundCommandComponent } from './sound-component/sound-command.component';
 
 @Component({
-  selector: 'app-edit-command',
-  standalone: true,
-  imports: [CommonModule, CdkAccordionModule, LabelBlockComponent, ToggleComponent, MatIconModule, ReactiveFormsModule, InputComponent, ButtonComponent, MatTabsModule, TextCommandComponent, SelectorComponent, ChoiceCommandComponent, CounterCommandComponent, SoundCommandComponent],
-  templateUrl: './edit-command.component.html',
-  styleUrl: './edit-command.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-edit-command',
+    imports: [CommonModule, CdkAccordionModule, LabelBlockComponent, ToggleComponent, MatIconModule, ReactiveFormsModule, InputComponent, ButtonComponent, MatTabsModule, TextCommandComponent, SelectorComponent, ChoiceCommandComponent, CounterCommandComponent, SoundCommandComponent],
+    templateUrl: './edit-command.component.html',
+    styleUrl: './edit-command.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditCommandComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);

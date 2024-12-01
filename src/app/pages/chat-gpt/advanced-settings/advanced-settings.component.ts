@@ -8,15 +8,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 
 @Component({
-  selector: 'app-advanced-settings',
-  standalone: true,
-  imports: [
-    InputComponent,
-    LabelBlockComponent,
-    MatFormFieldModule,
-  ],
-  templateUrl: './advanced-settings.component.html',
-  styleUrl: './advanced-settings.component.scss',
+    selector: 'app-advanced-settings',
+    imports: [
+        InputComponent,
+        LabelBlockComponent,
+        MatFormFieldModule,
+    ],
+    templateUrl: './advanced-settings.component.html',
+    styleUrl: './advanced-settings.component.scss'
 })
 export class AdvancedSettingsComponent {
   private readonly openaiService = inject(OpenAIService);

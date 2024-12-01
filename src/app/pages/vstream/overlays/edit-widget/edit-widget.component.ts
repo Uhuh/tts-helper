@@ -17,12 +17,11 @@ import { ToggleComponent } from '../../../../shared/components/toggle/toggle.com
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-edit-widget',
-  standalone: true,
-  imports: [CommonModule, LabelBlockComponent, SelectorComponent, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ToggleComponent],
-  templateUrl: './edit-widget.component.html',
-  styleUrl: './edit-widget.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-edit-widget',
+    imports: [CommonModule, LabelBlockComponent, SelectorComponent, ButtonComponent, InputComponent, MatRadioModule, ReactiveFormsModule, CdkAccordionModule, MatIconModule, MatTabsModule, VariableTableComponent, ToggleComponent],
+    templateUrl: './edit-widget.component.html',
+    styleUrl: './edit-widget.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditWidgetComponent implements OnInit {
   private readonly vstreamService = inject(VStreamService);
