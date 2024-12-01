@@ -138,6 +138,11 @@
   resolved "https://registry.yarnpkg.com/@angular-eslint/bundled-angular-compiler/-/bundled-angular-compiler-17.0.0.tgz#b343d1b15d79b8fe05a2f60caf3f65252dae0f4a"
   integrity sha512-nHLliW18XduO51+e/RST8O2YnhcQR3+NSSy8zlmYyjLeUi5NBpC/Hwp68KxPP2YcUYie1tWlaw48YJYo97qE6A==
 
+"@angular-eslint/bundled-angular-compiler@19.0.0":
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-eslint/bundled-angular-compiler/-/bundled-angular-compiler-19.0.0.tgz#53260ab328a98ff50726b220de9044d1c4db5c09"
+  integrity sha512-q6IaiqKYcmBW/gw55tytDucguo5E48szVCLNLHUFdN98YDDsP+KM3MPWYPyZcXpusmFfIjLdr8d41PlKmyMUpg==
+
 "@angular-eslint/eslint-plugin-template@17.0.0":
   version "17.0.0"
   resolved "https://registry.yarnpkg.com/@angular-eslint/eslint-plugin-template/-/eslint-plugin-template-17.0.0.tgz#60413ef72f8d33ecca29ce7967ec1a6a73e8e31a"
@@ -157,6 +162,14 @@
   dependencies:
     "@angular-eslint/utils" "17.0.0"
     "@typescript-eslint/utils" "6.10.0"
+
+"@angular-eslint/eslint-plugin@19.0.0":
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-eslint/eslint-plugin/-/eslint-plugin-19.0.0.tgz#6ff67221ba64fe6b361e39dbae143e87244aa692"
+  integrity sha512-WkUnH5zmvC/cH6f8BGiRK+KebrKdGbQmhtu3IHLEyzG9U4mBiIV8XkSzhdkY3RCN8bKqhmE5C3oNBLNCtvg4QQ==
+  dependencies:
+    "@angular-eslint/bundled-angular-compiler" "19.0.0"
+    "@angular-eslint/utils" "19.0.0"
 
 "@angular-eslint/schematics@17.0.0":
   version "17.0.0"
@@ -186,6 +199,13 @@
   dependencies:
     "@angular-eslint/bundled-angular-compiler" "17.0.0"
     "@typescript-eslint/utils" "6.10.0"
+
+"@angular-eslint/utils@19.0.0":
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/@angular-eslint/utils/-/utils-19.0.0.tgz#d161e2bbac4cf573fabe19dede5caa1885bdcedc"
+  integrity sha512-PH40BmIcIr5ldr08XYnqJ8cTzJfScJjBym4SECsilBnz5fhCdTD7UEQiW4d0P78Ie8H5PxvOJx9ZE+L4WBNrTA==
+  dependencies:
+    "@angular-eslint/bundled-angular-compiler" "19.0.0"
 
 "@angular/animations@^19.0.1":
   version "19.0.1"
