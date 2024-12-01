@@ -16,7 +16,8 @@ import {
   VStreamToken,
   VStreamWidget,
 } from '../state/vstream/vstream.feature';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('VStreamPubSubService', () => {
   let service: VStreamPubSubService;
@@ -75,8 +76,8 @@ describe('VStreamPubSubService', () => {
     logServiceStub = jasmine.createSpyObj('LogService', ['add']);
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         VStreamPubSubService,
         { provide: VStreamService, useValue: vstreamServiceStub },
         { provide: CommandService, useValue: commandServiceStub },
@@ -84,8 +85,10 @@ describe('VStreamPubSubService', () => {
         { provide: ChatService, useValue: chatServiceStub },
         { provide: AudioService, useValue: audioServiceStub },
         { provide: LogService, useValue: logServiceStub },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     service = TestBed.inject(VStreamPubSubService);
   });

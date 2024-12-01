@@ -7,10 +7,11 @@ import {
   VStreamFeature,
   VStreamTokenResponse,
 } from '../state/vstream/vstream.feature';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { LogService } from './logs.service';
 import { VStreamApi } from '../api/vstream/vstream.api';
 import { VStreamActions } from '../state/vstream/vstream.actions';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('VStreamService', () => {
   let service: VStreamService;
@@ -39,17 +40,16 @@ describe('VStreamService', () => {
     vstreamApiStub = jasmine.createSpyObj('VStreamApi', ['postChannelMessage']);
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        StoreModule.forRoot({}),
-        StoreModule.forFeature(VStreamFeature),
-      ],
-      providers: [
+    imports: [StoreModule.forRoot({}),
+        StoreModule.forFeature(VStreamFeature)],
+    providers: [
         VStreamService,
         { provide: LogService, useValue: logServiceStub },
         { provide: VStreamApi, useValue: vstreamApiStub },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     service = TestBed.inject(VStreamService);
   });

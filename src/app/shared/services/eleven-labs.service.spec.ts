@@ -3,7 +3,8 @@ import { ElevenLabsService } from './eleven-labs.service';
 import { MockStore } from '@ngrx/store/testing';
 import { StoreModule } from '@ngrx/store';
 import { ElevenLabsFeature } from '../state/eleven-labs/eleven-labs.feature';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ElevenLabsService', () => {
   let service: ElevenLabsService;
@@ -11,16 +12,15 @@ describe('ElevenLabsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        StoreModule.forRoot({}),
-        StoreModule.forFeature(ElevenLabsFeature),
-      ],
-      providers: [
+    imports: [StoreModule.forRoot({}),
+        StoreModule.forFeature(ElevenLabsFeature)],
+    providers: [
         ElevenLabsService,
         { provide: MockStore, useValue: store },
-      ],
-    });
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+    ]
+});
 
     service = TestBed.inject(ElevenLabsService);
     store = TestBed.inject(MockStore);
