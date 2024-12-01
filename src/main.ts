@@ -54,7 +54,7 @@ bootstrapApplication(AppComponent, {
       StoreDevtoolsModule.instrument({
         maxAge: 25,
         logOnly: !isDevMode(),
-      }),
+      connectInZone: true}),
     ),
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),

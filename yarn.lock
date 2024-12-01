@@ -2809,17 +2809,17 @@
   resolved "https://registry.yarnpkg.com/@msgpackr-extract/msgpackr-extract-win32-x64/-/msgpackr-extract-win32-x64-3.0.3.tgz#0aa5502d547b57abfc4ac492de68e2006e417242"
   integrity sha512-x0fWaQtYp4E6sktbsdAqnehxDgEc/VwM7uLsRCYWaiGu0ykYdZPiS8zCWdnjHwyiumousxfBm4SO31eXqwEZhQ==
 
-"@ngrx/store-devtools@^16":
-  version "16.3.0"
-  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-16.3.0.tgz#c5e8971f6ca03d8b6ea22075d248eafd59bfb4f9"
-  integrity sha512-Ou/aXxJmd9UgYliL09hmnlLdk35dJ8S56rJCHgeJlMPb8j0LDR7Olfpsa7Asi63Zvtg2MYZn1p1G0Tsb+0rk/Q==
+"@ngrx/store-devtools@^18.1.1":
+  version "18.1.1"
+  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-18.1.1.tgz#0a62949a73885728d1a1908f66779c13be307eaf"
+  integrity sha512-tfn9Ms1q2bl7VDWwHyj7dUbwmGiiVzIpOKZs39rsms8tG8hbvsxoczyQAp2w5erVtoJb8ltIh1/birKkS7HmuQ==
   dependencies:
     tslib "^2.0.0"
 
-"@ngrx/store@^16":
-  version "16.3.0"
-  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-16.3.0.tgz#e1174438f8e05d7ddf8db4c38013515b1ac80796"
-  integrity sha512-aWQY41M7O0sMpTmM+OOPBPwKQWHhmkCStizFB1GdiGud8DU5fz0BdUiy6o2+feZypMzczqbwTnq+AxxxrWYqoA==
+"@ngrx/store@^18.1.1":
+  version "18.1.1"
+  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-18.1.1.tgz#e189967bd8d385ea48e14a7d96542cbf062e8382"
+  integrity sha512-K0v1akJ2sEnIeb1AUA064+ksgRgbMgVG9HbSsLBxENbFjK2ZvKRxo1bpOw6WHW9+hyDTlhZGl7+gUtjmo3497g==
   dependencies:
     tslib "^2.0.0"
 
