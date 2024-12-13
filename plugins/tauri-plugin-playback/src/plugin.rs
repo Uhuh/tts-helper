@@ -150,8 +150,8 @@ fn list_viewing_devices() -> Vec<WithId<DeviceInfo, String>> {
 #[instrument(skip_all)]
 fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
     let before = Instant::now();
-    let monitors = Monitor::all().unwrap();
-    let windows = Window::all().unwrap();
+    let monitors = Monitor::all()?;
+    let windows = Window::all()?;
 
     let monitor = monitors.iter().find(|d| d.name() == capture_name);
     let window = windows.iter().find(|w| w.app_name() == capture_name);
