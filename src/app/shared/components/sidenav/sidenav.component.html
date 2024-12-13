@@ -16,11 +16,6 @@
           <span>Twitch</span>
           <div class="connection" [class.connected]="isTwitchTokenValid$ | async"></div>
         </a>
-        <a [routerLink]="['vstream']" [class.hide]="!connections.vstreamEnabled" routerLinkActive="active">
-          <img alt="vstream-logo" ngSrc="assets/vstream.svg" height="22" width="21" />
-          <span>VStream</span>
-          <div class="connection" [class.connected]="isVStreamConnected$ | async"></div>
-        </a>
         <a
           [routerLink]="['vtubestudio']"
           [class.hide]="!connections.vtubestudioEnabled"
