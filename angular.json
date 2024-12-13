@@ -22,13 +22,12 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": {
-              "base": "dist/tts-helper"
-            },
+            "outputPath": "dist/tts-helper",
             "sourceMap": true,
             "index": "src/index.html",
+            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -40,8 +39,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "browser": "src/main.ts"
+            "scripts": []
           },
           "configurations": {
             "production": {
