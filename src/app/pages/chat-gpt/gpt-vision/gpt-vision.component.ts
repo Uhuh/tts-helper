@@ -8,6 +8,8 @@ import { AsyncPipe } from '@angular/common';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { DisplayLabelComponent } from '../../../shared/components/display-label/display-label.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TTSOption } from '../../../shared/components/tts-selector/tts-selector.component';
+import { TwitchService } from '../../../shared/services/twitch.service';
 
 @Component({
   selector: 'app-gpt-vision',
@@ -24,6 +26,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class GptVisionComponent {
   private readonly openaiService = inject(OpenAIService);
+  private readonly twitchService = inject(TwitchService);
 
   readonly viewingDevices$ = this.openaiService.viewingDevices$
     .pipe(
@@ -35,10 +38,20 @@ export class GptVisionComponent {
         }))),
     );
 
+  readonly redeems$ = this.twitchService.redeems$;
+  readonly redeemOptions$ = this.redeems$
+    .pipe(
+      map(redeems => redeems.map<TTSOption>(r => ({
+        displayName: r.title,
+        value: r.id,
+      })).concat([{ displayName: 'No redeem', value: '_' }])),
+    );
+
   readonly settings = new FormGroup({
     viewingDevice: new FormControl('', { nonNullable: true }),
     potentialPrompts: new FormControl('', { nonNullable: true }),
     globalHotkey: new FormControl('', { nonNullable: true }),
+    twitchRedeemId: new FormControl('', { nonNullable: true }),
   });
 
   isSettingHotKey = false;
@@ -59,6 +72,7 @@ export class GptVisionComponent {
           viewingDevice: vision.viewingDevice,
           globalHotkey: vision.globalHotkey,
           potentialPrompts: vision.potentialPrompts.join(','),
+          twitchRedeemId: vision.twitchRedeemId,
         }, { emitEvent: false });
       });
 

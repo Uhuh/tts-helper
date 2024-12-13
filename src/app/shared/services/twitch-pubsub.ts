@@ -1,7 +1,7 @@
 ﻿import { StaticAuthProvider } from '@twurple/auth';
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { TwitchService } from './twitch.service';
-import { combineLatest, filter, first, map } from 'rxjs';
+import { combineLatest, filter, first, map, tap } from 'rxjs';
 import { ApiClient } from '@twurple/api';
 import { EventSubWsListener } from '@twurple/eventsub-ws';
 import { ChatClient, ChatUser } from '@twurple/chat';
@@ -41,8 +41,8 @@ export class TwitchPubSub {
   private readonly renewSettings$ = this.subscriptions$.pipe(map(s => s.renew));
   private readonly follower$ = this.twitchService.follower$;
 
-  twitchSettings$ = this.twitchService.settings$;
-  gptSettings$ = this.openaiService.settings$;
+  private readonly twitchSettings$ = this.twitchService.settings$;
+  private readonly gptSettings$ = this.openaiService.settings$;
 
   constructor() {
     combineLatest([
@@ -217,6 +217,29 @@ export class TwitchPubSub {
   onRedeem(redeem: TwitchRedeem) {
     this.handleCustomUserVoiceRedeem(redeem);
     this.handleRedeemTts(redeem);
+    this.handleRedeemVision(redeem);
+  }
+
+  private handleRedeemVision(redeem: TwitchRedeem) {
+    const { rewardId, userDisplayName: username } = redeem;
+
+    this.openaiService.vision$
+      .pipe(
+        first(),
+        takeUntilDestroyed(this.destroyRef),
+        tap(vision => {
+          const { twitchRedeemId } = vision;
+
+          if (rewardId !== twitchRedeemId) {
+            return;
+          }
+
+          this.logService.add(`User [${username}] redeemed vision.`, 'info', 'TwitchPubSub.handleRedeemVision');
+
+          this.openaiService.captureScreen();
+        }),
+      )
+      .subscribe();
   }
 
   /**

@@ -37,6 +37,15 @@
 </app-label-block>
 
 <app-label-block>
+  <div header>Redeem</div>
+  <div sub-text>This redeem allows user to trigger vision.</div>
+  <app-selector
+    placeholder="Select a redeem option" [control]="settings.controls.twitchRedeemId"
+    [options]="(redeemOptions$ | async) ?? []"
+  />
+</app-label-block>
+
+<app-label-block>
   <div header>Global hotkey</div>
   <div sub-text>This is a global hotkey used to send a screenshot to OpenAI</div>
   <div class="hotkey">

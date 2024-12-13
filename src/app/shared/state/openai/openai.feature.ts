@@ -2,8 +2,7 @@
 import { OpenAIActions } from './openai.actions';
 import { ChatState } from '../../services/chat.interface';
 
-export interface GptChatState extends ChatState {
-}
+export type GptChatState = ChatState;
 
 export interface GptPersonalityState {
   streamersIdentity: string;
@@ -29,6 +28,7 @@ export interface GptVisionState {
   viewingDevice: string;
   potentialPrompts: string[];
   globalHotkey: string;
+  twitchRedeemId: string;
 }
 
 export interface OpenAIState {
@@ -72,6 +72,7 @@ export const initialState: OpenAIState = {
     globalHotkey: '',
     potentialPrompts: [],
     viewingDevice: '',
+    twitchRedeemId: '',
   },
 };
 
