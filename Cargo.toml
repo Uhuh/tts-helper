@@ -4,12 +4,12 @@ members = ["src-tauri", "plugins/*", "lib-backend/*"]
 
 [workspace.dependencies]
 # Tauri
-tauri = { version = "2.1.1", features = ["devtools"] }
-tauri-build = "2.0.3"
-tauri-plugin = "2.0.3"
-tauri-plugin-cli = "2.0.1"
-tauri-plugin-dialog = "2.0.3"
-tauri-plugin-http = { version = "2.0.3", features = ["rustls-tls"] }
+tauri = { version = "2.4.0", features = ["devtools"] }
+tauri-build = "2.1.0"
+tauri-plugin = "2.1.0"
+tauri-plugin-cli = "2.2.0"
+tauri-plugin-dialog = "2.2.0"
+tauri-plugin-http = { version = "2.4.2", features = ["rustls-tls"] }
 
 # Serialization
 serde = "1"
