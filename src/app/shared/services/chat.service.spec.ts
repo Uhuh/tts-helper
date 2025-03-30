@@ -57,7 +57,7 @@ describe('ChatService', () => {
       chatSettings$: openaiChatSubject,
     });
 
-    audioServiceStub = jasmine.createSpyObj('AudioService', ['playTts']);
+    audioServiceStub = jasmine.createSpyObj('AudioService', ['playTts', 'canProcessMessage']);
 
     TestBed.configureTestingModule({
       providers: [
