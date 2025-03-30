@@ -139,14 +139,9 @@ a {
 }
 
 .header {
-  font-weight: 400;
+  font-weight: 700;
   font-size: 28px;
   padding-bottom: 2rem;
-
-  span {
-    text-decoration: underline;
-    text-decoration-color: var(--blue);
-  }
 }
 
 app-toggle.right, app-button.right, app-input.right, app-selector.right {
