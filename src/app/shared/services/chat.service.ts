@@ -36,7 +36,9 @@ export class ChatService {
    * @return boolean If user message was played as TTS
    */
   async onMessage(user: ChatUserMessage, source: AudioSource) {
-    if (!this.generalChat.enabled && !this.openAIChat.enabled) {
+    const canProceed = await this.audioService.canProcessMessage(user.text, user.displayName);
+
+    if (!canProceed || !this.generalChat.enabled && !this.openAIChat.enabled) {
       return false;
     }
 

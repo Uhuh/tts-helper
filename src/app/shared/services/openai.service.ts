@@ -286,7 +286,7 @@ export class OpenAIService {
         // Continue to slice the history to save the user tokens when making request.
         this.gptHistory = this.gptHistory.slice(-1 * (this.settings?.historyLimit ?? 0));
 
-        this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.chatSettings.charLimit);
+        this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.chatSettings.charLimit, true);
       });
   }
 
@@ -340,12 +340,12 @@ export class OpenAIService {
       // Continue to slice the history to save the user tokens when making request.
       this.gptHistory = this.gptHistory.slice(-1 * (this.settings?.historyLimit ?? 0));
 
-      this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.chatSettings.charLimit);
+      this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.chatSettings.charLimit, true);
     } catch (e) {
       this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(e, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
 
       // Anytime OpenAI might have API issues just respond with this.
-      this.audioService.playTts('My brain is all fuzzy...', 'ChatGPT', 'gpt', this.chatSettings.charLimit);
+      this.audioService.playTts('My brain is all fuzzy...', 'ChatGPT', 'gpt', this.chatSettings.charLimit, true);
     }
   }
 }

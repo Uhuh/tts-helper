@@ -22,7 +22,7 @@ import {
 } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
-import { combineLatest, first, map } from 'rxjs';
+import { combineLatest, first, firstValueFrom, map } from 'rxjs';
 import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
@@ -107,19 +107,15 @@ export class AudioService {
     username: string,
     source: AudioSource,
     charLimit: number,
+    canPlayOverride = false,
   ) {
-    combineLatest([this.userListState$, this.customUserVoices$, this.multiVoices$])
+    combineLatest([this.customUserVoices$, this.multiVoices$])
       .pipe(first(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(async ([userListState, customUserVoices, allowedMultiVoices]) => {
-        if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
-          return this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
-        }
+      .subscribe(async ([customUserVoices, allowedMultiVoices]) => {
+        const canProceed = canPlayOverride ? canPlayOverride : await this.canProcessMessage(text, username);
 
-        const isUserInList = userListState.usernames.includes(username.toLowerCase());
-        if (userListState.shouldBlockUser && isUserInList ||
-          !userListState.shouldBlockUser && !isUserInList
-        ) {
-          return this.logService.add(`Ignoring message as the user is not valid for the block/allow list. Username: ${username}`, 'info', 'AudioService.playTts');
+        if (!canProceed) {
+          return;
         }
 
         // Trim played audio down, but keep full message in case stream wants to requeue it.
@@ -151,6 +147,32 @@ export class AudioService {
           });
         }
       });
+  }
+
+  canProcessMessage(text: string, username: string) {
+    return firstValueFrom(
+      this.userListState$
+        .pipe(
+          first(),
+          takeUntilDestroyed(this.destroyRef),
+          map(userListState => {
+            if (this.bannedWords.find((w) => text.toLowerCase().includes(w))) {
+              this.logService.add(`Ignoring message as it contained a banned word. Username: ${username} | Content: ${text}`, 'info', 'AudioService.playTts');
+              return false;
+            }
+
+            const isUserInList = userListState.usernames.includes(username.toLowerCase());
+            if (userListState.shouldBlockUser && isUserInList ||
+              !userListState.shouldBlockUser && !isUserInList
+            ) {
+              this.logService.add(`Ignoring message as the user is not valid for the block/allow list. Username: ${username}`, 'info', 'AudioService.playTts');
+              return false;
+            }
+
+            return true;
+          }),
+        ),
+    );
   }
 
   private async playAudio(
