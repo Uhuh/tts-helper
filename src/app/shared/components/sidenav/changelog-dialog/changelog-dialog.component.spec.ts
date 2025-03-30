@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChangelogDialogComponent } from './changelog-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import {} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('ChangelogDialogComponent', () => {
   let component: ChangelogDialogComponent;
@@ -16,10 +16,10 @@ describe('ChangelogDialogComponent', () => {
 
     TestBed.overrideComponent(ChangelogDialogComponent, {
       set: {
-        imports: [HttpClientTestingModule],
         providers: [
           { provide: MatDialogRef, useValue: matDialogRefStub },
           { provide: MAT_DIALOG_DATA, useValue: {} },
+          provideHttpClientTesting(),
         ],
         schemas: [NO_ERRORS_SCHEMA],
       },
