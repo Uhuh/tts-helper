@@ -97,8 +97,11 @@ export class TwitchPubSub {
       'twitch',
     );
 
+    // chatService.onMessage already checks this but it's not exposed here so...
+    const canProceed = await this.audioService.canProcessMessage(text, user.displayName);
+
     // If the users message was a chat command, we don't want to potentially read it twice.
-    if (playedMessage) {
+    if (playedMessage || !canProceed) {
       return;
     }
 
