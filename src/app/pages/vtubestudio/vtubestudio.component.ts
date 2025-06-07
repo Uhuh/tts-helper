@@ -11,16 +11,16 @@ import { ConfigService } from '../../shared/services/config.service';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-vtubestudio',
-    imports: [
-        LabelBlockComponent,
-        InputComponent,
-        ToggleComponent,
-        ButtonComponent,
-        AsyncPipe,
-    ],
-    templateUrl: './vtubestudio.component.html',
-    styleUrl: './vtubestudio.component.scss'
+  selector: 'app-vtubestudio',
+  imports: [
+    LabelBlockComponent,
+    InputComponent,
+    ToggleComponent,
+    ButtonComponent,
+    AsyncPipe,
+  ],
+  templateUrl: './vtubestudio.component.html',
+  styleUrl: './vtubestudio.component.scss',
 })
 export class VtubestudioComponent {
   private readonly vtubeStudioService = inject(VTubeStudioService);

@@ -11,10 +11,10 @@ import { CommandsComponent } from './commands/commands.component';
 import { OverlaysComponent } from './overlays/overlays.component';
 
 @Component({
-    selector: 'app-vstream',
-    imports: [CommonModule, AuthComponent, SettingsComponent, SubscriptionComponent, UpliftsComponent, MeteorShowerComponent, FollowersComponent, MatTabsModule, CommandsComponent, OverlaysComponent],
-    templateUrl: './vstream.component.html',
-    styleUrl: './vstream.component.scss'
+  selector: 'app-vstream',
+  imports: [CommonModule, AuthComponent, SettingsComponent, SubscriptionComponent, UpliftsComponent, MeteorShowerComponent, FollowersComponent, MatTabsModule, CommandsComponent, OverlaysComponent],
+  templateUrl: './vstream.component.html',
+  styleUrl: './vstream.component.scss',
 })
 export class VstreamComponent {
 }
