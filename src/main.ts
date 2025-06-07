@@ -34,6 +34,7 @@ import { VStreamPubSubService } from './app/shared/services/vstream-pubsub.servi
 import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
 import { AppSettingsFeature } from './app/shared/state/app-settings/app-settings.feature';
 import { AppSettingsService } from './app/shared/services/app-settings.service';
+import { WatchStreakFeature } from './app/shared/state/watch-streak/watch-streak.feature';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -49,6 +50,7 @@ bootstrapApplication(AppComponent, {
       StoreModule.forFeature(TwitchFeature),
       StoreModule.forFeature(VTubeStudioFeature),
       StoreModule.forFeature(VStreamFeature),
+      StoreModule.forFeature(WatchStreakFeature),
       MatSnackBarModule,
       StoreDevtoolsModule.instrument({
         maxAge: 25,
