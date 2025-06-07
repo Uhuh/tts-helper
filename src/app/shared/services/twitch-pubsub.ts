@@ -32,6 +32,8 @@ export class TwitchPubSub {
 
   listener: EventSubWsListener | null = null;
   chat: ChatClient | null = null;
+  apiClient: ApiClient | null = null;
+  isStreamerLive = false;
 
   private readonly bitsSettings$ = this.twitchService.bitInfo$;
   private readonly redeemsSettings$ = this.twitchService.redeemInfo$;
@@ -50,7 +52,7 @@ export class TwitchPubSub {
       this.twitchService.channelInfo$,
     ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([token, channelInfo]) => {
+      .subscribe(async ([token, channelInfo]) => {
         this.cleanupListeners();
         if (!token || !channelInfo.channelId) {
           return;
@@ -62,6 +64,8 @@ export class TwitchPubSub {
 
         const authProvider = new StaticAuthProvider(this.clientId, token);
         const apiClient = new ApiClient({ authProvider });
+        // This will be used to send messages as the streamer.
+        this.apiClient = apiClient;
 
         this.listener = new EventSubWsListener({ apiClient });
         this.listener.start();
@@ -73,17 +77,46 @@ export class TwitchPubSub {
 
         this.chat.connect();
 
-        this.chat.onMessage((_, _u, text, msg) => this.onMessage(msg.userInfo, text));
-        this.listener.onChannelCheer(channelId, (cheer) => this.onBits(cheer));
-        this.listener.onChannelFollow(channelId, channelId, (user) => this.onFollow(user));
-        this.listener.onChannelRedemptionAdd(channelId, (c) => this.onRedeem(c));
-        this.listener.onChannelSubscription(channelId, (sub) => this.onSub(sub));
-        this.listener.onChannelSubscriptionGift(channelId, (gift) => this.onGiftSub(gift));
-        this.listener.onChannelSubscriptionMessage(channelId, (message) => this.onSubMessage(message));
+        const streamer = await apiClient.users.getUserByName(channelInfo.username).catch();
+        const stream = await streamer?.getStream();
+
+        /**
+         * If the user decides to open TTS Helper AFTER they started streaming, let's see if they're live to record
+         * the stream date.
+         */
+        if (stream?.type === 'live') {
+          this.chatService.logStreamStart();
+          this.isStreamerLive = true;
+        }
+
+        this.chat.onMessage((_, _u, text, msg) => {
+          /**
+           * Only record user messages when the streamer is actually streaming.
+           */
+          if (this.isStreamerLive) {
+            this.chatService.handleWatchStreak({
+              id: msg.userInfo.userId,
+              displayName: msg.userInfo.displayName,
+              isSubscriber: msg.userInfo.isSubscriber || msg.userInfo.isVip,
+            });
+          }
+
+          this.handleMessage(msg.userInfo, text);
+        });
+        this.listener.onChannelCheer(channelId, (cheer) => this.handleBits(cheer));
+        this.listener.onChannelFollow(channelId, channelId, (user) => this.handleFollow(user));
+        this.listener.onChannelRedemptionAdd(channelId, (c) => this.handleRedeem(c));
+        this.listener.onChannelSubscription(channelId, (sub) => this.handleSub(sub));
+        this.listener.onChannelSubscriptionGift(channelId, (gift) => this.handleGiftSub(gift));
+        this.listener.onChannelSubscriptionMessage(channelId, (message) => this.handleSubMessage(message));
+        this.listener.onStreamOnline(channelId, () => {
+          this.isStreamerLive = true;
+          this.chatService.logStreamStart();
+        });
       });
   }
 
-  async onMessage(user: ChatUser, text: string) {
+  async handleMessage(user: ChatUser, text: string) {
     const playedMessage = await this.chatService.onMessage(
       {
         text,
@@ -122,7 +155,7 @@ export class TwitchPubSub {
       });
   }
 
-  onFollow(user: { userName: string, userDisplayName: string }) {
+  handleFollow(user: { userName: string, userDisplayName: string }) {
     this.follower$
       .pipe(first(), filter(f => f.enabled), takeUntilDestroyed(this.destroyRef))
       .subscribe(follower => {
@@ -138,7 +171,7 @@ export class TwitchPubSub {
       });
   }
 
-  onSubMessage(message: TwitchSubMessage) {
+  handleSubMessage(message: TwitchSubMessage) {
     this.renewSettings$
       .pipe(first(), filter(renew => renew.enabled && !!message.messageText), takeUntilDestroyed(this.destroyRef))
       .subscribe(renew => {
@@ -151,7 +184,7 @@ export class TwitchPubSub {
       });
   }
 
-  onGiftSub(gifter: TwitchGiftSub) {
+  handleGiftSub(gifter: TwitchGiftSub) {
     this.giftSettings$
       .pipe(first(), filter(gift => gift.enabled), takeUntilDestroyed())
       .subscribe(gift => {
@@ -169,7 +202,7 @@ export class TwitchPubSub {
       });
   }
 
-  onSub(sub: TwitchSub) {
+  handleSub(sub: TwitchSub) {
     /**
      * Ignore users that received a gift sub
      */
@@ -193,7 +226,7 @@ export class TwitchPubSub {
       });
   }
 
-  onBits(cheer: TwitchCheer) {
+  handleBits(cheer: TwitchCheer) {
     this.bitsSettings$
       .pipe(
         first(),
@@ -217,7 +250,7 @@ export class TwitchPubSub {
       });
   }
 
-  onRedeem(redeem: TwitchRedeem) {
+  handleRedeem(redeem: TwitchRedeem) {
     this.handleCustomUserVoiceRedeem(redeem);
     this.handleRedeemTts(redeem);
     this.handleRedeemVision(redeem);

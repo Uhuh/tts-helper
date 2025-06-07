@@ -149,7 +149,7 @@ export class TwitchService {
           this.snackbar.open('Twitch login has expired. Login again!', 'Dismiss', {
             panelClass: 'notification-error',
           });
-          // Token has most likely expired.
+          // The Token has most likely expired.
           this.clearState();
           console.error(`Failed to log user in.`, e);
         },

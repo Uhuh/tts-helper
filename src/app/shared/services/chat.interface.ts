@@ -27,6 +27,12 @@ export type ChatUserMessage = {
   permissions: UserPermissions;
 };
 
+export type WatchStreakUser = {
+  id: string;
+  displayName: string;
+  isSubscriber: boolean;
+};
+
 export type ChatCommand = {
   // UUID
   id: string;

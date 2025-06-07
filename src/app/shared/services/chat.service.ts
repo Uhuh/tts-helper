@@ -3,16 +3,22 @@ import { ConfigService } from './config.service';
 import { OpenAIService } from './openai.service';
 import { GeneralChatState } from '../state/config/config.feature';
 import { GptChatState } from '../state/openai/openai.feature';
-import { ChatPermissions, ChatUserMessage } from './chat.interface';
+import { ChatPermissions, ChatUserMessage, WatchStreakUser } from './chat.interface';
 import { AudioService } from './audio.service';
 import { AudioSource } from '../state/audio/audio.feature';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
+import { WatchStreakActions } from '../state/watch-streak/watch-streak.actions';
+import { WatchStreakFeature, WatchStreakFeatureState } from '../state/watch-streak/watch-streak.feature';
 
 @Injectable()
 export class ChatService {
+  private readonly store = inject(Store);
   private readonly configService = inject(ConfigService);
   private readonly openaiService = inject(OpenAIService);
   private readonly audioService = inject(AudioService);
+
+  public readonly watchStreakState$ = this.store.select(WatchStreakFeature.selectWatchStreakFeatureState);
 
   generalChat!: GeneralChatState;
   openAIChat!: GptChatState;
@@ -103,6 +109,27 @@ export class ChatService {
     } else {
       this.audioService.playTts(text, displayName, source, this.generalChat.charLimit);
     }
+  }
+
+  updateWatchStreak(partialState: Partial<WatchStreakFeatureState>) {
+    this.store.dispatch(WatchStreakActions.updateState({ partialState }));
+  }
+
+  handleWatchStreak(user: WatchStreakUser) {
+    /**
+     * Handle modifiers here potentially?
+     */
+
+    this.store.dispatch(WatchStreakActions.updateUsersWatchDate({
+      user: {
+        userName: user.displayName,
+        userId: user.id,
+      },
+    }));
+  }
+
+  logStreamStart() {
+    this.store.dispatch(WatchStreakActions.logStreamStart());
   }
 
   hasChatCommandPermissions(user: Pick<ChatUserMessage, 'permissions'>, permissions: ChatPermissions) {

@@ -66,6 +66,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/multi-voices/multi-voices.component'),
   },
   {
+    path: 'watch-streak',
+    loadComponent: () => import('./pages/watch-streak/watch-streak.component'),
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',

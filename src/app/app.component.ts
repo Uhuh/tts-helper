@@ -34,6 +34,9 @@ import { CounterCommand } from './shared/services/command.interface';
 import { AppSettingsService } from './shared/services/app-settings.service';
 import { AppSettingsActions, AppSettingsFeatureState } from './shared/state/app-settings/app-settings.feature';
 import { load } from '@tauri-apps/plugin-store';
+import { WatchStreakFeatureState } from './shared/state/watch-streak/watch-streak.feature';
+import { WatchStreakActions } from './shared/state/watch-streak/watch-streak.actions';
+import { ChatService } from './shared/services/chat.service';
 
 async function saveToStore<T>(file: string, key: string, data: T) {
   const store = await load(file);
@@ -61,6 +64,7 @@ export class AppComponent {
   private readonly appSettingsService = inject(AppSettingsService);
   private readonly azureService = inject(AzureSttService);
   private readonly elevenLabsService = inject(ElevenLabsService);
+  private readonly chatService = inject(ChatService);
   private readonly configService = inject(ConfigService);
   private readonly openAIService = inject(OpenAIService);
   private readonly obsSocketService = inject(ObsWebSocketService);
@@ -90,6 +94,7 @@ export class AppComponent {
       from(getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio')),
       from(getFromStore<VStreamState>(this.settingsLocation, 'vstream')),
       from(getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings')),
+      from(getFromStore<WatchStreakFeatureState>(this.settingsLocation, 'watch-streak')),
     ])
       .pipe(takeUntilDestroyed())
       .subscribe(([
@@ -101,9 +106,9 @@ export class AppComponent {
         vtubeStudio,
         vstream,
         appSettings,
+        watchStreak,
       ]) => {
 
-        console.log(config);
         this.handleGlobalData(config);
         this.handleOpenAIData(openai);
         this.handleTwitchData(twitch);
@@ -111,7 +116,8 @@ export class AppComponent {
         this.handleElevenLabsData(elevenLabs);
         this.handleVTubeStudioData(vtubeStudio);
         this.handleVStreamData(vstream);
-        this.handleAppSettings(appSettings);
+        this.handleAppData(appSettings);
+        this.handleWatchStreakData(watchStreak);
       });
 
     /**
@@ -150,9 +156,13 @@ export class AppComponent {
     this.appSettingsService.state$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe(state => saveToStore(this.settingsLocation, 'app-settings', state));
+
+    this.chatService.watchStreakState$
+      .pipe(debounceTime(500), takeUntilDestroyed())
+      .subscribe(state => saveToStore(this.settingsLocation, 'watch-streak', state));
   }
 
-  handleAppSettings(data: { value: AppSettingsFeatureState } | undefined) {
+  handleAppData(data: { value: AppSettingsFeatureState } | undefined) {
     if (!data || !data.value) {
       return;
     }
@@ -226,6 +236,16 @@ export class AppComponent {
 
     this.store.dispatch(
       VTubeStudioActions.updateState({ partialState: data.value }),
+    );
+  }
+
+  handleWatchStreakData(data: { value: WatchStreakFeatureState } | undefined) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.store.dispatch(
+      WatchStreakActions.updateState({ partialState: data.value }),
     );
   }
 

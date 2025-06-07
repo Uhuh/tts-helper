@@ -19,7 +19,7 @@ export class AuthComponent {
   private readonly redirect = 'http://localhost:12583/auth/twitch';
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
   private readonly scopes =
-    'channel%3Aread%3Aredemptions+channel%3Aread%3Asubscriptions+chat%3Aread+channel%3Amanage%3Aredemptions+bits%3Aread+moderator%3Aread%3Afollowers';
+    'channel%3Aread%3Aredemptions+channel%3Aread%3Asubscriptions+chat%3Aread+channel%3Amanage%3Aredemptions+bits%3Aread+moderator%3Aread%3Afollowers+user%3Awrite%3Achat';
   readonly loginUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${this.clientId}&redirect_uri=${this.redirect}&response_type=token&scope=${this.scopes}`;
 
   connectionStatus = signal<ConnectionType>('Disconnected');
