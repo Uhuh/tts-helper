@@ -99,7 +99,7 @@ export class AudioService {
     /**
      * @TODO - Determine if not having a character limit on requeue is good or bad.
      */
-    this.playTts(audio.text, audio.username, audio.source, 1000);
+    this.playTts(audio.text, audio.username, audio.source, 1000, true);
   }
 
   playTts(

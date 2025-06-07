@@ -93,6 +93,7 @@ export class SettingsComponent {
       '',
       'tts-helper',
       1000,
+      true,
     );
   }
 
