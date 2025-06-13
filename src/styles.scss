@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 $my-app-accent: mat.m2-define-palette(mat.$m2-grey-palette, A200, A100, A400);
 
@@ -111,11 +112,11 @@ a {
 }
 
 .notification-error {
-  --mdc-snackbar-container-color: #f23a2f;
+  --mat-snackbar-container-color: #f23a2f;
 }
 
 .notification-success {
-  --mdc-snackbar-container-color: var(--green);
+  --mat-snackbar-container-color: var(--green);
 }
 
 .mat-mdc-snack-bar-container .mdc-snackbar__label,
