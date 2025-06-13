@@ -32,6 +32,16 @@
             "polyfills": [
               "zone.js"
             ],
+            "allowedCommonJsDependencies": [
+              "microsoft-cognitiveservices-speech-sdk",
+              "agent-base",
+              "https-proxy-agent",
+              "cipher-base",
+              "browserify-zlib",
+              "inherits",
+              "readable-stream",
+              "safe-buffer"
+            ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
