@@ -14,13 +14,58 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
     "resolveJsonModule": true,
-    "lib": ["ES2022", "dom"]
+    "skipLibCheck": true,
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
+    "paths": {
+      "stream": [
+        "node_modules/stream-browserify/index.js"
+      ],
+      "http": [
+        "node_modules/http-browserify/index.js"
+      ],
+      "https": [
+        "node_modules/https-browserify/index.js"
+      ],
+      "zlib": [
+        "node_modules/browserify-zlib/lib/index.js"
+      ],
+      "util": [
+        "node_modules/util/util.js"
+      ],
+      "assert": [
+        "node_modules/assert/build/assert.js"
+      ],
+      "events": [
+        "node_modules/events/events.js"
+      ],
+      "url": [
+        "node_modules/url/url.js"
+      ],
+      "path": [
+        "node_modules/path-browserify/index.js"
+      ],
+      "os": [
+        "node_modules/os-browserify/browser.js"
+      ],
+      "crypto": [
+        "node_modules/crypto-browserify/index.js"
+      ],
+      "buffer": [
+        "node_modules/buffer/index.js"
+      ],
+      "process": [
+        "node_modules/process/browser.js"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -20,6 +20,12 @@
   </div>
 
   <app-label-block>
+    <div header>Chaos Mode</div>
+    <div sub-text>If enabled, TTS request will interrupt each other.</div>
+    <app-toggle class="right" [control]="chaosModeControl" />
+  </app-label-block>
+
+  <app-label-block>
     <div header>Select TTS service</div>
     <div sub-text>Decide which TTS service to use.</div>
     <div class="action-row flex-wrap">

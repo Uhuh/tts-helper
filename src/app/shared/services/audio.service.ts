@@ -45,10 +45,10 @@ export class AudioService {
   private readonly multiVoices$ = this.configService.multiVoices$;
 
   public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
-  public readonly queuedItems$ = this.audioItems$
-    .pipe(map(items => items.filter(i => i.state === AudioStatus.queued)));
 
   bannedWords: string[] = [];
+
+  chaosMode = false;
 
   tts: TtsType = 'stream-elements';
   streamElements!: StreamElementsData;
@@ -59,7 +59,8 @@ export class AudioService {
   twitchSettings!: TwitchSettingsState;
 
   constructor() {
-    this.configService.audioSettings$.pipe(takeUntilDestroyed())
+    this.configService.audioSettings$
+      .pipe(takeUntilDestroyed())
       .subscribe((audioSettings) => {
         const { tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok } = audioSettings;
         this.tts = tts;
@@ -69,6 +70,10 @@ export class AudioService {
         this.amazonPolly = amazonPolly;
         this.tikTok = tikTok;
       });
+
+    this.configService.state$
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ chaosMode }) => this.chaosMode = chaosMode);
 
     this.twitchService.settings$
       .pipe(takeUntilDestroyed())
@@ -109,7 +114,7 @@ export class AudioService {
     charLimit: number,
     canPlayOverride = false,
   ) {
-    combineLatest([this.customUserVoices$, this.multiVoices$])
+    combineLatest([this.customUserVoices$, this.multiVoices$, this.audioItems$])
       .pipe(first(), takeUntilDestroyed(this.destroyRef))
       .subscribe(async ([customUserVoices, allowedMultiVoices]) => {
         const canProceed = canPlayOverride ? canPlayOverride : await this.canProcessMessage(text, username);
@@ -118,12 +123,16 @@ export class AudioService {
           return;
         }
 
-        // Trim played audio down, but keep full message in case stream wants to requeue it.
+        if (this.chaosMode) {
+          this.playback.skipCurrentlyPlaying();
+        }
+
+        // Trim played audio down, but kept a full message in case stream wants to requeue it.
         const audioText = text.substring(0, charLimit);
         const multiVoices = this.parseMultiVoices(audioText, allowedMultiVoices);
         const customUserVoice = customUserVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
 
-        // If we couldn't parse out any multi voices let's assume it's a normal TTS request.
+        // If we couldn't parse out any multi voices, let's assume it's a normal TTS request.
         if (!multiVoices.length) {
           const data = await this.getRequestData(audioText, customUserVoice);
 

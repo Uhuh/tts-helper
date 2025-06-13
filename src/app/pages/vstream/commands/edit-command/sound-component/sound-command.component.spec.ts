@@ -31,7 +31,6 @@ describe('SoundComponentComponent', () => {
       set: {
         imports: [],
         providers: [
-          { provide: VStreamService, useValue: vstreamServiceStub },
         ],
         schemas: [NO_ERRORS_SCHEMA],
       },
