@@ -1771,17 +1771,17 @@
     "@napi-rs/nice-win32-ia32-msvc" "1.0.1"
     "@napi-rs/nice-win32-x64-msvc" "1.0.1"
 
-"@ngrx/store-devtools@^18.1.1":
-  version "18.1.1"
-  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-18.1.1.tgz#0a62949a73885728d1a1908f66779c13be307eaf"
-  integrity sha512-tfn9Ms1q2bl7VDWwHyj7dUbwmGiiVzIpOKZs39rsms8tG8hbvsxoczyQAp2w5erVtoJb8ltIh1/birKkS7HmuQ==
+"@ngrx/store-devtools@^19.2.1":
+  version "19.2.1"
+  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-19.2.1.tgz#331ff0108e27f6e713f7ba43d59a2a84f3555a03"
+  integrity sha512-gj1YO+4yl6D0l9vzLWdw07TQSu5UPKgsSLsNJfDLXraaLCUcB8voAp4J7zohN8qR5ixDuHeMoiSSVuklQ75u2w==
   dependencies:
     tslib "^2.0.0"
 
-"@ngrx/store@^18.1.1":
-  version "18.1.1"
-  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-18.1.1.tgz#e189967bd8d385ea48e14a7d96542cbf062e8382"
-  integrity sha512-K0v1akJ2sEnIeb1AUA064+ksgRgbMgVG9HbSsLBxENbFjK2ZvKRxo1bpOw6WHW9+hyDTlhZGl7+gUtjmo3497g==
+"@ngrx/store@^19.2.1":
+  version "19.2.1"
+  resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-19.2.1.tgz#8599cfdd167158952e7adba85e2790777a0e50a6"
+  integrity sha512-c5vQId7YoAhM0y4HASrz9mtLju+28vJspd6OBlhPbBlSae8GN8m9S/oav+8LaSY19yh95cZ5B/nMcLNNWgL/jA==
   dependencies:
     tslib "^2.0.0"
 
