@@ -75,7 +75,7 @@ export type MultiVoice = {
   // How users will use the voice. (brian): vs (brain-english-us-1234):
   customName: string;
   ttsType: TtsType;
-}
+};
 
 export interface ConfigState {
   tts: TtsType;
@@ -95,6 +95,7 @@ export interface ConfigState {
   customUserVoices: CustomUserVoice[];
   customUserVoiceRedeem: string;
   multiVoices: MultiVoice[];
+  chaosMode: boolean;
 }
 
 const defaultChatPermissions: ChatPermissions = {
@@ -156,6 +157,7 @@ const initialState: ConfigState = {
   customUserVoices: [],
   customUserVoiceRedeem: '',
   multiVoices: [],
+  chaosMode: false,
 };
 
 export const ConfigFeature = createFeature({

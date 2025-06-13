@@ -15,7 +15,7 @@ import { ChatPermissions } from '../../services/chat.interface';
 export const GlobalConfigActions = createActionGroup({
   source: 'GlobalConfig',
   events: {
-    'Update State': props<{ configState: ConfigState }>(),
+    'Update State': props<{ configState: Partial<ConfigState> }>(),
     'Update Tokens': props<{ tokens: Partial<AuthTokens> }>(),
     'Update GPT Chat Permissions': props<{ permissions: Partial<ChatPermissions> }>(),
     'Update General Chat': props<{ generalChat: Partial<GeneralChatState> }>(),

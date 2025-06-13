@@ -14,6 +14,7 @@ import { TtsType } from '../../shared/state/config/config.feature';
 import { FormControl } from '@angular/forms';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 import { ElevenLabsComponent } from './eleven-labs/eleven-labs.component';
+import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 
 interface TtsOption {
   disabled?: boolean;
@@ -36,6 +37,7 @@ interface TtsOption {
     TiktokComponent,
     LabelBlockComponent,
     ElevenLabsComponent,
+    ToggleComponent,
   ],
 })
 export class SettingsComponent {
@@ -44,6 +46,7 @@ export class SettingsComponent {
 
   readonly ttsControl = new FormControl('', { nonNullable: true });
   readonly selectedTts = new FormControl<TtsType>('stream-elements', { nonNullable: true });
+  readonly chaosModeControl = new FormControl(false, { nonNullable: true });
   readonly ttsOptions: Array<TtsOption> = [
     {
       displayValue: 'StreamElements',
@@ -71,11 +74,15 @@ export class SettingsComponent {
   constructor() {
     this.configService.configTts$
       .pipe(takeUntilDestroyed())
-      .subscribe((tts) => {
-        this.selectedTts.patchValue(tts, {
-          emitEvent: false,
-        });
-      });
+      .subscribe(tts => this.selectedTts.patchValue(tts, { emitEvent: false }));
+
+    this.configService.state$
+      .pipe(takeUntilDestroyed())
+      .subscribe(state => this.chaosModeControl.setValue(state.chaosMode, { emitEvent: false }));
+
+    this.chaosModeControl.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(chaosMode => this.configService.updateState({ chaosMode }));
   }
 
   selectTts(tts: TtsType) {

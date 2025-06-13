@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   AmazonPollyData,
-  ConfigFeature,
+  ConfigFeature, ConfigState,
   CustomUserVoice,
   GeneralChatState,
   MultiVoice,
@@ -38,6 +38,10 @@ export class ConfigService {
 
   updateVTSToken(vtsAuthToken: string) {
     this.store.dispatch(GlobalConfigActions.updateTokens({ tokens: { vtsAuthToken } }));
+  }
+
+  updateState(partialState: Partial<ConfigState>) {
+    this.store.dispatch(GlobalConfigActions.updateState({ configState: partialState }));
   }
 
   updateBannedWords(bannedWords: string) {
