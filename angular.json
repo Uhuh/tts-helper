@@ -30,17 +30,11 @@
             "sourceMap": true,
             "index": "src/index.html",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "./polyfills-browser.js"
             ],
             "allowedCommonJsDependencies": [
-              "microsoft-cognitiveservices-speech-sdk",
-              "agent-base",
-              "https-proxy-agent",
-              "cipher-base",
-              "browserify-zlib",
-              "inherits",
-              "readable-stream",
-              "safe-buffer"
+              "microsoft-cognitiveservices-speech-sdk"
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
