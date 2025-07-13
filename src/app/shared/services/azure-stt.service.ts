@@ -3,6 +3,7 @@ import {
   AudioConfig,
   CancellationDetails,
   CancellationReason,
+  ProfanityOption,
   ResultReason,
   SpeechConfig,
   SpeechRecognizer,
@@ -65,6 +66,9 @@ export class AzureSttService {
         this.snackbar.dismiss();
         this.speechConfig = SpeechConfig.fromSubscription(key, region);
         this.speechConfig.speechRecognitionLanguage = language;
+
+        // This should be a setting eventually, but it lets swear words be caught in STT.
+        this.speechConfig.setProfanity(ProfanityOption.Raw);
       });
 
     this.enabled$
