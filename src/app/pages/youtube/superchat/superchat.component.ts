@@ -8,7 +8,6 @@ import {
 } from '../../../shared/components/variable-table/variable-table.component';
 import { YoutubeService } from '../../../shared/services/youtube.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-superchat',

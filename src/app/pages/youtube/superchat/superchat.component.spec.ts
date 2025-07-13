@@ -8,9 +8,9 @@ describe('SuperchatComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SuperchatComponent]
+      imports: [SuperchatComponent],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SuperchatComponent);
     component = fixture.componentInstance;
