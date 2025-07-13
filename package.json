@@ -1,6 +1,6 @@
 {
   "name": "tts-helper",
-  "version": "5.2.2",
+  "version": "5.3.0",
   "author": {
     "email": "dylanwarren19@gmail.com",
     "name": "Dylan Warren",
@@ -32,6 +32,7 @@
     "@aws-sdk/client-polly": "^3.325.0",
     "@aws-sdk/credential-providers": "^3.325.0",
     "@aws-sdk/polly-request-presigner": "^3.325.0",
+    "@ngrx/signals": "^19.2.1",
     "@ngrx/store": "^19.2.1",
     "@ngrx/store-devtools": "^19.2.1",
     "@tauri-apps/api": "^2.1.1",
@@ -47,6 +48,7 @@
     "@twurple/pubsub": "^7.1.0",
     "@types/crypto-js": "^4.2.1",
     "@types/recordrtc": "^5.6.14",
+    "axios": "^1.10.0",
     "crypto-js": "^4.2.0",
     "jwt-decode": "^4.0.0",
     "klona": "^2.0.6",
@@ -56,6 +58,7 @@
     "recordrtc": "^5.6.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "typed-emitter": "^2.1.0",
     "typeid-js": "^0.3.0",
     "uuid": "^9.0.1",
     "zone.js": "~0.15.0"
