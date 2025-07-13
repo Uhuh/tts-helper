@@ -19,6 +19,7 @@
     "playback:allow-list-viewing-devices",
     "playback:allow-toggle-pause",
     "playback:allow-snapshot-monitor",
+    "cors-fetch:default",
     "shell:allow-open",
     "global-shortcut:default",
     "global-shortcut:allow-is-registered",
