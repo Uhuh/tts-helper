@@ -17,6 +17,15 @@
           <div class="connection" [class.connected]="isTwitchTokenValid$ | async"></div>
         </a>
         <a
+          [routerLink]="['youtube']"
+          [class.hide]="!connections.youtubeEnabled"
+          routerLinkActive="active"
+        >
+          <img alt="youtube-logo" ngSrc="assets/youtube.svg" height="25" width="25" />
+          <span>YouTube</span>
+          <div class="connection unknown"></div>
+        </a>
+        <a
           [routerLink]="['vtubestudio']"
           [class.hide]="!connections.vtubestudioEnabled"
           routerLinkActive="active"
