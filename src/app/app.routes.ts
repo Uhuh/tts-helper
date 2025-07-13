@@ -10,8 +10,8 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/twitch/twitch.component'),
   },
   {
-    path: 'vstream',
-    loadComponent: () => import('./pages/vstream/vstream.component'),
+    path: 'youtube',
+    loadComponent: () => import('./pages/youtube/youtube.component'),
   },
   {
     path: 'vtubestudio',

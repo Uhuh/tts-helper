@@ -1,0 +1,29 @@
+<div class="header">
+  <span>Youtube Settings</span>
+</div>
+<div class="section">
+  <div class="warning">
+    <span>This only works if your stream is public. It will not work for unlisted / private streams.</span>
+    <span>If your stream is live but we're not detecting it, check your channel ID.</span>
+  </div>
+
+  <div class="warning" [class.green]="liveId()" [class.orange]="!liveId()">
+    <span>LIVE ID: {{ liveId() ?? '[Not found, are you live?]' }}</span>
+  </div>
+
+  @if (hasError()) {
+    <div class="warning red">
+      <span>An error has occurred. Check the logs page!</span>
+    </div>
+  }
+
+  <app-label-block>
+    <div header>Your YouTube Channel ID</div>
+    <div sub-text>This will be used to search for your live ID</div>
+    <app-input [control]="channelControl" type="text" placeholder="YouTube Channel ID"/>
+  </app-label-block>
+
+  <hr/>
+
+  <app-superchat/>
+</div>

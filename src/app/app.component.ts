@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, effect, inject } from '@angular/core';
 import { TwitchPubSub } from './shared/services/twitch-pubsub';
 import { Store } from '@ngrx/store';
 import { TwitchService } from './shared/services/twitch.service';
@@ -37,6 +37,8 @@ import { load } from '@tauri-apps/plugin-store';
 import { WatchStreakFeatureState } from './shared/state/watch-streak/watch-streak.feature';
 import { WatchStreakActions } from './shared/state/watch-streak/watch-streak.actions';
 import { ChatService } from './shared/services/chat.service';
+import { YoutubeService } from './shared/services/youtube.service';
+import { YoutubeFeatureState } from './shared/state/youtube/youtube.feature';
 
 async function saveToStore<T>(file: string, key: string, data: T) {
   const store = await load(file);
@@ -75,6 +77,7 @@ export class AppComponent {
   private readonly vtubeStudioService = inject(VTubeStudioService);
   private readonly vstreamService = inject(VStreamService);
   private readonly vstreamPubSub = inject(VStreamPubSubService);
+  private readonly youtubeService = inject(YoutubeService);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -95,6 +98,7 @@ export class AppComponent {
       from(getFromStore<VStreamState>(this.settingsLocation, 'vstream')),
       from(getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings')),
       from(getFromStore<WatchStreakFeatureState>(this.settingsLocation, 'watch-streak')),
+      from(getFromStore<YoutubeFeatureState>(this.settingsLocation, 'youtube')),
     ])
       .pipe(takeUntilDestroyed())
       .subscribe(([
@@ -107,8 +111,8 @@ export class AppComponent {
         vstream,
         appSettings,
         watchStreak,
+        youtube,
       ]) => {
-
         this.handleGlobalData(config);
         this.handleOpenAIData(openai);
         this.handleTwitchData(twitch);
@@ -118,6 +122,7 @@ export class AppComponent {
         this.handleVStreamData(vstream);
         this.handleAppData(appSettings);
         this.handleWatchStreakData(watchStreak);
+        this.handleYoutubeData(youtube);
       });
 
     /**
@@ -160,6 +165,15 @@ export class AppComponent {
     this.chatService.watchStreakState$
       .pipe(debounceTime(500), takeUntilDestroyed())
       .subscribe(state => saveToStore(this.settingsLocation, 'watch-streak', state));
+
+    effect(() => {
+      const state: YoutubeFeatureState = {
+        channelId: this.youtubeService.youtubeStore.channelId(),
+        superChat: this.youtubeService.youtubeStore.superChat(),
+      };
+
+      saveToStore(this.settingsLocation, 'youtube', state);
+    });
   }
 
   handleAppData(data: { value: AppSettingsFeatureState } | undefined) {
@@ -247,6 +261,14 @@ export class AppComponent {
     this.store.dispatch(
       WatchStreakActions.updateState({ partialState: data.value }),
     );
+  }
+
+  handleYoutubeData(data: { value: YoutubeFeatureState } | undefined) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.youtubeService.updateState(data.value);
   }
 
   handleVStreamData(data: { value: VStreamState } | undefined) {
