@@ -3,6 +3,7 @@
 export interface AppSettingsFeatureState {
   connections: {
     vstreamEnabled: boolean,
+    youtubeEnabled: boolean,
     twitchEnabled: boolean,
     vtubestudioEnabled: boolean,
   };
@@ -19,6 +20,7 @@ export const AppSettingsActions = createActionGroup({
 export const initialState: AppSettingsFeatureState = {
   connections: {
     vstreamEnabled: true,
+    youtubeEnabled: true,
     twitchEnabled: true,
     vtubestudioEnabled: true,
   },

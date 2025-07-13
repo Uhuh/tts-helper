@@ -22,6 +22,7 @@ export class AppSettingsComponent {
 
   readonly settings = new FormGroup({
     vstreamEnabled: new FormControl(false, { nonNullable: true }),
+    youtubeEnabled: new FormControl(false, { nonNullable: true }),
     twitchEnabled: new FormControl(false, { nonNullable: true }),
     vtubestudioEnabled: new FormControl(false, { nonNullable: true }),
   });
