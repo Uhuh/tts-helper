@@ -1,5 +1,5 @@
 <div class="header">
-  <span>Follower Settings</span>
+  <span>SuperChat Settings</span>
 </div>
 
 <app-label-block>
@@ -10,14 +10,14 @@
 
 <app-label-block>
   <div header>Custom response</div>
-  <div sub-text>Customize what your TTS says when a user follows!</div>
+  <div sub-text>Customize what your TTS says when a user sends a superchat!</div>
   <app-variable-table [variables]="variables">
-    <span header>Use variables to reference info related to the follower</span>
-    <span example-text>Thanks <span class="var">username</span> for following!</span>
-    <span result-text>Thanks Panku for following!</span>
+    <span header>Use variables to reference info related to the superchats.</span>
+    <span example-text>Thanks <span class="var">username</span> for the $<span class="var">amount</span> superchat!</span>
+    <span result-text>Thanks Panku for the $5 superchat!</span>
   </app-variable-table>
   <textarea
-    placeholder="Thanks {username} for following!"
+    placeholder="Thanks {username} for ${amount} superchat!"
     [formControl]="settings.controls.customMessage"
   ></textarea>
 </app-label-block>

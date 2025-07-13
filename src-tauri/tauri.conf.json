@@ -1,6 +1,6 @@
 {
   "productName": "TTS Helper",
-  "version": "5.2.2",
+  "version": "5.3.0",
   "identifier": "com.panku.io",
   "bundle": {
     "active": true,
@@ -25,10 +25,13 @@
       "windows": {
         "installMode": "passive"
       }
+    },
+    "cors-fetch": {
+      "include": ["/^https?:\/\//i"]
     }
   },
   "app": {
-    "withGlobalTauri": false,
+    "withGlobalTauri": true,
     "security": {
       "csp": null
     },

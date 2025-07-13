@@ -51,6 +51,7 @@ anyhow = { workspace = true }
 # Tracing
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true, features = ["env-filter"] }
+tauri-plugin-cors-fetch = "4.1.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

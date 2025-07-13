@@ -3,8 +3,6 @@
 mod models;
 mod services;
 
-use anyhow::Context;
-
 use crate::services::{run_auth_server, start_ws_server};
 use services::tts_listener::run_tts_server;
 
@@ -23,6 +21,7 @@ pub fn main() -> anyhow::Result<()> {
         .plugin(tauri_plugin_devtools::init())
         .plugin(tauri_plugin_global_shortcut::Builder::default().build())
         .plugin(tauri_plugin_playback::init()?)
+        .plugin(tauri_plugin_cors_fetch::init())
         .setup(|app| {
             // Run auth server
             let handle = app.handle().clone();
@@ -35,8 +34,7 @@ pub fn main() -> anyhow::Result<()> {
 
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .context("error while running tauri application")?;
+        .run(tauri::generate_context!())?;
 
     Ok(())
 }

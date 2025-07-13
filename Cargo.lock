@@ -5198,6 +5198,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-plugin-cors-fetch"
+version = "4.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1bbb818e0e97f72dc9d353d38fa5799ed1dd4cf7371ff3195bd1231072d6fc2d"
+dependencies = [
+ "http 1.3.1",
+ "once_cell",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-plugin",
+ "thiserror 2.0.12",
+ "tokio",
+ "url",
+]
+
+[[package]]
 name = "tauri-plugin-devtools"
 version = "2.0.0"
 source = "git+https://github.com/crabnebula-dev/devtools#451287d9bb54ecc62c4e4a224e6de2115a3a8d83"
@@ -6045,6 +6063,7 @@ dependencies = [
  "static_assertions",
  "tauri",
  "tauri-build",
+ "tauri-plugin-cors-fetch",
  "tauri-plugin-devtools",
  "tauri-plugin-global-shortcut",
  "tauri-plugin-http",

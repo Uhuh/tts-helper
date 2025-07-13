@@ -34,6 +34,12 @@
   </app-label-block>
 
   <app-label-block>
+    <div header>Show YouTube</div>
+    <div sub-text>Show or hide this feature.</div>
+    <app-toggle class="right" [control]="settings.controls.youtubeEnabled" />
+  </app-label-block>
+
+  <app-label-block>
     <div header>Show VTubeStudio</div>
     <div sub-text>Show or hide this feature.</div>
     <app-toggle class="right" [control]="settings.controls.vtubestudioEnabled" />
