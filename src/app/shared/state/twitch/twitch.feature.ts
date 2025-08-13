@@ -178,6 +178,13 @@ export const TwitchFeature = createFeature({
         },
       },
     })),
+    on(TwitchStateActions.updateBits, (state, { partialSettings }) => ({
+      ...state,
+      bitInfo: {
+        ...state.bitInfo,
+        ...partialSettings,
+      },
+    })),
     on(TwitchStateActions.updateRedeemsSettings, (state, { partialSettings }) => ({
       ...state,
       redeemInfo: {
