@@ -39,6 +39,7 @@ import { WatchStreakActions } from './shared/state/watch-streak/watch-streak.act
 import { ChatService } from './shared/services/chat.service';
 import { YoutubeService } from './shared/services/youtube.service';
 import { YoutubeFeatureState } from './shared/state/youtube/youtube.feature';
+import { VirtualMotionCaptureService } from "./shared/services/virtual-motion-capture.service";
 
 async function saveToStore<T>(file: string, key: string, data: T) {
   const store = await load(file);
@@ -78,6 +79,7 @@ export class AppComponent {
   private readonly vstreamService = inject(VStreamService);
   private readonly vstreamPubSub = inject(VStreamPubSubService);
   private readonly youtubeService = inject(YoutubeService);
+  private readonly vmc = inject(VirtualMotionCaptureService);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -101,18 +103,20 @@ export class AppComponent {
       from(getFromStore<YoutubeFeatureState>(this.settingsLocation, 'youtube')),
     ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([
-        config,
-        openai,
-        twitch,
-        azure,
-        elevenLabs,
-        vtubeStudio,
-        vstream,
-        appSettings,
-        watchStreak,
-        youtube,
-      ]) => {
+      .subscribe((
+        [
+          config,
+          openai,
+          twitch,
+          azure,
+          elevenLabs,
+          vtubeStudio,
+          vstream,
+          appSettings,
+          watchStreak,
+          youtube,
+        ],
+      ) => {
         this.handleGlobalData(config);
         this.handleOpenAIData(openai);
         this.handleTwitchData(twitch);
