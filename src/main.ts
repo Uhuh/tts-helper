@@ -35,6 +35,7 @@ import { VTubeStudioService } from './app/shared/services/vtubestudio.service';
 import { AppSettingsFeature } from './app/shared/state/app-settings/app-settings.feature';
 import { AppSettingsService } from './app/shared/services/app-settings.service';
 import { WatchStreakFeature } from './app/shared/state/watch-streak/watch-streak.feature';
+import { VirtualMotionCaptureService } from "./app/shared/services/virtual-motion-capture.service";
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -78,6 +79,7 @@ bootstrapApplication(AppComponent, {
     VStreamService,
     VStreamPubSubService,
     VTubeStudioService,
+    VirtualMotionCaptureService,
   ],
 })
   .catch((err) => console.error(err));
