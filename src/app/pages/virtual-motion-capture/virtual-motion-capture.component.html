@@ -1,0 +1,41 @@
+<div class="header">
+    <span>Virtual Motion Capture Protocol</span>
+</div>
+<div class="section">
+    <div class="warning orange">
+        <span>This is <strong>the VMC protocol, not the software.</strong></span>
+        <span>As it stands, TTS Helper's implementation will send the default blendshape parameters when sending mouth data.</span>
+        <ul style="font-family: monospace">
+            <li>"A" - To act as "mouth open".</li>
+            <li>"E" - To act as "mouth form".</li>
+        </ul>
+        <span>Make sure the avatar's mouth has these parameters rigged with these blendshape names.</span>
+    </div>
+
+    <div class="warning red">
+        <span>If you use VSeeFace, make sure to enable [VMC receiver]</span>
+        <span>If testing doesn't work, unironically turn it off and on again.</span>
+    </div>
+
+    <app-label-block>
+        <div header>Test Connection</div>
+        <div sub-text>For the test we'll send random mouth data for 5 seconds.</div>
+        <app-button class="right" (click)="testConnection()">
+            Test
+        </app-button>
+    </app-label-block>
+
+    <hr />
+
+    <app-label-block>
+        <div header>Host LAN IP</div>
+        <div sub-text>Provide the LAN IP your software uses.</div>
+        <app-input class="right" [control]="settings.controls.host" type="text" placeholder="127.0.0.1"/>
+    </app-label-block>
+
+    <app-label-block>
+        <div header>Port</div>
+        <div sub-text>The port associated with the LAN IP.</div>
+        <app-input class="right" [control]="settings.controls.port" type="number" placeholder="39539"/>
+    </app-label-block>
+</div>
