@@ -8,7 +8,6 @@ import { TwitchService } from '../../services/twitch.service';
 import { VTubeStudioService } from '../../services/vtubestudio.service';
 import { check, Update } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
-import { VStreamService } from '../../services/vstream.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangelogDialogComponent } from './changelog-dialog/changelog-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -22,29 +21,27 @@ import { AppSettingsFeatureState } from '../../state/app-settings/app-settings.f
   imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, AsyncPipe],
 })
 export class SidenavComponent {
-  private readonly twitchService = inject(TwitchService);
-  private readonly vtsService = inject(VTubeStudioService);
-  private readonly vstreamService = inject(VStreamService);
-  private readonly matDialog = inject(MatDialog);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
-  private readonly appSettingsService = inject(AppSettingsService);
+  readonly #twitchService = inject(TwitchService);
+  readonly #vtsService = inject(VTubeStudioService);
+  readonly #matDialog = inject(MatDialog);
+  readonly #destroyRef = inject(DestroyRef);
+  readonly #router = inject(Router);
+  readonly #appSettingsService = inject(AppSettingsService);
 
   @Input({ required: true }) nav!: MatSidenav;
   @Input() isMobile = false;
   appVersion = '';
 
-  readonly connections$ = this.appSettingsService.connections$;
-  readonly isTwitchTokenValid$ = this.twitchService.isTokenValid$;
-  readonly isVTSConnected$ = this.vtsService.isConnected$;
-  readonly isVStreamConnected$ = this.vstreamService.isTokenValid$;
+  readonly connections$ = this.#appSettingsService.connections$;
+  readonly isTwitchTokenValid$ = this.#twitchService.isTokenValid$;
+  readonly isVTSConnected$ = this.#vtsService.isConnected$;
   newVersion = false;
   updater?: Update;
 
   constructor() {
     getVersion().then((v) => (this.appVersion = v));
 
-    this.router.events.subscribe(event => {
+    this.#router.events.subscribe(event => {
       if (!(event instanceof NavigationEnd)) {
         return;
       }
@@ -70,7 +67,7 @@ export class SidenavComponent {
   }
 
   unavailableConnections(connections: AppSettingsFeatureState['connections']) {
-    return !connections.vtubestudioEnabled && !connections.vstreamEnabled && !connections.twitchEnabled;
+    return !connections.vtubestudioEnabled && !connections.vmcEnabled && !connections.twitchEnabled;
   }
 
   close() {
@@ -82,7 +79,7 @@ export class SidenavComponent {
   }
 
   openUpdateDialog() {
-    const dialogRef = this.matDialog.open(ChangelogDialogComponent, {
+    const dialogRef = this.#matDialog.open(ChangelogDialogComponent, {
       width: '500px',
       data: {
         version: this.updater?.version,
@@ -90,7 +87,7 @@ export class SidenavComponent {
     });
 
     dialogRef.afterClosed()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(async update => {
         if (!update) {
           return;

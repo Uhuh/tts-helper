@@ -34,6 +34,14 @@
           <span>VTubeStudio</span>
           <div class="connection" [class.connected]="isVTSConnected$ | async"></div>
         </a>
+        <a
+          [routerLink]="['virtual-motion-capture']"
+          [class.hide]="!connections.vmcEnabled"
+          routerLinkActive="active"
+        >
+          <img alt="virtual-motion-capture-logo" ngSrc="assets/virtual-motion-capture.png" height="25" width="25" />
+          <span>VMC Protocol</span>
+        </a>
         @if (unavailableConnections(connections)) {
           <div class="empty">
             Enable connections in <a [routerLink]="['app-settings']">app settings</a>

@@ -27,7 +27,12 @@
             "outputPath": {
               "base": "dist/tts-helper"
             },
-            "sourceMap": true,
+            "sourceMap": {
+              "scripts": true,
+              "styles": true,
+              "hidden": true,
+              "vendor": true
+            },
             "index": "src/index.html",
             "polyfills": [
               "zone.js",
@@ -49,6 +54,11 @@
           },
           "configurations": {
             "production": {
+              "sourceMap": {
+                "scripts": true,
+                "vendor": true,
+                "styles": true
+              },
               "budgets": [
                 {
                   "type": "initial",
@@ -66,7 +76,11 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
+              "sourceMap": {
+                "scripts": true,
+                "vendor": true,
+                "styles": true
+              },
               "namedChunks": true
             }
           },

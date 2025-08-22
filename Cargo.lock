@@ -4290,6 +4290,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "rosc"
+version = "0.11.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dd37602e1513794e952274082d074e8d31aa7f64d047e3acb746c91db40600a5"
+dependencies = [
+ "byteorder",
+ "nom",
+ "time",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6058,6 +6069,7 @@ dependencies = [
  "futures-channel",
  "futures-util",
  "http 1.3.1",
+ "rand 0.8.5",
  "serde",
  "serde_json",
  "static_assertions",
@@ -6078,6 +6090,7 @@ dependencies = [
  "tower-http 0.5.2",
  "tracing",
  "tracing-subscriber",
+ "vmc",
 ]
 
 [[package]]
@@ -6280,6 +6293,17 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
+
+[[package]]
+name = "vmc"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "85a31616f6cfd95b19217582bb3681d440f4855f147c34984c5e782ef8e43190"
+dependencies = [
+ "futures-core",
+ "rosc",
+ "tokio",
+]
 
 [[package]]
 name = "vswhom"
