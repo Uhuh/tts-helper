@@ -1,49 +1,53 @@
 <div class="header">
-    <span>Virtual Motion Capture Protocol</span>
+  <span>Virtual Motion Capture Protocol</span>
 </div>
 <div class="section">
-    <div class="warning orange">
-        <span>This is implementing <strong>the VMC protocol</strong>, not the software.</span>
-    </div>
+  <div class="warning orange">
+    <span>This is implementing <strong>the VMC protocol</strong>, not the software.</span>
+  </div>
 
-    <div class="warning red">
-        <span>If you use VSeeFace, make sure to enable [VMC receiver]</span>
-        <span>If testing doesn't work, unironically turn it off and on again.</span>
-    </div>
+  <div class="warning red">
+    <span>Unsure as to why, but <strong>only V0 VRM models will work</strong>. V1 VRM models don't appear to receive mouth data.</span>
+    <span>If you use VSeeFace, make sure to enable [VMC receiver]</span>
+  </div>
 
-    <app-label-block>
-        <div header>Test Connection</div>
-        <div sub-text>For the test we'll send random mouth data for 5 seconds.</div>
-        <app-button class="right" (click)="testConnection()">
-            Test
-        </app-button>
-    </app-label-block>
+  <app-label-block>
+    <div header>Test Connection</div>
+    <div sub-text>Send silent data for 5 seconds.</div>
+    <app-button class="right" (click)="testConnection()">
+      Test
+    </app-button>
+  </app-label-block>
 
-    <hr />
+  <hr/>
 
-    <app-label-block>
-        <div header>Host LAN IP</div>
-        <div sub-text>Provide the LAN IP your software uses.</div>
-        <app-input class="right" [control]="settings.controls.host" type="text" placeholder="127.0.0.1"/>
-    </app-label-block>
+  <app-label-block>
+    <div header>Host LAN IP</div>
+    <div sub-text>Provide the LAN IP your software uses.</div>
+    <app-input class="right" [control]="settings.controls.host" type="text" placeholder="127.0.0.1"/>
+  </app-label-block>
 
-    <app-label-block>
-        <div header>Port</div>
-        <div sub-text>The port associated with the LAN IP.</div>
-        <app-input class="right" [control]="settings.controls.port" type="number" placeholder="39539"/>
-    </app-label-block>
+  <app-label-block>
+    <div header>Port</div>
+    <div sub-text>The port associated with the LAN IP.</div>
+    <app-input class="right" [control]="settings.controls.port" type="number" placeholder="39539"/>
+  </app-label-block>
 
-    <hr />
+  <hr/>
 
-    <app-label-block>
-        <div header>Blendshape Mouth A</div>
-        <div sub-text>The name of the blendshape for "mouth vowel A".</div>
-        <app-input [control]="settings.controls.mouth_a_param" type="text" placeholder="A"/>
-    </app-label-block>
+  <div class="warning">
+    <span>These blendshapes are the ones your 3d rigger should have setup for your avatars mouth.</span>
+  </div>
 
-    <app-label-block>
-        <div header>Blendshape Mouth E</div>
-        <div sub-text>The name of the blendshape for "mouth vowel E".</div>
-        <app-input [control]="settings.controls.mouth_e_param" type="text" placeholder="E"/>
-    </app-label-block>
+  <app-label-block>
+    <div header>Blendshape Mouth A</div>
+    <div sub-text>The name of the blendshape for "mouth vowel A".</div>
+    <app-input [control]="settings.controls.mouth_a_param" type="text" placeholder="A"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Blendshape Mouth E</div>
+    <div sub-text>The name of the blendshape for "mouth vowel E".</div>
+    <app-input [control]="settings.controls.mouth_e_param" type="text" placeholder="E"/>
+  </app-label-block>
 </div>

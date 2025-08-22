@@ -45,33 +45,28 @@ export class VirtualMotionCaptureProtocolService {
 
     this.#playbackService.audioFinished$
       .pipe(takeUntilDestroyed())
-      .subscribe(() => {
-        this.isAudioPlaying = false;
-
-        const mouthAParam = this.store.mouth_a_param();
-        const mouthEParam = this.store.mouth_e_param();
-
-        invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] });
-      });
+      .subscribe(() => this.clearAudioPlaying());
 
     this.#playbackService.audioSkipped$
       .pipe(takeUntilDestroyed())
-      .subscribe(() => {
-        this.isAudioPlaying = false;
-
-        for (const timeout of this.mouthShapesTimeouts) {
-          clearTimeout(timeout);
-        }
-
-        const mouthAParam = this.store.mouth_a_param();
-        const mouthEParam = this.store.mouth_e_param();
-
-        invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] });
-      });
+      .subscribe(() => this.clearAudioPlaying());
 
     this.#playbackService.audioMouthShapes$
       .pipe(takeUntilDestroyed())
       .subscribe(audioMouthShapes => this.prepareVTSMouthParams(audioMouthShapes));
+  }
+
+  clearAudioPlaying() {
+    this.isAudioPlaying = false;
+
+    for (const timeout of this.mouthShapesTimeouts) {
+      clearTimeout(timeout);
+    }
+
+    const mouthAParam = this.store.mouth_a_param();
+    const mouthEParam = this.store.mouth_e_param();
+
+    invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] });
   }
 
   testConnection() {

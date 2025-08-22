@@ -81,23 +81,24 @@ pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: taur
 pub async fn reset_vmc_mouth(mouth_params: BlendShapeParams, vmc_state: tauri::State<'_, VMCState>) -> Result<(), ()> {
     let performer = &vmc_state.performer;
 
-    // Most likely due to the nature of UDP and how quickly we send data
-    // We need to have a massive delay before we send the "reset" parameters, or else, somehow,
-    // request from earlier could apply _after_ the resets do, leaving an open mouth.
-    tokio::time::sleep(Duration::from_millis(200)).await;
+    let start = Instant::now();
 
-    performer
-        .send(BlendShape::new(&mouth_params.0, 0.0))
-        .await
-        .expect("Failed to send blendshapes via VMC protocol during testing.");
-    performer
-        .send(BlendShape::new(&mouth_params.1, 0.0))
-        .await
-        .expect("Failed to send blendshapes via VMC protocol during testing.");
-    performer
-        .send(ApplyBlendShapes)
-        .await
-        .expect("Failed to send blendshapes via VMC protocol during testing.");
+    loop {
+        performer
+            .send(BlendShape::new(&mouth_params.0, 0.0))
+            .await
+            .expect("Failed to send blendshapes via VMC protocol during testing.");
+        performer
+            .send(BlendShape::new(&mouth_params.1, 0.0))
+            .await
+            .expect("Failed to send blendshapes via VMC protocol during testing.");
+
+        tokio::time::sleep(Duration::from_millis(20)).await;
+
+        if start.elapsed().as_millis() > 200 {
+            break;
+        }
+    }
 
     Ok(())
 }
