@@ -6,6 +6,7 @@ export interface AppSettingsFeatureState {
     youtubeEnabled: boolean,
     twitchEnabled: boolean,
     vtubestudioEnabled: boolean,
+    vmcEnabled: boolean,
   };
 }
 
@@ -23,6 +24,7 @@ export const initialState: AppSettingsFeatureState = {
     youtubeEnabled: true,
     twitchEnabled: true,
     vtubestudioEnabled: true,
+    vmcEnabled: true,
   },
 };
 

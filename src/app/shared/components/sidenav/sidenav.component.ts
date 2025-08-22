@@ -13,7 +13,6 @@ import { ChangelogDialogComponent } from './changelog-dialog/changelog-dialog.co
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AppSettingsService } from '../../services/app-settings.service';
 import { AppSettingsFeatureState } from '../../state/app-settings/app-settings.feature';
-import { VirtualMotionCaptureService } from '../../services/virtual-motion-capture.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -24,7 +23,6 @@ import { VirtualMotionCaptureService } from '../../services/virtual-motion-captu
 export class SidenavComponent {
   readonly #twitchService = inject(TwitchService);
   readonly #vtsService = inject(VTubeStudioService);
-  readonly #virtualMotionCaptureService = inject(VirtualMotionCaptureService);
   readonly #matDialog = inject(MatDialog);
   readonly #destroyRef = inject(DestroyRef);
   readonly #router = inject(Router);

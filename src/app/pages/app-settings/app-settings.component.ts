@@ -12,7 +12,7 @@ import { getTauriVersion, getVersion } from '@tauri-apps/api/app';
     selector: 'app-app-settings',
     imports: [CommonModule, LabelBlockComponent, ToggleComponent],
     templateUrl: './app-settings.component.html',
-    styleUrl: './app-settings.component.scss'
+    styleUrl: './app-settings.component.scss',
 })
 export class AppSettingsComponent {
   private readonly appSettingsService = inject(AppSettingsService);
@@ -25,6 +25,7 @@ export class AppSettingsComponent {
     youtubeEnabled: new FormControl(false, { nonNullable: true }),
     twitchEnabled: new FormControl(false, { nonNullable: true }),
     vtubestudioEnabled: new FormControl(false, { nonNullable: true }),
+    vmcEnabled: new FormControl(false, { nonNullable: true }),
   });
 
   constructor() {
