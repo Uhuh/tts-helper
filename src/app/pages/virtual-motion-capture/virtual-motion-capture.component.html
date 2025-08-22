@@ -3,13 +3,7 @@
 </div>
 <div class="section">
     <div class="warning orange">
-        <span>This is <strong>the VMC protocol, not the software.</strong></span>
-        <span>As it stands, TTS Helper's implementation will send the default blendshape parameters when sending mouth data.</span>
-        <ul style="font-family: monospace">
-            <li>"A" - To act as "mouth open".</li>
-            <li>"E" - To act as "mouth form".</li>
-        </ul>
-        <span>Make sure the avatar's mouth has these parameters rigged with these blendshape names.</span>
+        <span>This is implementing <strong>the VMC protocol</strong>, not the software.</span>
     </div>
 
     <div class="warning red">
@@ -37,5 +31,19 @@
         <div header>Port</div>
         <div sub-text>The port associated with the LAN IP.</div>
         <app-input class="right" [control]="settings.controls.port" type="number" placeholder="39539"/>
+    </app-label-block>
+
+    <hr />
+
+    <app-label-block>
+        <div header>Blendshape Mouth A</div>
+        <div sub-text>The name of the blendshape for "mouth vowel A".</div>
+        <app-input [control]="settings.controls.mouth_a_param" type="text" placeholder="A"/>
+    </app-label-block>
+
+    <app-label-block>
+        <div header>Blendshape Mouth E</div>
+        <div sub-text>The name of the blendshape for "mouth vowel E".</div>
+        <app-input [control]="settings.controls.mouth_e_param" type="text" placeholder="E"/>
     </app-label-block>
 </div>

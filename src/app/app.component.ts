@@ -39,7 +39,8 @@ import { WatchStreakActions } from './shared/state/watch-streak/watch-streak.act
 import { ChatService } from './shared/services/chat.service';
 import { YoutubeService } from './shared/services/youtube.service';
 import { YoutubeFeatureState } from './shared/state/youtube/youtube.feature';
-import { VirtualMotionCaptureService } from "./shared/services/virtual-motion-capture.service";
+import { VirtualMotionCaptureProtocolService } from "./shared/services/virtual-motion-capture-protocol.service";
+import { VirtualMotionCaptureState } from "./shared/state/virtual-motion-capture/virtual-motion-capture.feature";
 
 async function saveToStore<T>(file: string, key: string, data: T) {
   const store = await load(file);
@@ -79,7 +80,7 @@ export class AppComponent {
   private readonly vstreamService = inject(VStreamService);
   private readonly vstreamPubSub = inject(VStreamPubSubService);
   private readonly youtubeService = inject(YoutubeService);
-  private readonly vmc = inject(VirtualMotionCaptureService);
+  private readonly virtualMotionCaptureService = inject(VirtualMotionCaptureProtocolService);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -90,21 +91,22 @@ export class AppComponent {
    * just injecting it into the root of the app.
    */
   constructor() {
-    combineLatest([
-      from(getFromStore<ConfigState>(this.settingsLocation, 'config')),
-      from(getFromStore<OpenAIState>(this.settingsLocation, 'openai')),
-      from(getFromStore<TwitchState>(this.settingsLocation, 'twitch')),
-      from(getFromStore<AzureState>(this.settingsLocation, 'azure')),
-      from(getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs')),
-      from(getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio')),
-      from(getFromStore<VStreamState>(this.settingsLocation, 'vstream')),
-      from(getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings')),
-      from(getFromStore<WatchStreakFeatureState>(this.settingsLocation, 'watch-streak')),
-      from(getFromStore<YoutubeFeatureState>(this.settingsLocation, 'youtube')),
-    ])
+    combineLatest({
+      config: from(getFromStore<ConfigState>(this.settingsLocation, 'config')),
+      openai: from(getFromStore<OpenAIState>(this.settingsLocation, 'openai')),
+      twitch: from(getFromStore<TwitchState>(this.settingsLocation, 'twitch')),
+      azure: from(getFromStore<AzureState>(this.settingsLocation, 'azure')),
+      elevenLabs: from(getFromStore<ElevenLabsState>(this.settingsLocation, 'eleven-labs')),
+      vtubeStudio: from(getFromStore<VTubeStudioState>(this.settingsLocation, 'vtube-studio')),
+      vstream: from(getFromStore<VStreamState>(this.settingsLocation, 'vstream')),
+      virtualMotionCapture: from(getFromStore<VirtualMotionCaptureState>(this.settingsLocation, 'virtual-motion-capture')),
+      appSettings: from(getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings')),
+      watchStreak: from(getFromStore<WatchStreakFeatureState>(this.settingsLocation, 'watch-streak')),
+      youtube: from(getFromStore<YoutubeFeatureState>(this.settingsLocation, 'youtube')),
+    })
       .pipe(takeUntilDestroyed())
       .subscribe((
-        [
+        {
           config,
           openai,
           twitch,
@@ -114,8 +116,9 @@ export class AppComponent {
           vstream,
           appSettings,
           watchStreak,
+          virtualMotionCapture,
           youtube,
-        ],
+        },
       ) => {
         this.handleGlobalData(config);
         this.handleOpenAIData(openai);
@@ -127,6 +130,7 @@ export class AppComponent {
         this.handleAppData(appSettings);
         this.handleWatchStreakData(watchStreak);
         this.handleYoutubeData(youtube);
+        this.handleVirtualMotionCapture(virtualMotionCapture);
       });
 
     /**
@@ -177,6 +181,12 @@ export class AppComponent {
       };
 
       saveToStore(this.settingsLocation, 'youtube', state);
+    });
+
+    effect(() => {
+      const state = this.virtualMotionCaptureService.store.wholeState();
+
+      saveToStore(this.settingsLocation, 'virtual-motion-capture', state);
     });
   }
 
@@ -273,6 +283,14 @@ export class AppComponent {
     }
 
     this.youtubeService.updateState(data.value);
+  }
+
+  handleVirtualMotionCapture(data: { value: VirtualMotionCaptureState } | undefined) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.virtualMotionCaptureService.updateState(data.value);
   }
 
   handleVStreamData(data: { value: VStreamState } | undefined) {

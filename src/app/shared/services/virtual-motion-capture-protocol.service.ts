@@ -12,13 +12,13 @@ import { ConfigService } from "./config.service";
 import { TtsType } from "../state/config/config.feature";
 
 @Injectable()
-export class VirtualMotionCaptureService {
-  readonly #store = inject(VirtualMotionCaptureFeature);
+export class VirtualMotionCaptureProtocolService {
+  readonly store = inject(VirtualMotionCaptureFeature);
   readonly #playbackService = inject(PlaybackService);
+  readonly #configService = inject(ConfigService);
   readonly #logService = inject(LogService);
   readonly #destroyRef = inject(DestroyRef);
-  readonly configService = inject(ConfigService);
-  readonly #ttsType$ = this.configService.configTts$;
+  readonly #ttsType$ = this.#configService.configTts$;
 
   // Easy way to clear all Ids when audio is skipped.
   private mouthShapesTimeouts: ReturnType<typeof setTimeout>[] = [];
@@ -26,8 +26,8 @@ export class VirtualMotionCaptureService {
   isAudioPlaying = false;
 
   constructor() {
-    const port = this.#store.port();
-    const host = this.#store.host();
+    const port = this.store.port();
+    const host = this.store.host();
 
     try {
       this.#logService.add(`Initializing VMC connect: ${{
@@ -45,7 +45,14 @@ export class VirtualMotionCaptureService {
 
     this.#playbackService.audioFinished$
       .pipe(takeUntilDestroyed())
-      .subscribe(() => this.isAudioPlaying = false);
+      .subscribe(() => {
+        this.isAudioPlaying = false;
+
+        const mouthAParam = this.store.mouth_a_param();
+        const mouthEParam = this.store.mouth_e_param();
+
+        invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] });
+      });
 
     this.#playbackService.audioSkipped$
       .pipe(takeUntilDestroyed())
@@ -55,40 +62,58 @@ export class VirtualMotionCaptureService {
         for (const timeout of this.mouthShapesTimeouts) {
           clearTimeout(timeout);
         }
+
+        const mouthAParam = this.store.mouth_a_param();
+        const mouthEParam = this.store.mouth_e_param();
+
+        invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] });
       });
 
     this.#playbackService.audioMouthShapes$
       .pipe(takeUntilDestroyed())
       .subscribe(audioMouthShapes => this.prepareVTSMouthParams(audioMouthShapes));
-
   }
 
   testConnection() {
     try {
       this.#logService.add(`Testing VMC connection.`, 'info', 'VirtualMotionCaptureService.testConnection');
-      invoke('test_vmc_connection');
+
+      const mouthAParam = this.store.mouth_a_param();
+      const mouthEParam = this.store.mouth_e_param();
+
+      invoke('test_vmc_connection', { mouthParams: [mouthAParam, mouthEParam] });
     } catch (e) {
       this.#logService.add(`Failed to test VMC connection: ${e}`, 'error', 'VirtualMotionCaptureService.testConnection');
     }
   }
 
   updateState(state: Partial<VirtualMotionCaptureState>) {
-    this.#store.updateState(state);
+    this.store.updateState(state);
 
     this.updateConnection(state);
   }
 
   sendVmcMouth(params: [number, number]) {
     try {
-      invoke('send_vmc_mouth', { params });
+      const mouth_a_name = this.store.mouth_a_param();
+      const mouth_e_name = this.store.mouth_e_param();
+
+      invoke('send_vmc_mouth', {
+        mouthData: {
+          mouth_a_name,
+          mouth_a_value: params[0],
+          mouth_e_name,
+          mouth_e_value: params[1],
+        },
+      });
     } catch (e) {
       this.#logService.add(`Failed to send VMC mouth params: [${params}] ${e}`, 'error', 'VirtualMotionCaptureService.sendVmcMouth');
     }
   }
 
   private updateConnection(state: Partial<VirtualMotionCaptureState>) {
-    const port = state.port ?? this.#store.port();
-    const host = state.host ?? this.#store.host();
+    const port = state.port ?? this.store.port();
+    const host = state.host ?? this.store.host();
 
     try {
       invoke('update_vmc_connection', { port, host });

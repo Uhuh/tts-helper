@@ -11,14 +11,16 @@ export type VirtualMotionCaptureState = {
   enabled: boolean;
   port: number;
   host: string;
-  blendShapes: BlendShape[];
+  mouth_a_param: string;
+  mouth_e_param: string;
 };
 
 const initialState: VirtualMotionCaptureState = {
   enabled: false,
   port: 39539,
   host: '127.0.0.1',
-  blendShapes: [],
+  mouth_a_param: 'A',
+  mouth_e_param: 'E',
 };
 
 export const VirtualMotionCaptureFeature = signalStore(
@@ -29,12 +31,13 @@ export const VirtualMotionCaptureFeature = signalStore(
       patchState(state, state => ({ ...state, ...partialState }));
     },
   })),
-  withComputed(({ enabled, port, host, blendShapes }) => ({
+  withComputed(({ enabled, port, host, mouth_a_param, mouth_e_param }) => ({
     wholeState: computed(() => ({
       enabled: enabled(),
       port: port(),
       host: host(),
-      blendShapes: blendShapes(),
+      mouth_a_param: mouth_a_param(),
+      mouth_e_param: mouth_e_param(),
     })),
   })),
 );
