@@ -40,6 +40,15 @@
   </div>
 
   <app-label-block>
+    <div header>Blendshape value multiplier.</div>
+    <div sub-text>This value will be multiplied as a percentage against the blendshapes.</div>
+    <div sub-text>The smaller the number, the smaller the mouth shapes.</div>
+    <mat-slider [min]="0" [max]="200" [step]="1" discrete color="primary">
+      <input matSliderThumb [formControl]="settings.controls.blendshape_modifier"/>
+    </mat-slider>
+  </app-label-block>
+
+  <app-label-block>
     <div header>Blendshape Mouth A</div>
     <div sub-text>The name of the blendshape for "mouth vowel A".</div>
     <app-input [control]="settings.controls.mouth_a_param" type="text" placeholder="A"/>

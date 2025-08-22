@@ -92,13 +92,15 @@ export class VirtualMotionCaptureProtocolService {
     try {
       const mouth_a_name = this.store.mouth_a_param();
       const mouth_e_name = this.store.mouth_e_param();
+      // Check for states that don't default the new property value.
+      const blendshape_modifier = (this.store.blendshape_modifier() ?? 100) / 100;
 
       invoke('send_vmc_mouth', {
         mouthData: {
           mouth_a_name,
-          mouth_a_value: params[0],
+          mouth_a_value: params[0] * blendshape_modifier,
           mouth_e_name,
-          mouth_e_value: params[1],
+          mouth_e_value: params[1] * blendshape_modifier,
         },
       });
     } catch (e) {
