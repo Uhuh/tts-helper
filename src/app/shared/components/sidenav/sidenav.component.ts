@@ -67,7 +67,7 @@ export class SidenavComponent {
   }
 
   unavailableConnections(connections: AppSettingsFeatureState['connections']) {
-    return !connections.vtubestudioEnabled && !connections.vstreamEnabled && !connections.twitchEnabled;
+    return !connections.vtubestudioEnabled && !connections.vmcEnabled && !connections.twitchEnabled;
   }
 
   close() {
