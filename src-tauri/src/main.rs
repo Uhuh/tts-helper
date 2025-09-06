@@ -6,9 +6,8 @@ mod commands;
 
 use crate::services::{run_auth_server, start_ws_server};
 use services::tts_listener::run_tts_server;
-use std::time::{Duration, Instant};
 use tauri::{generate_handler, Manager};
-use vmc::{performer, ApplyBlendShapes, BlendShape, StandardVRMBlendShape, Time, VMCSocket};
+use vmc::performer;
 
 #[tokio::main]
 pub async fn main() -> anyhow::Result<()> {

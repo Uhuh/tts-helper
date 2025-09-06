@@ -20,6 +20,9 @@ export class VirtualMotionCaptureProtocolService {
   readonly #destroyRef = inject(DestroyRef);
   readonly #ttsType$ = this.#configService.configTts$;
 
+  private validConnection = false;
+  private connectionCheckIntervalId: ReturnType<typeof setInterval> | null = null;
+
   // Easy way to clear all Ids when audio is skipped.
   private mouthShapesTimeouts: ReturnType<typeof setTimeout>[] = [];
 
@@ -29,15 +32,10 @@ export class VirtualMotionCaptureProtocolService {
     const port = this.store.port();
     const host = this.store.host();
 
-    try {
-      this.#logService.add(`Initializing VMC connect: ${{
-        port,
-        host,
-      }}`, 'info', 'VirtualMotionCaptureService.constructor');
-      invoke('update_vmc_connection', { port, host });
-    } catch (e) {
-      this.#logService.add(`Failed to initialize VMC connection: ${e}`, 'error', 'VirtualMotionCaptureService.constructor');
-    }
+    this.#logService.add(`Initializing VMC connect: ${JSON.stringify({
+      port,
+      host,
+    })}`, 'info', 'VirtualMotionCaptureService.constructor');
 
     this.#playbackService.audioStarted$
       .pipe(takeUntilDestroyed())
@@ -54,9 +52,47 @@ export class VirtualMotionCaptureProtocolService {
     this.#playbackService.audioMouthShapes$
       .pipe(takeUntilDestroyed())
       .subscribe(audioMouthShapes => this.prepareVTSMouthParams(audioMouthShapes));
+
+    this.startConnectionCheck();
+  }
+
+  private startConnectionCheck() {
+    this.stopConnectionCheck();
+
+    const check = async () => {
+      if (this.validConnection) {
+        return;
+      }
+
+      invoke('send_vmc_mouth', {
+        mouthData: {
+          mouth_a_name: 'A',
+          mouth_a_value: 0,
+          mouth_e_name: 'E',
+          mouth_e_value: 0,
+        },
+      })
+        .then(() => this.validConnection = true)
+        .catch(() => this.validConnection = false);
+    };
+
+    check();
+
+    this.connectionCheckIntervalId = setInterval(check, 5000);
+  }
+
+  private stopConnectionCheck() {
+    if (this.connectionCheckIntervalId !== null) {
+      clearInterval(this.connectionCheckIntervalId);
+      this.connectionCheckIntervalId = null;
+    }
   }
 
   clearAudioPlaying() {
+    if (!this.validConnection) {
+      return;
+    }
+
     this.isAudioPlaying = false;
 
     for (const timeout of this.mouthShapesTimeouts) {
@@ -66,20 +102,21 @@ export class VirtualMotionCaptureProtocolService {
     const mouthAParam = this.store.mouth_a_param();
     const mouthEParam = this.store.mouth_e_param();
 
-    invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] });
+    invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] })
+      .catch(() => this.validConnection = false);
   }
 
   testConnection() {
-    try {
-      this.#logService.add(`Testing VMC connection.`, 'info', 'VirtualMotionCaptureService.testConnection');
+    this.#logService.add(`Testing VMC connection.`, 'info', 'VirtualMotionCaptureService.testConnection');
 
-      const mouthAParam = this.store.mouth_a_param();
-      const mouthEParam = this.store.mouth_e_param();
+    const mouthAParam = this.store.mouth_a_param();
+    const mouthEParam = this.store.mouth_e_param();
 
-      invoke('test_vmc_connection', { mouthParams: [mouthAParam, mouthEParam] });
-    } catch (e) {
-      this.#logService.add(`Failed to test VMC connection: ${e}`, 'error', 'VirtualMotionCaptureService.testConnection');
-    }
+    invoke('test_vmc_connection', { mouthParams: [mouthAParam, mouthEParam] })
+      .catch(e => {
+        this.validConnection = false;
+        this.#logService.add(`Failed to test VMC connection: ${e}`, 'error', 'VirtualMotionCaptureService.testConnection');
+      });
   }
 
   updateState(state: Partial<VirtualMotionCaptureState>) {
@@ -89,40 +126,45 @@ export class VirtualMotionCaptureProtocolService {
   }
 
   sendVmcMouth(params: [number, number]) {
-    try {
-      const mouth_a_name = this.store.mouth_a_param();
-      const mouth_e_name = this.store.mouth_e_param();
-      // Check for states that don't default the new property value.
-      const blendshape_modifier = (this.store.blendshape_modifier() ?? 100) / 100;
+    const mouth_a_name = this.store.mouth_a_param();
+    const mouth_e_name = this.store.mouth_e_param();
+    // Check for states that don't default the new property value.
+    const blendshape_modifier = (this.store.blendshape_modifier() ?? 100) / 100;
 
-      invoke('send_vmc_mouth', {
-        mouthData: {
-          mouth_a_name,
-          mouth_a_value: params[0] * blendshape_modifier,
-          mouth_e_name,
-          mouth_e_value: params[1] * blendshape_modifier,
-        },
+    invoke('send_vmc_mouth', {
+      mouthData: {
+        mouth_a_name,
+        mouth_a_value: params[0] * blendshape_modifier,
+        mouth_e_name,
+        mouth_e_value: params[1] * blendshape_modifier,
+      },
+    })
+      .catch(e => {
+        this.validConnection = false;
+        this.#logService.add(`Failed to send VMC mouth params: [${params}] ${e}`, 'error', 'VirtualMotionCaptureService.sendVmcMouth');
       });
-    } catch (e) {
-      this.#logService.add(`Failed to send VMC mouth params: [${params}] ${e}`, 'error', 'VirtualMotionCaptureService.sendVmcMouth');
-    }
   }
 
   private updateConnection(state: Partial<VirtualMotionCaptureState>) {
     const port = state.port ?? this.store.port();
     const host = state.host ?? this.store.host();
 
-    try {
-      invoke('update_vmc_connection', { port, host });
-    } catch (e) {
-      this.#logService.add(`Failed to update VMC info: ${{
-        port,
-        host,
-      }}`, 'error', 'VirtualMotionCaptureService.updateConnection');
-    }
+    invoke('update_vmc_connection', { port, host })
+      .then(() => this.startConnectionCheck())
+      .catch(() => {
+        this.validConnection = false;
+        this.#logService.add(`Failed to update VMC info: ${{
+          port,
+          host,
+        }}`, 'error', 'VirtualMotionCaptureService.updateConnection');
+      });
   }
 
   private prepareVTSMouthParams(mouthShapes: [number, number][]) {
+    if (!this.validConnection) {
+      return;
+    }
+
     this.#ttsType$
       .pipe(first(), takeUntilDestroyed(this.#destroyRef))
       .subscribe(ttsType => {

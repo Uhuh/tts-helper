@@ -1,7 +1,7 @@
 use std::time::{Duration, Instant};
 use rand::random;
 use serde::Deserialize;
-use vmc::{ApplyBlendShapes, BlendShape, VMCSocket};
+use vmc::{BlendShape, VMCSocket};
 
 pub struct VMCState {
     performer: VMCSocket,
@@ -24,9 +24,8 @@ pub struct BlendShapeMouthData {
     mouth_e_value: f32,
 }
 
-
 #[tauri::command]
-pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: tauri::State<'_, VMCState>) -> Result<(), ()> {
+pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: tauri::State<'_, VMCState>) -> Result<(), String> {
     let performer = &vmc_state.performer;
 
     let start = Instant::now();
@@ -40,12 +39,12 @@ pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: taur
         performer
             .send(BlendShape::new(&mouth_params.0, open))
             .await
-            .expect("Failed to send blendshapes via VMC protocol during testing.");
+            .map_err(|e| e.to_string())?;
 
         performer
             .send(BlendShape::new(&mouth_params.1, form))
             .await
-            .expect("Failed to send blendshapes via VMC protocol during testing.");
+            .map_err(|e| e.to_string())?;
 
         tokio::time::sleep(Duration::from_millis(60)).await;
 
@@ -62,15 +61,11 @@ pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: taur
     performer
         .send(BlendShape::new(&mouth_params.0, 0.0))
         .await
-        .expect("Failed to send blendshapes via VMC protocol during testing.");
+        .map_err(|e| e.to_string())?;
     performer
         .send(BlendShape::new(&mouth_params.1, 0.0))
         .await
-        .expect("Failed to send blendshapes via VMC protocol during testing.");
-    performer
-        .send(ApplyBlendShapes)
-        .await
-        .expect("Failed to send blendshapes via VMC protocol during testing.");
+        .map_err(|e| e.to_string())?;
 
     println!("VMC connection test finished.");
 
@@ -78,7 +73,7 @@ pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: taur
 }
 
 #[tauri::command]
-pub async fn reset_vmc_mouth(mouth_params: BlendShapeParams, vmc_state: tauri::State<'_, VMCState>) -> Result<(), ()> {
+pub async fn reset_vmc_mouth(mouth_params: BlendShapeParams, vmc_state: tauri::State<'_, VMCState>) -> Result<(), String> {
     let performer = &vmc_state.performer;
 
     let start = Instant::now();
@@ -87,11 +82,11 @@ pub async fn reset_vmc_mouth(mouth_params: BlendShapeParams, vmc_state: tauri::S
         performer
             .send(BlendShape::new(&mouth_params.0, 0.0))
             .await
-            .expect("Failed to send blendshapes via VMC protocol during testing.");
+            .map_err(|e| e.to_string())?;
         performer
             .send(BlendShape::new(&mouth_params.1, 0.0))
             .await
-            .expect("Failed to send blendshapes via VMC protocol during testing.");
+            .map_err(|e| e.to_string())?;
 
         tokio::time::sleep(Duration::from_millis(20)).await;
 
@@ -116,23 +111,18 @@ pub async fn update_vmc_connection(port: u32, host: String, vmc_state: tauri::St
 }
 
 #[tauri::command]
-pub async fn send_vmc_mouth(mouth_data: BlendShapeMouthData, vmc_state: tauri::State<'_, VMCState>) -> Result<(), ()> {
+pub async fn send_vmc_mouth(mouth_data: BlendShapeMouthData, vmc_state: tauri::State<'_, VMCState>) -> Result<(), String> {
     let performer = &vmc_state.performer;
 
     performer
         .send(BlendShape::new(mouth_data.mouth_a_name, mouth_data.mouth_a_value))
         .await
-        .expect("Failed to send blendshapes via VMC protocol.");
+        .map_err(|e| e.to_string())?;
 
     performer
         .send(BlendShape::new(mouth_data.mouth_e_name, mouth_data.mouth_e_value))
         .await
-        .expect("Failed to send blendshapes via VMC protocol.");
-
-    performer
-        .send(ApplyBlendShapes)
-        .await
-        .expect("Failed to send blendshapes via VMC protocol.");
+        .map_err(|e| e.to_string())?;
 
     Ok(())
 }
