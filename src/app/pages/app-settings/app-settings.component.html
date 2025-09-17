@@ -11,6 +11,12 @@
     <span><strong>Tauri Version:</strong> <span>v{{ tauriVersion$ | async }}</span></span>
   </div>
 
+  <app-label-block>
+    <div header>Autostart</div>
+    <div sub-text>Start TTS Helper when your computer turns on.</div>
+    <app-toggle class="right" [control]="isAutostartEnabled"/>
+  </app-label-block>
+
   <hr/>
 
   <div class="header">

@@ -297,112 +297,134 @@
         {
           "description": "Enables the list_audio command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-list-audio"
+          "const": "allow-list-audio",
+          "markdownDescription": "Enables the list_audio command without any pre-configured scope."
         },
         {
           "description": "Denies the list_audio command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-list-audio"
+          "const": "deny-list-audio",
+          "markdownDescription": "Denies the list_audio command without any pre-configured scope."
         },
         {
           "description": "Enables the list_monitors command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-list-monitors"
+          "const": "allow-list-monitors",
+          "markdownDescription": "Enables the list_monitors command without any pre-configured scope."
         },
         {
           "description": "Denies the list_monitors command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-list-monitors"
+          "const": "deny-list-monitors",
+          "markdownDescription": "Denies the list_monitors command without any pre-configured scope."
         },
         {
           "description": "Enables the list_output_devices command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-list-output-devices"
+          "const": "allow-list-output-devices",
+          "markdownDescription": "Enables the list_output_devices command without any pre-configured scope."
         },
         {
           "description": "Denies the list_output_devices command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-list-output-devices"
+          "const": "deny-list-output-devices",
+          "markdownDescription": "Denies the list_output_devices command without any pre-configured scope."
         },
         {
           "description": "Enables the list_viewing_devices command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-list-viewing-devices"
+          "const": "allow-list-viewing-devices",
+          "markdownDescription": "Enables the list_viewing_devices command without any pre-configured scope."
         },
         {
           "description": "Denies the list_viewing_devices command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-list-viewing-devices"
+          "const": "deny-list-viewing-devices",
+          "markdownDescription": "Denies the list_viewing_devices command without any pre-configured scope."
         },
         {
           "description": "Enables the play_audio command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-play-audio"
+          "const": "allow-play-audio",
+          "markdownDescription": "Enables the play_audio command without any pre-configured scope."
         },
         {
           "description": "Denies the play_audio command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-play-audio"
+          "const": "deny-play-audio",
+          "markdownDescription": "Denies the play_audio command without any pre-configured scope."
         },
         {
           "description": "Enables the set_audio_state command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-set-audio-state"
+          "const": "allow-set-audio-state",
+          "markdownDescription": "Enables the set_audio_state command without any pre-configured scope."
         },
         {
           "description": "Denies the set_audio_state command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-set-audio-state"
+          "const": "deny-set-audio-state",
+          "markdownDescription": "Denies the set_audio_state command without any pre-configured scope."
         },
         {
           "description": "Enables the set_output_device command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-set-output-device"
+          "const": "allow-set-output-device",
+          "markdownDescription": "Enables the set_output_device command without any pre-configured scope."
         },
         {
           "description": "Denies the set_output_device command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-set-output-device"
+          "const": "deny-set-output-device",
+          "markdownDescription": "Denies the set_output_device command without any pre-configured scope."
         },
         {
           "description": "Enables the set_output_volume command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-set-output-volume"
+          "const": "allow-set-output-volume",
+          "markdownDescription": "Enables the set_output_volume command without any pre-configured scope."
         },
         {
           "description": "Denies the set_output_volume command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-set-output-volume"
+          "const": "deny-set-output-volume",
+          "markdownDescription": "Denies the set_output_volume command without any pre-configured scope."
         },
         {
           "description": "Enables the set_playback_state command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-set-playback-state"
+          "const": "allow-set-playback-state",
+          "markdownDescription": "Enables the set_playback_state command without any pre-configured scope."
         },
         {
           "description": "Denies the set_playback_state command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-set-playback-state"
+          "const": "deny-set-playback-state",
+          "markdownDescription": "Denies the set_playback_state command without any pre-configured scope."
         },
         {
           "description": "Enables the snapshot_monitor command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-snapshot-monitor"
+          "const": "allow-snapshot-monitor",
+          "markdownDescription": "Enables the snapshot_monitor command without any pre-configured scope."
         },
         {
           "description": "Denies the snapshot_monitor command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-snapshot-monitor"
+          "const": "deny-snapshot-monitor",
+          "markdownDescription": "Denies the snapshot_monitor command without any pre-configured scope."
         },
         {
           "description": "Enables the toggle_pause command without any pre-configured scope.",
           "type": "string",
-          "const": "allow-toggle-pause"
+          "const": "allow-toggle-pause",
+          "markdownDescription": "Enables the toggle_pause command without any pre-configured scope."
         },
         {
           "description": "Denies the toggle_pause command without any pre-configured scope.",
           "type": "string",
-          "const": "deny-toggle-pause"
+          "const": "deny-toggle-pause",
+          "markdownDescription": "Denies the toggle_pause command without any pre-configured scope."
         }
       ]
     }

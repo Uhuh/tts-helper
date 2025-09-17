@@ -1,6 +1,6 @@
-use std::time::{Duration, Instant};
 use rand::random;
 use serde::Deserialize;
+use std::time::{Duration, Instant};
 use vmc::{BlendShape, VMCSocket};
 
 pub struct VMCState {
@@ -25,7 +25,10 @@ pub struct BlendShapeMouthData {
 }
 
 #[tauri::command]
-pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: tauri::State<'_, VMCState>) -> Result<(), String> {
+pub async fn test_vmc_connection(
+    mouth_params: BlendShapeParams,
+    vmc_state: tauri::State<'_, VMCState>,
+) -> Result<(), String> {
     let performer = &vmc_state.performer;
 
     let start = Instant::now();
@@ -46,7 +49,7 @@ pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: taur
             .await
             .map_err(|e| e.to_string())?;
 
-        tokio::time::sleep(Duration::from_millis(60)).await;
+        tokio::time::sleep(Duration::from_millis(20)).await;
 
         if start.elapsed().as_secs() > 5 {
             break;
@@ -73,7 +76,10 @@ pub async fn test_vmc_connection(mouth_params: BlendShapeParams, vmc_state: taur
 }
 
 #[tauri::command]
-pub async fn reset_vmc_mouth(mouth_params: BlendShapeParams, vmc_state: tauri::State<'_, VMCState>) -> Result<(), String> {
+pub async fn reset_vmc_mouth(
+    mouth_params: BlendShapeParams,
+    vmc_state: tauri::State<'_, VMCState>,
+) -> Result<(), String> {
     let performer = &vmc_state.performer;
 
     let start = Instant::now();
@@ -99,11 +105,18 @@ pub async fn reset_vmc_mouth(mouth_params: BlendShapeParams, vmc_state: tauri::S
 }
 
 #[tauri::command]
-pub async fn update_vmc_connection(port: u32, host: String, vmc_state: tauri::State<'_, VMCState>) -> Result<(), ()> {
+pub async fn update_vmc_connection(
+    port: u32,
+    host: String,
+    vmc_state: tauri::State<'_, VMCState>,
+) -> Result<(), ()> {
     let performer = &vmc_state.performer;
     let connection_string = format!("{host}:{port}");
 
-    println!("Trying to connect to VMC via: {}", connection_string.clone());
+    println!(
+        "Trying to connect to VMC via: {}",
+        connection_string.clone()
+    );
 
     performer.connect(connection_string).await.unwrap();
 
@@ -111,16 +124,25 @@ pub async fn update_vmc_connection(port: u32, host: String, vmc_state: tauri::St
 }
 
 #[tauri::command]
-pub async fn send_vmc_mouth(mouth_data: BlendShapeMouthData, vmc_state: tauri::State<'_, VMCState>) -> Result<(), String> {
+pub async fn send_vmc_mouth(
+    mouth_data: BlendShapeMouthData,
+    vmc_state: tauri::State<'_, VMCState>,
+) -> Result<(), String> {
     let performer = &vmc_state.performer;
 
     performer
-        .send(BlendShape::new(mouth_data.mouth_a_name, mouth_data.mouth_a_value))
+        .send(BlendShape::new(
+            mouth_data.mouth_a_name,
+            mouth_data.mouth_a_value,
+        ))
         .await
         .map_err(|e| e.to_string())?;
 
     performer
-        .send(BlendShape::new(mouth_data.mouth_e_name, mouth_data.mouth_e_value))
+        .send(BlendShape::new(
+            mouth_data.mouth_e_name,
+            mouth_data.mouth_e_value,
+        ))
         .await
         .map_err(|e| e.to_string())?;
 
