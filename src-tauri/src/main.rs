@@ -1,8 +1,8 @@
-﻿#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod commands;
 mod models;
 mod services;
-mod commands;
 
 use crate::services::{run_auth_server, start_ws_server};
 use services::tts_listener::run_tts_server;
@@ -27,7 +27,13 @@ pub async fn main() -> anyhow::Result<()> {
         .plugin(tauri_plugin_global_shortcut::Builder::default().build())
         .plugin(tauri_plugin_playback::init()?)
         .plugin(tauri_plugin_cors_fetch::init())
-        .invoke_handler(generate_handler![commands::update_vmc_connection, commands::test_vmc_connection, commands::send_vmc_mouth, commands::reset_vmc_mouth])
+        .plugin(tauri_plugin_autostart::Builder::default().build())
+        .invoke_handler(generate_handler![
+            commands::update_vmc_connection,
+            commands::test_vmc_connection,
+            commands::send_vmc_mouth,
+            commands::reset_vmc_mouth
+        ])
         .setup(|app| {
             println!("Generating from main.rs");
 

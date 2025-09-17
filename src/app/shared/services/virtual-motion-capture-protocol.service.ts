@@ -6,22 +6,23 @@ import {
   VirtualMotionCaptureState,
 } from '../state/virtual-motion-capture/virtual-motion-capture.feature';
 import { invoke } from "@tauri-apps/api/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { first } from "rxjs";
 import { ConfigService } from "./config.service";
 import { TtsType } from "../state/config/config.feature";
+import { AppSettingsService } from "./app-settings.service";
 
 @Injectable()
 export class VirtualMotionCaptureProtocolService {
   readonly store = inject(VirtualMotionCaptureFeature);
+  readonly #appSettingsService = inject(AppSettingsService);
   readonly #playbackService = inject(PlaybackService);
   readonly #configService = inject(ConfigService);
   readonly #logService = inject(LogService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #ttsType$ = this.#configService.configTts$;
 
-  private validConnection = false;
-  private connectionCheckIntervalId: ReturnType<typeof setInterval> | null = null;
+  readonly connections = toSignal(this.#appSettingsService.connections$);
 
   // Easy way to clear all Ids when audio is skipped.
   private mouthShapesTimeouts: ReturnType<typeof setTimeout>[] = [];
@@ -52,44 +53,10 @@ export class VirtualMotionCaptureProtocolService {
     this.#playbackService.audioMouthShapes$
       .pipe(takeUntilDestroyed())
       .subscribe(audioMouthShapes => this.prepareVTSMouthParams(audioMouthShapes));
-
-    this.startConnectionCheck();
-  }
-
-  private startConnectionCheck() {
-    this.stopConnectionCheck();
-
-    const check = async () => {
-      if (this.validConnection) {
-        return;
-      }
-
-      invoke('send_vmc_mouth', {
-        mouthData: {
-          mouth_a_name: 'A',
-          mouth_a_value: 0,
-          mouth_e_name: 'E',
-          mouth_e_value: 0,
-        },
-      })
-        .then(() => this.validConnection = true)
-        .catch(() => this.validConnection = false);
-    };
-
-    check();
-
-    this.connectionCheckIntervalId = setInterval(check, 5000);
-  }
-
-  private stopConnectionCheck() {
-    if (this.connectionCheckIntervalId !== null) {
-      clearInterval(this.connectionCheckIntervalId);
-      this.connectionCheckIntervalId = null;
-    }
   }
 
   clearAudioPlaying() {
-    if (!this.validConnection) {
+    if (!this.connections()?.vmcEnabled) {
       return;
     }
 
@@ -102,8 +69,7 @@ export class VirtualMotionCaptureProtocolService {
     const mouthAParam = this.store.mouth_a_param();
     const mouthEParam = this.store.mouth_e_param();
 
-    invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] })
-      .catch(() => this.validConnection = false);
+    invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] });
   }
 
   testConnection() {
@@ -114,7 +80,6 @@ export class VirtualMotionCaptureProtocolService {
 
     invoke('test_vmc_connection', { mouthParams: [mouthAParam, mouthEParam] })
       .catch(e => {
-        this.validConnection = false;
         this.#logService.add(`Failed to test VMC connection: ${e}`, 'error', 'VirtualMotionCaptureService.testConnection');
       });
   }
@@ -140,7 +105,6 @@ export class VirtualMotionCaptureProtocolService {
       },
     })
       .catch(e => {
-        this.validConnection = false;
         this.#logService.add(`Failed to send VMC mouth params: [${params}] ${e}`, 'error', 'VirtualMotionCaptureService.sendVmcMouth');
       });
   }
@@ -150,9 +114,7 @@ export class VirtualMotionCaptureProtocolService {
     const host = state.host ?? this.store.host();
 
     invoke('update_vmc_connection', { port, host })
-      .then(() => this.startConnectionCheck())
       .catch(() => {
-        this.validConnection = false;
         this.#logService.add(`Failed to update VMC info: ${{
           port,
           host,
@@ -161,7 +123,7 @@ export class VirtualMotionCaptureProtocolService {
   }
 
   private prepareVTSMouthParams(mouthShapes: [number, number][]) {
-    if (!this.validConnection) {
+    if (!this.connections()?.vmcEnabled) {
       return;
     }
 
