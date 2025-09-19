@@ -10,18 +10,18 @@ import { take } from 'rxjs';
     selector: 'app-user-logs',
     imports: [CommonModule, ButtonComponent],
     templateUrl: './user-logs.component.html',
-    styleUrls: ['./user-logs.component.scss']
+    styleUrls: ['./user-logs.component.scss'],
 })
 export class UserLogsComponent {
-  private readonly logService = inject(LogService);
-  private readonly snackbar = inject(MatSnackBar);
-  private readonly destroyRef = inject(DestroyRef);
-  readonly logs$ = this.logService.logs$;
+  readonly #logService = inject(LogService);
+  readonly #snackbar = inject(MatSnackBar);
+  readonly #destroyRef = inject(DestroyRef);
+  readonly logs$ = this.#logService.logs$;
 
   downloadLog() {
     this.logs$.pipe(
       take(1),
-      takeUntilDestroyed(this.destroyRef),
+      takeUntilDestroyed(this.#destroyRef),
     ).subscribe(logs => {
       const data = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({ logs }, undefined, 2));
 
@@ -30,14 +30,14 @@ export class UserLogsComponent {
       anchor.href = data;
       anchor.click();
 
-      this.snackbar.open('Successfully downloaded log.', 'Dismiss', {
+      this.#snackbar.open('Successfully downloaded log.', 'Dismiss', {
         panelClass: 'notification-success',
       });
     });
   }
 
   deleteLogs() {
-    this.logService.deleteLogs();
+    this.#logService.deleteLogs();
   }
 }
 

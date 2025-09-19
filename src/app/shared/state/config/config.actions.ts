@@ -26,6 +26,7 @@ export const GlobalConfigActions = createActionGroup({
     'Update Device Volume': props<{ deviceVolume: number }>(),
     'Update Audio Delay': props<{ audioDelay: number }>(),
     'Update Banned Words': props<{ bannedWords: string[] }>(),
+    'Update Filtered Words': props<{ filteredWords: string[] }>(),
     'Update Amazon Polly': props<{ amazonPolly: Partial<AmazonPollyData> }>(),
     'Update Stream Elements': props<{ streamElements: Partial<StreamElementsData> }>(),
     'Update Tik Tok Voice': props<{ voice: string }>(),

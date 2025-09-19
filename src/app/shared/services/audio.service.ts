@@ -43,6 +43,7 @@ export class AudioService {
   private readonly userListState$ = this.configService.userListState$;
   private readonly customUserVoices$ = this.configService.customUserVoices$;
   private readonly multiVoices$ = this.configService.multiVoices$;
+  private readonly filteredWords$ = this.configService.filteredWords$;
 
   public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
 
@@ -114,9 +115,13 @@ export class AudioService {
     charLimit: number,
     canPlayOverride = false,
   ) {
-    combineLatest([this.customUserVoices$, this.multiVoices$, this.audioItems$])
+    combineLatest({
+      customVoices: this.customUserVoices$,
+      multiVoices: this.multiVoices$,
+      filteredWords: this.filteredWords$,
+    })
       .pipe(first(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(async ([customUserVoices, allowedMultiVoices]) => {
+      .subscribe(async ({ customVoices, multiVoices, filteredWords }) => {
         const canProceed = canPlayOverride ? canPlayOverride : await this.canProcessMessage(text, username);
 
         if (!canProceed) {
@@ -128,13 +133,17 @@ export class AudioService {
         }
 
         // Trim played audio down, but kept a full message in case stream wants to requeue it.
-        const audioText = text.substring(0, charLimit);
-        const multiVoices = this.parseMultiVoices(audioText, allowedMultiVoices);
-        const customUserVoice = customUserVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
+        const reducedText = text.substring(0, charLimit);
+
+        const reg = new RegExp(filteredWords.join('|'), 'gi');
+        const filteredText = reducedText.replaceAll(reg, ``);
+
+        const voices = this.parseMultiVoices(filteredText, multiVoices);
+        const customUserVoice = customVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
 
         // If we couldn't parse out any multi voices, let's assume it's a normal TTS request.
-        if (!multiVoices.length) {
-          const data = await this.getRequestData(audioText, customUserVoice);
+        if (!voices.length) {
+          const data = await this.getRequestData(filteredText, customUserVoice);
 
           return await this.playAudio(data, {
             username,
@@ -145,7 +154,7 @@ export class AudioService {
         }
 
         // Otherwise... let's hope it WAS a multivoice request.
-        for (const { text, voice, ttsType } of multiVoices) {
+        for (const { text, voice, ttsType } of voices) {
           const data = await this.getRequestData(text, { voice, ttsType });
 
           await this.playAudio(data, {

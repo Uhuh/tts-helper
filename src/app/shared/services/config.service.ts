@@ -27,6 +27,7 @@ export class ConfigService {
   public readonly configTts$ = this.store.select(ConfigFeature.selectTts);
   public readonly configUrl$ = this.store.select(ConfigFeature.selectUrl);
   public readonly bannedWords$ = this.store.select(ConfigFeature.selectBannedWords);
+  public readonly filteredWords$ = this.store.select(ConfigFeature.selectFilteredWords);
   public readonly generalChat$ = this.store.select(ConfigFeature.selectGeneralChat);
   public readonly authTokens$ = this.store.select(ConfigFeature.selectAuthTokens);
   public readonly audioDelay$ = this.store.select(ConfigFeature.selectAudioDelay);
@@ -51,6 +52,15 @@ export class ConfigService {
       .map((w) => w.trim());
 
     this.store.dispatch(GlobalConfigActions.updateBannedWords({ bannedWords: words }));
+  }
+
+  updateFilteredWords(filteredWords: string) {
+    const words = filteredWords
+      .split(',')
+      .filter((w) => !!w)
+      .map((w) => w.trim());
+
+    this.store.dispatch(GlobalConfigActions.updateFilteredWords({ filteredWords: words }));
   }
 
   updateUserList(userListSettings: { usernames: string, shouldBlockUser: boolean }) {

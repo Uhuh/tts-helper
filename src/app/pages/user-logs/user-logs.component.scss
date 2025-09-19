@@ -1,5 +1,18 @@
 :host {
   width: 100%;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+// I usually would argue against using this, but I want logs to scroll properly without affecting the rest of the app.
+::ng-deep .container {
+  overflow: hidden;
+}
+
+.section {
+  overflow: hidden;
 }
 
 .logs-text {
@@ -12,6 +25,7 @@
   border: 2px solid var(--white-10);
   border-radius: 6px;
   font-family: monospace;
+  overflow-y: auto;
 }
 
 .log {

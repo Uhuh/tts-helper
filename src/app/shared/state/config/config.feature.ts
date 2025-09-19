@@ -44,8 +44,7 @@ export interface TikTokData {
  * TODO Support multiple TTS redeems that can be configured to different services.
  */
 
-export interface GeneralChatState extends ChatState {
-}
+export type GeneralChatState = ChatState;
 
 export type AuthTokens = {
   vtsAuthToken: string;
@@ -91,6 +90,7 @@ export interface ConfigState {
   amazonPolly: AmazonPollyData;
   tikTok: TikTokData;
   bannedWords: string[];
+  filteredWords: string[];
   userListState: UserListState;
   customUserVoices: CustomUserVoice[];
   customUserVoiceRedeem: string;
@@ -119,6 +119,7 @@ const defaultTtsState = {
 
 const initialState: ConfigState = {
   bannedWords: [],
+  filteredWords: [],
   tts: 'stream-elements',
   url: 'https://api.streamelements.com/kappa/v2/speech',
   audioDevice: 0,
@@ -195,6 +196,10 @@ export const ConfigFeature = createFeature({
     on(GlobalConfigActions.updateBannedWords, (state, { bannedWords }) => ({
       ...state,
       bannedWords,
+    })),
+    on(GlobalConfigActions.updateFilteredWords, (state, { filteredWords }) => ({
+      ...state,
+      filteredWords,
     })),
     on(GlobalConfigActions.updateStreamElements, (state, { streamElements }) => ({
       ...state,

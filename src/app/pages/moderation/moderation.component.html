@@ -4,13 +4,33 @@
 <div class="section">
   <app-label-block>
     <div header>Banned words</div>
-    <div sub-text class="yellow">Put words separated by commas.</div>
+    <div sub-text class="yellow">Separate words with a comma.</div>
     <div sub-text>Messages that contain any of these will be ignored entirely.</div>
     <app-toggle class="right" [control]="hideBannedWords" text="Blur" />
     <textarea
       [formControl]="bannedWords"
       class="banned-words hide"
       [class.show]="!hideBannedWords.value"
+    ></textarea>
+  </app-label-block>
+
+  <hr />
+
+  <div class="warning">
+    <span>Filtered text is different from "words".</span>
+    <span>You can filter phrases, words, etc.</span>
+    <span>If you filtered "cat" and a request was "I love cats" it would play "I love s"</span>
+    <span class="yellow">Messages are NOT ignored, only filtered.</span>
+  </div>
+
+  <app-label-block>
+    <div header>Filtered text</div>
+    <div sub-text class="yellow">Separate filtered text with a comma.</div>
+    <app-toggle class="right" [control]="hideFilteredWords" text="Blur" />
+    <textarea
+      [formControl]="filteredWords"
+      class="banned-words hide"
+      [class.show]="!hideFilteredWords.value"
     ></textarea>
   </app-label-block>
 
