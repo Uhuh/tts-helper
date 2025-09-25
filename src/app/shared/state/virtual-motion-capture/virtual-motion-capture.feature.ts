@@ -8,6 +8,7 @@ export type VirtualMotionCaptureState = {
   mouth_a_param: string;
   mouth_e_param: string;
   blendshape_modifier: number;
+  send_vnyan_params: boolean;
 };
 
 const initialState: VirtualMotionCaptureState = {
@@ -17,6 +18,7 @@ const initialState: VirtualMotionCaptureState = {
   mouth_a_param: 'A',
   mouth_e_param: 'E',
   blendshape_modifier: 100,
+  send_vnyan_params: false,
 };
 
 export const VirtualMotionCaptureFeature = signalStore(
@@ -27,7 +29,7 @@ export const VirtualMotionCaptureFeature = signalStore(
       patchState(state, state => ({ ...state, ...partialState }));
     },
   })),
-  withComputed(({ enabled, port, host, mouth_a_param, mouth_e_param, blendshape_modifier }) => ({
+  withComputed(({ enabled, port, host, mouth_a_param, mouth_e_param, blendshape_modifier, send_vnyan_params }) => ({
     wholeState: computed(() => ({
       enabled: enabled(),
       port: port(),
@@ -35,6 +37,7 @@ export const VirtualMotionCaptureFeature = signalStore(
       mouth_a_param: mouth_a_param(),
       mouth_e_param: mouth_e_param(),
       blendshape_modifier: blendshape_modifier(),
+      send_vnyan_params: send_vnyan_params(),
     })),
   })),
 );

@@ -68,8 +68,9 @@ export class VirtualMotionCaptureProtocolService {
 
     const mouthAParam = this.store.mouth_a_param();
     const mouthEParam = this.store.mouth_e_param();
+    const sendToVnyan = this.store.send_vnyan_params();
 
-    invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam] });
+    invoke('reset_vmc_mouth', { mouthParams: [mouthAParam, mouthEParam], sendToVnyan });
   }
 
   testConnection() {
@@ -77,8 +78,9 @@ export class VirtualMotionCaptureProtocolService {
 
     const mouthAParam = this.store.mouth_a_param();
     const mouthEParam = this.store.mouth_e_param();
+    const sendToVnyan = this.store.send_vnyan_params();
 
-    invoke('test_vmc_connection', { mouthParams: [mouthAParam, mouthEParam] })
+    invoke('test_vmc_connection', { mouthParams: [mouthAParam, mouthEParam], sendToVnyan })
       .catch(e => {
         this.#logService.add(`Failed to test VMC connection: ${e}`, 'error', 'VirtualMotionCaptureService.testConnection');
       });
@@ -93,6 +95,7 @@ export class VirtualMotionCaptureProtocolService {
   sendVmcMouth(params: [number, number]) {
     const mouth_a_name = this.store.mouth_a_param();
     const mouth_e_name = this.store.mouth_e_param();
+    const sendToVnyan = this.store.send_vnyan_params();
     // Check for states that don't default the new property value.
     const blendshape_modifier = (this.store.blendshape_modifier() ?? 100) / 100;
 
@@ -103,10 +106,8 @@ export class VirtualMotionCaptureProtocolService {
         mouth_e_name,
         mouth_e_value: params[1] * blendshape_modifier,
       },
-    })
-      .catch(e => {
-        this.#logService.add(`Failed to send VMC mouth params: [${params}] ${e}`, 'error', 'VirtualMotionCaptureService.sendVmcMouth');
-      });
+      sendToVnyan,
+    });
   }
 
   private updateConnection(state: Partial<VirtualMotionCaptureState>) {

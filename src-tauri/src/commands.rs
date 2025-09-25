@@ -1,10 +1,43 @@
 use rand::random;
 use serde::Deserialize;
 use std::time::{Duration, Instant};
-use vmc::{BlendShape, VMCSocket};
+use vmc::{ApplyBlendShapes, BlendShape, IntoOSCPacket, VMCSocket};
+use vmc::rosc::{OscMessage, OscPacket, OscType};
 
 pub struct VMCState {
     performer: VMCSocket,
+}
+
+enum MyOscPacket {
+    VNyan(VNyanParam),
+    Blend(BlendShape),
+}
+
+impl IntoOSCPacket for MyOscPacket {
+    fn into_osc_packet(self) -> OscPacket {
+        match self {
+            MyOscPacket::VNyan(v) => v.into_osc_packet(),
+            MyOscPacket::Blend(b) => b.into_osc_packet(),
+        }
+    }
+}
+
+struct VNyanParam {
+    pub key: String,
+    pub value: f32,
+}
+
+impl VNyanParam {
+    pub fn new(key: impl ToString, value: f32) -> Self { Self { key: key.to_string(), value } }
+}
+
+impl IntoOSCPacket for VNyanParam {
+    fn into_osc_packet(self) -> OscPacket {
+        OscPacket::Message(OscMessage {
+            addr: "/VNyan/Param/Float".to_string(),
+            args: vec![OscType::String(self.key), OscType::Float(self.value)],
+        })
+    }
 }
 
 impl VMCState {
@@ -24,9 +57,18 @@ pub struct BlendShapeMouthData {
     mouth_e_value: f32,
 }
 
+fn make_osc_packet(send_to_vnyan: bool, param: &String, value: f32) -> MyOscPacket {
+    if (send_to_vnyan) {
+        MyOscPacket::VNyan(VNyanParam::new(&param, value))
+    } else {
+        MyOscPacket::Blend(BlendShape::new(&param, value))
+    }
+}
+
 #[tauri::command]
 pub async fn test_vmc_connection(
     mouth_params: BlendShapeParams,
+    send_to_vnyan: bool,
     vmc_state: tauri::State<'_, VMCState>,
 ) -> Result<(), String> {
     let performer = &vmc_state.performer;
@@ -39,13 +81,21 @@ pub async fn test_vmc_connection(
         let open = random();
         let form = random();
 
+        let mouth_a = make_osc_packet(send_to_vnyan, &mouth_params.0, open);
+        let mouth_e = make_osc_packet(send_to_vnyan, &mouth_params.1, form);
+
         performer
-            .send(BlendShape::new(&mouth_params.0, open))
+            .send(mouth_a)
             .await
             .map_err(|e| e.to_string())?;
 
         performer
-            .send(BlendShape::new(&mouth_params.1, form))
+            .send(mouth_e)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        performer
+            .send(ApplyBlendShapes)
             .await
             .map_err(|e| e.to_string())?;
 
@@ -61,12 +111,19 @@ pub async fn test_vmc_connection(
     // request from earlier could apply _after_ the resets do, leaving an open mouth.
     tokio::time::sleep(Duration::from_millis(200)).await;
 
+    let empty_mouth_a = make_osc_packet(send_to_vnyan, &mouth_params.0, 0.0);
+    let empty_mouth_e = make_osc_packet(send_to_vnyan, &mouth_params.1, 0.0);
+
     performer
-        .send(BlendShape::new(&mouth_params.0, 0.0))
+        .send(empty_mouth_a)
         .await
         .map_err(|e| e.to_string())?;
     performer
-        .send(BlendShape::new(&mouth_params.1, 0.0))
+        .send(empty_mouth_e)
+        .await
+        .map_err(|e| e.to_string())?;
+    performer
+        .send(ApplyBlendShapes)
         .await
         .map_err(|e| e.to_string())?;
 
@@ -78,6 +135,7 @@ pub async fn test_vmc_connection(
 #[tauri::command]
 pub async fn reset_vmc_mouth(
     mouth_params: BlendShapeParams,
+    send_to_vnyan: bool,
     vmc_state: tauri::State<'_, VMCState>,
 ) -> Result<(), String> {
     let performer = &vmc_state.performer;
@@ -85,12 +143,19 @@ pub async fn reset_vmc_mouth(
     let start = Instant::now();
 
     loop {
+        let mouth_a = make_osc_packet(send_to_vnyan, &mouth_params.0, 0.0);
+        let mouth_e = make_osc_packet(send_to_vnyan, &mouth_params.1, 0.0);
+
         performer
-            .send(BlendShape::new(&mouth_params.0, 0.0))
+            .send(mouth_a)
             .await
             .map_err(|e| e.to_string())?;
         performer
-            .send(BlendShape::new(&mouth_params.1, 0.0))
+            .send(mouth_e)
+            .await
+            .map_err(|e| e.to_string())?;
+        performer
+            .send(ApplyBlendShapes)
             .await
             .map_err(|e| e.to_string())?;
 
@@ -126,23 +191,26 @@ pub async fn update_vmc_connection(
 #[tauri::command]
 pub async fn send_vmc_mouth(
     mouth_data: BlendShapeMouthData,
+    send_to_vnyan: bool,
     vmc_state: tauri::State<'_, VMCState>,
 ) -> Result<(), String> {
     let performer = &vmc_state.performer;
 
+    let mouth_a = make_osc_packet(send_to_vnyan, &mouth_data.mouth_a_name, mouth_data.mouth_a_value);
+    let mouth_e = make_osc_packet(send_to_vnyan, &mouth_data.mouth_e_name, mouth_data.mouth_e_value);
+
     performer
-        .send(BlendShape::new(
-            mouth_data.mouth_a_name,
-            mouth_data.mouth_a_value,
-        ))
+        .send(mouth_a)
         .await
         .map_err(|e| e.to_string())?;
 
     performer
-        .send(BlendShape::new(
-            mouth_data.mouth_e_name,
-            mouth_data.mouth_e_value,
-        ))
+        .send(mouth_e)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    performer
+        .send(ApplyBlendShapes)
         .await
         .map_err(|e| e.to_string())?;
 

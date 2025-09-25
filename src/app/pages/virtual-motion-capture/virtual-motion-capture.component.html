@@ -6,11 +6,6 @@
     <span>This is implementing <strong>the VMC protocol</strong>, not the software.</span>
   </div>
 
-  <div class="warning red">
-    <span>Unsure as to why, but <strong>only V0 VRM models will work</strong>. V1 VRM models don't appear to receive mouth data.</span>
-    <span>If you use VSeeFace, make sure to enable [VMC receiver]</span>
-  </div>
-
   <app-label-block>
     <div header>Test Connection</div>
     <div sub-text>Send silent data for 5 seconds.</div>
@@ -35,13 +30,24 @@
 
   <hr/>
 
-  <div class="warning">
-    <span>These blendshapes are the ones your 3d rigger should have setup for your avatars mouth.</span>
+  <div [class]="`warning ${send_vnyan_params() ? 'orange' : ''}`">
+    @if (send_vnyan_params()) {
+      <span>Make sure to update your LAN, and update the port to reflect what's found in VNyan's Misc setting under "OSC Receiver Port".</span>
+      <span>Try 127.0.0.1 for the LAN!</span>
+    } @else {
+      <span>These blendshapes are the ones your 3d rigger should have setup for your avatars mouth.</span>
+    }
   </div>
 
   <app-label-block>
-    <div header>Blendshape value multiplier.</div>
-    <div sub-text>This value will be multiplied as a percentage against the blendshapes.</div>
+    <div header>Use VNyan Params</div>
+    <div sub-text>If enabled we'll send VNyan params instead of blendshapes.</div>
+    <app-toggle class="right" [control]="settings.controls.send_vnyan_params"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>{{ paramTypeDisplay() }} value multiplier.</div>
+    <div sub-text>This value will be multiplied as a percentage against the {{ paramTypeDisplay().toLowerCase() }}.</div>
     <div sub-text>The smaller the number, the smaller the mouth shapes.</div>
     <mat-slider [min]="0" [max]="200" [step]="1" discrete color="primary">
       <input matSliderThumb [formControl]="settings.controls.blendshape_modifier"/>
@@ -49,14 +55,14 @@
   </app-label-block>
 
   <app-label-block>
-    <div header>Blendshape Mouth A</div>
-    <div sub-text>The name of the blendshape for "mouth vowel A".</div>
+    <div header>{{ paramTypeDisplay() }} Mouth A</div>
+    <div sub-text>The name of the {{ paramTypeDisplay().toLowerCase() }} for "mouth vowel A".</div>
     <app-input [control]="settings.controls.mouth_a_param" type="text" placeholder="A"/>
   </app-label-block>
 
   <app-label-block>
-    <div header>Blendshape Mouth E</div>
-    <div sub-text>The name of the blendshape for "mouth vowel E".</div>
+    <div header>{{ paramTypeDisplay() }} Mouth E</div>
+    <div sub-text>The name of the {{ paramTypeDisplay().toLowerCase() }} for "mouth vowel E".</div>
     <app-input [control]="settings.controls.mouth_e_param" type="text" placeholder="E"/>
   </app-label-block>
 </div>

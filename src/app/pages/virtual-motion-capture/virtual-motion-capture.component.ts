@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { InputComponent } from "../../shared/components/input/input.component";
 import { LabelBlockComponent } from "../../shared/components/input-block/label-block.component";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -7,6 +7,7 @@ import { VirtualMotionCaptureProtocolService } from "../../shared/services/virtu
 import { ButtonComponent } from "../../shared/components/button/button.component";
 import { debounceTime } from "rxjs";
 import { MatSlider, MatSliderThumb } from "@angular/material/slider";
+import { ToggleComponent } from "../../shared/components/toggle/toggle.component";
 
 @Component({
   selector: 'app-virtual-motion-capture',
@@ -18,18 +19,24 @@ import { MatSlider, MatSliderThumb } from "@angular/material/slider";
     MatSlider,
     MatSliderThumb,
     ReactiveFormsModule,
+    ToggleComponent,
   ],
   templateUrl: './virtual-motion-capture.component.html',
   styleUrl: './virtual-motion-capture.component.scss',
 })
 export class VirtualMotionCaptureComponent {
   readonly #vmcService = inject(VirtualMotionCaptureProtocolService);
+  readonly send_vnyan_params = this.#vmcService.store.send_vnyan_params;
+  readonly paramTypeDisplay = computed(() => {
+    return this.#vmcService.store.send_vnyan_params() ? 'VNyan param' : 'Blendshape';
+  });
   readonly settings = new FormGroup({
     host: new FormControl('127.0.0.1', { nonNullable: true }),
     port: new FormControl(39539, { nonNullable: true }),
     blendshape_modifier: new FormControl(100, { nonNullable: true }),
     mouth_a_param: new FormControl('A', { nonNullable: true }),
     mouth_e_param: new FormControl('E', { nonNullable: true }),
+    send_vnyan_params: new FormControl(false, { nonNullable: true }),
   });
 
   constructor() {
@@ -43,9 +50,9 @@ export class VirtualMotionCaptureComponent {
       });
 
     effect(() => {
-      const { host, port, mouth_a_param, mouth_e_param, blendshape_modifier } = this.#vmcService.store.wholeState();
+      const state = this.#vmcService.store.wholeState();
 
-      this.settings.patchValue({ host, port, mouth_a_param, mouth_e_param, blendshape_modifier }, { emitEvent: false });
+      this.settings.patchValue({ ...state }, { emitEvent: false });
     });
   }
 
