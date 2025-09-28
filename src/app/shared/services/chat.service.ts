@@ -79,7 +79,7 @@ export class ChatService {
       this.hasChatCommandPermissions(user, this.openAIChat.permissions) &&
       !this.cooldowns.get(gptCooldownID)
     ) {
-      this.openaiService.generateOpenAIResponse(user.displayName, text, true);
+      this.openaiService.playOpenAIResponse(user.displayName, text, true);
       const duration = this.openAIChat.cooldown * 1000;
 
       // Handle cooldown if there is any.
@@ -105,7 +105,7 @@ export class ChatService {
      * If OpenAI is enabled then get the model to generate a response.
      */
     if (useOpenAI) {
-      this.openaiService.generateOpenAIResponse(displayName, text);
+      this.openaiService.playOpenAIResponse(displayName, text);
     } else {
       this.audioService.playTts(text, displayName, source, this.generalChat.charLimit);
     }

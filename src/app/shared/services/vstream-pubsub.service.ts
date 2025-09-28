@@ -65,12 +65,18 @@ export class VStreamPubSubService {
       this.vstreamService.followerSettings$,
     ])
       .pipe(takeUntilDestroyed())
-      .subscribe(([meteorShower, subscription, uplift, follower]) => {
-        this.meteorShowerSettings = meteorShower;
-        this.subscriptionSettings = subscription;
-        this.upliftSettings = uplift;
-        this.followerSettings = follower;
-      });
+      .subscribe(
+        ([
+           meteorShower,
+           subscription,
+           uplift,
+           follower,
+         ]) => {
+          this.meteorShowerSettings = meteorShower;
+          this.subscriptionSettings = subscription;
+          this.upliftSettings = uplift;
+          this.followerSettings = follower;
+        });
 
     this.openaiService.settings$
       .pipe(takeUntilDestroyed())
@@ -96,7 +102,9 @@ export class VStreamPubSubService {
 
           this.vstreamSocket$.unsubscribe();
 
-          this.vstreamSocket$ = webSocket(`${this.socketUrl}/${this.channelInfo.channelId}/events?authorization=${token.data.token}`);
+          this.vstreamSocket$ = webSocket(
+            `${this.socketUrl}/${this.channelInfo.channelId}/events?authorization=${token.data.token}`,
+          );
 
           this.vstreamSocket$.subscribe({
             next: (event) => this.handleEvent(event as VStreamEvents),
@@ -161,7 +169,7 @@ export class VStreamPubSubService {
     }
 
     if (enabledGpt) {
-      this.openaiService.generateOpenAIResponse(username, text);
+      this.openaiService.playOpenAIResponse(username, text);
     } else if (enabled) {
       this.audioService.playTts(
         text,

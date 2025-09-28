@@ -14,7 +14,7 @@ tauri-build = { workspace = true, features = [] }
 [dependencies]
 # Tauri
 tauri = { workspace = true }
-tauri-plugin-http = { workspace = true }
+tauri-plugin-http = "2"
 tauri-plugin-playback = { path = "../plugins/tauri-plugin-playback" }
 tauri-plugin-devtools = { git = "https://github.com/crabnebula-dev/devtools" }
 tauri-plugin-store = "2.1.0"

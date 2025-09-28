@@ -41,6 +41,8 @@ import { YoutubeService } from './shared/services/youtube.service';
 import { YoutubeFeatureState } from './shared/state/youtube/youtube.feature';
 import { VirtualMotionCaptureProtocolService } from "./shared/services/virtual-motion-capture-protocol.service";
 import { VirtualMotionCaptureState } from "./shared/state/virtual-motion-capture/virtual-motion-capture.feature";
+import { TtsHelperApiService } from "./shared/services/tts-helper-api.service";
+import { TtsHelperApiFeatureState } from "./shared/state/api/tts-helper-api.feature";
 
 async function saveToStore<T>(file: string, key: string, data: T) {
   const store = await load(file);
@@ -76,6 +78,7 @@ export class AppComponent {
   private readonly playbackService = inject(PlaybackService);
   private readonly twitchPubSub = inject(TwitchPubSub);
   private readonly twitchService = inject(TwitchService);
+  private readonly apiService = inject(TtsHelperApiService);
   private readonly vtubeStudioService = inject(VTubeStudioService);
   private readonly vstreamService = inject(VStreamService);
   private readonly vstreamPubSub = inject(VStreamPubSubService);
@@ -101,6 +104,7 @@ export class AppComponent {
       vstream: from(getFromStore<VStreamState>(this.settingsLocation, 'vstream')),
       virtualMotionCapture: from(getFromStore<VirtualMotionCaptureState>(this.settingsLocation, 'virtual-motion-capture')),
       appSettings: from(getFromStore<AppSettingsFeatureState>(this.settingsLocation, 'app-settings')),
+      ttsHelperApiSettings: from(getFromStore<TtsHelperApiFeatureState>(this.settingsLocation, 'tts-helper-api-settings')),
       watchStreak: from(getFromStore<WatchStreakFeatureState>(this.settingsLocation, 'watch-streak')),
       youtube: from(getFromStore<YoutubeFeatureState>(this.settingsLocation, 'youtube')),
     })
@@ -115,6 +119,7 @@ export class AppComponent {
           vtubeStudio,
           vstream,
           appSettings,
+          ttsHelperApiSettings,
           watchStreak,
           virtualMotionCapture,
           youtube,
@@ -131,6 +136,7 @@ export class AppComponent {
         this.handleWatchStreakData(watchStreak);
         this.handleYoutubeData(youtube);
         this.handleVirtualMotionCapture(virtualMotionCapture);
+        this.handleTtsHelperApiData(ttsHelperApiSettings);
       });
 
     /**
@@ -187,6 +193,12 @@ export class AppComponent {
       const state = this.virtualMotionCaptureService.store.wholeState();
 
       saveToStore(this.settingsLocation, 'virtual-motion-capture', state);
+    });
+
+    effect(() => {
+      const state = this.apiService.store.wholeState();
+
+      saveToStore(this.settingsLocation, 'tts-helper-api-settings', state);
     });
   }
 
@@ -291,6 +303,14 @@ export class AppComponent {
     }
 
     this.virtualMotionCaptureService.updateState(data.value);
+  }
+
+  handleTtsHelperApiData(data: { value: TtsHelperApiFeatureState } | undefined) {
+    if (!data || !data.value) {
+      return;
+    }
+
+    this.apiService.updateState(data.value);
   }
 
   handleVStreamData(data: { value: VStreamState } | undefined) {

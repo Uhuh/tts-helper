@@ -28,7 +28,6 @@ import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchService } from './twitch.service';
 import { SynthesizeSpeechInput } from '@aws-sdk/client-polly/dist-types/models/models_0';
-import { listen } from '@tauri-apps/api/event';
 
 @Injectable()
 export class AudioService {
@@ -91,14 +90,6 @@ export class AudioService {
     this.playback.audioFinished$
       .pipe(takeUntilDestroyed())
       .subscribe(id => this.store.dispatch(AudioActions.updateAudioState({ id, audioState: AudioStatus.finished })));
-
-    listen('api:play_tts', (event) => {
-      const data = event.payload as { username: string, platform: AudioSource, text: string, charLimit: number };
-
-      this.playTts(data.text, data.username, data.platform, data.charLimit);
-    }).catch(e => {
-      this.logService.add(`Failed to play tts for api request. ${JSON.stringify(e, null, 2)}`, 'error', 'AudioService.listen(api:play_tts)');
-    });
   }
 
   requeue(audio: AudioItem) {
@@ -293,7 +284,10 @@ export class AudioService {
     });
   }
 
-  private async getRequestData(text: string, customUserVoice?: Partial<CustomUserVoice>): Promise<RequestAudioData | null> {
+  private async getRequestData(
+    text: string,
+    customUserVoice?: Partial<CustomUserVoice>,
+  ): Promise<RequestAudioData | null> {
     const tts = customUserVoice?.ttsType ?? this.tts;
 
     switch (tts) {

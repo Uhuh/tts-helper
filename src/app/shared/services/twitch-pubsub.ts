@@ -47,10 +47,7 @@ export class TwitchPubSub {
   private readonly gptSettings$ = this.openaiService.settings$;
 
   constructor() {
-    combineLatest([
-      this.twitchService.token$,
-      this.twitchService.channelInfo$,
-    ])
+    combineLatest([this.twitchService.token$, this.twitchService.channelInfo$])
       .pipe(takeUntilDestroyed())
       .subscribe(async ([token, channelInfo]) => {
         this.cleanupListeners();
@@ -286,10 +283,7 @@ export class TwitchPubSub {
   private handleCustomUserVoiceRedeem(redeem: TwitchRedeem) {
     const { rewardId, userDisplayName: username, input } = redeem;
 
-    combineLatest([
-      this.configService.customUserVoiceRedeem$,
-      this.configService.customUserVoices$,
-    ])
+    combineLatest([this.configService.customUserVoiceRedeem$, this.configService.customUserVoices$])
       .pipe(
         first(),
         takeUntilDestroyed(this.destroyRef),
@@ -305,7 +299,11 @@ export class TwitchPubSub {
           return;
         }
 
-        const [tts, userLang, userVoice] = input.split(/\s*,\s*/g);
+        const [
+          tts,
+          userLang,
+          userVoice,
+        ] = input.split(/\s*,\s*/g);
         let ttsType: TtsType = 'stream-elements';
 
         this.logService.add(`User is setting custom voice. ${JSON.stringify({
@@ -403,10 +401,7 @@ export class TwitchPubSub {
   private handleRedeemTts(redeem: TwitchRedeem) {
     const { rewardId, userDisplayName, input } = redeem;
 
-    combineLatest([
-      this.redeemsSettings$,
-      this.gptSettings$,
-    ])
+    combineLatest([this.redeemsSettings$, this.gptSettings$])
       .pipe(first(), filter(([redeems, gpt]) => redeems.enabled || gpt.enabled))
       .subscribe(([redeems, gpt]) => {
         // Normal TTS.
@@ -421,7 +416,7 @@ export class TwitchPubSub {
 
         // If the streamer has GPT enabled, forward all TTS to ChatGPT.
         if (gpt.enabled && redeems.gptRedeem === rewardId) {
-          this.openaiService.generateOpenAIResponse(userDisplayName, input);
+          this.openaiService.playOpenAIResponse(userDisplayName, input);
         }
       });
   }

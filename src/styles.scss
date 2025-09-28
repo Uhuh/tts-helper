@@ -112,15 +112,19 @@ a {
 }
 
 .notification-error {
-  --mat-snackbar-container-color: #f23a2f;
+  @include mat.snack-bar-overrides((
+    container-color: #f23a2f,
+  ));
 }
 
 .notification-success {
-  --mat-snackbar-container-color: var(--green);
+  @include mat.snack-bar-overrides((
+      container-color: var(--green),
+  ));
 }
 
 .mat-mdc-snack-bar-container .mdc-snackbar__label,
-.mat-mdc-snack-bar-container
+.mat-mdc-snack-bar-container,
 .mat-mdc-button.mat-mdc-snack-bar-action:not(:disabled) {
   color: var(--text) !important;
 }

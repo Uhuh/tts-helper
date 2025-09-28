@@ -19,6 +19,10 @@
     "playback:allow-list-viewing-devices",
     "playback:allow-toggle-pause",
     "playback:allow-snapshot-monitor",
+    {
+      "identifier": "http:default",
+      "allow": [{ "url": "http://localhost:*/**/*" }, { "url": "https://localhost:*/**/*" }, { "url": "https://*/*" }]
+    },
     "cors-fetch:default",
     "shell:allow-open",
     "global-shortcut:default",

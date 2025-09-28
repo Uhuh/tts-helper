@@ -73,10 +73,12 @@ export class OpenAIService {
     this.personality$
       .pipe(takeUntilDestroyed())
       .subscribe(personality => {
-        this.systemLorePrompt = [{
-          role: 'system',
-          content: loreTemplateGenerator(personality),
-        }];
+        this.systemLorePrompt = [
+          {
+            role: 'system',
+            content: loreTemplateGenerator(personality),
+          },
+        ];
       });
 
     this.token$
@@ -191,7 +193,7 @@ export class OpenAIService {
     return imageB64Data;
   }
 
-  async captureScreen() {
+  async captureScreen(prompt: string | null = null) {
     combineLatest([this.vision$, this.viewingDevices$])
       .pipe(
         first(),
@@ -200,7 +202,7 @@ export class OpenAIService {
           const { viewingDevice } = vision;
 
           if (!viewingDevices.find(m => m.id === viewingDevice)) {
-            this.logService.add(`Couldn't find users selected monitor to capture. Is it possible they unplugged? ${JSON.stringify({
+            this.logService.add(`Couldn't find users selected monitor to capture. ${JSON.stringify({
               selectedMonitorId: viewingDevice,
               viewingDevices,
             })}`, 'error', 'OpenAI.captureScreen');
@@ -218,13 +220,13 @@ export class OpenAIService {
           }
 
           this.logService.add(`Captured users selected monitor`, 'info', 'PlaybackService.captureScreen');
-          return this.generateResponseToImage(imageB64Data);
+          return this.generateResponseToImage(imageB64Data, prompt);
         }),
       )
       .subscribe();
   }
 
-  async generateResponseToImage(dataB64: string) {
+  async generateResponseToImage(dataB64: string, prompt: string | null = null) {
     this.vision$
       .pipe(first(), takeUntilDestroyed(this.destroyRef))
       .subscribe(async (vision) => {
@@ -237,7 +239,11 @@ export class OpenAIService {
         }
 
         const promptsLength = vision.potentialPrompts.length;
-        const imageContext = vision.potentialPrompts[Math.floor(Math.random() * promptsLength)] ?? `Give a short description about what's in this image, or a snarky remark about the contents of it.`;
+        const imageContext =
+          prompt
+            ? prompt
+            : vision.potentialPrompts[Math.floor(Math.random() * promptsLength)]
+            ?? `Give a short description about what's in this image, or a snarky remark about the contents of it.`;
 
         const response = await this.openAIApi.chat.completions.create({
           model: this.settings.model,
@@ -290,13 +296,29 @@ export class OpenAIService {
       });
   }
 
-  async generateOpenAIResponse(user: string, text: string, isCommand = false) {
+  async playOpenAIResponse(user: string, text: string, isCommand = false) {
+    if (!this.chatSettings) {
+      return this.logService.add(`Missing GPT chat settings, ignoring request.`, 'info', 'OpenAIService.playOpenAIResponse');
+    }
+
+    this.logService.add(`Generating a response for user [${user}] with content [${text}]`, 'info', 'OpenAIService.playOpenAIResponse');
+
+    const response = await this.generateOpenAIResponse(user, text, isCommand);
+
+    if (!response) {
+      return;
+    }
+
+    this.audioService.playTts(response, 'ChatGPT', 'gpt', this.chatSettings.charLimit, true);
+  }
+
+  async generateOpenAIResponse(user: string, text: string, isCommand = false): Promise<string | null> {
     if (
       !this.settings ||
       !this.chatSettings ||
       !this.openAIApi
     ) {
-      return;
+      return null;
     }
 
     this.logService.add(`Attempting to generate OpenAI content.`, 'info', 'OpenAI.generateOpenAIResponse');
@@ -324,7 +346,7 @@ export class OpenAIService {
 
       if (!message || !message.content) {
         this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(message, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
-        return console.info('OpenAI failed to respond.');
+        return null;
       }
 
       this.logService.add(`Generated response: ${message.content}.`, 'info', 'OpenAI.generateOpenAIResponse');
@@ -340,12 +362,12 @@ export class OpenAIService {
       // Continue to slice the history to save the user tokens when making request.
       this.gptHistory = this.gptHistory.slice(-1 * (this.settings?.historyLimit ?? 0));
 
-      this.audioService.playTts(message.content, 'ChatGPT', 'gpt', this.chatSettings.charLimit, true);
+      return message.content;
     } catch (e) {
       this.logService.add(`OpenAI failed to respond.\n${JSON.stringify(e, undefined, 2)}`, 'error', 'OpenAIService.gptHandler');
 
       // Anytime OpenAI might have API issues just respond with this.
-      this.audioService.playTts('My brain is all fuzzy...', 'ChatGPT', 'gpt', this.chatSettings.charLimit, true);
+      return 'My brain is all fuzzy...';
     }
   }
 }

@@ -1,0 +1,53 @@
+<cdk-accordion>
+  <cdk-accordion-item
+      #accordionItem="cdkAccordionItem"
+      role="button"
+      tabindex="0"
+      [attr.aria-expanded]="accordionItem.expanded"
+  >
+    <div class="command-header" (click)="accordionItem.toggle()">
+      <div>
+        {{ source().uri }}
+      </div>
+      <mat-icon>
+        {{ accordionItem.expanded ? 'expand_more' : 'chevron_left' }}
+      </mat-icon>
+    </div>
+    <div
+      role="region"
+      [style.display]="accordionItem.expanded ? 'block' : 'none'"
+    >
+      <div class="command-body">
+        <hr/>
+
+        <div class="header">
+          <span>Basics</span>
+          <app-button [style]="'danger'" (click)="deleteSource()">
+            Delete
+          </app-button>
+        </div>
+
+        <app-label-block>
+          <div header>URI</div>
+          <div sub-text>The URI that we'll send a POST request to.</div>
+          <app-input [control]="settings.controls.uri" placeholder="http://localhost:3000/api" type="text"/>
+        </app-label-block>
+
+        <div class="warning orange">
+          <span>For this first pass, all content-type is going to be asserted as JSON.</span>
+          <span>All request body's must be in VALID JSON format.</span>
+          <span>Make sure you use proper quotes around keys and values.</span>
+          <span>Make sure to religiously check logs while testing these.</span>
+        </div>
+
+        <app-label-block>
+          <div header>Body</div>
+          <div sub-text>The body of the request.</div>
+          <div sub-text class="yellow">Use &#123;text&#125; and we'll replace it with the AI response.</div>
+          <textarea [formControl]="settings.controls.body" [placeholder]='`{ "text": "{text}" }`' type="text"></textarea>
+        </app-label-block>
+      </div>
+    </div>
+  </cdk-accordion-item>
+</cdk-accordion>
+

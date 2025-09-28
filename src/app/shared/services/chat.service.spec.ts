@@ -53,7 +53,7 @@ describe('ChatService', () => {
 
     openaiChatSubject = new Subject();
 
-    openaiServiceStub = jasmine.createSpyObj('OpenAIService', ['generateOpenAIResponse'], {
+    openaiServiceStub = jasmine.createSpyObj('OpenAIService', ['playOpenAIResponse'], {
       chatSettings$: openaiChatSubject,
     });
 
@@ -100,7 +100,7 @@ describe('ChatService', () => {
     expect(audioServiceStub.playTts).toHaveBeenCalled();
   });
 
-  it('should generateOpenAIResponse for chat command', () => {
+  it('should playOpenAIResponse for chat command', () => {
     // Arrange
     service.openAIChat.enabled = true;
     service.openAIChat.permissions.allUsers = true;
@@ -110,7 +110,7 @@ describe('ChatService', () => {
     service.onMessage(message, 'vstream');
 
     // Assert
-    expect(openaiServiceStub.generateOpenAIResponse).toHaveBeenCalled();
+    expect(openaiServiceStub.playOpenAIResponse).toHaveBeenCalled();
   });
 
   it('should set general command cooldown and unset after its finished', (done) => {
@@ -148,7 +148,7 @@ describe('ChatService', () => {
       // Assert
       expect(audioServiceStub.playTts).toHaveBeenCalledTimes(0);
       // Even though we said false to useOpenAI, make sure it's not calling it.
-      expect(openaiServiceStub.generateOpenAIResponse).toHaveBeenCalledTimes(0);
+      expect(openaiServiceStub.playOpenAIResponse).toHaveBeenCalledTimes(0);
     });
 
     it('should playTts when random chance passes', () => {
@@ -158,15 +158,15 @@ describe('ChatService', () => {
       // Assert
       expect(audioServiceStub.playTts).toHaveBeenCalled();
       // Even though we said false to useOpenAI, make sure it's not calling it.
-      expect(openaiServiceStub.generateOpenAIResponse).toHaveBeenCalledTimes(0);
+      expect(openaiServiceStub.playOpenAIResponse).toHaveBeenCalledTimes(0);
     });
 
-    it('should generateOpenAIResponse when random chance passes', () => {
+    it('should playOpenAIResponse when random chance passes', () => {
       // Act
       service.randomChance(message, 100, true, 'vstream');
 
       // Assert
-      expect(openaiServiceStub.generateOpenAIResponse).toHaveBeenCalled();
+      expect(openaiServiceStub.playOpenAIResponse).toHaveBeenCalled();
       // Make sure only openAI is being run.
       expect(audioServiceStub.playTts).toHaveBeenCalledTimes(0);
     });

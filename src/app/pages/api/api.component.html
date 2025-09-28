@@ -1,0 +1,32 @@
+<div class="header">
+  <span>API Settings</span>
+</div>
+<div class="section">
+  <div class="warning">
+    <span>Visit our <a href="https://tts-helper.com/tts-api.html" target="_blank">API page</a> to learn what our API's are.</span>
+  </div>
+
+  <hr/>
+
+  <div class="header">
+    <span>AI Response sources</span>
+  </div>
+
+  <div class="warning red">
+    <span>Anytime the API <code>/ai-response</code> is triggered, TTS Helper will send the OpenAI generated text to ALL the listed sources here.</span>
+  </div>
+
+  <app-label-block>
+    <div header>Create new source</div>
+    <div sub-text>Creates a new source.</div>
+    <app-button class="right" (click)="createOutboundSource()">Create</app-button>
+  </app-label-block>
+
+  @for (source of sources(); track source.id) {
+    <app-edit-outbound-source [source]="source" />
+  } @empty {
+    <div class="empty">
+      No sources created!
+    </div>
+  }
+</div>

@@ -28,11 +28,19 @@ async fn listen(app: AppHandle) -> anyhow::Result<()> {
         .allow_headers(vec![CONTENT_TYPE, AUTHORIZATION, ACCEPT])
         .allow_origin("*".parse::<HeaderValue>().unwrap());
 
-    let app = Router::new().route("/tts", post(play_tts)).layer(
-        ServiceBuilder::new()
-            .layer(cors)
-            .layer(Extension(app.clone())),
-    );
+    let app = Router::new()
+        .route("/tts", post(create_tts_audio))
+        .route("/ai-tts", post(create_ai_tts_audio))
+        .route("/ai-response", post(get_ai_response))
+        .route("/react-ai-image", post(react_ai_image))
+        .route("/trigger-ai-vision", post(trigger_ai_vision))
+        .route("/toggle-pause-status", post(toggle_pause_status))
+        .route("/skip-current-playing", post(skip_current_playing))
+        .layer(
+            ServiceBuilder::new()
+                .layer(cors)
+                .layer(Extension(app.clone())),
+        );
 
     const PORT: u16 = 12589;
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{PORT}"))
@@ -44,20 +52,57 @@ async fn listen(app: AppHandle) -> anyhow::Result<()> {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(rename_all = "camelCase")]
 pub struct TtsRequest {
     pub username: String,
     pub platform: String,
     pub text: String,
-    pub char_limit: u16,
+    pub char_limit: Option<u16>,
 }
 
-/**
-* @TODO - Handle RAW sound bytes
-EG: VStream sound commands
-*/
-async fn play_tts(Extension(app): Extension<AppHandle>, Json(request): Json<TtsRequest>) {
+async fn create_tts_audio(Extension(app): Extension<AppHandle>, Json(request): Json<TtsRequest>) {
     println!("received tts play request: {:?}", request);
 
-    let _ = app.emit("api:play_tts", request);
+    let _ = app.emit("api:create_tts_audio", request);
+}
+
+async fn create_ai_tts_audio(Extension(app): Extension<AppHandle>, Json(request): Json<TtsRequest>) {
+    println!("received ai-tts play request: {:?}", request);
+
+    let _ = app.emit("api:create_ai_tts_audio", request);
+}
+
+async fn trigger_ai_vision(Extension(app): Extension<AppHandle>, Json(request): Json<TtsRequest>) {
+    println!("received trigger_ai_vision request: {:?}", request);
+
+    let _ = app.emit("api:trigger_ai_vision", request);
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct ImageRequest {
+    pub text: Option<String>,
+    pub image: String
+}
+
+async fn react_ai_image(Extension(app): Extension<AppHandle>, Json(request): Json<ImageRequest>) {
+    println!("received react_ai_image request: {:?}", request);
+
+    let _ = app.emit("api:react_ai_image", request);
+}
+
+async fn get_ai_response(Extension(app): Extension<AppHandle>, Json(request): Json<TtsRequest>) {
+    println!("received get_ai_response response for request: {:?}", request);
+
+    let _ = app.emit("api:get_ai_response", request);
+}
+
+async fn toggle_pause_status(Extension(app): Extension<AppHandle>) {
+    println!("received toggle_pause_status toggle request");
+
+    let _ = app.emit("api:toggle_pause_status", ());
+}
+
+async fn skip_current_playing(Extension(app): Extension<AppHandle>) {
+    println!("received skip_current_playing skip request");
+
+    let _ = app.emit("api:skip_current_playing", ());
 }

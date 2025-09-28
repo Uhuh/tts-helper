@@ -49,7 +49,9 @@
         }
       </div>
     }
+
     <hr />
+
     <div class="nav-group">
       <span>Text to Speech</span>
       <a [routerLink]="['settings']" routerLinkActive="active">
@@ -85,7 +87,9 @@
         <span>Queue</span>
       </a>
     </div>
+
     <hr />
+
     <div class="nav-group">
       <span>Speech to Text</span>
       <a [routerLink]="['azure-settings']" routerLinkActive="active">
@@ -93,9 +97,15 @@
         <span>Settings</span>
       </a>
     </div>
+
     <hr />
+
     <div class="nav-group">
       <span>Misc</span>
+      <a [routerLink]="['api']" routerLinkActive="active">
+        <mat-icon class="tts-icon">api</mat-icon>
+        <span>API</span>
+      </a>
       <a [routerLink]="['watch-streak']" routerLinkActive="active">
         <mat-icon class="tts-icon">visibility</mat-icon>
         <span>Watch Streak</span>

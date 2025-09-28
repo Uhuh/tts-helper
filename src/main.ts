@@ -36,6 +36,7 @@ import { AppSettingsFeature } from './app/shared/state/app-settings/app-settings
 import { AppSettingsService } from './app/shared/services/app-settings.service';
 import { WatchStreakFeature } from './app/shared/state/watch-streak/watch-streak.feature';
 import { VirtualMotionCaptureProtocolService } from "./app/shared/services/virtual-motion-capture-protocol.service";
+import { TtsHelperApiService } from "./app/shared/services/tts-helper-api.service";
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -62,6 +63,7 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideRouter(routes),
+    TtsHelperApiService,
     AppSettingsService,
     AzureSttService,
     AudioService,

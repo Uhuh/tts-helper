@@ -58,7 +58,7 @@ pub struct BlendShapeMouthData {
 }
 
 fn make_osc_packet(send_to_vnyan: bool, param: &String, value: f32) -> MyOscPacket {
-    if (send_to_vnyan) {
+    if send_to_vnyan {
         MyOscPacket::VNyan(VNyanParam::new(&param, value))
     } else {
         MyOscPacket::Blend(BlendShape::new(&param, value))

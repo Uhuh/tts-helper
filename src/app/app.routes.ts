@@ -74,6 +74,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/watch-streak/watch-streak.component'),
   },
   {
+    path: 'api',
+    loadComponent: () => import('./pages/api/api.component'),
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',
