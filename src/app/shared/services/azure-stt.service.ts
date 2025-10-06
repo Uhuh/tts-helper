@@ -164,6 +164,10 @@ export class AzureSttService {
       // Close this immediately to prevent any running audio charges.
       speechRecognizer.close();
       this.isCurrentlyListening = false;
+    }, (e) => {
+      console.error(e);
+      this.isCurrentlyListening = false;
+      this.logService.add(`Failed to recognize users speech. ${JSON.stringify(e, null, 2)}`, 'error', 'AzureStt.captureSpeech');
     });
   }
 
