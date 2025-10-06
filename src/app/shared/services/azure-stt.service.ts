@@ -46,7 +46,11 @@ export class AzureSttService {
       this.region$,
       this.language$,
     ]).pipe(takeUntilDestroyed(), skip(3))
-      .subscribe(([key, region, language]) => {
+      .subscribe(([
+key,
+region,
+language,
+]) => {
         if (!key || !region || !language) {
           this.logService.add(`Missing required values for speechConfig. ${JSON.stringify({
             key,
@@ -206,6 +210,6 @@ export class AzureSttService {
    * @private
    */
   private sendRecognizedText(text: string) {
-    this.openaiService.generateOpenAIResponse(this.twitchUsername, text);
+    this.openaiService.playOpenAIResponse(this.twitchUsername, text);
   }
 }
