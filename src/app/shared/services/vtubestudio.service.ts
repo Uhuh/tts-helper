@@ -14,7 +14,7 @@ import { PlaybackService } from './playback.service';
 import { Store } from '@ngrx/store';
 import { VTubeStudioFeature, VTubeStudioState } from '../state/vtubestudio/vtubestudio.feature.';
 import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
-import { BehaviorSubject, first } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, first, map } from 'rxjs';
 import { TtsType } from '../state/config/config.feature';
 
 @Injectable()
@@ -108,8 +108,13 @@ export class VTubeStudioService {
         }
       });
 
-    this.configService.authTokens$.pipe(takeUntilDestroyed())
-      .subscribe((tokens) => this.vtsAuthToken = tokens.vtsAuthToken);
+    this.configService.authTokens$
+      .pipe(
+        takeUntilDestroyed(),
+        map(tokens => tokens.vtsAuthToken),
+        distinctUntilChanged(),
+      )
+      .subscribe((token) => this.verifyAuthToken(token));
 
     this.playbackService.audioStarted$
       .pipe(takeUntilDestroyed())
@@ -164,7 +169,7 @@ export class VTubeStudioService {
       }
 
       this.logService.add(
-        `VTS WS connection opened. \n${JSON.stringify(event, undefined, 2)}`,
+        `VTS WS connection opened. ${this.vtsAuthToken} \n${JSON.stringify(event, undefined, 2)}`,
         'info',
         'VTubeStudioService',
       );
@@ -275,7 +280,7 @@ export class VTubeStudioService {
 
     // Obviously if the socket is dead ignore all intervals.
     if (readyState === CLOSED || readyState === CLOSING || readyState === CONNECTING) {
-      return;
+      return console.log(`Ignoring VTS Auth Token due to ready state:`, readyState);
     }
 
     // Assume the token is valid and assign here.

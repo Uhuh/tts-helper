@@ -31,7 +31,8 @@ export class TwitchPubSub {
   private readonly clientId = 'fprxp4ve0scf8xg6y48nwcq1iogxuq';
 
   listener: EventSubWsListener | null = null;
-  chat: ChatClient | null = null;
+  chatListener: ReturnType<ChatClient['onMessage']> | null = null;
+  chatClient: ChatClient | null = null;
   apiClient: ApiClient | null = null;
   isStreamerLive = false;
 
@@ -47,9 +48,65 @@ export class TwitchPubSub {
   private readonly gptSettings$ = this.openaiService.settings$;
 
   constructor() {
-    combineLatest([this.twitchService.token$, this.twitchService.channelInfo$])
+    combineLatest({
+      token: this.twitchService.token$,
+      username: this.twitchService.username$,
+    })
       .pipe(takeUntilDestroyed())
-      .subscribe(async ([token, channelInfo]) => {
+      .subscribe(async ({ token, username }) => {
+        if (this.chatListener) {
+          this.chatClient?.removeListener(this.chatListener);
+          this.chatListener = null;
+        }
+
+        if (!token || !username) {
+          return;
+        }
+
+        const authProvider = new StaticAuthProvider(this.clientId, token);
+        const apiClient = new ApiClient({ authProvider });
+
+        this.chatClient = new ChatClient({
+          authProvider,
+          channels: [username],
+        });
+
+        this.chatClient.connect();
+
+        const streamer = await apiClient.users.getUserByName(username).catch();
+        const stream = await streamer?.getStream();
+
+        /**
+         * If the user decides to open TTS Helper AFTER they started streaming, let's see if they're live to record
+         * the stream date.
+         */
+        if (stream?.type === 'live') {
+          this.chatService.logStreamStart();
+          this.isStreamerLive = true;
+        }
+
+        this.chatListener = this.chatClient.onMessage((_, _u, text, msg) => {
+          /**
+           * Only record user messages when the streamer is actually streaming.
+           */
+          if (this.isStreamerLive) {
+            this.chatService.handleWatchStreak({
+              id: msg.userInfo.userId,
+              displayName: msg.userInfo.displayName,
+              isSubscriber: msg.userInfo.isSubscriber || msg.userInfo.isVip,
+            });
+          }
+
+          this.handleMessage(msg.userInfo, text);
+        });
+      });
+
+    combineLatest({
+      token: this.twitchService.token$,
+      channelInfo: this.twitchService.channelInfo$,
+    })
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ token, channelInfo }) => {
         this.cleanupListeners();
         if (!token || !channelInfo.channelId) {
           return;
@@ -67,39 +124,6 @@ export class TwitchPubSub {
         this.listener = new EventSubWsListener({ apiClient });
         this.listener.start();
 
-        this.chat = new ChatClient({
-          authProvider,
-          channels: [channelInfo.username],
-        });
-
-        this.chat.connect();
-
-        const streamer = await apiClient.users.getUserByName(channelInfo.username).catch();
-        const stream = await streamer?.getStream();
-
-        /**
-         * If the user decides to open TTS Helper AFTER they started streaming, let's see if they're live to record
-         * the stream date.
-         */
-        if (stream?.type === 'live') {
-          this.chatService.logStreamStart();
-          this.isStreamerLive = true;
-        }
-
-        this.chat.onMessage((_, _u, text, msg) => {
-          /**
-           * Only record user messages when the streamer is actually streaming.
-           */
-          if (this.isStreamerLive) {
-            this.chatService.handleWatchStreak({
-              id: msg.userInfo.userId,
-              displayName: msg.userInfo.displayName,
-              isSubscriber: msg.userInfo.isSubscriber || msg.userInfo.isVip,
-            });
-          }
-
-          this.handleMessage(msg.userInfo, text);
-        });
         this.listener.onChannelCheer(channelId, (cheer) => this.handleBits(cheer));
         this.listener.onChannelFollow(channelId, channelId, (user) => this.handleFollow(user));
         this.listener.onChannelRedemptionAdd(channelId, (c) => this.handleRedeem(c));

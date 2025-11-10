@@ -16,7 +16,7 @@ export const TwitchStateActions = createActionGroup({
     'Update Token': props<{ token: string | null }>(),
     'Update Settings': props<{ partialState: Partial<TwitchSettingsState> }>(),
     'Update Redeems': props<{ redeems: TwitchRedeemInfo[] }>(),
-    'Update State': props<{ twitchState: TwitchState }>(),
+    'Update State': props<{ twitchState: Partial<TwitchState> }>(),
     'Update Is Token Valid': props<{ isTokenValid: boolean }>(),
     'Update Channel Info': props<{ channelInfo: TwitchChannelInfo }>(),
 

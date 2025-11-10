@@ -21,6 +21,8 @@ export class YoutubeService {
     effect(() => {
       const channelId = this.youtubeStore.channelId();
 
+      this.#liveChat?.removeAllListeners();
+
       this.#liveChat = new LiveChat({ channelId });
 
       this.#initializeListeners();

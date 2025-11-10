@@ -27,10 +27,7 @@ export class AuthComponent {
   isTokenValid = toSignal(this.twitchService.isTokenValid$);
 
   constructor() {
-    combineLatest([
-      this.twitchService.isTokenValid$,
-      this.twitchService.token$,
-    ])
+    combineLatest([this.twitchService.isTokenValid$, this.twitchService.token$])
       .pipe(takeUntilDestroyed())
       .subscribe(([isTokenValid, token]) => {
         if (!token) {

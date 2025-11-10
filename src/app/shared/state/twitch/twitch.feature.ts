@@ -79,19 +79,19 @@ const initialState: TwitchState = {
       enabled: true,
       readMessageEnabled: false,
       characterLimit: 300,
-      customMessage: 'Thanks {username} for the {amount} subs!',
+      customMessage: 'Thanks {username} for the {tier} subs!',
     },
     renew: {
       enabled: true,
       readMessageEnabled: false,
       characterLimit: 300,
-      customMessage: 'Thanks {username} for the tier {amount} sub!',
+      customMessage: 'Thanks {username} for the tier {tier} sub!',
     },
   },
   follower: {
     enabled: false,
     enabledGpt: false,
-    customMessage: 'Thanks {username} for following',
+    customMessage: 'Thanks {username} for following!',
   },
   channelInfo: {
     channelId: '',
@@ -119,9 +119,6 @@ export const TwitchFeature = createFeature({
     on(TwitchStateActions.updateState, (state, { twitchState }) => ({
       ...state,
       ...twitchState,
-      channelInfo: {
-        ...twitchState.channelInfo,
-      },
     })),
     on(TwitchStateActions.updateSettings, (state, { partialState }) => ({
       ...state,
@@ -192,13 +189,19 @@ export const TwitchFeature = createFeature({
         ...partialSettings,
       },
     })),
-    on(TwitchStateActions.resetState, () => ({
-      ...initialState,
+    on(TwitchStateActions.resetState, (state) => ({
+      ...state,
+      token: '',
+      isTokenValid: false,
+      channelInfo: {
+        ...initialState.channelInfo,
+      },
     })),
   ),
   extraSelectors: ({
     selectChannelInfo,
   }) => ({
     selectRedeems: createSelector(selectChannelInfo, channelInfo => channelInfo.redeems),
+    selectUsername: createSelector(selectChannelInfo, channelInfo => channelInfo.username),
   }),
 });

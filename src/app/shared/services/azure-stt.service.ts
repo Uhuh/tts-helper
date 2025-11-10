@@ -47,10 +47,10 @@ export class AzureSttService {
       this.language$,
     ]).pipe(takeUntilDestroyed(), skip(3))
       .subscribe(([
-key,
-region,
-language,
-]) => {
+        key,
+        region,
+        language,
+      ]) => {
         if (!key || !region || !language) {
           this.logService.add(`Missing required values for speechConfig. ${JSON.stringify({
             key,
@@ -89,13 +89,39 @@ language,
   }
 
   async checkHotKey(hotkey: string) {
+    this.logService.add(
+      `Hotkey being unregistered and re-registered.`,
+      'info',
+      'AzureStt.checkHotKey',
+    );
+
     /**
      * Due to the user being able to CTRL + R we need to re register it or else it'll break if they CTRL + R.
      */
     await unregister(hotkey);
 
     await register(hotkey, () => {
+      this.logService.add(
+        `Hotkey was triggered.`,
+        'info',
+        'AzureStt.checkHotKey',
+      );
+
       this.captureSpeech();
+    }).catch(e => {
+      console.error(e);
+
+      this.logService.add(
+        `Failed to register hotkey..`,
+        'error',
+        'AzureStt.checkHotKey',
+      );
+
+      this.logService.add(
+        e.toString(),
+        'error',
+        'AzureStt.checkHotKey',
+      );
     });
   }
 

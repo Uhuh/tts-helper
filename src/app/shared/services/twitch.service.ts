@@ -25,6 +25,7 @@ export class TwitchService {
 
   public readonly state$ = this.store.select(TwitchFeature.selectTwitchStateState);
   public readonly token$ = this.store.select(TwitchFeature.selectToken);
+  public readonly username$ = this.store.select(TwitchFeature.selectUsername);
   public readonly redeems$ = this.store.select(TwitchFeature.selectRedeems);
   public readonly isTokenValid$ = this.store.select(TwitchFeature.selectIsTokenValid);
   public readonly channelInfo$ = this.store.select(TwitchFeature.selectChannelInfo);
@@ -99,17 +100,17 @@ export class TwitchService {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         switchMap((user) => {
-          this.store.dispatch(TwitchStateActions.updateToken({ token }));
-          this.store.dispatch(TwitchStateActions.updateIsTokenValid({ isTokenValid: true }));
-          this.store.dispatch(
-            TwitchStateActions.updateChannelInfo({
+          this.store.dispatch(TwitchStateActions.updateState({
+            twitchState: {
+              token,
+              isTokenValid: true,
               channelInfo: {
                 username: user.login,
                 channelId: user.user_id,
                 redeems: [],
               },
-            }),
-          );
+            },
+          }));
 
           this.logService.add(`Successfully signed in with access token.`, 'info', 'TwitchService.constructor');
 
@@ -117,7 +118,8 @@ export class TwitchService {
         }),
         catchError(error => {
           /**
-           * This will only return 403 if the user is NOT an affiliate and we try to get redeems they don't have.
+           * If the user is NOT an affiliate and we try to get redeems, Twitch returns a 403
+           * If anything that is NOT a 403, let's assume we're in a bad state and clear the login status.
            */
           if (error?.error?.status !== 403) {
             this.clearState();
