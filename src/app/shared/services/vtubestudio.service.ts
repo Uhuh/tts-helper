@@ -17,6 +17,16 @@ import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
 import { BehaviorSubject, distinctUntilChanged, first, map } from 'rxjs';
 import { TtsType } from '../state/config/config.feature';
 
+interface VTSAPIError {
+  apiName: string;
+  apiVersion: string;
+  messageType: string;
+  data: {
+    errorID: number;
+    message: string;
+  };
+}
+
 @Injectable()
 export class VTubeStudioService {
   private readonly store = inject(Store);
@@ -51,9 +61,11 @@ export class VTubeStudioService {
   isMouthFormEnabled = false;
   isAudioPlaying = false;
 
+  private readonly POLL_INTERVAL = 2000;
+
   // Try to connect to default.
   private port = 8001;
-  private socket = new WebSocket(`ws://localhost:8001`);
+  private socket!: WebSocket;
   private vtsAuthToken = '';
   private authenticationRequestUUID = uuid();
 
@@ -81,7 +93,9 @@ export class VTubeStudioService {
           'VTubeStudioService',
         );
 
-        this.socket.close();
+        if (this.socket && this.socket.readyState !== WebSocket.CLOSED) {
+          this.socket.close();
+        }
 
         this.setupSocketHandlers();
       });
@@ -114,7 +128,7 @@ export class VTubeStudioService {
         map(tokens => tokens.vtsAuthToken),
         distinctUntilChanged(),
       )
-      .subscribe((token) => this.verifyAuthToken(token));
+      .subscribe((token) => this.vtsAuthToken = token);
 
     this.playbackService.audioStarted$
       .pipe(takeUntilDestroyed())
@@ -161,18 +175,14 @@ export class VTubeStudioService {
   private setupSocketHandlers() {
     this.socket = new WebSocket(`ws://localhost:${this.port}`);
 
-    this.socket.addEventListener('open', (event) => {
-      // Check if VTS is already authenticated.
-      if (this.vtsAuthToken) {
-        // Verify token in state
-        this.verifyAuthToken(this.vtsAuthToken);
-      }
-
+    this.socket.addEventListener('open', () => {
       this.logService.add(
-        `VTS WS connection opened. ${this.vtsAuthToken} \n${JSON.stringify(event, undefined, 2)}`,
+        `VTS WS connection opened.`,
         'info',
         'VTubeStudioService',
       );
+
+      this.pollForAuth();
     });
 
     this.socket.addEventListener('message', (event) => {
@@ -209,7 +219,6 @@ export class VTubeStudioService {
         this.logService.add('Connection to VTS closed.', 'info', 'VTubeStudioService');
       }
 
-      this.socket.close();
       this.isConnected$.next(false);
 
       // If the user has authed with us before just assume they want us to auto connect.
@@ -231,6 +240,28 @@ export class VTubeStudioService {
         );
       }
     });
+  }
+
+  private pollForAuth() {
+    if (this.isConnected$.value) {
+      return;
+    }
+
+    const { readyState, OPEN } = this.socket;
+
+    if (readyState !== OPEN) {
+      return setTimeout(() => this.pollForAuth(), this.POLL_INTERVAL);
+    }
+
+    if (this.vtsAuthToken) {
+      this.verifyAuthToken(this.vtsAuthToken);
+      this.logService.add('Attempting VTS Auth Token verification...', 'info', 'VTubeStudioService');
+    } else {
+      this.requestUserAuth();
+      this.logService.add('Attempting VTS Auth Request...', 'info', 'VTubeStudioService');
+    }
+
+    setTimeout(() => this.pollForAuth(), this.POLL_INTERVAL);
   }
 
   /**
@@ -276,11 +307,8 @@ export class VTubeStudioService {
    * @param authenticationToken VTS Token
    */
   private verifyAuthToken(authenticationToken: string) {
-    const { readyState, CLOSED, CLOSING, CONNECTING } = this.socket;
-
-    // Obviously if the socket is dead ignore all intervals.
-    if (readyState === CLOSED || readyState === CLOSING || readyState === CONNECTING) {
-      return console.log(`Ignoring VTS Auth Token due to ready state:`, readyState);
+    if (this.socket.readyState !== WebSocket.OPEN) {
+      return this.logService.add(`Ignoring VTS Auth Token request: Socket not open.`, 'info', 'VTubeStudioService');
     }
 
     // Assume the token is valid and assign here.
@@ -301,10 +329,7 @@ export class VTubeStudioService {
    * @private
    */
   private requestUserAuth() {
-    const { readyState, CLOSED, CLOSING, CONNECTING } = this.socket;
-
-    // Obviously if the socket is dead ignore all intervals.
-    if (readyState === CLOSED || readyState === CLOSING || readyState === CONNECTING) {
+    if (this.socket.readyState !== WebSocket.OPEN) {
       return;
     }
 
@@ -324,10 +349,7 @@ export class VTubeStudioService {
    * @private
    */
   private requestUserMouthInfo(name: VTubeStudioMessageType.MouthOpen | VTubeStudioMessageType.MouthSmile) {
-    const { readyState, CLOSED, CLOSING, CONNECTING } = this.socket;
-
-    // Obviously if the socket is dead ignore all intervals.
-    if (readyState === CLOSED || readyState === CLOSING || readyState === CONNECTING) {
+    if (this.socket.readyState !== WebSocket.OPEN) {
       return;
     }
 
@@ -378,6 +400,17 @@ export class VTubeStudioService {
   }
 
   private handleAPIError(data: unknown) {
+    const errorData = data as VTSAPIError;
+
+    if (errorData?.data?.errorID === 51) {
+      this.logService.add(
+        `Ignoring VTS API Error ID 51 (Authentication pending).`,
+        'info',
+        'VTubeStudioService.handleAPIError',
+      );
+      return;
+    }
+
     this.logService.add(
       `API Error. \n${JSON.stringify(data, undefined, 2)}`,
       'error',
@@ -488,12 +521,12 @@ export class VTubeStudioService {
     const { readyState, CLOSED } = this.socket;
 
     // If the socket is closed and the user is trying to auth, try to bring the websocket back to life.
-    if (readyState === CLOSED) {
+    if (readyState === CLOSED || !this.socket) {
       this.setupSocketHandlers();
     }
 
-    // Assuming the above is true, we need to wait for the socket to come alive. Wait an arbitrary amount of time before authing.
-    setTimeout(() => this.requestUserAuth(), 1000);
+    // Start polling immediately if the socket is being set up or is connecting.
+    this.pollForAuth();
   }
 
   /**
