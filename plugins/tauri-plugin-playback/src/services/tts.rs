@@ -2,14 +2,14 @@ use base64::{Engine as _, engine::general_purpose};
 use bytes::Bytes;
 use serde::Deserialize;
 use serde_json::json;
-use tauri::http::status::{InvalidStatusCode, StatusCode};
+use tauri::http::{header::USER_AGENT, status::{InvalidStatusCode, StatusCode}};
 use thiserror::Error;
 use tracing::error;
-use tauri_plugin_http::reqwest::Client;
+use tauri_plugin_http::reqwest::{self, Client};
 use crate::models::requests::{AmazonPollyData, ElevenLabsData, StreamElementsData, TikTokData};
 
 const STREAM_ELEMENTS_API: &str = "https://api.streamelements.com/kappa/v2/speech";
-const TIKTOK_API: &str = "https://tiktok-tts.weilnet.workers.dev/api/generation";
+const TIKTOK_API: &str = "https://ottsy.weilbyte.dev/api/generation";
 
 /// A service for interacting with various TTS APIs.
 #[derive(Clone, Debug)]
@@ -95,8 +95,13 @@ impl TtsService {
             }
         );
 
+        let mut headers = reqwest::header::HeaderMap::new();
+        headers.insert("content-type", "application/json".parse().unwrap());
+        headers.insert(USER_AGENT, "TTSHelperUserAgent".parse().unwrap());
+
         let res = self.client
             .post(TIKTOK_API)
+            .headers(headers)
             .json(&body)
             .send()
             .await?;
