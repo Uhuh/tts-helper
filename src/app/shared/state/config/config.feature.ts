@@ -6,14 +6,15 @@ import { uuidv4 } from 'uuidv7';
 import { klona } from 'klona';
 
 export type TtsType =
-  | 'stream-elements'
   | 'tts-monster'
   | 'amazon-polly'
   | 'windows'
   | 'eleven-labs'
-  | 'tiktok';
+  | 'tiktok'
+  | 'streamlabs'
+  | 'azure';
 
-export interface StreamElementsData {
+export interface StreamlabsData {
   voice: string;
   language: string;
 }
@@ -30,9 +31,6 @@ export interface TtsMonsterData {
   userId: string;
   key: string;
   ai: boolean;
-  details: {
-    provider: 'tts-helper';
-  };
 }
 
 export interface TikTokData {
@@ -85,7 +83,7 @@ export interface ConfigState {
   // The delay in SECONDS. This will be converted to milliseconds when sent to rust.
   audioDelay: number;
   generalChat: GeneralChatState;
-  streamElements: StreamElementsData;
+  streamlabs: StreamlabsData;
   ttsMonster: TtsMonsterData;
   amazonPolly: AmazonPollyData;
   tikTok: TikTokData;
@@ -120,8 +118,8 @@ const defaultTtsState = {
 const initialState: ConfigState = {
   bannedWords: [],
   filteredWords: [],
-  tts: 'stream-elements',
-  url: 'https://api.streamelements.com/kappa/v2/speech',
+  tts: 'streamlabs',
+  url: '',
   audioDevice: 0,
   deviceVolume: 100,
   audioDelay: 1,
@@ -134,9 +132,6 @@ const initialState: ConfigState = {
     userId: '',
     key: '',
     ai: false,
-    details: {
-      provider: 'tts-helper',
-    },
   },
   amazonPolly: {
     ...defaultTtsState,
@@ -145,9 +140,9 @@ const initialState: ConfigState = {
     voice: 'Amy',
   },
   // Set a default value for SE since it's the default TTS option.
-  streamElements: {
-    language: 'English (US)',
-    voice: 'en-US-Standard-E',
+  streamlabs: {
+    language: 'US English',
+    voice: 'Ivy',
   },
   tikTok: defaultTtsState,
   userListState: {
@@ -201,11 +196,11 @@ export const ConfigFeature = createFeature({
       ...state,
       filteredWords,
     })),
-    on(GlobalConfigActions.updateStreamElements, (state, { streamElements }) => ({
+    on(GlobalConfigActions.updateStreamlabs, (state, { streamlabs }) => ({
       ...state,
-      streamElements: {
-        ...state.streamElements,
-        ...streamElements,
+      streamlabs: {
+        ...state.streamlabs,
+        ...streamlabs,
       },
     })),
     on(GlobalConfigActions.updateAmazonPolly, (state, { amazonPolly }) => ({
@@ -229,13 +224,11 @@ export const ConfigFeature = createFeature({
         voice,
       },
     })),
-    on(GlobalConfigActions.updateTtsMonsterOverlay, (state, { overlay, key, userId }) => ({
+    on(GlobalConfigActions.updateTtsMonsterOverlay, (state, { partial }) => ({
       ...state,
       ttsMonster: {
         ...state.ttsMonster,
-        overlay,
-        key,
-        userId,
+        ...partial,
       },
     })),
     on(GlobalConfigActions.updateSelectedTtsUrl, (state, { url }) => ({
@@ -274,9 +267,9 @@ export const ConfigFeature = createFeature({
         ...state.customUserVoices,
         {
           id: uuidv4(),
-          language: 'English (US)',
-          voice: 'en-US-Standard-E',
-          ttsType: 'stream-elements',
+          language: 'US English',
+          voice: 'Ivy',
+          ttsType: 'streamlabs',
           username: '<not set>',
           ...partialSettings,
         } satisfies CustomUserVoice,
@@ -329,9 +322,9 @@ export const ConfigFeature = createFeature({
         ...state.multiVoices,
         {
           id: uuidv4(),
-          language: 'English (US)',
-          voice: 'en-US-Standard-E',
-          ttsType: 'stream-elements',
+          language: 'US English',
+          voice: 'Ivy',
+          ttsType: 'streamlabs',
           customName: '<not set>',
           ...partialSettings,
         } satisfies MultiVoice,
@@ -380,7 +373,7 @@ export const ConfigFeature = createFeature({
   extraSelectors: ({
     selectBannedWords,
     selectTts,
-    selectStreamElements,
+    selectStreamlabs,
     selectTtsMonster,
     selectAmazonPolly,
     selectTikTok,
@@ -392,12 +385,12 @@ export const ConfigFeature = createFeature({
     selectAudioSettings: createSelector(
       selectTts,
       selectBannedWords,
-      selectStreamElements,
+      selectStreamlabs,
       selectTtsMonster,
       selectAmazonPolly,
       selectTikTok,
-      (tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok) => ({
-        bannedWords, tts, streamElements, ttsMonster, amazonPolly, tikTok,
+      (tts, bannedWords, streamlabs, ttsMonster, amazonPolly, tikTok) => ({
+        bannedWords, tts, streamlabs, ttsMonster, amazonPolly, tikTok,
       }),
     ),
   }),

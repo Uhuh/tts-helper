@@ -1,0 +1,136 @@
+[
+  {
+    "language": "Australian English (en-AU)",
+    "options": [
+      { "value": "en-AU-AnnetteNeural", "displayName": "Annette - Female" },
+      { "value": "en-AU-CarlyNeural", "displayName": "Carly - Female" },
+      { "value": "en-AU-DarrenNeural", "displayName": "Darren - Male" },
+      { "value": "en-AU-DuncanNeural", "displayName": "Duncan - Male" },
+      { "value": "en-AU-ElsieNeural", "displayName": "Elsie - Female" },
+      { "value": "en-AU-FreyaNeural", "displayName": "Freya - Female" },
+      { "value": "en-AU-KenNeural", "displayName": "Ken - Male" },
+      { "value": "en-AU-KimNeural", "displayName": "Kim - Female" },
+      { "value": "en-AU-NatashaNeural", "displayName": "Natasha - Female" },
+      { "value": "en-AU-NeilNeural", "displayName": "Neil - Male" },
+      { "value": "en-AU-TinaNeural", "displayName": "Tina - Female" },
+      { "value": "en-AU-WilliamNeural", "displayName": "William - Male" }
+    ]
+  },
+  {
+    "language": "British English (en-GB)",
+    "options": [
+      { "value": "en-GB-AbbiNeural", "displayName": "Abbi - Female" },
+      { "value": "en-GB-AlfieNeural", "displayName": "Alfie - Male" },
+      { "value": "en-GB-BellaNeural", "displayName": "Bella - Female" },
+      { "value": "en-GB-ElliotNeural", "displayName": "Elliot - Male" },
+      { "value": "en-GB-EthanNeural", "displayName": "Ethan - Male" },
+      { "value": "en-GB-HollieNeural", "displayName": "Hollie - Female" },
+      { "value": "en-GB-LibbyNeural", "displayName": "Libby - Female" },
+      { "value": "en-GB-MaisieNeural", "displayName": "Maisie - Female" },
+      { "value": "en-GB-NoahNeural", "displayName": "Noah - Male" },
+      { "value": "en-GB-OliverNeural", "displayName": "Oliver - Male" },
+      { "value": "en-GB-OliviaNeural", "displayName": "Olivia - Female" },
+      { "value": "en-GB-RyanNeural", "displayName": "Ryan - Male" },
+      { "value": "en-GB-SoniaNeural", "displayName": "Sonia - Female" },
+      { "value": "en-GB-ThomasNeural", "displayName": "Thomas - Male" }
+    ]
+  },
+  {
+    "language": "Chinese Mandarin (zh-CN)",
+    "options": [
+      { "value": "zh-CN-XiaochenNeural", "displayName": "Xiaochen - Female" },
+      { "value": "zh-CN-XiaohanNeural", "displayName": "Xiaohan - Female" },
+      { "value": "zh-CN-XiaomengNeural", "displayName": "Xiaomeng - Female" },
+      { "value": "zh-CN-XiaomoNeural", "displayName": "Xiaomo - Female" },
+      { "value": "zh-CN-XiaoquiNeural", "displayName": "Xiaoqui - Female" },
+      { "value": "zh-CN-XiaorouNeural", "displayName": "Xiaorou - Female" },
+      { "value": "zh-CN-XiaoxiaoNeural", "displayName": "Xiaoxiao - Female" },
+      { "value": "zh-CN-XiaoyiNeural", "displayName": "Xiaoyi - Female" },
+      { "value": "zh-CN-XiaozhenNeural", "displayName": "Xiaozhen - Female" },
+      { "value": "zh-CN-YunfengNeural", "displayName": "Yunfeng - Male" },
+      { "value": "zh-CN-YunhaoNeural", "displayName": "Yunhao - Male" },
+      { "value": "zh-CN-YunjianNeural", "displayName": "Yunjian - Male" },
+      { "value": "zh-CN-YunxiaNeural", "displayName": "Yunxia - Male" },
+      { "value": "zh-CN-YunxiNeural", "displayName": "Yunxi - Male" },
+      { "value": "zh-CN-YunyangNeural", "displayName": "Yunyang - Male" },
+      { "value": "zh-CN-YunyeNeural", "displayName": "Yunye - Male" },
+      { "value": "zh-CN-YunzeNeural", "displayName": "Yunze - Male" }
+    ]
+  },
+  {
+    "language": "French (fr-FR)",
+    "options": [
+      { "value": "fr-FR-AlainNeural", "displayName": "Alain - Male" },
+      { "value": "fr-FR-BrigitteNeural", "displayName": "Brigitte - Female" },
+      { "value": "fr-FR-CelesteNeural", "displayName": "Celeste - Female" },
+      { "value": "fr-FR-ClaudeNeural", "displayName": "Claude - Male" },
+      { "value": "fr-FR-CoralieNeural", "displayName": "Coralie - Female" },
+      { "value": "fr-FR-DeniseNeural", "displayName": "Denise - Female" },
+      { "value": "fr-FR-EloiseNeural", "displayName": "Eloise - Female" },
+      { "value": "fr-FR-HenriNeural", "displayName": "Henri - Male" },
+      { "value": "fr-FR-JacquelineNeural", "displayName": "Jacqueline - Female" },
+      { "value": "fr-FR-JeromeNeural", "displayName": "Jerome - Male" },
+      { "value": "fr-FR-JosephineNeural", "displayName": "Josephine - Female" },
+      { "value": "fr-FR-MauriceNeural", "displayName": "Maurice - Male" },
+      { "value": "fr-FR-YvesNeural", "displayName": "Yves - Male" },
+      { "value": "fr-FR-YvetteNeural", "displayName": "Yvette - Female" }
+    ]
+  },
+  {
+    "language": "German (de-DE)",
+    "options": [
+      { "value": "de-DE-AmalaNeural", "displayName": "Amala - Female" },
+      { "value": "de-DE-BerndNeural", "displayName": "Bernd - Male" },
+      { "value": "de-DE-ChristophNeural", "displayName": "Christoph - Male" },
+      { "value": "de-DE-ConradNeural", "displayName": "Conrad - Male" },
+      { "value": "de-DE-ElkeNeural", "displayName": "Elke - Female" },
+      { "value": "de-DE-GiselaNeural", "displayName": "Gisela - Female" },
+      { "value": "de-DE-KasperNeural", "displayName": "Kasper - Male" },
+      { "value": "de-DE-KatjaNeural", "displayName": "Katja - Female" },
+      { "value": "de-DE-KillianNeural", "displayName": "Killian - Male" },
+      { "value": "de-DE-KlarissaNeural", "displayName": "Klarissa - Female" },
+      { "value": "de-DE-KlausNeural", "displayName": "Klaus - Male" },
+      { "value": "de-DE-LouisaNeural", "displayName": "Louisa - Female" },
+      { "value": "de-DE-MajaNeural", "displayName": "Maja - Female" },
+      { "value": "de-DE-RalfNeural", "displayName": "Ralf - Male" },
+      { "value": "de-DE-StefanNeural", "displayName": "Stefan - Male" },
+      { "value": "de-DE-TanjaNeural", "displayName": "Tanja - Female" }
+    ]
+  },
+  {
+    "language": "Japanese (ja-JP)",
+    "options": [
+      { "value": "ja-JP-AoiNeural", "displayName": "Aoi - Female" },
+      { "value": "ja-JP-DaichiNeural", "displayName": "Daichi - Male" },
+      { "value": "ja-JP-KeitaNeural", "displayName": "Keita - Male" },
+      { "value": "ja-JP-MayuNeural", "displayName": "Mayu - Female" },
+      { "value": "ja-JP-NanamiNeural", "displayName": "Nanami - Female" },
+      { "value": "ja-JP-NaokiNeural", "displayName": "Naoki - Male" },
+      { "value": "ja-JP-ShioriNeural", "displayName": "Shiori - Female" }
+    ]
+  },
+  {
+    "language": "US English (en-US)",
+    "options": [
+      { "value": "en-US-AmberNeural", "displayName": "Amber - Female" },
+      { "value": "en-US-AnaNeural", "displayName": "Ana - Female" },
+      { "value": "en-US-AndrewNeural", "displayName": "Andrew - Male" },
+      { "value": "en-US-AriaNeural", "displayName": "Aria - Female" },
+      { "value": "en-US-AshleyNeural", "displayName": "Ashley - Female" },
+      { "value": "en-US-BrandonNeural", "displayName": "Brandon - Male" },
+      { "value": "en-US-ChristopherNeural", "displayName": "Christopher - Male" },
+      { "value": "en-US-CoraNeural", "displayName": "Cora - Female" },
+      { "value": "en-US-ElizabethNeural", "displayName": "Elizabeth - Female" },
+      { "value": "en-US-EricNeural", "displayName": "Eric - Male" },
+      { "value": "en-US-GuyNeural", "displayName": "Guy - Male" },
+      { "value": "en-US-JacobNeural", "displayName": "Jacob - Male" },
+      { "value": "en-US-JennyNeural", "displayName": "Jenny - Female" },
+      { "value": "en-US-MichelleNeural", "displayName": "Michelle - Female" },
+      { "value": "en-US-MonicaNeural", "displayName": "Monica - Female" },
+      { "value": "en-US-RogerNeural", "displayName": "Roger - Male" },
+      { "value": "en-US-SaraNeural", "displayName": "Sara - Female" },
+      { "value": "en-US-SteffanNeural", "displayName": "Steffan - Male" },
+      { "value": "en-US-TonyNeural", "displayName": "Tony - Male" }
+    ]
+  }
+]

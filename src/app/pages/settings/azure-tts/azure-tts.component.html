@@ -1,0 +1,15 @@
+<div class="header">
+  <span>Azure TTS Settings</span>
+</div>
+
+<div class="warning orange">
+  <span>Since your Azure credentials for Speech to Text and Text to Speech share the same Azure resource pool, you only need to put them in once.</span>
+  <span>Head to <a [routerLink]="['/azure-settings']">Azure STT</a> to add your credentials.</span>
+  <span>Having the STT disable will not affect having Azure selected for TTS.</span>
+</div>
+
+<app-tts-selector
+  [languageControl]="settings.controls.ttsLanguage"
+  [voiceControl]="settings.controls.ttsVoice"
+  [voices]="voices"
+/>

@@ -4,12 +4,13 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { FormControl } from '@angular/forms';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
+import { ToggleComponent } from '../../../shared/components/toggle/toggle.component';
 
 @Component({
-    selector: 'app-tts-monster',
-    templateUrl: './tts-monster.component.html',
-    styleUrls: ['./tts-monster.component.scss'],
-    imports: [InputComponent, LabelBlockComponent]
+  selector: 'app-tts-monster',
+  templateUrl: './tts-monster.component.html',
+  styleUrls: ['./tts-monster.component.scss'],
+  imports: [InputComponent, LabelBlockComponent, ToggleComponent],
 })
 export class TtsMonsterComponent {
   private readonly configService = inject(ConfigService);
@@ -23,6 +24,8 @@ export class TtsMonsterComponent {
         this.overlay.patchValue(ttsMonster.overlay, { emitEvent: false });
         this.ai.patchValue(ttsMonster.ai, { emitEvent: false });
       });
+
+    this.ai.valueChanges.subscribe(ai => this.configService.updateTtsMonsterOverlayInfo({ ai }));
 
     this.overlay.valueChanges
       .pipe(takeUntilDestroyed())

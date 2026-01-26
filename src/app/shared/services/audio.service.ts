@@ -11,15 +11,7 @@ import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
 import { PollyClient } from '@aws-sdk/client-polly';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { AudioFeature, AudioItem, AudioSource, AudioStatus } from '../state/audio/audio.feature';
-import {
-  AmazonPollyData,
-  CustomUserVoice,
-  MultiVoice,
-  StreamElementsData,
-  TikTokData,
-  TtsMonsterData,
-  TtsType,
-} from '../state/config/config.feature';
+import { AmazonPollyData, CustomUserVoice, MultiVoice, StreamlabsData, TikTokData, TtsMonsterData, TtsType } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
 import { LogService } from './logs.service';
 import { combineLatest, first, firstValueFrom, map } from 'rxjs';
@@ -28,6 +20,9 @@ import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchService } from './twitch.service';
 import { SynthesizeSpeechInput } from '@aws-sdk/client-polly/dist-types/models/models_0';
+import { AzureTtsService } from './azure-tts.service';
+import { AudioConfig, PullAudioOutputStream, SpeechSynthesisResult, SpeechSynthesizer } from 'microsoft-cognitiveservices-speech-sdk';
+import { AzureState } from '../state/azure/azure.feature';
 
 @Injectable()
 export class AudioService {
@@ -39,6 +34,7 @@ export class AudioService {
   private readonly elevenLabsService = inject(ElevenLabsService);
   private readonly twitchService = inject(TwitchService);
   private readonly logService = inject(LogService);
+  private readonly azureTtsService = inject(AzureTtsService);
   private readonly userListState$ = this.configService.userListState$;
   private readonly customUserVoices$ = this.configService.customUserVoices$;
   private readonly multiVoices$ = this.configService.multiVoices$;
@@ -50,10 +46,11 @@ export class AudioService {
 
   chaosMode = false;
 
-  tts: TtsType = 'stream-elements';
-  streamElements!: StreamElementsData;
+  tts: TtsType = 'streamlabs';
+  streamlabs!: StreamlabsData;
   ttsMonster!: TtsMonsterData;
   amazonPolly!: AmazonPollyData;
+  azure!: AzureState;
   tikTok!: TikTokData;
   elevenLabs!: ElevenLabsState;
   twitchSettings!: TwitchSettingsState;
@@ -62,14 +59,18 @@ export class AudioService {
     this.configService.audioSettings$
       .pipe(takeUntilDestroyed())
       .subscribe((audioSettings) => {
-        const { tts, bannedWords, streamElements, ttsMonster, amazonPolly, tikTok } = audioSettings;
+        const { tts, bannedWords, streamlabs, ttsMonster, amazonPolly, tikTok } = audioSettings;
         this.tts = tts;
         this.bannedWords = bannedWords;
-        this.streamElements = streamElements;
+        this.streamlabs = streamlabs;
         this.ttsMonster = ttsMonster;
         this.amazonPolly = amazonPolly;
         this.tikTok = tikTok;
       });
+
+    this.azureTtsService.state$
+      .pipe(takeUntilDestroyed())
+      .subscribe((state) => this.azure = state);
 
     this.configService.state$
       .pipe(takeUntilDestroyed())
@@ -113,7 +114,9 @@ export class AudioService {
     })
       .pipe(first(), takeUntilDestroyed(this.destroyRef))
       .subscribe(async ({ customVoices, multiVoices, filteredWords }) => {
-        const canProceed = canPlayOverride ? canPlayOverride : await this.canProcessMessage(text, username);
+        const canProceed = canPlayOverride
+          ? canPlayOverride
+          : await this.canProcessMessage(text, username);
 
         if (!canProceed) {
           return;
@@ -128,6 +131,14 @@ export class AudioService {
 
         const reg = new RegExp(filteredWords.join('|'), 'gi');
         const filteredText = reducedText.replaceAll(reg, ``);
+
+        /**
+         * If a user set a max character limit for messages, we want to ignore any that exceed that limit.
+         * 0 or lower means the setting is disabled
+         */
+        if (this.twitchSettings.maxCharacterLimit > 0 && filteredText.length > this.twitchSettings.maxCharacterLimit) {
+          return;
+        }
 
         const voices = this.parseMultiVoices(filteredText, multiVoices);
         const customUserVoice = customVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
@@ -203,8 +214,8 @@ export class AudioService {
     return this.playback
       .playAudio({ data })
       .then((id) => {
-        this.logService.add(`Played TTS.\n${JSON.stringify({
-          ...data,
+        this.logService.add(`Queued TTS.\n${JSON.stringify({
+          text,
           username,
           charLimit,
         }, null, 1)}`, 'info', 'AudioService.playTts');
@@ -222,7 +233,7 @@ export class AudioService {
         this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
 
         this.snackbar.open(
-          'Oops! We encountered an error while playing that.',
+          `Failed to queue TTS request.`,
           'Dismiss',
           {
             panelClass: 'notification-error',
@@ -255,7 +266,9 @@ export class AudioService {
       const speaker = match.groups?.['speaker'].toLowerCase();
       const multiVoice = allowedMultiVoices.find(m => m.customName.toLowerCase() === speaker);
 
-      const voice = speaker === 'default' || !multiVoice ? undefined : multiVoice.voice;
+      const voice = speaker === 'default' || !multiVoice
+        ? undefined
+        : multiVoice.voice;
 
       matches.push({ voice, text: match.groups?.['message'] ?? '', ttsType: multiVoice?.ttsType });
     }
@@ -291,10 +304,10 @@ export class AudioService {
     const tts = customUserVoice?.ttsType ?? this.tts;
 
     switch (tts) {
-      case 'stream-elements':
+      case 'streamlabs':
         return {
-          type: 'streamElements',
-          voice: customUserVoice?.voice ?? this.streamElements.voice,
+          type: 'streamlabs',
+          voice: customUserVoice?.voice ?? this.streamlabs.voice,
           text,
         };
       case 'tiktok':
@@ -303,6 +316,16 @@ export class AudioService {
           voice: customUserVoice?.voice ?? this.tikTok.voice,
           text,
         };
+      case 'tts-monster':
+        return {
+          type: 'ttsMonster',
+          user_id: this.ttsMonster.userId,
+          key: this.ttsMonster.key,
+          message: text,
+          is_ai: this.ttsMonster.ai,
+        };
+      case 'azure':
+        return await this.handleAzureTts(text);
       case 'amazon-polly': {
         const url = await this.handleAmazonPolly(text);
 
@@ -332,6 +355,52 @@ export class AudioService {
       }
       default:
         return null;
+    }
+  }
+
+  async handleAzureTts(text: string): Promise<{ type: 'raw', data: string } | null> {
+    const config = this.azureTtsService.speechConfig;
+
+    if (!config) {
+      return null;
+    }
+
+    function arrayBufferToBase64(buffer: ArrayBuffer): string {
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      const len = bytes.byteLength;
+
+      for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+
+      return window.btoa(binary);
+    }
+
+    const stream = PullAudioOutputStream.create();
+    const audioConfig = AudioConfig.fromStreamOutput(stream);
+    config.speechSynthesisVoiceName = this.azure.ttsVoice;
+
+    const synth = new SpeechSynthesizer(config, audioConfig);
+    const generateAudio = async (): Promise<SpeechSynthesisResult> => {
+      return new Promise((resolve, reject) => {
+        synth.speakTextAsync(text, r => {
+          synth.close();
+          resolve(r);
+        }, reject);
+      });
+    };
+
+    try {
+      const audio = await generateAudio();
+
+      return {
+        type: 'raw',
+        data: arrayBufferToBase64(audio.audioData),
+      };
+    } catch (e) {
+      this.logService.add(`Failed to create Azure TTS synthesis result. ${JSON.stringify(e, null, 2)}`, 'error', 'AudioService.handleAzureTts');
+      return null;
     }
   }
 

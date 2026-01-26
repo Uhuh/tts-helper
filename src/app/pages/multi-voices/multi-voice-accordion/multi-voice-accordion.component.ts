@@ -5,33 +5,29 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
 import { SelectorComponent } from '../../../shared/components/selector/selector.component';
-import {
-  TTSOption,
-  TtsSelectorComponent,
-  Voices,
-} from '../../../shared/components/tts-selector/tts-selector.component';
+import { TTSOption, TtsSelectorComponent, Voices } from '../../../shared/components/tts-selector/tts-selector.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import tiktokVoices from '../../../shared/json/tiktok.json';
-import streamelementsVoices from '../../../shared/json/stream-elements.json';
+import streamlabsVoices from '../../../shared/json/streamlabs.json';
 import { ConfigService } from '../../../shared/services/config.service';
 import { ElevenLabsService } from '../../../shared/services/eleven-labs.service';
 import { map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
-    selector: 'app-multi-voice-accordion',
-    imports: [
-        AccordionComponent,
-        ButtonComponent,
-        InputComponent,
-        LabelBlockComponent,
-        SelectorComponent,
-        TtsSelectorComponent,
-        AsyncPipe,
-    ],
-    templateUrl: './multi-voice-accordion.component.html',
-    styleUrl: './multi-voice-accordion.component.scss'
+  selector: 'app-multi-voice-accordion',
+  imports: [
+    AccordionComponent,
+    ButtonComponent,
+    InputComponent,
+    LabelBlockComponent,
+    SelectorComponent,
+    TtsSelectorComponent,
+    AsyncPipe,
+  ],
+  templateUrl: './multi-voice-accordion.component.html',
+  styleUrl: './multi-voice-accordion.component.scss',
 })
 export class MultiVoiceAccordionComponent implements OnChanges {
   private readonly configService = inject(ConfigService);
@@ -39,10 +35,10 @@ export class MultiVoiceAccordionComponent implements OnChanges {
 
   private readonly ttsVoices = new Map([
     ['tiktok', tiktokVoices],
-    ['stream-elements', streamelementsVoices],
+    ['streamlabs', streamlabsVoices],
   ]);
 
-  readonly voices = signal<Voices[]>(streamelementsVoices);
+  readonly voices = signal<Voices[]>(streamlabsVoices);
   readonly multiVoice = input.required<MultiVoice>();
 
   readonly elevenLabVoices$ = this.elevenLabsService.state$
@@ -55,8 +51,8 @@ export class MultiVoiceAccordionComponent implements OnChanges {
 
   readonly ttsOptions: Array<TTSOption> = [
     {
-      displayName: 'StreamElements',
-      value: 'stream-elements',
+      displayName: 'Streamlabs',
+      value: 'streamlabs',
     },
     {
       displayName: 'TikTok',
@@ -70,7 +66,7 @@ export class MultiVoiceAccordionComponent implements OnChanges {
 
   readonly settings = new FormGroup({
     customName: new FormControl('', { nonNullable: true }),
-    ttsType: new FormControl<TtsType>('stream-elements', { nonNullable: true }),
+    ttsType: new FormControl<TtsType>('streamlabs', { nonNullable: true }),
     voice: new FormControl('', { nonNullable: true }),
     language: new FormControl('', { nonNullable: true }),
   });

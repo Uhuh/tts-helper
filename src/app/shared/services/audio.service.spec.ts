@@ -13,7 +13,7 @@ import {
   AmazonPollyData,
   CustomUserVoice,
   MultiVoice,
-  StreamElementsData,
+  StreamlabsData,
   TikTokData,
   TtsMonsterData,
   TtsType,
@@ -22,7 +22,6 @@ import {
 import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { TwitchState } from '../state/twitch/twitch.feature';
 import { RequestAudioData } from './playback.interface';
-
 
 describe('AudioService', () => {
   let service: AudioService;
@@ -40,7 +39,7 @@ describe('AudioService', () => {
   let configAudioSettingsSubject: Subject<{
     bannedWords: string[];
     tts: TtsType;
-    streamElements: StreamElementsData;
+    streamlabs: StreamlabsData;
     ttsMonster: TtsMonsterData;
     amazonPolly: AmazonPollyData;
     tikTok: TikTokData;
@@ -115,8 +114,8 @@ describe('AudioService', () => {
 
     service.bannedWords = [];
 
-    service.tts = 'stream-elements';
-    service.streamElements = {
+    service.tts = 'streamlabs';
+    service.streamlabs = {
       voice: 'brian',
       language: 'english',
     };
@@ -129,8 +128,8 @@ describe('AudioService', () => {
   it('should play audio', fakeAsync(() => {
     // Arrange
     const requestData: RequestAudioData = {
-      type: 'streamElements',
-      voice: service.streamElements.voice,
+      type: 'streamlabs',
+      voice: service.streamlabs.voice,
       text,
     };
 
@@ -230,7 +229,7 @@ describe('AudioService', () => {
         voice,
         username: 'pankurs',
         language: 'english',
-        ttsType: 'stream-elements',
+        ttsType: 'streamlabs',
         id: '1234',
       },
     ];
@@ -247,7 +246,7 @@ describe('AudioService', () => {
       data: {
         text,
         voice,
-        type: 'streamElements',
+        type: 'streamlabs',
       },
     });
   }));

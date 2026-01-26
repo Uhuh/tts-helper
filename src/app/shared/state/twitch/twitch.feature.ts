@@ -55,6 +55,7 @@ export interface TwitchSubscriptionState {
 
 export interface TwitchSettingsState {
   randomChance: number;
+  maxCharacterLimit: number;
 }
 
 export interface TwitchState {
@@ -73,6 +74,7 @@ const initialState: TwitchState = {
   isTokenValid: false,
   settings: {
     randomChance: 0,
+    maxCharacterLimit: 0,
   },
   subscriptions: {
     gift: {

@@ -14,7 +14,7 @@ import {
 } from '../../../shared/components/tts-selector/tts-selector.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import streamelementsVoices from '../../../shared/json/stream-elements.json';
+import streamlabsVoices from '../../../shared/json/streamlabs.json';
 import tiktokVoices from '../../../shared/json/tiktok.json';
 import { InputComponent } from '../../../shared/components/input/input.component';
 import { AccordionComponent } from '../../../shared/components/accordion/accordion.component';
@@ -38,17 +38,17 @@ export class UserAccordionComponent implements OnChanges {
   private readonly configService = inject(ConfigService);
   private readonly ttsVoices = new Map([
     ['tiktok', tiktokVoices],
-    ['stream-elements', streamelementsVoices],
+    ['streamlabs', streamlabsVoices],
   ]);
 
   // Default to SE.
-  readonly voices = signal<Voices[]>(streamelementsVoices);
+  readonly voices = signal<Voices[]>(streamlabsVoices);
   readonly customUserVoice = input.required<CustomUserVoice>();
 
   readonly ttsOptions: Array<TTSOption> = [
     {
-      displayName: 'StreamElements',
-      value: 'stream-elements',
+      displayName: 'Streamlabs',
+      value: 'streamlabs',
     },
     {
       displayName: 'TikTok',
@@ -58,7 +58,7 @@ export class UserAccordionComponent implements OnChanges {
 
   readonly settings = new FormGroup({
     username: new FormControl('', { nonNullable: true }),
-    ttsType: new FormControl<TtsType>('stream-elements', { nonNullable: true }),
+    ttsType: new FormControl<TtsType>('streamlabs', { nonNullable: true }),
     voice: new FormControl('', { nonNullable: true }),
     language: new FormControl('', { nonNullable: true }),
   });

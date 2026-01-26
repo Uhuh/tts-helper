@@ -15,14 +15,16 @@ pub struct PlayAudioRequest {
 pub enum RequestAudioData {
     /// Raw audio data.
     Raw(RawAudioData),
-    /// StreamElements request data.
-    StreamElements(StreamElementsData),
+    /// Streamlabs request data.
+    Streamlabs(Streamlabs),
     /// TikTok request data.
     TikTok(TikTokData),
     /// AmazonPolly request data.
     AmazonPolly(AmazonPollyData),
     /// ElevenLabs request data.
     ElevenLabs(ElevenLabsData),
+    /// TTS Monster request data.
+    TtsMonster(TTSMonsterData),
 }
 
 /// Raw audio data.
@@ -33,9 +35,9 @@ pub struct RawAudioData {
     pub data: Bytes,
 }
 
-/// StreamElements request data.
+/// Streamlabs request data.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct StreamElementsData {
+pub struct Streamlabs {
     /// The text to speak.
     pub text: String,
     /// The voice to use.
@@ -73,4 +75,17 @@ pub struct ElevenLabsData {
     pub stability: f32,
     /// Voice similarity
     pub similarity_boost: f32,
+}
+
+/// TTS Monster request data
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct TTSMonsterData {
+  /// The users ID.
+  pub user_id: String,
+  /// The users key.
+  pub key: String,
+  /// The message to speak.
+  pub message: String,
+  /// If to use AI voices or not.
+  pub is_ai: bool,
 }

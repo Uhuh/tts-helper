@@ -13,7 +13,7 @@ TTS Helper has a few things built in to make life easier.
 
 ## Free third party services inside TTS Helper
 TTS Helper has a few free to use third party services to help kickstart your TTS adventure.
-* StreamElements - StreamElements offers a decent variety of TTS options. It's got a high rate limit, you realistically won't exceed it unless you spam every second.
+* Streamlabs - Streamlabs offers a decent variety of TTS options. It's got a high rate limit, you realistically won't exceed it unless you spam every second.
 * TikTok - Offers all the silly TikTok voices. Gracefully hosted by [WeilByte](https://github.com/Weilbyte).
 * VTubeStudio - You can hookup a rigged model with VTubeStudio and TTS Helper will make the mouth move when you use the TTSHelperParameters
 
@@ -24,7 +24,9 @@ These are all optional to use.
 * [Amazon Polly](https://aws.amazon.com/polly/) - A pay as you use TTS service. Fairly cheap and has great response times.
 * [ElevenLabs](https://elevenlabs.io/) - Natural sounding voices to give the returned responses a lot more personality. Can be expensive!
 * [OpenAI](https://platform.openai.com/docs/overview) - Personalize a ChatGPT model to act as a fictional character for your stream!
-* [Azure Speech to Text](https://azure.microsoft.com/en-us/products/ai-services/speech-to-text) - A way for the streamer to communicate with their personalized OpenAI model with their voice!
+* [Azure Speech to Text](https://azure.microsoft.com/en-us/products/ai-foundry/tools/speech) - A way for the streamer to communicate with their personalized OpenAI model with their voice!
+* [Azure Text to Speech](https://azure.microsoft.com/en-us/products/ai-foundry/tools/speech) - A paid option for TTS 
+* [TTS Monster](https://tts.monster/dashboard/app) - A paid TTS service that supports multiple languages.
 
 ## Recommended IDE Setup
 

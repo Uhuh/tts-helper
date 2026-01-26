@@ -13,7 +13,7 @@ import { OpenAIService } from './openai.service';
 import { ChatService } from './chat.service';
 import { ConfigService } from './config.service';
 import { TtsType } from '../state/config/config.feature';
-import stream_elements from '../json/stream-elements.json';
+import stream_elements from '../json/streamlabs.json';
 import tiktok_voices from '../json/tiktok.json';
 
 @Injectable()
@@ -328,7 +328,7 @@ export class TwitchPubSub {
           userLang,
           userVoice,
         ] = input.split(/\s*,\s*/g);
-        let ttsType: TtsType = 'stream-elements';
+        let ttsType: TtsType = 'streamlabs';
 
         this.logService.add(`User is setting custom voice. ${JSON.stringify({
           tts,
@@ -353,10 +353,10 @@ export class TwitchPubSub {
           case 'tik-tok':
             ttsType = 'tiktok';
             break;
-          case 'stream-elements':
-          case 'streamelements':
+          case 'streamlabs':
+          case 'stream-labs':
           default:
-            ttsType = 'stream-elements';
+            ttsType = 'streamlabs';
         }
 
         // Never trust users, validate it and get either default or assumed values
@@ -392,7 +392,7 @@ export class TwitchPubSub {
     langToCheck: string,
     voiceToCheck: string,
   ) {
-    // StreamElements doesn't have English first... but meh.
+    // Streamlabs doesn't have English first... but meh.
     const defaultLang = voices[0].language;
     const defaultVoice = voices[0].options[0].value;
 

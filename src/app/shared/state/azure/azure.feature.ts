@@ -8,6 +8,8 @@ export interface AzureState {
   language: string;
   hotkey: string;
   thirdPartyUrl: string;
+  ttsVoice: string;
+  ttsLanguage: string;
 }
 
 export const initialState: AzureState = {
@@ -17,6 +19,8 @@ export const initialState: AzureState = {
   language: '',
   subscriptionKey: '',
   thirdPartyUrl: '',
+  ttsVoice: '',
+  ttsLanguage: '',
 };
 
 export const AzureFeature = createFeature({

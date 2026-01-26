@@ -22,30 +22,24 @@
   <app-label-block>
     <div header>Chaos Mode</div>
     <div sub-text>If enabled, TTS request will interrupt each other.</div>
-    <app-toggle class="right" [control]="chaosModeControl" />
+    <app-toggle class="right" [control]="chaosModeControl"/>
   </app-label-block>
 
   <app-label-block>
     <div header>Select TTS service</div>
     <div sub-text>Decide which TTS service to use.</div>
-    <div class="action-row flex-wrap">
-      @for (option of ttsOptions; track option.value) {
-        <app-button
-          (click)="selectTts(option.value)"
-          [class.disabled]="option.disabled"
-          [style]="selectedTts.value === option.value ? 'active' : 'primary'"
-        >
-          {{ option.displayValue }}
-        </app-button>
-      }
-    </div>
+    <app-selector
+      [options]="ttsOptions"
+      [control]="selectedTts"
+      placeholder="Select a service."
+    />
   </app-label-block>
 
   <hr/>
 
   @switch (selectedTts.value) {
-    @case ('stream-elements') {
-      <app-stream-elements/>
+    @case ('streamlabs') {
+      <app-streamlabs/>
     }
     @case ('amazon-polly') {
       <app-amazon-polly/>
@@ -58,6 +52,9 @@
     }
     @case ('eleven-labs') {
       <app-eleven-labs/>
+    }
+    @case ('azure') {
+      <app-azure-tts/>
     }
   }
 </div>

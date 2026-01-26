@@ -22,7 +22,7 @@ export type RequestAudioData =
   data: string;
 }
   | {
-  type: 'streamElements' | 'tikTok';
+  type: 'streamlabs' | 'tikTok';
   text: string;
   voice: string;
 }
@@ -38,6 +38,12 @@ export type RequestAudioData =
   model_id: string;
   stability: number;
   similarity_boost: number;
+} | {
+  type: 'ttsMonster';
+  user_id: string;
+  key: string;
+  message: string;
+  is_ai: boolean;
 };
 
 export interface PlaybackState {

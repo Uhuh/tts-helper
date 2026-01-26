@@ -1,14 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {
-  AmazonPollyData,
-  ConfigFeature, ConfigState,
-  CustomUserVoice,
-  GeneralChatState,
-  MultiVoice,
-  StreamElementsData,
-  TtsType,
-} from '../state/config/config.feature';
+import { AmazonPollyData, ConfigFeature, ConfigState, CustomUserVoice, GeneralChatState, MultiVoice, StreamlabsData, TtsMonsterData, TtsType } from '../state/config/config.feature';
 import { GlobalConfigActions } from '../state/config/config.actions';
 import { PlaybackService } from './playback.service';
 import { ChatPermissions } from './chat.interface';
@@ -18,7 +10,7 @@ export class ConfigService {
   private readonly store = inject(Store);
   private readonly playbackService = inject(PlaybackService);
   public readonly state$ = this.store.select(ConfigFeature.selectGlobalConfigState);
-  public readonly streamElements$ = this.store.select(ConfigFeature.selectStreamElements);
+  public readonly streamlabs$ = this.store.select(ConfigFeature.selectStreamlabs);
   public readonly ttsMonster$ = this.store.select(ConfigFeature.selectTtsMonster);
   public readonly amazonPolly$ = this.store.select(ConfigFeature.selectAmazonPolly);
   public readonly tikTok$ = this.store.select(ConfigFeature.selectTikTok);
@@ -82,8 +74,8 @@ export class ConfigService {
     this.store.dispatch(GlobalConfigActions.updateGeneralChatPermissions({ permissions }));
   }
 
-  updateStreamElements(streamElements: Partial<StreamElementsData>) {
-    this.store.dispatch(GlobalConfigActions.updateStreamElements({ streamElements }));
+  updateStreamlabs(streamlabs: Partial<StreamlabsData>) {
+    this.store.dispatch(GlobalConfigActions.updateStreamlabs({ streamlabs: streamlabs }));
   }
 
   updateAmazonPolly(amazonPolly: Partial<AmazonPollyData>) {
@@ -98,12 +90,8 @@ export class ConfigService {
     this.store.dispatch(GlobalConfigActions.updateTikTokLanguage({ language }));
   }
 
-  updateTtsMonsterOverlayInfo(partial: {
-    overlay: string;
-    userId: string;
-    key: string;
-  }) {
-    this.store.dispatch(GlobalConfigActions.updateTtsMonsterOverlay({ ...partial }));
+  updateTtsMonsterOverlayInfo(partial: Partial<TtsMonsterData>) {
+    this.store.dispatch(GlobalConfigActions.updateTtsMonsterOverlay({ partial }));
   }
 
   updateTts(tts: TtsType) {

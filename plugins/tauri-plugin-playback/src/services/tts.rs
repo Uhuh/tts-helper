@@ -1,15 +1,16 @@
 use base64::{Engine as _, engine::general_purpose};
 use bytes::Bytes;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
-use tauri::http::{header::USER_AGENT, status::{InvalidStatusCode, StatusCode}};
+use tauri::http::{header::USER_AGENT, status::{InvalidStatusCode, StatusCode}, HeaderMap, HeaderValue};
 use thiserror::Error;
 use tracing::error;
 use tauri_plugin_http::reqwest::{self, Client};
-use crate::models::requests::{AmazonPollyData, ElevenLabsData, StreamElementsData, TikTokData};
+use crate::models::requests::{AmazonPollyData, ElevenLabsData, Streamlabs, TTSMonsterData, TikTokData};
 
-const STREAM_ELEMENTS_API: &str = "https://api.streamelements.com/kappa/v2/speech";
+const STREAMLABS_API: &str = "https://streamlabs.com/polly/speak";
 const TIKTOK_API: &str = "https://ottsy.weilbyte.dev/api/generation";
+const TTS_MONSTER_API: &str = "https://us-central1-tts-monster.cloudfunctions.net/generateTTS";
 
 /// A service for interacting with various TTS APIs.
 #[derive(Clone, Debug)]
@@ -20,6 +21,22 @@ pub struct TtsService {
 #[derive(Clone, Debug, Deserialize)]
 pub struct TikTokResponse {
     pub data: String,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub struct StreamlabsResponse {
+  pub speak_url: String,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub struct TTSMonsterResponse {
+    pub data: Data,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Data {
+    pub link: String,
+    pub warning: String,
 }
 
 impl TtsService {
@@ -117,14 +134,18 @@ impl TtsService {
         Ok(res.into())
     }
 
-    /// Makes a request to StreamElements.
+    /// Makes a request to Streamlabs.
     #[inline]
-    pub async fn stream_elements(
+    pub async fn streamlabs(
         &self,
-        data: StreamElementsData,
+        data: Streamlabs,
     ) -> Result<Bytes, TtsRequestError> {
+        let mut headers = HeaderMap::new();
+        headers.insert("Referer", HeaderValue::from_static("https://streamlabs.com/"));
+
         let res = self.client
-            .get(STREAM_ELEMENTS_API)
+            .post(STREAMLABS_API)
+            .headers(headers)
             .query(&vec![
                 ("voice", data.voice),
                 ("text", data.text),
@@ -138,7 +159,60 @@ impl TtsService {
             return Err(TtsRequestError::BadStatusCode(status));
         }
 
+        let res = serde_json::from_value::<StreamlabsResponse>(res.json().await?)?;
+
+        let res = self.client
+          .get(res.speak_url)
+          .send()
+          .await?;
+
+        let status = res.status();
+        if status.is_client_error() || status.is_server_error() {
+            return Err(TtsRequestError::BadStatusCode(status));
+        }
+
         Ok(res.bytes().await?)
+    }
+
+    #[inline]
+    pub async fn tts_monster(&self, data: TTSMonsterData) -> Result<Bytes, TtsRequestError> {
+      let body = json!(
+        {
+          "data": json!(
+            {
+              "userId": data.user_id,
+              "key": data.key,
+              "message": data.message,
+              "ai": data.is_ai,
+              "details": json!(
+                {
+                  "provider": String::from("tts-helper")
+                }
+              )
+            }
+          )
+        }
+      );
+
+      let res = self.client
+        .post(TTS_MONSTER_API)
+        .json(&body)
+        .send()
+        .await?
+        .json::<TTSMonsterResponse>()
+        .await?;
+
+      let res = self.client
+        .get(res.data.link)
+        .send()
+        .await?;
+
+      let status = res.status();
+      if status.is_client_error() || status.is_server_error() {
+          return Err(TtsRequestError::BadStatusCode(status));
+      }
+
+      Ok(res.bytes().await?)
     }
 }
 

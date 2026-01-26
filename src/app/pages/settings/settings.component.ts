@@ -4,7 +4,6 @@ import { ConfigService } from 'src/app/shared/services/config.service';
 import { AudioService } from 'src/app/shared/services/audio.service';
 import { TtsMonsterComponent } from './tts-monster/tts-monster.component';
 import { AmazonPollyComponent } from './amazon-polly/amazon-polly.component';
-import { StreamElementsComponent } from './streamelement-tts/stream-elements.component';
 import { CommonModule } from '@angular/common';
 import { DeviceComponent } from './device/device.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -15,12 +14,9 @@ import { FormControl } from '@angular/forms';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
 import { ElevenLabsComponent } from './eleven-labs/eleven-labs.component';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
-
-interface TtsOption {
-  disabled?: boolean;
-  displayValue: string;
-  value: TtsType;
-}
+import { Option, SelectorComponent } from "../../shared/components/selector/selector.component";
+import { StreamlabsComponent } from "./streamlabs-tts/streamlabs.component";
+import { AzureTtsComponent } from './azure-tts/azure-tts.component';
 
 @Component({
   selector: 'app-settings',
@@ -31,13 +27,15 @@ interface TtsOption {
     ButtonComponent,
     DeviceComponent,
     CommonModule,
-    StreamElementsComponent,
     AmazonPollyComponent,
     TtsMonsterComponent,
     TiktokComponent,
     LabelBlockComponent,
     ElevenLabsComponent,
     ToggleComponent,
+    SelectorComponent,
+    StreamlabsComponent,
+    AzureTtsComponent,
   ],
 })
 export class SettingsComponent {
@@ -45,29 +43,32 @@ export class SettingsComponent {
   private readonly configService = inject(ConfigService);
 
   readonly ttsControl = new FormControl('', { nonNullable: true });
-  readonly selectedTts = new FormControl<TtsType>('stream-elements', { nonNullable: true });
+  readonly selectedTts = new FormControl<TtsType>('streamlabs', { nonNullable: true });
   readonly chaosModeControl = new FormControl(false, { nonNullable: true });
-  readonly ttsOptions: Array<TtsOption> = [
+  readonly ttsOptions: Array<Option<TtsType>> = [
     {
-      displayValue: 'StreamElements',
-      value: 'stream-elements',
+      displayName: 'Free - StreamLabs',
+      value: 'streamlabs',
     },
     {
-      displayValue: 'Amazon Polly',
-      value: 'amazon-polly',
-    },
-    {
-      displayValue: 'TikTok',
+      displayName: 'Free - TikTok',
       value: 'tiktok',
     },
     {
-      displayValue: 'ElevenLabs',
+      displayName: 'Paid - Azure TTS',
+      value: 'azure',
+    },
+    {
+      displayName: 'Paid - ElevenLabs',
       value: 'eleven-labs',
     },
     {
-      displayValue: 'TTS Monster',
+      displayName: 'Paid - TTS Monster',
       value: 'tts-monster',
-      disabled: true,
+    },
+    {
+      displayName: 'Paid - Amazon Polly',
+      value: 'amazon-polly',
     },
   ];
 
@@ -83,12 +84,10 @@ export class SettingsComponent {
     this.chaosModeControl.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(chaosMode => this.configService.updateState({ chaosMode }));
-  }
 
-  selectTts(tts: TtsType) {
-    this.selectedTts.setValue(tts);
-
-    this.configService.updateTts(tts);
+    this.selectedTts.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe(tts => this.configService.updateState({ tts }));
   }
 
   speak(): void {

@@ -290,8 +290,8 @@ async fn play_audio(
     // Get source data
     let raw = match request.data {
         RequestAudioData::Raw(raw) => BASE64_STANDARD.decode(raw.data).unwrap(),
-        RequestAudioData::StreamElements(stream_elements) => {
-            tts_svc.stream_elements(stream_elements).await?.to_vec()
+        RequestAudioData::Streamlabs(stream_elements) => {
+            tts_svc.streamlabs(stream_elements).await?.to_vec()
         }
         RequestAudioData::TikTok(tiktok) => {
             tts_svc.tiktok(tiktok).await?.to_vec()
@@ -301,6 +301,9 @@ async fn play_audio(
         }
         RequestAudioData::ElevenLabs(eleven_labs) => {
             tts_svc.eleven_labs(eleven_labs).await?.to_vec()
+        }
+        RequestAudioData::TtsMonster(tts_monster) => {
+          tts_svc.tts_monster(tts_monster).await?.to_vec()
         }
     };
 
