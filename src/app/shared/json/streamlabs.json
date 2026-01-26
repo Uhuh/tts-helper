@@ -1,0 +1,186 @@
+[
+  {
+    "language": "Australian English",
+    "options": [
+      { "value": "Nicole", "displayName": "Nicole" },
+      { "value": "Russell", "displayName": "Russell" }
+    ]
+  },
+  {
+    "language": "Brazilian Portuguese",
+    "options": [
+      { "value": "Ricardo", "displayName": "Ricardo" },
+      { "value": "Vitoria", "displayName": "Vitoria" }
+    ]
+  },
+  {
+    "language": "British English",
+    "options": [
+      { "value": "Amy", "displayName": "Amy" },
+      { "value": "Brian", "displayName": "Brian" },
+      { "value": "Emma", "displayName": "Emma" }
+    ]
+  },
+  {
+    "language": "Canadian French",
+    "options": [
+      { "value": "Chantal", "displayName": "Chantal" }
+    ]
+  },
+  {
+    "language": "Castilian Spanish",
+    "options": [
+      { "value": "Conchita", "displayName": "Conchita" },
+      { "value": "Enrique", "displayName": "Enrique" }
+    ]
+  },
+  {
+    "language": "Chinese, Mandarin",
+    "options": [
+      { "value": "Zhiyu", "displayName": "Zhiyu" }
+    ]
+  },
+  {
+    "language": "Danish",
+    "options": [
+      { "value": "Mads", "displayName": "Mads" },
+      { "value": "Naja", "displayName": "Naja" }
+    ]
+  },
+  {
+    "language": "Dutch",
+    "options": [
+      { "value": "Lotte", "displayName": "Lotte" },
+      { "value": "Ruben", "displayName": "Ruben" }
+    ]
+  },
+  {
+    "language": "French",
+    "options": [
+      { "value": "Celine", "displayName": "Celine" },
+      { "value": "Mathieu", "displayName": "Mathieu" }
+    ]
+  },
+  {
+    "language": "German",
+    "options": [
+      { "value": "Hans", "displayName": "Hans" },
+      { "value": "Marlene", "displayName": "Marlene" },
+      { "value": "Vicki", "displayName": "Vicki" }
+    ]
+  },
+  {
+    "language": "Icelandic",
+    "options": [
+      { "value": "Dora", "displayName": "Dora" },
+      { "value": "Karl", "displayName": "Karl" }
+    ]
+  },
+  {
+    "language": "Indian English",
+    "options": [
+      { "value": "Aditi", "displayName": "Aditi" },
+      { "value": "Raveena", "displayName": "Raveena" }
+    ]
+  },
+  {
+    "language": "Italian",
+    "options": [
+      { "value": "Bianca", "displayName": "Bianca" },
+      { "value": "Carla", "displayName": "Carla" },
+      { "value": "Giorgio", "displayName": "Giorgio" }
+    ]
+  },
+  {
+    "language": "Japanese",
+    "options": [
+      { "value": "Mizuki", "displayName": "Mizuki" },
+      { "value": "Takumi", "displayName": "Takumi" }
+    ]
+  },
+  {
+    "language": "Korean",
+    "options": [
+      { "value": "Seoyeon", "displayName": "Seoyeon" }
+    ]
+  },
+  {
+    "language": "Mexican, Spanish",
+    "options": [
+      { "value": "Mia", "displayName": "Mia" }
+    ]
+  },
+  {
+    "language": "Norwegian",
+    "options": [
+      { "value": "Liv", "displayName": "Liv" }
+    ]
+  },
+  {
+    "language": "Polish",
+    "options": [
+      { "value": "Ewa", "displayName": "Ewa" },
+      { "value": "Jacek", "displayName": "Jacek" },
+      { "value": "Jan", "displayName": "Jan" },
+      { "value": "Maja", "displayName": "Maja" }
+    ]
+  },
+  {
+    "language": "Portuguese",
+    "options": [
+      { "value": "Cristiano", "displayName": "Cristiano" },
+      { "value": "Ines", "displayName": "Ines" }
+    ]
+  },
+  {
+    "language": "Russian",
+    "options": [
+      { "value": "Maxim", "displayName": "Maxim" },
+      { "value": "Tatyana", "displayName": "Tatyana" }
+    ]
+  },
+  {
+    "language": "Swedish",
+    "options": [
+      { "value": "Astrid", "displayName": "Astrid" }
+    ]
+  },
+  {
+    "language": "Turkish",
+    "options": [
+      { "value": "Filiz", "displayName": "Filiz" }
+    ]
+  },
+  {
+    "language": "US English",
+    "options": [
+      { "value": "Ivy", "displayName": "Ivy" },
+      { "value": "Joanna", "displayName": "Joanna" },
+      { "value": "Joey", "displayName": "Joey" },
+      { "value": "Justin", "displayName": "Justin" },
+      { "value": "Kendra", "displayName": "Kendra" },
+      { "value": "Kimberly", "displayName": "Kimberly" },
+      { "value": "Matthew", "displayName": "Matthew" },
+      { "value": "Salli", "displayName": "Salli" }
+    ]
+  },
+  {
+    "language": "US Spanish",
+    "options": [
+      { "value": "Miguel", "displayName": "Miguel" },
+      { "value": "Penelope", "displayName": "Penelope" }
+    ]
+  },
+  {
+    "language": "Welsh",
+    "options": [
+      { "value": "Gwyneth", "displayName": "Gwyneth" }
+    ]
+  },
+  {
+    "language": "Welsh English",
+    "options": [
+      { "value": "Geraint", "displayName": "Geraint" }
+    ]
+  }
+]

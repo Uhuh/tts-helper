@@ -1,37 +1,37 @@
 import { Component, inject } from '@angular/core';
 import { ConfigService } from 'src/app/shared/services/config.service';
-import voices from '../../../shared/json/stream-elements.json';
+import voices from '../../../shared/json/streamlabs.json';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TtsSelectorComponent } from '../../../shared/components/tts-selector/tts-selector.component';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-    selector: 'app-stream-elements',
-    templateUrl: './stream-elements.component.html',
-    styleUrls: ['./stream-elements.component.scss'],
-    imports: [TtsSelectorComponent]
+  selector: 'app-streamlabs',
+  templateUrl: './streamlabs.component.html',
+  styleUrls: ['./streamlabs.component.scss'],
+  imports: [TtsSelectorComponent],
 })
-export class StreamElementsComponent {
+export class StreamlabsComponent {
   private readonly configService = inject(ConfigService);
   readonly voices = voices;
-  readonly streamElementsGroup = new FormGroup({
+  readonly streamlabsGroup = new FormGroup({
     voice: new FormControl('', { nonNullable: true }),
     language: new FormControl('', { nonNullable: true }),
   });
 
   constructor() {
-    this.configService.streamElements$
+    this.configService.streamlabs$
       .pipe(takeUntilDestroyed())
-      .subscribe((streamElements) => {
-        this.streamElementsGroup.setValue(streamElements, {
+      .subscribe((streamlabs) => {
+        this.streamlabsGroup.setValue(streamlabs, {
           emitEvent: false,
         });
       });
 
-    this.streamElementsGroup.valueChanges
+    this.streamlabsGroup.valueChanges
       .pipe(takeUntilDestroyed())
-      .subscribe((streamElements) =>
-        this.configService.updateStreamElements(streamElements),
+      .subscribe((streamlabs) =>
+        this.configService.updateStreamlabs(streamlabs),
       );
   }
 }
