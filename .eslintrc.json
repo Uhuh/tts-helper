@@ -38,16 +38,6 @@
             "ignoreStrings": true
           }
         ],
-        "array-element-newline": [
-          "error",
-          {
-            "multiline": true,
-            "minItems": 3
-          }
-        ],
-        "array-bracket-newline": ["error", {
-          "multiline": true
-        }],
         "no-multiple-empty-lines": "error",
         "no-empty": "error",
         "no-trailing-spaces": "error",
