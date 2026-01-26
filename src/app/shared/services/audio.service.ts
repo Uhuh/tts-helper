@@ -132,14 +132,6 @@ export class AudioService {
         const reg = new RegExp(filteredWords.join('|'), 'gi');
         const filteredText = reducedText.replaceAll(reg, ``);
 
-        /**
-         * If a user set a max character limit for messages, we want to ignore any that exceed that limit.
-         * 0 or lower means the setting is disabled
-         */
-        if (this.twitchSettings.maxCharacterLimit > 0 && filteredText.length > this.twitchSettings.maxCharacterLimit) {
-          return;
-        }
-
         const voices = this.parseMultiVoices(filteredText, multiVoices);
         const customUserVoice = customVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
 

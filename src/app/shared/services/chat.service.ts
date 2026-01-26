@@ -10,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { WatchStreakActions } from '../state/watch-streak/watch-streak.actions';
 import { WatchStreakFeature, WatchStreakFeatureState } from '../state/watch-streak/watch-streak.feature';
+import { TwitchService } from './twitch.service';
 
 @Injectable()
 export class ChatService {
@@ -17,11 +18,13 @@ export class ChatService {
   private readonly configService = inject(ConfigService);
   private readonly openaiService = inject(OpenAIService);
   private readonly audioService = inject(AudioService);
+  private readonly twitchService = inject(TwitchService);
 
   public readonly watchStreakState$ = this.store.select(WatchStreakFeature.selectWatchStreakFeatureState);
 
   generalChat!: GeneralChatState;
   openAIChat!: GptChatState;
+  twitchRandomCharacterLimit: number = 0;
 
   cooldowns = new Map<string, boolean>();
 
@@ -33,6 +36,10 @@ export class ChatService {
     this.openaiService.chatSettings$
       .pipe(takeUntilDestroyed())
       .subscribe(chatSettings => this.openAIChat = chatSettings);
+
+    this.twitchService.settings$
+      .pipe(takeUntilDestroyed())
+      .subscribe(settings => this.twitchRandomCharacterLimit = settings.maxCharacterLimit);
   }
 
   /**
@@ -100,6 +107,14 @@ export class ChatService {
     }
 
     const { text, displayName } = user;
+
+    /**
+     * If a user set a max character limit for messages, we want to ignore any that exceed that limit.
+     * 0 or lower means the setting is disabled
+     */
+    if (this.twitchRandomCharacterLimit > 0 && text.length > this.twitchRandomCharacterLimit) {
+      return;
+    }
 
     /**
      * If OpenAI is enabled then get the model to generate a response.
