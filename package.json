@@ -1,6 +1,6 @@
 {
   "name": "tts-helper",
-  "version": "6.5.5",
+  "version": "6.6.0",
   "author": {
     "email": "dylanwarren19@gmail.com",
     "name": "Dylan Warren",
@@ -13,6 +13,7 @@
     "test": "ng test",
     "build": "ng build",
     "tauri:dev": "yarn tauri dev",
+    "tauri:windows": "yarn tauri build --runner cargo-xwin --target x86_64-pc-windows-msvc",
     "watch": "ng build --watch --configuration development",
     "lint": "ng lint"
   },
@@ -29,9 +30,9 @@
     "@angular/platform-browser": "^20.0.3",
     "@angular/platform-browser-dynamic": "^20.0.3",
     "@angular/router": "^20.0.3",
-    "@aws-sdk/client-polly": "^3.325.0",
-    "@aws-sdk/credential-providers": "^3.325.0",
-    "@aws-sdk/polly-request-presigner": "^3.325.0",
+    "@aws-sdk/client-polly": "^3.940.0",
+    "@aws-sdk/credential-providers": "^3.940.0",
+    "@aws-sdk/polly-request-presigner": "^3.940.0",
     "@ngrx/signals": "^19.2.1",
     "@ngrx/store": "^19.2.1",
     "@ngrx/store-devtools": "^19.2.1",
@@ -54,7 +55,7 @@
     "crypto-js": "^4.2.0",
     "jwt-decode": "^4.0.0",
     "klona": "^2.0.6",
-    "microsoft-cognitiveservices-speech-sdk": "^1.41.0",
+    "microsoft-cognitiveservices-speech-sdk": "^1.47.0",
     "ngx-color": "^9.0.0",
     "openai": "^4.53.0",
     "recordrtc": "^5.6.2",
