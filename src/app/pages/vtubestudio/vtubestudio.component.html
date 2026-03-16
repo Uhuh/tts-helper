@@ -18,13 +18,13 @@
       <app-button class="right" (click)="auth()" [style]="'active'">Authorize</app-button>
     }
   </app-label-block>
-  
+
   <app-label-block>
     <div header>API Port</div>
     <div sub-text>The port that's set in your VTS Plugin API settings.</div>
     <app-input [control]="settings.controls.port" type="number" placeholder="VTS port"/>
   </app-label-block>
-  
+
   <app-label-block>
     <div header>Mirror Mouth Form</div>
     <div sub-text>If enabled your pet will mirror your mouth form when there's no TTS.</div>
@@ -36,6 +36,34 @@
     <div sub-text>If enabled your pet will mirror your mouth open when there's no TTS.</div>
     <app-toggle class="right" [control]="settings.controls.isMirrorMouthOpenEnabled"/>
   </app-label-block>
+</div>
+
+<hr />
+
+<div class="section">
+  <div class="header">
+    <span>Emote-to-Expression</span>
+  </div>
+
+  <div class="warning">
+    <span>Map emotes or text patterns to VTubeStudio expressions!</span>
+    <span>When TTS Helper detects the specified emote/text in a message, it will trigger the corresponding VTS expression.</span>
+    <span>Example: Map "LUL" to your "Laugh" expression, so when someone types "LUL" your model laughs.</span>
+  </div>
+
+  <app-label-block>
+    <div header>Create Emote-to-Expression</div>
+    <div sub-text>Add a new mapping between text/emotes and VTS expressions.</div>
+    <app-button class="right" (click)="createEmoteToExpression()">Create</app-button>
+  </app-label-block>
+
+  @for (emote of emoteToExpressions$ | async; track emote.id) {
+    <app-emote-to-expression-accordion [emoteToExpression]="emote" />
+  } @empty {
+    <div class="empty">
+      No emote-to-expression mappings created!
+    </div>
+  }
 </div>
 
 

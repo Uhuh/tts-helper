@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   AuthResponse,
+  TriggeredExpression,
   TTSHelperParameterNames,
   TTSHelperParameters,
   VTubeStudioMessageType,
@@ -12,7 +13,7 @@ import {
 import { ConfigService } from './config.service';
 import { PlaybackService } from './playback.service';
 import { Store } from '@ngrx/store';
-import { VTubeStudioFeature, VTubeStudioState } from '../state/vtubestudio/vtubestudio.feature.';
+import { EmoteToExpression, VTubeStudioFeature, VTubeStudioState } from '../state/vtubestudio/vtubestudio.feature.';
 import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
 import { BehaviorSubject, distinctUntilChanged, first, map } from 'rxjs';
 import { TtsType } from '../state/config/config.feature';
@@ -55,6 +56,7 @@ export class VTubeStudioService {
   readonly port$ = this.store.select(VTubeStudioFeature.selectPort);
   readonly isMouthOpenEnabled$ = this.store.select(VTubeStudioFeature.selectIsMirrorMouthOpenEnabled);
   readonly isMouthFormEnabled$ = this.store.select(VTubeStudioFeature.selectIsMirrorMouthFormEnabled);
+  readonly emoteToExpressions$ = this.store.select(VTubeStudioFeature.selectEmoteToExpressions);
   readonly isConnected$ = new BehaviorSubject<boolean>(false);
 
   isMouthOpenEnabled = false;
@@ -283,7 +285,9 @@ export class VTubeStudioService {
     }
 
     // Determine which of the TTS Helper IDs we need to use.
-    const id = name === VTubeStudioMessageType.MouthSmile ? TTSHelperParameterNames.TTSHelperMouthForm : TTSHelperParameterNames.TTSHelperMouthOpen;
+    const id = name === VTubeStudioMessageType.MouthSmile
+      ? TTSHelperParameterNames.TTSHelperMouthForm
+      : TTSHelperParameterNames.TTSHelperMouthOpen;
 
     // Mirror users mouth data to the TTS Helper parameters
     this.socket.send(JSON.stringify({
@@ -535,5 +539,99 @@ export class VTubeStudioService {
   deauth() {
     this.vtsAuthToken = '';
     this.configService.updateVTSToken(this.vtsAuthToken);
+  }
+
+  createEmoteToExpression() {
+    this.store.dispatch(VTubeStudioActions.createEmoteToExpression({ partialSettings: {} }));
+  }
+
+  updateEmoteToExpression(id: string, partialSettings: Partial<EmoteToExpression>) {
+    this.store.dispatch(VTubeStudioActions.updateEmoteToExpression({ id, partialSettings }));
+  }
+
+  deleteEmoteToExpression(id: string) {
+    this.store.dispatch(VTubeStudioActions.deleteEmoteToExpression({ id }));
+  }
+
+  /**
+   * Trigger a VTubeStudio expression by hotkey name
+   */
+  triggerExpression(hotkeyName: string) {
+    if (!this.vtsAuthToken || this.socket.readyState !== WebSocket.OPEN) {
+      return;
+    }
+
+    this.socket.send(JSON.stringify({
+      ...this.vtsBasics,
+      messageType: VTubeStudioMessageType.HotkeyTriggerRequest,
+      data: {
+        hotkeyID: hotkeyName,
+      },
+    }));
+
+    this.logService.add(
+      `Triggered VTS expression: ${hotkeyName}`,
+      'info',
+      'VTubeStudioService.triggerExpression',
+    );
+  }
+
+  parseEmotesAndFilterText(text: string, emoteToExpressions: EmoteToExpression[]) {
+    const triggeredExpressions: TriggeredExpression[] = [];
+    let filteredText = text;
+
+    for (const emote of emoteToExpressions) {
+      if (!emote.emotePattern || !emote.expressionName) {
+        continue;
+      }
+
+      try {
+        const pattern = emote.isRegex
+          ? new RegExp(emote.emotePattern, 'gi')
+          : new RegExp(emote.emotePattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+
+        if (pattern.test(filteredText)) {
+          triggeredExpressions.push({
+            name: emote.expressionName,
+            toggleDurationMs: emote.toggleDurationMs,
+          });
+
+          if (emote.shouldFilter) {
+            filteredText = filteredText.replaceAll(pattern, '');
+          }
+
+          this.logService.add(
+            `Queued VTS expression "${emote.expressionName}" for pattern "${emote.emotePattern}" (duration: ${emote.toggleDurationMs}ms, filter: ${emote.shouldFilter})`,
+            'info',
+            'VTubeStudioService.parseEmotesAndFilterText',
+          );
+        }
+      } catch (e) {
+        this.logService.add(
+          `Failed to process emote-to-expression pattern "${emote.emotePattern}": ${JSON.stringify(e)}`,
+          'error',
+          'VTubeStudioService.parseEmotesAndFilterText',
+        );
+      }
+    }
+
+    return { triggeredExpressions, filteredText };
+  }
+
+  triggerExpressionsWithDelay(expressions: TriggeredExpression[]) {
+    for (const expression of expressions) {
+      this.triggerExpression(expression.name);
+
+      if (expression.toggleDurationMs > 0) {
+        setTimeout(() => {
+          this.triggerExpression(expression.name);
+          this.logService.add(
+            `Auto-toggled off VTS expression: ${expression.name}`,
+            'info',
+            'VTubeStudioService.triggerExpressionsWithDelay',
+          );
+        }, expression.toggleDurationMs);
+      }
+    }
   }
 }

@@ -23,6 +23,8 @@ import { SynthesizeSpeechInput } from '@aws-sdk/client-polly/dist-types/models/m
 import { AzureTtsService } from './azure-tts.service';
 import { AudioConfig, PullAudioOutputStream, SpeechSynthesisResult, SpeechSynthesizer } from 'microsoft-cognitiveservices-speech-sdk';
 import { AzureState } from '../state/azure/azure.feature';
+import { VTubeStudioService } from './vtubestudio.service';
+import { TriggeredExpression } from './vtubestudio.interface';
 
 @Injectable()
 export class AudioService {
@@ -35,10 +37,12 @@ export class AudioService {
   private readonly twitchService = inject(TwitchService);
   private readonly logService = inject(LogService);
   private readonly azureTtsService = inject(AzureTtsService);
+  private readonly vtubeStudioService = inject(VTubeStudioService);
   private readonly userListState$ = this.configService.userListState$;
   private readonly customUserVoices$ = this.configService.customUserVoices$;
   private readonly multiVoices$ = this.configService.multiVoices$;
   private readonly filteredWords$ = this.configService.filteredWords$;
+  private readonly pendingExpressions = new Map<number, TriggeredExpression[]>();
 
   public readonly audioItems$ = this.store.select(AudioFeature.selectAudioItems);
 
@@ -86,11 +90,23 @@ export class AudioService {
 
     this.playback.audioStarted$
       .pipe(takeUntilDestroyed())
-      .subscribe(id => this.store.dispatch(AudioActions.updateAudioState({ id, audioState: AudioStatus.playing })));
+      .subscribe(id => {
+        this.store.dispatch(AudioActions.updateAudioState({ id, audioState: AudioStatus.playing }));
+
+        const expressions = this.pendingExpressions.get(id);
+        if (expressions && expressions.length > 0) {
+          this.vtubeStudioService.triggerExpressionsWithDelay(expressions);
+          this.pendingExpressions.delete(id);
+        }
+      });
 
     this.playback.audioFinished$
       .pipe(takeUntilDestroyed())
-      .subscribe(id => this.store.dispatch(AudioActions.updateAudioState({ id, audioState: AudioStatus.finished })));
+      .subscribe(id => {
+        this.store.dispatch(AudioActions.updateAudioState({ id, audioState: AudioStatus.finished }));
+        // Clean up pending expressions for finished audio (in case it was skipped)
+        this.pendingExpressions.delete(id);
+      });
   }
 
   requeue(audio: AudioItem) {
@@ -111,9 +127,10 @@ export class AudioService {
       customVoices: this.customUserVoices$,
       multiVoices: this.multiVoices$,
       filteredWords: this.filteredWords$,
+      emoteToExpressions: this.vtubeStudioService.emoteToExpressions$,
     })
       .pipe(first(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(async ({ customVoices, multiVoices, filteredWords }) => {
+      .subscribe(async ({ customVoices, multiVoices, filteredWords, emoteToExpressions }) => {
         const canProceed = canPlayOverride
           ? canPlayOverride
           : await this.canProcessMessage(text, username);
@@ -130,7 +147,20 @@ export class AudioService {
         const reducedText = text.substring(0, charLimit);
 
         const reg = new RegExp(filteredWords.join('|'), 'gi');
-        const filteredText = reducedText.replaceAll(reg, ``);
+        const filteredByWords = reducedText.replaceAll(reg, ``);
+
+        const {
+          triggeredExpressions,
+          filteredText: initialFilteredText,
+        } = this.vtubeStudioService.parseEmotesAndFilterText(
+          filteredByWords,
+          emoteToExpressions,
+        );
+
+        // If filtering resulted in empty string, use the original filtered text before emote filtering
+        const filteredText = initialFilteredText.trim() === ''
+          ? filteredByWords
+          : initialFilteredText;
 
         const voices = this.parseMultiVoices(filteredText, multiVoices);
         const customUserVoice = customVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
@@ -144,7 +174,7 @@ export class AudioService {
             text,
             source,
             charLimit,
-          });
+          }, triggeredExpressions);
         }
 
         // Otherwise... let's hope it WAS a multivoice request.
@@ -156,7 +186,7 @@ export class AudioService {
             text,
             source,
             charLimit,
-          });
+          }, triggeredExpressions);
         }
       });
   }
@@ -190,6 +220,7 @@ export class AudioService {
   private async playAudio(
     data: RequestAudioData | null,
     { username, charLimit, source, text }: { username: string, charLimit: number, source: AudioSource, text: string },
+    triggeredExpressions: TriggeredExpression[] = [],
   ) {
     if (!data) {
       this.snackbar.open(
@@ -211,6 +242,10 @@ export class AudioService {
           username,
           charLimit,
         }, null, 1)}`, 'info', 'AudioService.playTts');
+
+        if (triggeredExpressions.length > 0) {
+          this.pendingExpressions.set(id, triggeredExpressions);
+        }
 
         this.addAudio({
           id,

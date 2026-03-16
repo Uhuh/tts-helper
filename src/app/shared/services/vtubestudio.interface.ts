@@ -10,6 +10,8 @@
   Live2DParameterListRequest = 'Live2DParameterListRequest',
   InjectParameterDataRequest = 'InjectParameterDataRequest',
   InjectParameterDataResponse = 'InjectParameterDataResponse',
+  HotkeyTriggerRequest = 'HotkeyTriggerRequest',
+  HotkeyTriggerResponse = 'HotkeyTriggerResponse',
   MouthSmile = 'MouthSmile',
   MouthOpen = 'MouthOpen',
 }
@@ -25,6 +27,11 @@ export interface VTubeStudioParameter {
   min: number;
   max: number;
   defaultValue: number;
+}
+
+export interface TriggeredExpression {
+  name: string;
+  toggleDurationMs: number;
 }
 
 export enum TTSHelperParameterNames {

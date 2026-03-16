@@ -1,0 +1,56 @@
+<app-accordion>
+  <div accordion-header>{{ emoteToExpression().emotePattern || 'New Emote Mapping' }}</div>
+
+  <div class="header">
+    <span>Settings</span>
+    <app-button [style]="'danger'" (click)="delete()">
+      Delete
+    </app-button>
+  </div>
+
+  <app-label-block>
+    <div header><span class="yellow">Emote/Text Pattern</span></div>
+    <div sub-text>The text or emote to search for in messages (e.g., "LUL", "Kappa", ":)")</div>
+    <div sub-text>If regex is enabled, this will be treated as a regular expression pattern.</div>
+    <app-input
+      placeholder="LUL"
+      type="text"
+      [control]="settings.controls.emotePattern"
+    />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>VTS Expression Name</div>
+    <div sub-text>The name of the VTubeStudio expression/hotkey to trigger</div>
+    <div sub-text>This should match the exact name of your hotkey in VTubeStudio.</div>
+    <app-input
+      placeholder="Laugh"
+      type="text"
+      [control]="settings.controls.expressionName"
+    />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Use Regular Expression</div>
+    <div sub-text>Enable to use regex pattern matching instead of literal text.</div>
+    <app-toggle class="right" [control]="settings.controls.isRegex"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Auto-Toggle Off Duration (ms)</div>
+    <div sub-text>0 = Toggle once only (expression stays on)</div>
+    <div sub-text>>0 = Auto-toggle off after duration in milliseconds (e.g., 3000 = 3 seconds)</div>
+    <app-input
+      placeholder="0"
+      type="number"
+      [control]="settings.controls.toggleDurationMs"
+    />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Filter From TTS</div>
+    <div sub-text>When enabled, the matched text will be removed from the TTS message.</div>
+    <div sub-text>When disabled, the expression will trigger but the text will be spoken.</div>
+    <app-toggle class="right" [control]="settings.controls.shouldFilter"/>
+  </app-label-block>
+</app-accordion>

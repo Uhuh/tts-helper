@@ -9,6 +9,7 @@ import { debounceTime, map, take } from 'rxjs';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { ConfigService } from '../../shared/services/config.service';
 import { AsyncPipe } from '@angular/common';
+import { EmoteToExpressionAccordionComponent } from './emote-to-expression-accordion/emote-to-expression-accordion.component';
 
 @Component({
   selector: 'app-vtubestudio',
@@ -18,6 +19,7 @@ import { AsyncPipe } from '@angular/common';
     ToggleComponent,
     ButtonComponent,
     AsyncPipe,
+    EmoteToExpressionAccordionComponent,
   ],
   templateUrl: './vtubestudio.component.html',
   styleUrl: './vtubestudio.component.scss',
@@ -27,6 +29,8 @@ export class VtubestudioComponent {
   private readonly configService = inject(ConfigService);
 
   readonly isAuthed$ = this.configService.authTokens$.pipe(map(tokens => !!tokens.vtsAuthToken));
+  readonly emoteToExpressions$ = this.vtubeStudioService.emoteToExpressions$;
+
   readonly settings = new FormGroup({
     port: new FormControl(8001, { nonNullable: true }),
     isMirrorMouthFormEnabled: new FormControl(false, { nonNullable: true }),
@@ -50,6 +54,10 @@ export class VtubestudioComponent {
 
   deauth() {
     this.vtubeStudioService.deauth();
+  }
+
+  createEmoteToExpression() {
+    this.vtubeStudioService.createEmoteToExpression();
   }
 }
 
