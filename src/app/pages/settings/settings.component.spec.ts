@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SettingsComponent } from './settings.component';
 import { AudioService } from '../../shared/services/audio.service';
 import { ConfigService } from '../../shared/services/config.service';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { TtsType } from '../../shared/state/config/config.feature';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
@@ -14,14 +14,17 @@ describe('GeneralSettingsComponent', () => {
   let audioServiceStub: jasmine.SpyObj<AudioService>;
   let configServiceStub: jasmine.SpyObj<ConfigService>;
 
-  let ttsSubject: Subject<TtsType>;
+  let ttsSubject: BehaviorSubject<TtsType>;
+  let stateSubject: BehaviorSubject<{ chaosMode: boolean }>;
 
   beforeEach(() => {
     audioServiceStub = jasmine.createSpyObj('AudioService', ['playTts']);
 
-    ttsSubject = new Subject();
-    configServiceStub = jasmine.createSpyObj('ConfigService', ['updateTts'], {
+    ttsSubject = new BehaviorSubject<TtsType>('streamlabs');
+    stateSubject = new BehaviorSubject<{ chaosMode: boolean }>({ chaosMode: false });
+    configServiceStub = jasmine.createSpyObj('ConfigService', ['updateState'], {
       configTts$: ttsSubject,
+      state$: stateSubject,
     });
 
     TestBed.overrideComponent(SettingsComponent, {
@@ -49,10 +52,10 @@ describe('GeneralSettingsComponent', () => {
     const tts: TtsType = 'tts-monster';
 
     // Act
-    component.selectTts(tts);
+    component.selectedTts.setValue(tts);
 
     // Assert
-    expect(configServiceStub.updateTts).toHaveBeenCalledOnceWith(tts);
+    expect(configServiceStub.updateState).toHaveBeenCalledWith({ tts });
   });
 
   it('should speak given text', () => {
@@ -64,6 +67,6 @@ describe('GeneralSettingsComponent', () => {
     component.speak();
 
     // Assert
-    expect(audioServiceStub.playTts).toHaveBeenCalledOnceWith(text, '', 'tts-helper', 1000);
+    expect(audioServiceStub.playTts).toHaveBeenCalledOnceWith(text, '', 'tts-helper', 1000, true, true);
   });
 });

@@ -43,8 +43,8 @@
 
   .action-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
-    
-    justify-content: space-between;
+    justify-content: flex-end;
   }
 }

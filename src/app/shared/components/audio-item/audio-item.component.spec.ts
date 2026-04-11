@@ -4,9 +4,10 @@ import { AudioItemComponent } from './audio-item.component';
 import { AudioService } from '../../services/audio.service';
 import { PlaybackService } from '../../services/playback.service';
 import { LogService } from '../../services/logs.service';
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AudioItem, AudioStatus } from '../../state/audio/audio.feature';
+import { BehaviorSubject } from 'rxjs';
 
 describe('AudioItemComponent', () => {
   let component: AudioItemComponent;
@@ -24,15 +25,20 @@ describe('AudioItemComponent', () => {
   let audioServiceStub: jasmine.SpyObj<AudioService>;
   let playbackServiceStub: jasmine.SpyObj<PlaybackService>;
   let logServiceStub: jasmine.SpyObj<LogService>;
+  let isPaused$: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
-    audioServiceStub = jasmine.createSpyObj('AudioService', ['']);
-    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['']);
-    logServiceStub = jasmine.createSpyObj('LogService', ['']);
+    audioServiceStub = jasmine.createSpyObj('AudioService', ['removeAudio', 'requeue', 'playTts']);
+    isPaused$ = new BehaviorSubject<boolean>(false);
+    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['setAudioState'], {
+      isPaused$,
+    });
+    playbackServiceStub.setAudioState.and.returnValue(Promise.resolve());
+    logServiceStub = jasmine.createSpyObj('LogService', ['add']);
 
     TestBed.overrideComponent(AudioItemComponent, {
       set: {
-        imports: [DatePipe],
+        imports: [DatePipe, AsyncPipe],
         providers: [
           { provide: AudioService, useValue: audioServiceStub },
           { provide: PlaybackService, useValue: playbackServiceStub },
@@ -52,5 +58,29 @@ describe('AudioItemComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should manually play queued audio while paused', () => {
+    // Arrange
+    component.audio = {
+      ...audioItem,
+      state: AudioStatus.queued,
+    };
+    isPaused$.next(true);
+
+    // Act
+    component.manualPlay();
+
+    // Assert
+    expect(audioServiceStub.removeAudio).toHaveBeenCalledOnceWith(audioItem.id);
+    expect(playbackServiceStub.setAudioState).toHaveBeenCalledOnceWith({ id: audioItem.id, skipped: true });
+    expect(audioServiceStub.playTts).toHaveBeenCalledOnceWith(
+      audioItem.text,
+      audioItem.username,
+      audioItem.source,
+      1000,
+      true,
+      true,
+    );
   });
 });

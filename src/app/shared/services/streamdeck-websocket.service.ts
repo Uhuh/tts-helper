@@ -5,11 +5,15 @@ import { StreamDeckActions, StreamDeckEvent } from './streamdeck-websocket.inter
 import { LogService } from './logs.service';
 import { PlaybackService } from './playback.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AudioService } from './audio.service';
+import { AudioStatus } from '../state/audio/audio.feature';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class StreamDeckWebSocketService {
   private readonly azureService = inject(AzureSttService);
   private readonly playbackService = inject(PlaybackService);
+  private readonly audioService = inject(AudioService);
   private readonly logService = inject(LogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly connection = 'ws://localhost:17448';
@@ -53,8 +57,52 @@ export class StreamDeckWebSocketService {
       case StreamDeckActions.SKIP:
         this.playbackService.skipCurrentlyPlaying();
         break;
+      case StreamDeckActions.PLAY_NOW:
+        this.playOldestQueuedNow();
+        break;
     }
 
     this.logService.add(`Received StreamDeck event: ${JSON.stringify(data, undefined, 2)}`, 'info', 'StreamDeckWebSocketService.handleEvent');
+  }
+
+  private async playOldestQueuedNow() {
+    const isPaused = await firstValueFrom(this.playbackService.isPaused$);
+
+    if (!isPaused) {
+      return this.logService.add(`Cannot play oldest queued item while queue is unpaused.`, 'info', 'StreamDeckWebSocketService.playOldestQueuedNow');
+    }
+
+    const audioItems = await firstValueFrom(this.audioService.audioItems$);
+    const queuedItems = audioItems.filter(i => i.state === AudioStatus.queued);
+
+    if (!queuedItems.length) {
+      return this.logService.add(`No queued audio to manually play.`, 'info', 'StreamDeckWebSocketService.playOldestQueuedNow');
+    }
+
+    const oldestQueued = queuedItems.reduce((oldest, current) => {
+      const oldestCreatedAt = new Date(oldest.createdAt).getTime();
+      const currentCreatedAt = new Date(current.createdAt).getTime();
+
+      return currentCreatedAt < oldestCreatedAt
+        ? current
+        : oldest;
+    });
+
+    this.logService.add(`Manually playing oldest queued audio: ${JSON.stringify(oldestQueued)}`, 'info', 'StreamDeckWebSocketService.playOldestQueuedNow');
+
+    this.audioService.removeAudio(oldestQueued.id);
+
+    this.playbackService
+      .setAudioState({ id: oldestQueued.id, skipped: true })
+      .catch(() => undefined);
+
+    this.audioService.playTts(
+      oldestQueued.text,
+      oldestQueued.username,
+      oldestQueued.source,
+      1000,
+      true,
+      true,
+    );
   }
 }

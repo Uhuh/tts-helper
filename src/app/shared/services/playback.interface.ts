@@ -13,6 +13,7 @@ export interface OutputDeviceList {
 
 export interface PlayAudioRequest {
   data: RequestAudioData;
+  playNow?: boolean;
 }
 
 export type RequestAudioData =

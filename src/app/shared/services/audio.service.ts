@@ -122,6 +122,7 @@ export class AudioService {
     source: AudioSource,
     charLimit: number,
     canPlayOverride = false,
+    playNow = false,
   ) {
     combineLatest({
       customVoices: this.customUserVoices$,
@@ -174,7 +175,7 @@ export class AudioService {
             text,
             source,
             charLimit,
-          }, triggeredExpressions);
+          }, triggeredExpressions, playNow);
         }
 
         // Otherwise... let's hope it WAS a multivoice request.
@@ -186,7 +187,7 @@ export class AudioService {
             text,
             source,
             charLimit,
-          }, triggeredExpressions);
+          }, triggeredExpressions, playNow);
         }
       });
   }
@@ -221,6 +222,7 @@ export class AudioService {
     data: RequestAudioData | null,
     { username, charLimit, source, text }: { username: string, charLimit: number, source: AudioSource, text: string },
     triggeredExpressions: TriggeredExpression[] = [],
+    playNow = false,
   ) {
     if (!data) {
       this.snackbar.open(
@@ -234,8 +236,12 @@ export class AudioService {
       return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
     }
 
+    const request = playNow
+      ? { data, playNow }
+      : { data };
+
     return this.playback
-      .playAudio({ data })
+      .playAudio(request)
       .then((id) => {
         this.logService.add(`Queued TTS.\n${JSON.stringify({
           text,

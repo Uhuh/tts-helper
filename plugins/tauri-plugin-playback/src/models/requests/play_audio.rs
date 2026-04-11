@@ -7,6 +7,9 @@ use serde::{Deserialize, Serialize};
 pub struct PlayAudioRequest {
     /// The audio data.
     pub data: RequestAudioData,
+    /// Whether to play this request immediately even if the queue is paused.
+    #[serde(default)]
+    pub play_now: bool,
 }
 
 /// The audio data for a [`PlayAudioRequest`].

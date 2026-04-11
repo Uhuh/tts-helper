@@ -5,6 +5,7 @@ import { LogService } from '../../shared/services/logs.service';
 import { PlaybackService } from '../../shared/services/playback.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
 describe('LiveQueueComponent', () => {
   let component: LiveQueueComponent;
@@ -12,10 +13,14 @@ describe('LiveQueueComponent', () => {
 
   let logServiceStub: jasmine.SpyObj<LogService>;
   let playbackServiceStub: jasmine.SpyObj<PlaybackService>;
+  let isPaused$: BehaviorSubject<boolean>;
 
   beforeEach(() => {
-    logServiceStub = jasmine.createSpyObj('LogService', ['']);
-    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['togglePause']);
+    logServiceStub = jasmine.createSpyObj('LogService', ['add']);
+    isPaused$ = new BehaviorSubject(false);
+    playbackServiceStub = jasmine.createSpyObj('PlaybackService', ['togglePause'], {
+      isPaused$,
+    });
 
     playbackServiceStub.togglePause.and.returnValue(Promise.resolve());
 

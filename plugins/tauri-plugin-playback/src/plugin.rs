@@ -287,8 +287,10 @@ async fn play_audio(
     tts_svc: State<'_, TtsService>,
     app: AppHandle,
 ) -> ApiResult<AudioId> {
+    let PlayAudioRequest { data, play_now } = request;
+
     // Get source data
-    let raw = match request.data {
+    let raw = match data {
         RequestAudioData::Raw(raw) => BASE64_STANDARD.decode(raw.data).unwrap(),
         RequestAudioData::Streamlabs(stream_elements) => {
             tts_svc.streamlabs(stream_elements).await?.to_vec()
@@ -375,7 +377,11 @@ async fn play_audio(
                 drop(app.emit("playback::audio::finish", id));
             }
         });
-    playback_svc.enqueue(Box::new(source), controller, events);
+    if play_now {
+        playback_svc.enqueue_now(Box::new(source), controller, events);
+    } else {
+        playback_svc.enqueue(Box::new(source), controller, events);
+    }
 
     Ok(id)
 }

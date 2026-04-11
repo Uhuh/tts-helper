@@ -39,6 +39,21 @@ impl PlaybackService {
         }));
     }
 
+    /// Plays audio immediately, bypassing paused queue state.
+    #[inline]
+    pub fn enqueue_now(
+        &self,
+        source: Box<dyn Source<Item=f32> + Send + 'static>,
+        controller: SourceController,
+        events: SourceEvents,
+    ) {
+        drop(self.event_tx.send(AudioEvent::PlayNow {
+            source,
+            controller,
+            events,
+        }));
+    }
+
     /// Sets the output device.
     #[inline]
     pub fn set_device(&self, device: Arc<Device>) {
@@ -66,7 +81,8 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
 
     // Stream and queue
     let mut _stream = None;
-    let mut sink = None;
+    let mut queue_sink = None;
+    let mut manual_sink = None;
 
     // Handle events
     let mut event_id = 0u64;
@@ -79,7 +95,7 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
                 trace!("setting device");
 
                 // Create new stream and queue
-                (_stream, sink) = {
+                (_stream, queue_sink, manual_sink) = {
                     // Create stream
                     let (stream, stream_handle) = match OutputStream::try_from_device(&device) {
                         Ok(result) => result,
@@ -91,7 +107,7 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
                     };
 
                     // Create sink
-                    let sink = match Sink::try_new(&stream_handle) {
+                    let queue_sink = match Sink::try_new(&stream_handle) {
                         Ok(result) => result,
                         Err(error) => {
                             let error = &error as &dyn Error;
@@ -100,34 +116,47 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
                         }
                     };
 
-                    (Some(stream), Some(sink))
+                    let manual_sink = match Sink::try_new(&stream_handle) {
+                        Ok(result) => result,
+                        Err(error) => {
+                            let error = &error as &dyn Error;
+                            error!(error, "failed to create manual sink");
+                            continue;
+                        }
+                    };
+
+                    (Some(stream), Some(queue_sink), Some(manual_sink))
                 };
             }
             AudioEvent::SetVolume {
                 volume
             } => {
-                let Some(sink) = sink.as_mut() else {
+                let Some(queue_sink) = queue_sink.as_mut() else {
                     trace!("no audio device set, skipping audio");
                     continue;
                 };
 
-                sink.set_volume(volume);
+                queue_sink.set_volume(volume);
+
+                if let Some(manual_sink) = manual_sink.as_mut() {
+                    manual_sink.set_volume(volume);
+                }
             }
             AudioEvent::Pause {
                 sender
             } => {
-                let Some(sink) = sink.as_mut() else {
+                let Some(queue_sink) = queue_sink.as_mut() else {
                     trace!("no audio device set, skipping audio");
                     continue;
                 };
 
-                if sink.is_paused() {
-                    sink.play();
+                if queue_sink.is_paused() {
+                    queue_sink.play();
                 } else {
-                    sink.pause();
+                    queue_sink.pause();
                 }
 
-                let _ = sender.send(sink.is_paused());
+                let _ = sender.send(queue_sink.is_paused());
             }
             AudioEvent::Play {
                 source,
@@ -136,7 +165,7 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
             } => {
                 trace!("received audio");
 
-                let Some(sink) = sink.as_ref() else {
+                let Some(queue_sink) = queue_sink.as_ref() else {
                     trace!("no audio device set, skipping audio");
                     continue;
                 };
@@ -161,8 +190,42 @@ fn playback(event_rx: Receiver<AudioEvent>, playback_controller: PlaybackControl
 
                 // Enqueue the audio
                 trace!("enqueuing audio");
-                sink.append(source);
-                sink.append(end_delay);
+                queue_sink.append(source);
+                queue_sink.append(end_delay);
+            }
+            AudioEvent::PlayNow {
+                source,
+                controller,
+                mut events,
+            } => {
+                trace!("received manual audio");
+
+                let Some(manual_sink) = manual_sink.as_ref() else {
+                    trace!("no audio device set, skipping manual audio");
+                    continue;
+                };
+
+                // Wrap the source in a controllable source
+                let is_skipped = {
+                    let controller = controller.clone();
+                    move || controller.is_skipped()
+                };
+                let get_end_delay_duration = {
+                    let controller = playback_controller.clone();
+                    move || controller.end_delay()
+                };
+
+                let source = source
+                    .on_start(events.take_start())
+                    .on_finish(events.take_finish())
+                    .skip_when(is_skipped.clone());
+                let end_delay = Zero::<f32>::new(source.channels(), source.sample_rate())
+                    .take_for(get_end_delay_duration)
+                    .skip_when(is_skipped);
+
+                trace!("enqueuing manual audio");
+                manual_sink.append(source);
+                manual_sink.append(end_delay);
             }
         }
     }
@@ -179,6 +242,11 @@ enum AudioEvent {
         sender: Sender<bool>,
     },
     Play {
+        source: Box<dyn Source<Item=f32> + Send>,
+        controller: SourceController,
+        events: SourceEvents,
+    },
+    PlayNow {
         source: Box<dyn Source<Item=f32> + Send>,
         controller: SourceController,
         events: SourceEvents,

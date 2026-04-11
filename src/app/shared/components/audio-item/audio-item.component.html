@@ -9,6 +9,11 @@
   <hr/>
   <span class="text">{{ audio.text }}</span>
   <div class="action-row">
+    @if ((isPaused$ | async) && queued) {
+      <app-button class="manual-play" [style]="'active'" (click)="manualPlay()">
+        Play now
+      </app-button>
+    }
     <app-button
       class="requeue"
       (click)="requeue()"

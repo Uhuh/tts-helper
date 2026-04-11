@@ -1,7 +1,7 @@
 import { ApplicationRef, ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AudioService } from 'src/app/shared/services/audio.service';
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { PlaybackService } from 'src/app/shared/services/playback.service';
 import { AudioItem, AudioStatus } from '../../state/audio/audio.feature';
 import { LogService } from '../../services/logs.service';
@@ -11,7 +11,7 @@ import { ButtonComponent } from '../button/button.component';
   selector: 'app-audio-item',
   templateUrl: './audio-item.component.html',
   styleUrls: ['./audio-item.component.scss'],
-  imports: [ButtonComponent, DatePipe],
+  imports: [ButtonComponent, DatePipe, AsyncPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AudioItemComponent {
@@ -25,6 +25,7 @@ export class AudioItemComponent {
   @Output() itemSkipped = new EventEmitter<number>();
 
   readonly AudioState = AudioStatus;
+  readonly isPaused$ = this.playbackService.isPaused$;
 
   get svg() {
     return `assets/${this.audio.source.toLowerCase()}.svg`;
@@ -55,11 +56,33 @@ export class AudioItemComponent {
     return this.audio.state === AudioStatus.skipped;
   }
 
+  get queued() {
+    return this.audio.state === AudioStatus.queued;
+  }
+
   requeue() {
     this.logService.add(`Requeueing audio: ${JSON.stringify(this.audio)}`, 'info', 'AudioItemComponent.requeue');
     this.audioService.removeAudio(this.audio.id);
 
     this.audioService.requeue(this.audio);
+  }
+
+  manualPlay() {
+    this.logService.add(`Manually playing audio: ${JSON.stringify(this.audio)}`, 'info', 'AudioItemComponent.manualPlay');
+    this.audioService.removeAudio(this.audio.id);
+
+    this.playbackService
+      .setAudioState({ id: this.audio.id, skipped: true })
+      .catch(() => undefined);
+
+    this.audioService.playTts(
+      this.audio.text,
+      this.audio.username,
+      this.audio.source,
+      1000,
+      true,
+      true,
+    );
   }
 
   skip() {
