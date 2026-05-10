@@ -6,7 +6,7 @@ use tauri::http::{header::USER_AGENT, status::{InvalidStatusCode, StatusCode}, H
 use thiserror::Error;
 use tracing::error;
 use tauri_plugin_http::reqwest::{self, Client};
-use crate::models::requests::{AmazonPollyData, ElevenLabsData, Streamlabs, TTSMonsterData, TikTokData};
+use crate::models::requests::{PublicUrl, ElevenLabsData, Streamlabs, TTSMonsterData, TikTokData};
 
 const STREAMLABS_API: &str = "https://streamlabs.com/polly/speak";
 const TIKTOK_API: &str = "https://ottsy.weilbyte.dev/api/generation";
@@ -80,14 +80,13 @@ impl TtsService {
     }
 
     #[inline]
-    pub async fn amazon_polly(
+    pub async fn play_url(
         &self,
-        mut data: AmazonPollyData,
+        data: PublicUrl,
     ) -> Result<Bytes, TtsRequestError> {
-        let url = data.url.get_or_insert(String::from(""));
 
         let res = self.client
-            .get(url.clone())
+            .get(data.url)
             .send()
             .await?;
 

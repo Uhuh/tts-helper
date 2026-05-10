@@ -19,8 +19,8 @@ pub enum RequestAudioData {
     Streamlabs(Streamlabs),
     /// TikTok request data.
     TikTok(TikTokData),
-    /// AmazonPolly request data.
-    AmazonPolly(AmazonPollyData),
+    /// Public URL of an audio file.
+    Url(PublicUrl),
     /// ElevenLabs request data.
     ElevenLabs(ElevenLabsData),
     /// TTS Monster request data.
@@ -53,11 +53,11 @@ pub struct TikTokData {
     pub voice: String,
 }
 
-/// AmazonPolly request data.
+/// Public URL of an audio file.
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct AmazonPollyData {
-    /// Possible AmazonPolly URL.
-    pub url: Option<String>,
+pub struct PublicUrl {
+    /// AmazonPolly provides a pre-signed URL.
+    pub url: String,
 }
 
 /// ElevenLabs request data

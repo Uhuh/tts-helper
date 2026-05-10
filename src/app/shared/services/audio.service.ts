@@ -7,9 +7,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PlaybackService } from './playback.service';
 import { RequestAudioData } from './playback.interface';
 
-import { getSynthesizeSpeechUrl } from '@aws-sdk/polly-request-presigner';
-import { PollyClient } from '@aws-sdk/client-polly';
-import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 import { AudioFeature, AudioItem, AudioSource, AudioStatus } from '../state/audio/audio.feature';
 import { AmazonPollyData, CustomUserVoice, MultiVoice, StreamlabsData, TikTokData, TtsMonsterData, TtsType } from '../state/config/config.feature';
 import { AudioActions } from '../state/audio/audio.actions';
@@ -19,12 +16,12 @@ import { ElevenLabsState } from '../state/eleven-labs/eleven-labs.feature';
 import { ElevenLabsService } from './eleven-labs.service';
 import { TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchService } from './twitch.service';
-import { SynthesizeSpeechInput } from '@aws-sdk/client-polly/dist-types/models/models_0';
 import { AzureTtsService } from './azure-tts.service';
-import { AudioConfig, PullAudioOutputStream, SpeechSynthesisResult, SpeechSynthesizer } from 'microsoft-cognitiveservices-speech-sdk';
 import { AzureState } from '../state/azure/azure.feature';
 import { VTubeStudioService } from './vtubestudio.service';
 import { TriggeredExpression } from './vtubestudio.interface';
+import { AwsTtsService } from "./aws-tts.service";
+import { arrayBufferToBase64 } from "../util/helpers";
 
 @Injectable()
 export class AudioService {
@@ -162,12 +159,12 @@ export class AudioService {
           ? filteredByWords
           : initialFilteredText;
 
-        const voices = this.parseMultiVoices(filteredText, multiVoices);
+        const voices = AudioService.parseMultiVoices(filteredText, multiVoices);
         const customUserVoice = customVoices.find(u => u.username.toLowerCase() === username.toLowerCase());
 
         // If we couldn't parse out any multi voices, let's assume it's a normal TTS request.
         if (!voices.length) {
-          const data = await this.getRequestData(filteredText, customUserVoice);
+          const data = await this.getRequestData(filteredText, customUserVoice?.voice, customUserVoice?.ttsType);
 
           return await this.playAudio(data, {
             username,
@@ -179,7 +176,7 @@ export class AudioService {
 
         // Otherwise... let's hope it WAS a multivoice request.
         for (const { text, voice, ttsType } of voices) {
-          const data = await this.getRequestData(text, { voice, ttsType });
+          const data = await this.getRequestData(text, voice, ttsType);
 
           await this.playAudio(data, {
             username,
@@ -234,42 +231,40 @@ export class AudioService {
       return this.logService.add(`Tried to get request data for invalid TTS: ${this.tts}`, 'error', 'AudioService.playTts');
     }
 
-    return this.playback
-      .playAudio({ data })
-      .then((id) => {
-        this.logService.add(`Queued TTS.\n${JSON.stringify({
-          text,
-          username,
-          charLimit,
-        }, null, 1)}`, 'info', 'AudioService.playTts');
+    try {
+      const id = await this.playback.playAudio({ data });
+      this.logService.add(`Queued TTS.\n${JSON.stringify({
+        text,
+        username,
+        charLimit,
+      }, null, 1)}`, 'info', 'AudioService.playTts');
 
-        if (triggeredExpressions.length > 0) {
-          this.pendingExpressions.set(id, triggeredExpressions);
-        }
+      if (triggeredExpressions.length > 0) {
+        this.pendingExpressions.set(id, triggeredExpressions);
+      }
 
-        this.addAudio({
-          id,
-          createdAt: new Date(),
-          source,
-          text,
-          username,
-          state: AudioStatus.queued,
-        });
-      })
-      .catch((e) => {
-        this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
+      this.addAudio({
+        id,
+        createdAt: new Date(),
+        source,
+        text,
+        username,
+        state: AudioStatus.queued,
+      });
+    } catch (e) {
+      this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
 
-        this.snackbar.open(
+      this.snackbar.open(
           `Failed to queue TTS request.`,
           'Dismiss',
           {
             panelClass: 'notification-error',
           },
-        );
-      });
+      );
+    }
   }
 
-  private parseMultiVoices(text: string, allowedMultiVoices: MultiVoice[]) {
+  private static parseMultiVoices(text: string, allowedMultiVoices: MultiVoice[]) {
     /**
      * To handle users doing the following:
      * (brian): Hello world I'm Brian! (ivy): My name is Ivy. (shadow): And I'm Shadow!
@@ -303,44 +298,47 @@ export class AudioService {
     return matches;
   }
 
-  playSoundFile(fileURL: string) {
+  public async playSoundFile(fileURL: string) {
     const base64EncodedPart = fileURL.split(',')[1];
 
-    this.playback.playAudio({
-      data: {
-        type: 'raw',
-        data: base64EncodedPart,
-      },
-    }).catch(e => {
+    try {
+      await this.playback.playAudio({
+        data: {
+          type: 'raw',
+          data: base64EncodedPart,
+        },
+      });
+    } catch (e) {
       this.logService.add(`Failed to play sound file. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playSoundFile');
 
       this.snackbar.open(
-        'Oops! Issue playing sound file.',
-        'Dismiss',
-        {
-          panelClass: 'notification-error',
-        },
+          'Oops! Issue playing sound file.',
+          'Dismiss',
+          {
+            panelClass: 'notification-error',
+          },
       );
-    });
+    }
   }
 
   private async getRequestData(
     text: string,
-    customUserVoice?: Partial<CustomUserVoice>,
+    voice?: string,
+    ttsType?: TtsType,
   ): Promise<RequestAudioData | null> {
-    const tts = customUserVoice?.ttsType ?? this.tts;
+    const tts = ttsType ?? this.tts;
 
     switch (tts) {
       case 'streamlabs':
         return {
           type: 'streamlabs',
-          voice: customUserVoice?.voice ?? this.streamlabs.voice,
+          voice: voice ?? this.streamlabs.voice,
           text,
         };
       case 'tiktok':
         return {
           type: 'tikTok',
-          voice: customUserVoice?.voice ?? this.tikTok.voice,
+          voice: voice ?? this.tikTok.voice,
           text,
         };
       case 'tts-monster':
@@ -352,22 +350,12 @@ export class AudioService {
           is_ai: this.ttsMonster.ai,
         };
       case 'azure':
-        return await this.handleAzureTts(text);
-      case 'amazon-polly': {
-        const url = await this.handleAmazonPolly(text);
-
-        // If there was an issue getting the audio url.
-        if (!url) {
-          return null;
-        }
-
-        return {
-          type: 'amazonPolly',
-          url,
-        };
-      }
+        return await this.handleAzureTts(text, voice ?? this.azure.ttsVoice);
+      case 'amazon-polly':
+        return await this.handleAmazonPolly(text, voice ?? this.amazonPolly.voice);
       case 'eleven-labs': {
-        const url = `${this.elevenLabsService.apiUrl}/text-to-speech/${customUserVoice?.voice ?? this.elevenLabs.voiceId}`;
+        const voiceId = voice ?? this.elevenLabs.voiceId;
+        const url = `${this.elevenLabsService.apiUrl}/text-to-speech/${voiceId}`;
 
         return {
           type: 'elevenLabs',
@@ -385,45 +373,12 @@ export class AudioService {
     }
   }
 
-  async handleAzureTts(text: string): Promise<{ type: 'raw', data: string } | null> {
-    const config = this.azureTtsService.speechConfig;
-
-    if (!config) {
-      return null;
-    }
-
-    function arrayBufferToBase64(buffer: ArrayBuffer): string {
-      let binary = '';
-      const bytes = new Uint8Array(buffer);
-      const len = bytes.byteLength;
-
-      for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-
-      return window.btoa(binary);
-    }
-
-    const stream = PullAudioOutputStream.create();
-    const audioConfig = AudioConfig.fromStreamOutput(stream);
-    config.speechSynthesisVoiceName = this.azure.ttsVoice;
-
-    const synth = new SpeechSynthesizer(config, audioConfig);
-    const generateAudio = async (): Promise<SpeechSynthesisResult> => {
-      return new Promise((resolve, reject) => {
-        synth.speakTextAsync(text, r => {
-          synth.close();
-          resolve(r);
-        }, reject);
-      });
-    };
-
+  private async handleAzureTts(text: string, voice: string): Promise<{ type: 'raw', data: string } | null> {
     try {
-      const audio = await generateAudio();
-
+      const audio = await this.azureTtsService.getRawAudio(text, voice);
       return {
         type: 'raw',
-        data: arrayBufferToBase64(audio.audioData),
+        data: arrayBufferToBase64(audio),
       };
     } catch (e) {
       this.logService.add(`Failed to create Azure TTS synthesis result. ${JSON.stringify(e, null, 2)}`, 'error', 'AudioService.handleAzureTts');
@@ -431,54 +386,25 @@ export class AudioService {
     }
   }
 
-  async handleAmazonPolly(audioText: string) {
-    if (!this.amazonPolly.poolId) {
-      this.snackbar.open(
-        `Oops! You didn't provide a Pool ID for Amazon Polly.`,
-        'Dismiss',
-        {
-          panelClass: 'notification-error',
-        },
-      );
-      return;
-    }
-
-    const pollyParams = {
-      OutputFormat: 'mp3',
-      SampleRate: '22050',
-      Text: audioText,
-      TextType: 'text',
-      VoiceId: this.amazonPolly.voice,
-    } satisfies SynthesizeSpeechInput;
-
+  private async handleAmazonPolly(audioText: string, voice: string) {
     try {
-      const url = await getSynthesizeSpeechUrl({
-        client: new PollyClient({
-          region: this.amazonPolly.region,
-          credentials: fromCognitoIdentityPool({
-            clientConfig: {
-              region: this.amazonPolly.region,
-            },
-            identityPoolId: this.amazonPolly.poolId,
-          }),
-        }),
-        params: pollyParams,
-      });
-
-      return url.toString();
+      const ttsService = new AwsTtsService(this.amazonPolly, this.logService);
+      return {
+        type: 'url',
+        url: await ttsService.getFileURI(audioText, voice),
+      } satisfies RequestAudioData;
     } catch (e) {
       this.snackbar.open(
-        `Oops! We had issues communicating with Polly!`,
-        'Dismiss',
-        {
-          panelClass: 'notification-error',
-        },
+          `Oops! We had issues communicating with Polly!`,
+          'Dismiss',
+          {
+            panelClass: 'notification-error',
+          },
       );
-
-      this.logService.add(`Failed to get Amazon Polly url.\n${JSON.stringify(e)}`, 'error', 'AudioService.handleAmazonPolly');
-
-      return null;
+      this.logService.error(`Failed to get Amazon Polly url.\n${JSON.stringify(e)}`, 'AudioService.handleAmazonPolly');
+      this.logService.error(e as string, 'AudioService.handleAmazonPolly');
     }
+    return null;
   }
 
   addAudio(audio: AudioItem) {

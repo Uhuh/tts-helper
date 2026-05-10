@@ -5,7 +5,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AzureFeature, AzureState } from '../state/azure/azure.feature';
 import { combineLatest, skip } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ProfanityOption, SpeechConfig } from 'microsoft-cognitiveservices-speech-sdk';
+import {
+  AudioConfig,
+  ProfanityOption,
+  PullAudioOutputStream,
+  SpeechConfig, SpeechConfigImpl,
+  SpeechSynthesisResult,
+  SpeechSynthesizer,
+} from 'microsoft-cognitiveservices-speech-sdk';
 import { TwitchService } from './twitch.service';
 import { AzureActions } from '../state/azure/azure.actions';
 
@@ -72,5 +79,27 @@ export class AzureTtsService {
 
   updatePartialState(partialState: Partial<AzureState>) {
     this.store.dispatch(AzureActions.updateAzureState({ partialState }));
+  }
+
+  public async getRawAudio(text: string, voice: string): Promise<ArrayBuffer> {
+    if (!this.speechConfig) {
+      throw new Error('Azure TTS service not configured.');
+    }
+
+    // Clone the config so we don't modify the original.
+    const config = this.speechConfig instanceof SpeechConfigImpl ? this.speechConfig.clone() :
+      Object.assign({}, this.speechConfig);
+    config.speechSynthesisVoiceName = voice;
+
+    const stream = PullAudioOutputStream.create();
+    const audioConfig = AudioConfig.fromStreamOutput(stream);
+    const synth = new SpeechSynthesizer(config, audioConfig);
+
+    return new Promise((resolve, reject) => {
+      synth.speakTextAsync(text, (r : SpeechSynthesisResult) => {
+        synth.close();
+        resolve(r.audioData);
+      }, reject);
+    });
   }
 }

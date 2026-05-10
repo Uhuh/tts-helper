@@ -1,4 +1,4 @@
-﻿export type LogLevel = 'info' | 'error';
+﻿export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error';
 
 export interface IUserLog {
   origin: string,

@@ -296,8 +296,8 @@ async fn play_audio(
         RequestAudioData::TikTok(tiktok) => {
             tts_svc.tiktok(tiktok).await?.to_vec()
         }
-        RequestAudioData::AmazonPolly(amazon_polly) => {
-            tts_svc.amazon_polly(amazon_polly).await?.to_vec()
+        RequestAudioData::Url(url) => {
+            tts_svc.play_url(url).await?.to_vec()
         }
         RequestAudioData::ElevenLabs(eleven_labs) => {
             tts_svc.eleven_labs(eleven_labs).await?.to_vec()
