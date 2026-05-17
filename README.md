@@ -1,35 +1,44 @@
 # TTS Helper
 
-TTS Helper is an application designed to help Twitch streamers integrate TTS into their streams to create more unique interactions with their viewers.
+TTS Helper is a local-first desktop app for Twitch streamers who want a simple TTS queue console.
 
-## TTS Helper utilities
-TTS Helper has a few things built in to make life easier.
-* History - This will show the currently playing and all completed or skipped redeems.
-* Queue - This will show the currently playing and all soon to play redeems.
-* Chat Settings - Twitch Affiliates/Partners get redeems. If you're just starting out on Twitch you don't have access to redeems. This area allows you to setup chat commands for your viewers so they can use it to invoke TTS.
-* Captions - If you want captions shown in your OBS (or preferred streaming software) you can create a limited, but customizable captions box to display played TTS redeems.
-* Moderation - You can filter out redeems by banning words with this simplistic tool. It handles words and phrases separated by a comma.
-* [StreamDeck Plugin](https://marketplace.elgato.com/product/tts-helper-ff8f9b6e-ca8a-42a8-9bbe-b12b900cbd89) - Use the official StreamDeck TTS Helper plugin for some basic buttons.
+## What It Does
 
-## Free third party services inside TTS Helper
-TTS Helper has a few free to use third party services to help kickstart your TTS adventure.
-* Streamlabs - Streamlabs offers a decent variety of TTS options. It's got a high rate limit, you realistically won't exceed it unless you spam every second.
-* TikTok - Offers all the silly TikTok voices. Gracefully hosted by [WeilByte](https://github.com/Weilbyte).
-* VTubeStudio - You can hookup a rigged model with VTubeStudio and TTS Helper will make the mouth move when you use the TTSHelperParameters
+- Runs as an Electron desktop app built with React, TypeScript, Vite, and electron-builder.
+- Stores queues, queue items, settings, logs, stream session references, Discord webhook jobs, and audio references in SQLite.
+- Stores generated Streamlabs TTS audio files locally in the app data directory.
+- Supports multiple soft-deletable queues. The fixed `Default` queue always exists and cannot be removed.
+- Lets actions target either the `Default` queue or a specific queue.
+- Schedules playback by queue priority and each queue's selected item ordering mode: FIFO, LIFO, or item priority.
+- Exposes local playback actions for StreamDeck and local HTTP callers.
+- Serves an OBS browser source for captions at `http://127.0.0.1:12589/obs/captions`.
+- Tracks OBS stream time on playback start and delays Discord webhook posting until the matching Twitch VOD is available.
+- Opens Twitch device-code authorization from the desktop app, avoiding local redirect URL setup.
 
-## Paid third party services inside TTS Helper
-TTS Helper supports a number of third party services to make the TTS Helper experience better.
+## Retained Integrations
 
-These are all optional to use.
-* [Amazon Polly](https://aws.amazon.com/polly/) - A pay as you use TTS service. Fairly cheap and has great response times.
-* [ElevenLabs](https://elevenlabs.io/) - Natural sounding voices to give the returned responses a lot more personality. Can be expensive!
-* [OpenAI](https://platform.openai.com/docs/overview) - Personalize a ChatGPT model to act as a fictional character for your stream!
-* [Azure Speech to Text](https://azure.microsoft.com/en-us/products/ai-foundry/tools/speech) - A way for the streamer to communicate with their personalized OpenAI model with their voice!
-* [Azure Text to Speech](https://azure.microsoft.com/en-us/products/ai-foundry/tools/speech) - A paid option for TTS 
-* [TTS Monster](https://tts.monster/dashboard/app) - A paid TTS service that supports multiple languages.
+- Twitch chat command and channel-point redeem TTS.
+- Twitch OAuth through the desktop app using Twitch's device-code flow.
+- Streamlabs TTS generation.
+- OBS websocket stream timestamp lookup.
+- Discord webhook posting with Twitch VOD timestamp links.
+- StreamDeck websocket actions: pause/resume, stop current, skip current, and play next.
 
-## Recommended IDE Setup
+## Removed From The Simplified App
 
-If you want to make improvements to TTS Helper or fork your own here's the recommended setup:
+Angular, Tauri, Rust plugins, TikTok voices, VTubeStudio/VMC, Amazon Polly, ElevenLabs, OpenAI, Azure STT/TTS, TTS Monster, YouTube, and VStream-specific surfaces are intentionally removed.
 
-[VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer) + [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template).
+## Scripts
+
+```bash
+npm install
+npm test
+npm run build
+npm run dist
+```
+
+The packaged desktop output is written to `release/`.
+
+## Twitch OAuth
+
+No redirect URL is required. In TTS Helper, enter the Twitch app's Client ID in the Twitch view and use Connect Twitch. The app opens Twitch's activation page, shows the user code, polls Twitch for the token, validates it, and stores it locally.
