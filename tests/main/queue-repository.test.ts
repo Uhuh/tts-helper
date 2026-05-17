@@ -119,4 +119,25 @@ describe('QueueRepository', () => {
       },
     })).toThrow('already assigned');
   });
+
+  it('reorders queue priorities from the supplied active queue order', () => {
+    const repo = new QueueRepository(openDatabase());
+    const first = repo.createQueue({ name: 'First' });
+    const second = repo.createQueue({ name: 'Second' });
+
+    const reordered = repo.reorderQueues({
+      queueIds: [second.id, DEFAULT_QUEUE_ID, first.id],
+    });
+
+    expect(reordered.map((queue) => queue.id)).toEqual([second.id, DEFAULT_QUEUE_ID, first.id]);
+    expect(reordered.map((queue) => queue.priority)).toEqual([3, 2, 1]);
+
+    expect(() => repo.reorderQueues({
+      queueIds: [second.id, second.id, first.id],
+    })).toThrow('duplicate');
+
+    expect(() => repo.reorderQueues({
+      queueIds: [second.id, first.id],
+    })).toThrow('every active queue');
+  });
 });

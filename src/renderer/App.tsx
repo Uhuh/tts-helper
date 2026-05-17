@@ -86,7 +86,7 @@ export function App() {
 
   return (
     <div className="app-shell">
-      <PlaybackHost />
+      <PlaybackHost settings={state?.settings.tts} />
       <aside className="sidebar">
         <div className="brand">
           <div className="brand-mark">

@@ -13,6 +13,7 @@ import {
   type QueueItemStatus,
   type QueueOverview,
   type QueueRecord,
+  type ReorderQueuesInput,
   type QueueSortMode,
   type QueueTwitchRouteConfig,
   type QueueTwitchRoutes,
@@ -265,6 +266,40 @@ export class QueueRepository {
     }
 
     return next;
+  }
+
+  reorderQueues(input: ReorderQueuesInput): QueueOverview[] {
+    const orderedIds = [...input.queueIds];
+    const uniqueIds = new Set(orderedIds);
+    const activeIds = this.listQueues().map((queue) => queue.id);
+
+    if (orderedIds.length !== uniqueIds.size) {
+      throw new Error('Queue order contains duplicate queues.');
+    }
+
+    if (orderedIds.length !== activeIds.length || activeIds.some((id) => !uniqueIds.has(id))) {
+      throw new Error('Queue order must include every active queue.');
+    }
+
+    const now = new Date().toISOString();
+    const update = this.db.prepare(`
+      UPDATE queues
+      SET priority = @priority,
+          updated_at = @updatedAt
+      WHERE id = @id AND deleted_at IS NULL
+    `);
+    const tx = this.db.transaction(() => {
+      orderedIds.forEach((id, index) => {
+        update.run({
+          id,
+          priority: orderedIds.length - index,
+          updatedAt: now,
+        });
+      });
+    });
+
+    tx();
+    return this.listQueues();
   }
 
   deleteQueue(id: string): void {

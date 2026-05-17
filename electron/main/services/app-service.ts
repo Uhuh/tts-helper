@@ -4,6 +4,7 @@ import type {
   EnqueueRequest,
   PartialDeep,
   QueueItemRecord,
+  ReorderQueuesInput,
   UpdateQueueInput,
   CreateQueueInput,
   AppSettings,
@@ -28,6 +29,7 @@ export class AppService {
     private readonly playback: PlaybackService,
     private readonly logs: LogService,
     private readonly getWindow: () => BrowserWindow | null,
+    private readonly onSettingsUpdated: ((settings: AppSettings) => void) | null = null,
   ) {}
 
   attachTwitch(service: TwitchService): void {
@@ -41,6 +43,10 @@ export class AppService {
       settings: this.settings.get(),
       logs: this.logs.list(),
     };
+  }
+
+  getAudioPath(itemId: string): string | null {
+    return this.queues.getItem(itemId, true)?.audioPath ?? null;
   }
 
   broadcastState(): void {
@@ -104,6 +110,13 @@ export class AppService {
     return queue;
   }
 
+  reorderQueues(input: ReorderQueuesInput) {
+    const queues = this.queues.reorderQueues(input);
+    this.broadcastState();
+    void this.playback.playNext();
+    return queues;
+  }
+
   deleteQueue(id: string): void {
     this.queues.deleteQueue(id);
     this.broadcastState();
@@ -116,6 +129,7 @@ export class AppService {
 
   async updateSettings(patch: PartialDeep<AppSettings>): Promise<AppSettings> {
     const next = this.settings.update(patch);
+    this.onSettingsUpdated?.(next);
     this.broadcastState();
     await this.twitchService?.syncFromSettings();
     return next;

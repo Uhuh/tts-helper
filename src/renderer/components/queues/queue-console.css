@@ -58,6 +58,7 @@
 }
 
 .queue-form-card,
+.queue-order-card,
 .queue-summary-card {
   border-color: var(--border);
   background: var(--surface);
@@ -78,8 +79,57 @@
 
 .queue-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: 1fr;
   gap: 16px;
+}
+
+.queue-order-table {
+  --radius-2xl: 8px;
+}
+
+.queue-order-table .table__content {
+  min-width: 720px;
+}
+
+.queue-order-table .table__column,
+.queue-order-table .table__cell {
+  border-color: var(--border);
+}
+
+.queue-order-table .table__column {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.queue-order-table .table__cell {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.queue-order-row {
+  cursor: grab;
+}
+
+.queue-order-row:active {
+  cursor: grabbing;
+}
+
+.queue-order-row.is-dragging .table__cell {
+  opacity: 0.55;
+}
+
+.queue-order-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.queue-order-drag-handle {
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
 }
 
 .queue-card-header {

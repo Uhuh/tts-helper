@@ -1,9 +1,28 @@
 import { useEffect, useRef } from 'react';
+import type { TtsSettings } from '../../shared/types';
 import { getTtsHelper } from '../api';
 
-export function PlaybackHost() {
+interface Props {
+  settings?: TtsSettings;
+}
+
+type SinkAudioElement = HTMLAudioElement & {
+  setSinkId?: (sinkId: string) => Promise<void>;
+  sinkId?: string;
+};
+
+export function PlaybackHost({ settings }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const currentItemIdRef = useRef<string | null>(null);
+  const settingsRef = useRef<TtsSettings | null>(settings ?? null);
+
+  useEffect(() => {
+    settingsRef.current = settings ?? null;
+    const audio = audioRef.current;
+    if (audio) {
+      void applyAudioSettings(audio, settingsRef.current);
+    }
+  }, [settings]);
 
   useEffect(() => {
     const api = getTtsHelper();
@@ -22,8 +41,7 @@ export function PlaybackHost() {
       }
 
       currentItemIdRef.current = item.id;
-      audio.src = item.audioUrl;
-      void audio.play().catch((error) => {
+      void playAudio(audio, item.audioUrl, settingsRef.current).catch((error) => {
         void api.rendererFailed({
           itemId: item.id,
           reason: error instanceof Error ? error.message : String(error),
@@ -77,4 +95,24 @@ export function PlaybackHost() {
       }}
     />
   );
+}
+
+async function playAudio(audio: HTMLAudioElement, src: string, settings: TtsSettings | null): Promise<void> {
+  await applyAudioSettings(audio, settings);
+  audio.src = src;
+  await audio.play();
+}
+
+async function applyAudioSettings(audio: HTMLAudioElement, settings: TtsSettings | null): Promise<void> {
+  audio.muted = settings ? !settings.monitorAudioEnabled : false;
+
+  const sinkId = settings?.monitorOutputDeviceId || 'default';
+  const sinkAudio = audio as SinkAudioElement;
+  if (typeof sinkAudio.setSinkId === 'function' && sinkAudio.sinkId !== sinkId) {
+    try {
+      await sinkAudio.setSinkId(sinkId);
+    } catch {
+      // Keep playback alive even if the selected output device disappears.
+    }
+  }
 }

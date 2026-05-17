@@ -1,10 +1,17 @@
-import type { QueueItemRecord } from '../../../src/shared/types';
+import type { ObsSettings, QueueItemRecord } from '../../../src/shared/types';
+
+export interface BrowserSourceSettings {
+  browserSourceCaptionsEnabled: boolean;
+  browserSourceAudioEnabled: boolean;
+}
 
 export interface OverlayEvent {
   id: 'tts-helper';
-  event: 'add-captions' | 'remove-captions' | 'now-playing';
+  event: 'add-captions' | 'remove-captions' | 'now-playing' | 'settings';
+  itemId?: string;
   text?: string;
   username?: string;
+  settings?: BrowserSourceSettings;
 }
 
 export class OverlayService {
@@ -19,12 +26,14 @@ export class OverlayService {
     this.broadcast({
       id: 'tts-helper',
       event: 'now-playing',
+      itemId: item.id,
       text: item.text,
       username: item.username,
     });
     this.broadcast({
       id: 'tts-helper',
       event: 'add-captions',
+      itemId: item.id,
       text: item.text,
       username: item.username,
     });
@@ -37,6 +46,17 @@ export class OverlayService {
     });
   }
 
+  browserSourceSettings(settings: ObsSettings): void {
+    this.broadcast({
+      id: 'tts-helper',
+      event: 'settings',
+      settings: {
+        browserSourceCaptionsEnabled: settings.browserSourceCaptionsEnabled,
+        browserSourceAudioEnabled: settings.browserSourceAudioEnabled,
+      },
+    });
+  }
+
   broadcast(event: OverlayEvent): void {
     const message = JSON.stringify(event);
     for (const send of this.senders) {
@@ -45,7 +65,7 @@ export class OverlayService {
   }
 }
 
-export function captionsHtml(port: number): string {
+export function captionsHtml(port: number, settings: ObsSettings): string {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -85,24 +105,92 @@ export function captionsHtml(port: number): string {
 </head>
 <body>
   <div id="caption"></div>
+  <audio id="queue-audio" preload="none"></audio>
   <script>
     const caption = document.getElementById('caption');
+    const queueAudio = document.getElementById('queue-audio');
+    let browserSourceSettings = {
+      browserSourceCaptionsEnabled: ${JSON.stringify(settings.browserSourceCaptionsEnabled)},
+      browserSourceAudioEnabled: ${JSON.stringify(settings.browserSourceAudioEnabled)},
+    };
+
+    const applySettings = (nextSettings) => {
+      browserSourceSettings = {
+        ...browserSourceSettings,
+        ...nextSettings,
+      };
+
+      if (!browserSourceSettings.browserSourceCaptionsEnabled) {
+        clearCaption();
+      }
+
+      if (!browserSourceSettings.browserSourceAudioEnabled) {
+        stopAudio();
+      }
+    };
+
+    const showCaption = (text) => {
+      if (!browserSourceSettings.browserSourceCaptionsEnabled) return;
+      caption.textContent = text || '';
+      caption.classList.add('visible');
+    };
+
+    const clearCaption = () => {
+      caption.classList.remove('visible');
+      caption.textContent = '';
+    };
+
+    const playAudio = (itemId) => {
+      if (!browserSourceSettings.browserSourceAudioEnabled || !itemId) return;
+      queueAudio.src = '/api/audio/' + encodeURIComponent(itemId) + '?t=' + Date.now();
+      queueAudio.currentTime = 0;
+      queueAudio.play().catch(() => undefined);
+    };
+
+    const stopAudio = () => {
+      queueAudio.pause();
+      queueAudio.removeAttribute('src');
+      queueAudio.load();
+    };
+
+    const refreshSettings = async () => {
+      try {
+        const response = await fetch('/api/obs/settings', { cache: 'no-store' });
+        if (!response.ok) return;
+        applySettings(await response.json());
+      } catch {
+        // Keep the last known settings if the app is restarting.
+      }
+    };
+
     const connect = () => {
       const ws = new WebSocket('ws://127.0.0.1:${port}/obs/ws');
       ws.onmessage = (message) => {
         const data = JSON.parse(message.data);
         if (data.id !== 'tts-helper') return;
-        if (data.text) caption.textContent = data.text;
+        if (data.event === 'settings' && data.settings) {
+          applySettings(data.settings);
+          return;
+        }
+        if (data.event === 'now-playing') {
+          if (data.text) showCaption(data.text);
+          playAudio(data.itemId);
+          return;
+        }
         if (data.event === 'add-captions' || data.event === 'now-playing') {
-          caption.classList.add('visible');
+          if (data.text) showCaption(data.text);
         }
         if (data.event === 'remove-captions') {
-          caption.classList.remove('visible');
+          clearCaption();
+          stopAudio();
         }
       };
       ws.onclose = () => setTimeout(connect, 1500);
       ws.onerror = () => ws.close();
     };
+    applySettings(browserSourceSettings);
+    refreshSettings();
+    setInterval(refreshSettings, 5000);
     connect();
   </script>
 </body>

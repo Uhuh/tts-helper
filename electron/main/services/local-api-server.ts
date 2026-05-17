@@ -1,5 +1,6 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { InjectOptions, LightMyRequestResponse } from 'fastify';
+import fs from 'node:fs';
 import { WebSocketServer, type WebSocket } from 'ws';
 import { z } from 'zod';
 import type { AppService } from './app-service';
@@ -81,7 +82,26 @@ export class LocalApiServer {
 
     fastify.get('/health', async () => ({ ok: true }));
     fastify.get('/obs/captions', async (_request, reply) => {
-      return reply.type('text/html').send(captionsHtml(this.actualPort));
+      return reply.type('text/html').send(captionsHtml(this.actualPort, this.appService.getState().settings.obs));
+    });
+    fastify.get('/api/obs/settings', async () => {
+      const { browserSourceCaptionsEnabled, browserSourceAudioEnabled } = this.appService.getState().settings.obs;
+      return {
+        browserSourceCaptionsEnabled,
+        browserSourceAudioEnabled,
+      };
+    });
+    fastify.get<{ Params: { itemId: string } }>('/api/audio/:itemId', async (request, reply) => {
+      const audioPath = this.appService.getAudioPath(request.params.itemId);
+
+      if (!audioPath || !fs.existsSync(audioPath)) {
+        return reply.status(404).send({ error: 'Audio file not found.' });
+      }
+
+      return reply
+        .type('audio/mpeg')
+        .header('Cache-Control', 'no-store')
+        .send(fs.createReadStream(audioPath));
     });
     fastify.get('/twitch/oauth/callback', async (_request, reply) => {
       return reply.type('text/html').send(twitchOAuthCallbackHtml());

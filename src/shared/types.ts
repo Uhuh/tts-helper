@@ -82,12 +82,16 @@ export interface TtsSettings {
   voice: string;
   language: string;
   defaultCharacterLimit: number;
+  monitorAudioEnabled: boolean;
+  monitorOutputDeviceId: string;
 }
 
 export interface ObsSettings {
   enabled: boolean;
   url: string;
   password: string;
+  browserSourceCaptionsEnabled: boolean;
+  browserSourceAudioEnabled: boolean;
 }
 
 export interface DiscordSettings {
@@ -146,6 +150,10 @@ export interface UpdateQueueInput {
   twitchRoutes?: PartialDeep<QueueTwitchRoutes>;
 }
 
+export interface ReorderQueuesInput {
+  queueIds: string[];
+}
+
 export interface PlaybackState {
   paused: boolean;
   currentItem: QueueItemRecord | null;
@@ -201,6 +209,7 @@ export interface IpcApi {
   listQueues(): Promise<QueueOverview[]>;
   createQueue(input: CreateQueueInput): Promise<QueueRecord>;
   updateQueue(input: UpdateQueueInput): Promise<QueueRecord>;
+  reorderQueues(input: ReorderQueuesInput): Promise<QueueOverview[]>;
   deleteQueue(id: string): Promise<void>;
   enqueueItem(input: EnqueueRequest): Promise<QueueItemRecord>;
   requeueItem(id: string): Promise<QueueItemRecord>;
@@ -251,11 +260,15 @@ export const DEFAULT_SETTINGS: AppSettings = {
     voice: 'Ivy',
     language: 'US English',
     defaultCharacterLimit: 300,
+    monitorAudioEnabled: true,
+    monitorOutputDeviceId: 'default',
   },
   obs: {
     enabled: false,
     url: 'ws://127.0.0.1:4455',
     password: '',
+    browserSourceCaptionsEnabled: true,
+    browserSourceAudioEnabled: false,
   },
   discord: {
     webhookUrl: '',

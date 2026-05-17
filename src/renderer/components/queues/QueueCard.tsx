@@ -111,7 +111,6 @@ function QueueSettingsPanel({
   onSave(partial: Omit<UpdateQueueInput, 'id'>): Promise<void>;
 }) {
   const [name, setName] = useState(queue.name);
-  const [priority, setPriority] = useState(queue.priority);
   const [sortMode, setSortMode] = useState<QueueSortMode>(queue.sortMode);
   const [chatEnabled, setChatEnabled] = useState(queue.twitchRoutes.chat.enabled);
   const [chatActionId, setChatActionId] = useState(queue.twitchRoutes.chat.actionId);
@@ -122,7 +121,6 @@ function QueueSettingsPanel({
 
   useEffect(() => {
     setName(queue.name);
-    setPriority(queue.priority);
     setSortMode(queue.sortMode);
     setChatEnabled(queue.twitchRoutes.chat.enabled);
     setChatActionId(queue.twitchRoutes.chat.actionId);
@@ -136,7 +134,6 @@ function QueueSettingsPanel({
     event.preventDefault();
     await onSave({
       name,
-      priority,
       sortMode,
       twitchRoutes: {
         chat: {
@@ -163,15 +160,6 @@ function QueueSettingsPanel({
             disabled={queue.id === 'default'}
             onChange={(event) => setName(event.target.value)}
             value={name}
-          />
-        </label>
-        <label>
-          Priority
-          <Input
-            aria-label={`${queue.name} priority`}
-            onChange={(event) => setPriority(Number(event.target.value))}
-            type="number"
-            value={String(priority)}
           />
         </label>
         <label>

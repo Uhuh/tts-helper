@@ -15,11 +15,15 @@ const state: AppState = {
       voice: 'Ivy',
       language: 'US English',
       defaultCharacterLimit: 300,
+      monitorAudioEnabled: true,
+      monitorOutputDeviceId: 'default',
     },
     obs: {
       enabled: false,
       url: 'ws://127.0.0.1:4455',
       password: '',
+      browserSourceCaptionsEnabled: true,
+      browserSourceAudioEnabled: false,
     },
     discord: {
       webhookUrl: '',
@@ -106,6 +110,7 @@ describe('QueueConsole', () => {
       createQueue: vi.fn(),
       enqueueItem: vi.fn(),
       updateQueue: vi.fn(),
+      reorderQueues: vi.fn(),
       deleteQueue: vi.fn(),
       playItemNow: vi.fn(),
       requeueItem: vi.fn(),
@@ -115,13 +120,18 @@ describe('QueueConsole', () => {
     render(<QueueConsole state={state} refresh={vi.fn()} />);
 
     expect(screen.getByTestId('queue-console')).toBeInTheDocument();
+    expect(screen.getByText('Queue order')).toBeInTheDocument();
     expect(screen.getAllByText('Default')).not.toHaveLength(0);
     expect(screen.getAllByText('VIP')).not.toHaveLength(0);
-    expect(screen.getAllByText('Pending')).toHaveLength(3);
+    expect(screen.getAllByText('Pending')).toHaveLength(4);
     expect(screen.queryByText('hello there')).not.toBeInTheDocument();
 
     await user.click(screen.getByLabelText('Show Default history'));
 
     expect(screen.getByText('hello there')).toBeInTheDocument();
+
+    await user.click(screen.getByLabelText('VIP settings'));
+
+    expect(screen.queryByLabelText('VIP priority')).not.toBeInTheDocument();
   });
 });

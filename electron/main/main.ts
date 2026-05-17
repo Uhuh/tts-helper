@@ -13,7 +13,7 @@ import { SettingsService } from './services/settings-service';
 import { StreamDeckServer } from './services/streamdeck-server';
 import { StreamlabsTtsService } from './services/streamlabs-tts-service';
 import { TwitchService } from './services/twitch-service';
-import type { AppSettings, CreateQueueInput, EnqueueRequest, PartialDeep, TwitchOAuthStartInput, UpdateQueueInput } from '../../src/shared/types';
+import type { AppSettings, CreateQueueInput, EnqueueRequest, PartialDeep, ReorderQueuesInput, TwitchOAuthStartInput, UpdateQueueInput } from '../../src/shared/types';
 
 if (process.platform === 'linux' && app.isPackaged) {
   app.commandLine.appendSwitch('no-sandbox');
@@ -80,6 +80,7 @@ function registerIpcHandlers(queues: QueueRepository, settings: SettingsService,
   ipcMain.handle('queues:list', () => queues.listQueues());
   ipcMain.handle('queues:create', (_event, input: CreateQueueInput) => requireAppService().createQueue(input));
   ipcMain.handle('queues:update', (_event, input: UpdateQueueInput) => requireAppService().updateQueue(input));
+  ipcMain.handle('queues:reorder', (_event, input: ReorderQueuesInput) => requireAppService().reorderQueues(input));
   ipcMain.handle('queues:delete', (_event, id: string) => requireAppService().deleteQueue(id));
 
   ipcMain.handle('items:enqueue', (_event, input: EnqueueRequest) => requireAppService().enqueue(input));
@@ -141,6 +142,7 @@ async function bootstrap(): Promise<void> {
     playbackService,
     logs,
     getMainWindow,
+    (nextSettings) => overlay.browserSourceSettings(nextSettings.obs),
   );
 
   twitchService = new TwitchService(

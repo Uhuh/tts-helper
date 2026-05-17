@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { openDatabase } from '../../electron/main/db/database';
 import { AppService } from '../../electron/main/services/app-service';
 import { DiscordWebhookService } from '../../electron/main/services/discord-webhook-service';
@@ -13,6 +16,7 @@ import { TwitchService } from '../../electron/main/services/twitch-service';
 
 describe('LocalApiServer', () => {
   it('enqueues TTS through the local HTTP API and exposes playback actions', async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tts-helper-api-'));
     const db = openDatabase();
     const queues = new QueueRepository(db);
     const settings = new SettingsService(db);
@@ -30,29 +34,73 @@ describe('LocalApiServer', () => {
       vi.fn(),
     );
     const tts = {
-      generate: vi.fn(async (item: { id: string }) => `/tmp/${item.id}.mp3`),
+      generate: vi.fn(async (item: { id: string }) => {
+        const audioPath = path.join(tempDir, `${item.id}.mp3`);
+        await fs.writeFile(audioPath, 'mp3');
+        return audioPath;
+      }),
     };
     const app = new AppService(queues, settings, tts as never, playback, logs, () => null);
     const server = new LocalApiServer(app, playback, overlay, logs, 0);
-    const response = await server.inject({
-      method: 'POST',
-      url: '/api/tts',
-      headers: { 'Content-Type': 'application/json' },
-      payload: JSON.stringify({ text: 'hello', username: 'api-user' }),
-    });
+    try {
+      await app.updateSettings({
+        obs: {
+          browserSourceCaptionsEnabled: false,
+          browserSourceAudioEnabled: true,
+        },
+      });
 
-    expect(response.statusCode).toBe(200);
-    expect(JSON.parse(response.body) as unknown).toMatchObject({
+      const obs = await server.inject({
+        method: 'GET',
+        url: '/obs/captions',
+      });
+      expect(obs.statusCode).toBe(200);
+      expect(obs.body).toContain('browserSourceCaptionsEnabled: false');
+      expect(obs.body).toContain('browserSourceAudioEnabled: true');
+      expect(obs.body).toContain('/api/obs/settings');
+      expect(obs.body).toContain('/api/audio/');
+
+      const obsSettings = await server.inject({
+        method: 'GET',
+        url: '/api/obs/settings',
+      });
+      expect(obsSettings.statusCode).toBe(200);
+      expect(JSON.parse(obsSettings.body) as unknown).toEqual({
+        browserSourceCaptionsEnabled: false,
+        browserSourceAudioEnabled: true,
+      });
+
+      const response = await server.inject({
+        method: 'POST',
+        url: '/api/tts',
+        headers: { 'Content-Type': 'application/json' },
+        payload: JSON.stringify({ text: 'hello', username: 'api-user' }),
+      });
+
+      expect(response.statusCode).toBe(200);
+      const item = JSON.parse(response.body) as { id: string };
+      expect(item).toMatchObject({
         username: 'api-user',
         status: 'queued',
       });
 
-    const play = await server.inject({
-      method: 'POST',
-      url: '/api/playback/play-next',
-    });
-    expect(play.statusCode).toBe(200);
-    await server.stop();
+      const audio = await server.inject({
+        method: 'GET',
+        url: `/api/audio/${item.id}`,
+      });
+      expect(audio.statusCode).toBe(200);
+      expect(audio.headers['content-type']).toContain('audio/mpeg');
+      expect(audio.body).toBe('mp3');
+
+      const play = await server.inject({
+        method: 'POST',
+        url: '/api/playback/play-next',
+      });
+      expect(play.statusCode).toBe(200);
+    } finally {
+      await server.stop();
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
   });
 
   it('authorizes Twitch through the device code flow', async () => {
