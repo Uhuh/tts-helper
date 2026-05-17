@@ -1,0 +1,213 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - generic [ref=e13]:
+        - strong [ref=e14]: TTS Helper
+        - generic [ref=e15]: Local queue console
+    - navigation [ref=e16]:
+      - button "Queues" [ref=e17] [cursor=pointer]:
+        - img [ref=e18]
+        - generic [ref=e20]: Queues
+      - button "History" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - generic [ref=e26]: History
+      - button "Twitch" [ref=e27] [cursor=pointer]:
+        - img [ref=e28]
+        - generic [ref=e30]: Twitch
+      - button "TTS Settings" [ref=e31] [cursor=pointer]:
+        - img [ref=e32]
+        - generic [ref=e35]: TTS Settings
+      - button "Integrations" [ref=e36] [cursor=pointer]:
+        - img [ref=e37]
+        - generic [ref=e40]: Integrations
+      - button "Logs" [ref=e41] [cursor=pointer]:
+        - img [ref=e42]
+        - generic [ref=e45]: Logs
+  - main [ref=e46]:
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - heading "Queues" [level=1] [ref=e49]
+        - paragraph [ref=e50]: Ready
+      - generic [ref=e51]:
+        - button "Play next" [ref=e52] [cursor=pointer]:
+          - img [ref=e53]
+        - button "Refresh" [ref=e55] [cursor=pointer]:
+          - img [ref=e56]
+    - generic [ref=e58]:
+      - generic [ref=e59]:
+        - generic [ref=e60]:
+          - button "Play next" [ref=e61] [cursor=pointer]:
+            - img
+            - text: Play next
+          - button "Pause" [ref=e62] [cursor=pointer]:
+            - img
+            - text: Pause
+          - button "Skip" [ref=e63] [cursor=pointer]:
+            - img
+            - text: Skip
+          - button "Stop" [ref=e64] [cursor=pointer]:
+            - img
+            - text: Stop
+        - generic [ref=e65]:
+          - generic [ref=e66]:
+            - generic [ref=e67]: Queues
+            - strong [ref=e68]: "2"
+          - generic [ref=e69]:
+            - generic [ref=e70]: Pending
+            - strong [ref=e71]: "1"
+          - generic [ref=e72]:
+            - generic [ref=e73]: Playing
+            - strong [ref=e74]: "0"
+          - generic [ref=e75]:
+            - generic [ref=e76]: Played
+            - strong [ref=e77]: "0"
+      - generic [ref=e78]:
+        - generic [ref=e79]:
+          - heading "Create queue" [level=3] [ref=e81]
+          - generic [ref=e83]:
+            - generic [ref=e84]:
+              - text: Name
+              - textbox "Queue name" [ref=e85]:
+                - /placeholder: VIP questions
+            - button "Create" [ref=e86] [cursor=pointer]:
+              - img
+              - text: Create
+        - generic [ref=e87]:
+          - heading "Manual TTS" [level=3] [ref=e89]
+          - generic [ref=e91]:
+            - generic [ref=e92]:
+              - text: Viewer
+              - textbox "Manual TTS viewer" [ref=e93]: Streamer
+            - generic [ref=e94]:
+              - text: Queue
+              - combobox "Queue" [ref=e95]:
+                - option "Default" [selected]
+                - option "VIP"
+            - generic [ref=e96]:
+              - text: Priority
+              - spinbutton "Manual TTS priority" [ref=e97]: "0"
+            - generic [ref=e98]:
+              - text: Text
+              - textbox "Text" [ref=e99]
+            - button "Queue TTS" [ref=e100] [cursor=pointer]:
+              - img
+              - text: Queue TTS
+      - region "Queues" [ref=e101]:
+        - generic [ref=e102]:
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - heading "Default" [level=3] [ref=e105]
+              - paragraph [ref=e106]: 1 stored items
+            - generic [ref=e107]:
+              - button "Pause Default" [ref=e108] [cursor=pointer]:
+                - img
+              - button "Default settings" [ref=e109] [cursor=pointer]:
+                - img
+              - button "Show Default history" [ref=e110] [cursor=pointer]:
+                - img
+                - text: History
+              - button "Delete Default" [disabled]:
+                - img
+          - generic [ref=e111]:
+            - generic [ref=e112]:
+              - generic [ref=e113]:
+                - generic [ref=e114]: Pending
+                - generic [ref=e116]: "1"
+              - generic [ref=e117]:
+                - generic [ref=e118]: Playing
+                - generic [ref=e120]: "0"
+              - generic [ref=e121]:
+                - generic [ref=e122]: Played
+                - generic [ref=e124]: "0"
+              - generic [ref=e125]:
+                - generic [ref=e126]: Other
+                - generic [ref=e128]: "0"
+            - region "Default history" [ref=e157]:
+              - table [ref=e159]:
+                - rowgroup [ref=e160]:
+                  - row "Viewer Message Status Priority Requested Actions" [ref=e161]:
+                    - columnheader "Viewer" [ref=e162]
+                    - columnheader "Message" [ref=e163]
+                    - columnheader "Status" [ref=e164]
+                    - columnheader "Priority" [ref=e165]
+                    - columnheader "Requested" [ref=e166]
+                    - columnheader "Actions" [ref=e167]
+                - rowgroup [ref=e168]:
+                  - row "Thornityco Can you explain the boss strategy? queued 0 5/16/2026, 8:00:00 PM Play Thornityco item now Requeue Thornityco item Delete Thornityco item" [ref=e169]:
+                    - cell "Thornityco" [ref=e170]
+                    - cell "Can you explain the boss strategy?" [ref=e171]
+                    - cell "queued" [ref=e172]:
+                      - generic [ref=e174]: queued
+                    - cell "0" [ref=e175]
+                    - cell "5/16/2026, 8:00:00 PM" [ref=e176]
+                    - cell "Play Thornityco item now Requeue Thornityco item Delete Thornityco item" [ref=e177]:
+                      - generic [ref=e178]:
+                        - button "Play Thornityco item now" [ref=e179] [cursor=pointer]:
+                          - img
+                        - button "Requeue Thornityco item" [ref=e180] [cursor=pointer]:
+                          - img
+                        - button "Delete Thornityco item" [ref=e181] [cursor=pointer]:
+                          - img
+        - generic [ref=e129]:
+          - generic [ref=e130]:
+            - generic [ref=e131]:
+              - heading "VIP" [level=3] [ref=e132]
+              - paragraph [ref=e133]: 0 stored items
+            - generic [ref=e134]:
+              - button "Pause VIP" [ref=e135] [cursor=pointer]:
+                - img
+              - button "VIP settings" [active] [ref=e136] [cursor=pointer]:
+                - img
+              - button "Show VIP history" [ref=e137] [cursor=pointer]:
+                - img
+                - text: History
+              - button "Delete VIP" [ref=e138] [cursor=pointer]:
+                - img
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - generic [ref=e141]:
+                - generic [ref=e142]: Pending
+                - generic [ref=e144]: "0"
+              - generic [ref=e145]:
+                - generic [ref=e146]: Playing
+                - generic [ref=e148]: "0"
+              - generic [ref=e149]:
+                - generic [ref=e150]: Played
+                - generic [ref=e152]: "0"
+              - generic [ref=e153]:
+                - generic [ref=e154]: Other
+                - generic [ref=e156]: "0"
+            - generic [ref=e182]:
+              - generic [ref=e183]:
+                - generic [ref=e184]:
+                  - text: Name
+                  - textbox "VIP name" [ref=e185]: VIP
+                - generic [ref=e186]:
+                  - text: Priority
+                  - spinbutton "VIP priority" [ref=e187]: "10"
+                - generic [ref=e188]:
+                  - text: Sort
+                  - combobox "Sort" [ref=e189]:
+                    - option "Oldest first"
+                    - option "Newest first"
+                    - option "Item priority" [selected]
+                - generic [ref=e190] [cursor=pointer]:
+                  - switch "Chat command TTS" [checked] [ref=e192]
+                  - text: Chat command TTS
+                - generic [ref=e193]:
+                  - text: Command
+                  - textbox "VIP chat command" [ref=e194]: "!vip"
+                - generic [ref=e195]:
+                  - text: Chat limit
+                  - spinbutton "VIP chat limit" [ref=e196]: "120"
+                - generic [ref=e197] [cursor=pointer]:
+                  - switch "Channel point TTS" [checked] [ref=e199]
+                  - text: Channel point TTS
+                - generic [ref=e200]:
+                  - text: Redeem ID
+                  - textbox "VIP redeem ID" [ref=e201]: vip-reward
+                - generic [ref=e202]:
+                  - text: Redeem limit
+                  - spinbutton "VIP redeem limit" [ref=e203]: "240"
+              - button "Save settings" [ref=e205] [cursor=pointer]
