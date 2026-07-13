@@ -15,6 +15,7 @@ import { ConfigService } from './config.service';
 import { TtsType } from '../state/config/config.feature';
 import stream_elements from '../json/streamlabs.json';
 import tiktok_voices from '../json/tiktok.json';
+import { ObsWebSocketService } from './obs-websocket.service';
 
 @Injectable()
 export class TwitchPubSub {
@@ -24,6 +25,7 @@ export class TwitchPubSub {
   private readonly openaiService = inject(OpenAIService);
   private readonly chatService = inject(ChatService);
   private readonly configService = inject(ConfigService);
+  private readonly obsWebSocketService = inject(ObsWebSocketService);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -97,7 +99,13 @@ export class TwitchPubSub {
             });
           }
 
-          this.handleMessage(msg.userInfo, text);
+          // Generate unique chat message ID
+          const chatMessageId = `twitch-${msg.id}`;
+
+          // Send all chat messages to the overlay (will be marked as TTS later if applicable)
+          this.obsWebSocketService.sendChatMessage(msg.userInfo.displayName, text, 'twitch', false, chatMessageId);
+
+          this.handleMessage(msg.userInfo, text, chatMessageId);
         });
       });
 
@@ -137,7 +145,7 @@ export class TwitchPubSub {
       });
   }
 
-  async handleMessage(user: ChatUser, text: string) {
+  async handleMessage(user: ChatUser, text: string, chatMessageId?: string) {
     const playedMessage = await this.chatService.onMessage(
       {
         text,
@@ -149,6 +157,7 @@ export class TwitchPubSub {
         },
       },
       'twitch',
+      chatMessageId,
     );
 
     // chatService.onMessage already checks this but it's not exposed here so...
@@ -360,7 +369,9 @@ export class TwitchPubSub {
         }
 
         // Never trust users, validate it and get either default or assumed values
-        const voices = ttsType === 'tiktok' ? tiktok_voices : stream_elements;
+        const voices = ttsType === 'tiktok'
+          ? tiktok_voices
+          : stream_elements;
         const { language, voice } = this.validateTtsSelection(voices, userLang, userVoice);
 
         this.logService.add(`Validated TTS selection: ${JSON.stringify({

@@ -46,9 +46,10 @@ export class ChatService {
    * Check if user has chat settings enabled or GPT chat settings enabled.
    * @param user The user that sent the message
    * @param source Platform that the message came from
+   * @param chatMessageId Optional unique ID for linking chat message to TTS
    * @return boolean If user message was played as TTS
    */
-  async onMessage(user: ChatUserMessage, source: AudioSource) {
+  async onMessage(user: ChatUserMessage, source: AudioSource, chatMessageId?: string) {
     const canProceed = await this.audioService.canProcessMessage(user.text, user.displayName);
 
     if (!canProceed || !this.generalChat.enabled && !this.openAIChat.enabled) {
@@ -68,7 +69,7 @@ export class ChatService {
       !this.cooldowns.get(generalCooldownID)
     ) {
       const trimmedText = text.substring(this.generalChat.command.length).trim();
-      this.audioService.playTts(trimmedText, user.displayName, source, this.generalChat.charLimit);
+      this.audioService.playTts(trimmedText, user.displayName, source, this.generalChat.charLimit, false, chatMessageId);
       const duration = this.generalChat.cooldown * 1000;
 
       // Handle cooldown if there is any.

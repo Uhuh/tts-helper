@@ -15,4 +15,8 @@ export class AppSettingsService {
   updateConnections(partialConnections: Partial<AppSettingsFeatureState['connections']>) {
     this.store.dispatch(AppSettingsActions.updateConnections({ partialConnections }));
   }
+
+  toggleConnectionsExpanded() {
+    this.store.dispatch(AppSettingsActions.toggleConnectionsExpanded());
+  }
 }

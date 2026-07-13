@@ -36,8 +36,8 @@ export class SuperchatComponent {
   constructor() {
     effect(() => {
       this.settings.setValue({
-        enabled: this.#youtubeService.youtubeStore.superChat().enabled,
-        customMessage: this.#youtubeService.youtubeStore.superChat().customMessage,
+        enabled: this.#youtubeService.store.superChat().enabled,
+        customMessage: this.#youtubeService.store.superChat().customMessage,
       }, { emitEvent: false });
     });
 

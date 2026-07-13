@@ -1,14 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LabelBlockComponent } from '../../shared/components/input-block/label-block.component';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormRecord } from '@angular/forms';
 import { ToggleComponent } from '../../shared/components/toggle/toggle.component';
 import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { getTauriVersion, getVersion } from '@tauri-apps/api/app';
-import { disable, enable, isEnabled } from "@tauri-apps/plugin-autostart";
-import { LogService } from "../../shared/services/logs.service";
+import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart';
+import { LogService } from '../../shared/services/logs.service';
+import { CONNECTION_REGISTRY, ConnectionKind } from '../../shared/state/app-settings/app-settings.feature';
 
 @Component({
   selector: 'app-app-settings',
@@ -24,33 +25,45 @@ export class AppSettingsComponent {
   readonly tauriVersion$ = fromPromise(getTauriVersion());
 
   readonly isAutostartEnabled = new FormControl(false, { nonNullable: true });
-  readonly settings = new FormGroup({
-    vstreamEnabled: new FormControl(false, { nonNullable: true }),
-    youtubeEnabled: new FormControl(false, { nonNullable: true }),
-    twitchEnabled: new FormControl(false, { nonNullable: true }),
-    vtubestudioEnabled: new FormControl(false, { nonNullable: true }),
-    vmcEnabled: new FormControl(false, { nonNullable: true }),
-  });
+
+  readonly connections = Object.values(CONNECTION_REGISTRY);
+
+  readonly settings = new FormRecord<FormControl<boolean>>(
+    Object.fromEntries(
+      Object.keys(CONNECTION_REGISTRY).map((kind) => [
+        kind,
+        new FormControl(false, { nonNullable: true }),
+      ]),
+    ) as Record<ConnectionKind, FormControl<boolean>>,
+  );
 
   constructor() {
     this.#appSettingsService.connections$
       .pipe(takeUntilDestroyed())
-      .subscribe(settings => this.settings.reset(settings, { emitEvent: false }));
+      .subscribe((connections) => {
+        this.settings.reset(connections, { emitEvent: false });
+      });
 
     this.settings.valueChanges
       .pipe(takeUntilDestroyed())
-      .subscribe(settings => this.#appSettingsService.updateConnections(settings));
+      .subscribe((settings) => {
+        this.#appSettingsService.updateConnections(settings);
+      });
 
     isEnabled()
-      .then(enabled => this.isAutostartEnabled.patchValue(enabled))
-      .catch(e => {
+      .then((enabled) => this.isAutostartEnabled.patchValue(enabled))
+      .catch((e) => {
         this.isAutostartEnabled.patchValue(false);
-        this.#logService.add(`Failed to determine if autostart is enabled. ${JSON.stringify(e)}`, 'error', 'AppSettingsComponent.constructor');
+        this.#logService.add(
+          `Failed to determine if autostart is enabled. ${JSON.stringify(e)}`,
+          'error',
+          'AppSettingsComponent.constructor',
+        );
       });
 
     this.isAutostartEnabled.valueChanges
       .pipe(takeUntilDestroyed())
-      .subscribe(enabled => {
+      .subscribe((enabled) => {
         if (enabled) {
           enable();
         } else {

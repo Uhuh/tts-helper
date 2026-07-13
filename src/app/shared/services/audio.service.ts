@@ -122,6 +122,7 @@ export class AudioService {
     source: AudioSource,
     charLimit: number,
     canPlayOverride = false,
+    chatMessageId?: string,
   ) {
     combineLatest({
       customVoices: this.customUserVoices$,
@@ -174,7 +175,7 @@ export class AudioService {
             text,
             source,
             charLimit,
-          }, triggeredExpressions);
+          }, triggeredExpressions, chatMessageId);
         }
 
         // Otherwise... let's hope it WAS a multivoice request.
@@ -186,7 +187,7 @@ export class AudioService {
             text,
             source,
             charLimit,
-          }, triggeredExpressions);
+          }, triggeredExpressions, chatMessageId);
         }
       });
   }
@@ -221,6 +222,7 @@ export class AudioService {
     data: RequestAudioData | null,
     { username, charLimit, source, text }: { username: string, charLimit: number, source: AudioSource, text: string },
     triggeredExpressions: TriggeredExpression[] = [],
+    chatMessageId?: string,
   ) {
     if (!data) {
       this.snackbar.open(
@@ -254,7 +256,7 @@ export class AudioService {
           text,
           username,
           state: AudioStatus.queued,
-        });
+        }, chatMessageId);
       })
       .catch((e) => {
         this.logService.add(`Failed to play TTS. \n ${JSON.stringify(e)}`, 'error', 'AudioService.playTts');
@@ -481,8 +483,10 @@ export class AudioService {
     }
   }
 
-  addAudio(audio: AudioItem) {
-    return this.store.dispatch(AudioActions.addAudioItem({ audio }));
+  addAudio(audio: AudioItem, chatMessageId?: string) {
+    const audioWithChatId = chatMessageId ? { ...audio, chatMessageId } : audio;
+
+    return this.store.dispatch(AudioActions.addAudioItem({ audio: audioWithChatId }));
   }
 
   removeAudio(audioId: number) {

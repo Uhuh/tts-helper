@@ -33,30 +33,13 @@
     <span>Connections</span>
   </div>
 
-  <app-label-block>
-    <div header>Show Twitch</div>
-    <div sub-text>Show or hide this feature.</div>
-    <app-toggle class="right" [control]="settings.controls.twitchEnabled"/>
-  </app-label-block>
-
-  <app-label-block>
-    <div header>Show YouTube</div>
-    <div sub-text>Show or hide this feature.</div>
-    <app-toggle class="right" [control]="settings.controls.youtubeEnabled"/>
-  </app-label-block>
-
-  <app-label-block>
-    <div header>Show VTubeStudio</div>
-    <div sub-text>Show or hide this feature.</div>
-    <app-toggle class="right" [control]="settings.controls.vtubestudioEnabled"/>
-  </app-label-block>
-
-  <app-label-block>
-    <div header>Show VirtualMotionCapture</div>
-    <div sub-text>Show or hide this feature.</div>
-    <app-toggle class="right" [control]="settings.controls.vmcEnabled"/>
-  </app-label-block>
+  @for (connection of connections; track connection.kind) {
+    <app-label-block>
+      <div header>Show {{ connection.name }}</div>
+      <div sub-text>Show or hide this feature.</div>
+      <app-toggle class="right" [control]="settings.controls[connection.kind]"/>
+    </app-label-block>
+  }
 
   <hr/>
-
 </div>

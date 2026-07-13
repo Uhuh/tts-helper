@@ -6,20 +6,24 @@ import { ChatService } from './chat.service';
 import { ChatItem, EmojiItem } from '../util/youtube-chat/types/data';
 import { AudioService } from './audio.service';
 import { MessageText } from '../util/youtube-chat/types/yt-response';
+import { ObsWebSocketService } from './obs-websocket.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class YoutubeService {
   readonly #logService = inject(LogService);
   readonly #chatService = inject(ChatService);
   readonly #audioService = inject(AudioService);
-  readonly youtubeStore = inject(YoutubeFeature);
+  readonly #obsWebSocketService = inject(ObsWebSocketService);
+  readonly store = inject(YoutubeFeature);
+  readonly connectionStatus$ = toObservable(this.store.connectionStatus);
   readonly liveId = signal<string | null>(null);
   readonly hasError = signal(false);
   #liveChat: LiveChat | null = null;
 
   constructor() {
     effect(() => {
-      const channelId = this.youtubeStore.channelId();
+      const channelId = this.store.channelId();
 
       this.#liveChat?.removeAllListeners();
 
@@ -30,20 +34,20 @@ export class YoutubeService {
   }
 
   updateState(partial: Partial<YoutubeFeatureState>) {
-    this.youtubeStore.updateState(partial);
+    this.store.updateState(partial);
   }
 
   updateSuperChat(partial: Partial<YoutubeFeatureState['superChat']>) {
-    this.youtubeStore.updateSuperChat(partial);
+    this.store.updateSuperChat(partial);
   }
 
   updateChannelId(channelId: string) {
-    this.youtubeStore.updateChannelId(channelId);
+    this.store.updateChannelId(channelId);
   }
 
   async #initializeListeners() {
     this.#liveChat?.on('chat', (chatItem) => {
-      const superchatSettings = this.youtubeStore.superChat();
+      const superchatSettings = this.store.superChat();
 
       if (superchatSettings.enabled && !!chatItem.superchat) {
         return this.handleSuperChat(chatItem);
@@ -58,6 +62,12 @@ export class YoutubeService {
         }
       }).join(' ');
 
+      // Generate unique chat message ID using YouTube's message ID
+      const chatMessageId = `youtube-${chatItem.id}`;
+
+      // Send all chat messages to the overlay
+      this.#obsWebSocketService.sendChatMessage(chatItem.author.name, text, 'youtube', false, chatMessageId);
+
       this.#chatService.onMessage(
         {
           text,
@@ -69,6 +79,7 @@ export class YoutubeService {
           },
         },
         'youtube',
+        chatMessageId,
       );
     });
 
@@ -120,7 +131,7 @@ export class YoutubeService {
   }
 
   handleSuperChat(chatItem: ChatItem) {
-    const superchatSettings = this.youtubeStore.superChat();
+    const superchatSettings = this.store.superChat();
 
     if (!superchatSettings.enabled) {
       return;

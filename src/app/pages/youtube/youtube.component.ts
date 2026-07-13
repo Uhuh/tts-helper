@@ -33,7 +33,7 @@ export class YoutubeComponent {
       .subscribe();
 
     effect(() => {
-      const channelId = this.#youtubeService.youtubeStore.channelId();
+      const channelId = this.#youtubeService.store.channelId();
 
       this.channelControl.patchValue(channelId, { emitEvent: false });
     });
