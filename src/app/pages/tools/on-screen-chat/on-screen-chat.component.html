@@ -1,0 +1,114 @@
+<div class="header">
+  <span>On-Screen Chat</span>
+  <app-button
+    (click)="downloadOnScreenChat()"
+  >
+    Download On-Screen Chat
+  </app-button>
+</div>
+
+<div class="section">
+  <div class="chat-display-section">
+    <div class="chat-container" [style.background-color]="backgroundColor">
+      @if (messages.length === 0) {
+        <div class="empty-state" [style.color]="messageColor">
+          No messages in queue yet...
+        </div>
+      }
+      @for (message of messages; track message.id) {
+        <div
+          class="message-item"
+          [class.highlighted]="message.isCurrentlyPlaying"
+          [class.is-tts]="message.state !== 0"
+          [style.background-color]="message.isCurrentlyPlaying ? highlightColor : 'transparent'"
+          [style.font-size.px]="fontSize"
+        >
+          <div class="message-header">
+            <span class="username" [style.color]="getUsernameColor(message.username)">{{ message.username }}</span>
+            @if (showSourceBadge.value) {
+              <span class="source-badge" [style.color]="messageColor">{{ getSourceLabel(message.source) }}</span>
+            }
+          </div>
+          <span class="message-text" [style.color]="messageColor">{{ message.text }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="header">
+    <span>Appearance</span>
+  </div>
+
+  <app-label-block>
+    <div header>Font size</div>
+    <div sub-text>Size of the message text.</div>
+    <app-input
+      placeholder="Enter the font size"
+      type="number"
+      [control]="fontSizeControl"
+    />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Max messages</div>
+    <div sub-text>Maximum number of messages to display.</div>
+    <app-input
+      placeholder="Enter max messages"
+      type="number"
+      [control]="maxMessagesControl"
+    />
+  </app-label-block>
+
+  <div class="color-wrapper">
+    <app-label-block>
+      <div header>Background color</div>
+      <color-chrome [color]="backgroundColor" (onChange)="changeColor($event, 'bg')"/>
+    </app-label-block>
+
+    <app-label-block>
+      <div header>Message color</div>
+      <color-chrome [color]="messageColor" (onChange)="changeColor($event, 'message')"/>
+    </app-label-block>
+
+    <app-label-block>
+      <div header>Highlight color</div>
+      <div sub-text>Color when message is being read and for TTS border.</div>
+      <color-chrome [color]="highlightColor" (onChange)="changeColor($event, 'highlight')"/>
+    </app-label-block>
+  </div>
+
+  <hr />
+
+  <div class="header">
+    <span>Display Options</span>
+  </div>
+
+  <app-label-block>
+    <div header>Show Source Badges</div>
+    <app-toggle class="right" [control]="showSourceBadge"/>
+  </app-label-block>
+
+  <hr />
+
+  <div class="header">
+    <span>Source Filters</span>
+  </div>
+
+  <app-label-block>
+    <div header>Twitch</div>
+    <div sub-text>If enabled, filter out messages from this source.</div>
+    <app-toggle class="right" [control]="filterTwitch"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>YouTube</div>
+    <div sub-text>If enabled, filter out messages from this source.</div>
+    <app-toggle class="right" [control]="filterYoutube"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>TTS Helper</div>
+    <div sub-text>If enabled, filter out messages from this source.</div>
+    <app-toggle class="right" [control]="filterTtsHelper"/>
+  </app-label-block>
+</div>
