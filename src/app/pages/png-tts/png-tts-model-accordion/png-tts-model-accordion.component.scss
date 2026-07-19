@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.model-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}

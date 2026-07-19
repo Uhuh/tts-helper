@@ -22,6 +22,7 @@ export interface AudioItem {
   source: AudioSource;
   createdAt: Date;
   state: AudioStatus;
+  chatMessageId?: string;
 }
 
 const initialState: AudioState = {

@@ -1,62 +1,54 @@
 <div class="wrapper">
   <div class="home-download">
     <a [routerLink]="['home']">
-      <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107" />
+      <img alt="tts-helper-logo" priority="true" class="icon" ngSrc="assets/tts-helper.svg" height="27" width="107"/>
     </a>
     @if (newVersion) {
-      <img alt="download-button" (click)="openUpdateDialog()" src="assets/download.svg" />
+      <img alt="download-button" (click)="openUpdateDialog()" src="assets/download.svg"/>
     }
   </div>
   <div class="nav-groups">
-    @if (connections$ | async; as connections) {
-      <div class="nav-group">
-        <span>My Connections</span>
-        <a [routerLink]="['twitch']" [class.hide]="!connections.twitchEnabled" routerLinkActive="active">
-          <img alt="twitch-logo" ngSrc="assets/twitch.svg" height="22" width="21" />
-          <span>Twitch</span>
-          <div class="connection" [class.connected]="isTwitchTokenValid$ | async"></div>
-        </a>
-        <a
-          [routerLink]="['youtube']"
-          [class.hide]="!connections.youtubeEnabled"
-          routerLinkActive="active"
-        >
-          <img alt="youtube-logo" ngSrc="assets/youtube.svg" height="25" width="25" />
-          <span>YouTube</span>
-          <div class="connection unknown"></div>
-        </a>
-        <a
-          [routerLink]="['vtubestudio']"
-          [class.hide]="!connections.vtubestudioEnabled"
-          routerLinkActive="active"
-        >
-          <img alt="youtube-logo" ngSrc="assets/vts_logo_transparent.png" height="25" width="25" />
-          <span>VTubeStudio</span>
-          <div class="connection" [class.connected]="isVTSConnected$ | async"></div>
-        </a>
-        <a
-          [routerLink]="['virtual-motion-capture']"
-          [class.hide]="!connections.vmcEnabled"
-          routerLinkActive="active"
-        >
-          <img alt="virtual-motion-capture-logo" ngSrc="assets/virtual-motion-capture.png" height="25" width="25" />
-          <span>VMC Protocol</span>
-        </a>
-        @if (unavailableConnections(connections)) {
+    <div class="nav-group">
+      <button class="group-header" (click)="toggleConnections()">
+        <span>Connections</span>
+        <mat-icon>{{ connectionsExpanded() ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </button>
+
+      @if (connectionsExpanded()) {
+        @for (connection of connections(); track connection.kind) {
+          @if (connection.enabled) {
+            <a [routerLink]="[connection.route]" routerLinkActive="active">
+              <img
+                [alt]="connection.name + '-logo'"
+                [ngSrc]="connection.icon"
+                height="22"
+                width="22"
+              />
+              <span>{{ connection.name }}</span>
+              <div
+                class="connection"
+                [class.connected]="connection.status === 'connected'"
+                [class.partial]="connection.status === 'partial'"
+                [class.disconnected]="connection.status === 'disconnected'"
+                [matTooltip]="connection.tooltip"
+              ></div>
+            </a>
+          }
+        } @empty {
           <div class="empty">
             Enable connections in <a [routerLink]="['app-settings']">app settings</a>
           </div>
         }
-      </div>
-    }
+      }
+    </div>
 
-    <hr />
+    <hr/>
 
     <div class="nav-group">
-      <span>Text to Speech</span>
+      <span>Voices</span>
       <a [routerLink]="['settings']" routerLinkActive="active">
         <mat-icon class="tts-icon">settings</mat-icon>
-        <span>Settings</span>
+        <span>TTS Settings</span>
       </a>
       <a [routerLink]="['tts-mapping']" routerLinkActive="active">
         <mat-icon class="tts-icon">record_voice_over</mat-icon>
@@ -66,10 +58,32 @@
         <mat-icon class="tts-icon">speaker_group</mat-icon>
         <span>Multi Voices</span>
       </a>
-      <a [routerLink]="['chat-gpt']" routerLinkActive="active">
-        <mat-icon class="tts-icon">smart_toy</mat-icon>
-        <span>ChatGPT</span>
+    </div>
+
+    <hr/>
+
+    <div class="nav-group">
+      <span>PNG TTS</span>
+      <a [routerLink]="['png-tts', 'configure']" routerLinkActive="active">
+        <mat-icon class="tts-icon">tune</mat-icon>
+        <span>Configure</span>
       </a>
+      <a [routerLink]="['png-tts', 'live']" routerLinkActive="active">
+        <mat-icon class="tts-icon">cast</mat-icon>
+        <span>Live</span>
+        @if (pngTtsConnected()) {
+          <div
+            class="connection connected"
+            matTooltip="A PNG TTS browser source is connected"
+          ></div>
+        }
+      </a>
+    </div>
+
+    <hr/>
+
+    <div class="nav-group">
+      <span>Chat</span>
       <a [routerLink]="['chat-settings']" routerLinkActive="active">
         <mat-icon class="tts-icon">chat</mat-icon>
         <span>Chat Settings</span>
@@ -78,17 +92,23 @@
         <mat-icon class="tts-icon">construction</mat-icon>
         <span>Moderation</span>
       </a>
-      <a [routerLink]="['history']" routerLinkActive="active">
-        <img alt="history-logo" class="tts-icon" ngSrc="assets/history.svg" height="17" width="17" />
-        <span>History</span>
-      </a>
+    </div>
+
+    <hr/>
+
+    <div class="nav-group">
+      <span>Live</span>
       <a [routerLink]="['queue']" routerLinkActive="active">
-        <img alt="queue-logo" class="tts-icon" ngSrc="assets/clock.svg" height="17" width="17" />
+        <img alt="queue-logo" class="tts-icon" ngSrc="assets/clock.svg" height="17" width="17"/>
         <span>Queue</span>
+      </a>
+      <a [routerLink]="['history']" routerLinkActive="active">
+        <img alt="history-logo" class="tts-icon" ngSrc="assets/history.svg" height="17" width="17"/>
+        <span>History</span>
       </a>
     </div>
 
-    <hr />
+    <hr/>
 
     <div class="nav-group">
       <span>Speech to Text</span>
@@ -98,10 +118,14 @@
       </a>
     </div>
 
-    <hr />
+    <hr/>
 
     <div class="nav-group">
-      <span>Misc</span>
+      <span>Extensions</span>
+      <a [routerLink]="['chat-gpt']" routerLinkActive="active">
+        <mat-icon class="tts-icon">smart_toy</mat-icon>
+        <span>ChatGPT</span>
+      </a>
       <a [routerLink]="['api']" routerLinkActive="active">
         <mat-icon class="tts-icon">api</mat-icon>
         <span>API</span>
@@ -110,14 +134,20 @@
         <mat-icon class="tts-icon">visibility</mat-icon>
         <span>Watch Streak</span>
       </a>
-      <a [routerLink]="['logs']" routerLinkActive="active">
-        <mat-icon class="tts-icon">description</mat-icon>
-        <span>Logs</span>
-      </a>
       <a [routerLink]="['tools']" routerLinkActive="active">
         <mat-icon class="tts-icon">construction</mat-icon>
         <span>Tools</span>
       </a>
+      <a [routerLink]="['logs']" routerLinkActive="active">
+        <mat-icon class="tts-icon">description</mat-icon>
+        <span>Logs</span>
+      </a>
+    </div>
+
+    <hr/>
+
+    <div class="nav-group">
+      <span>Support</span>
       <a href="https://ko-fi.com/panku" target="_blank">
         <mat-icon class="tts-icon">coffee</mat-icon>
         <span>Ko-fi</span>

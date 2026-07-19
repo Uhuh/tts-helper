@@ -1,12 +1,12 @@
 :host {
   display: flex;
-  width: 250px;
+  width: 210px;
   height: 100%;
-  min-width: 250px;
-  max-width: 250px;
+  min-width: 210px;
+  max-width: 210px;
 
   color: white;
-  font-size: 18px;
+  font-size: 15px;
 
   .icon {
     display: flex;
@@ -24,7 +24,7 @@
 
   hr {
     max-width: -webkit-fill-available;
-    margin: 15px 10px;
+    margin: 10px 10px;
     border: 1px solid var(--white-20);
     filter: opacity(0.5);
   }
@@ -55,12 +55,45 @@
   flex-direction: column;
   // gap: 2rem;
   overflow-y: auto;
+  padding-right: 8px;
 }
 
 .nav-group {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 4px;
+
+  .group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    background-color: transparent;
+    border-radius: 6px;
+
+    color: var(--header);
+
+    & > span {
+      font-size: 14px;
+      padding: 6px;
+    }
+
+    &:hover {
+      background-color: rgb(255 255 255 / 0.04);
+    }
+
+    mat-icon {
+      font-size: 1.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+  }
 
   & > span {
     font-size: 14px;
@@ -76,7 +109,7 @@
     align-items: center;
     color: var(--header);
     filter: brightness(0.9);
-    font-size: 16px;
+    font-size: 14px;
 
     padding: 2px 10px;
     border-left: 2px solid transparent;
@@ -149,6 +182,7 @@
 
 .empty {
   height: 100px;
+  font-size: 14px;
 }
 
 .empty a {

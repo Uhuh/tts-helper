@@ -182,8 +182,8 @@ export class AppComponent {
 
     effect(() => {
       const state: YoutubeFeatureState = {
-        channelId: this.youtubeService.youtubeStore.channelId(),
-        superChat: this.youtubeService.youtubeStore.superChat(),
+        channelId: this.youtubeService.store.channelId(),
+        superChat: this.youtubeService.store.superChat(),
       };
 
       saveToStore(this.settingsLocation, 'youtube', state);

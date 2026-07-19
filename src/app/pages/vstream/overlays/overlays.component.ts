@@ -9,12 +9,13 @@ import { map, scan, take } from 'rxjs';
 import { generateBrowserSource } from './utils/generateBrowserSource';
 import { VStreamPubSubService } from '../../../shared/services/vstream-pubsub.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { saveTextFile } from '../../../shared/util/save-file';
 
 @Component({
     selector: 'app-overlays',
     imports: [CommonModule, ButtonComponent, LabelBlockComponent, EditWidgetComponent],
     templateUrl: './overlays.component.html',
-    styleUrl: './overlays.component.scss'
+    styleUrl: './overlays.component.scss',
 })
 export class OverlaysComponent {
   private readonly vstreamService = inject(VStreamService);
@@ -60,13 +61,17 @@ export class OverlaysComponent {
         take(1),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(widgets => {
-        const data = 'data:text/html;charset=utf-8,' + encodeURIComponent(generateBrowserSource(widgets));
+      .subscribe(async widgets => {
+        const saved = await saveTextFile(
+          `tts-helper-vstream-overlays.html`,
+          'text/html',
+          generateBrowserSource(widgets),
+          { name: 'HTML', extensions: ['html'] },
+        );
 
-        const anchor = document.createElement('a');
-        anchor.download = `tts-helper-vstream-overlays.html`;
-        anchor.href = data;
-        anchor.click();
+        if (!saved) {
+          return;
+        }
 
         this.snackbar.open('Successfully downloaded VStream overlays.', 'Dismiss', {
           panelClass: 'notification-success',

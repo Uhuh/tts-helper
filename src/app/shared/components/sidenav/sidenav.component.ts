@@ -1,40 +1,50 @@
-import { Component, DestroyRef, inject, Input } from '@angular/core';
+import { Component, computed, DestroyRef, inject, Input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { getVersion } from '@tauri-apps/api/app';
 import { MatIconModule } from '@angular/material/icon';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { AsyncPipe, NgOptimizedImage } from '@angular/common';
-import { TwitchService } from '../../services/twitch.service';
-import { VTubeStudioService } from '../../services/vtubestudio.service';
+import { NgOptimizedImage } from '@angular/common';
 import { check, Update } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangelogDialogComponent } from './changelog-dialog/changelog-dialog.component';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AppSettingsService } from '../../services/app-settings.service';
-import { AppSettingsFeatureState } from '../../state/app-settings/app-settings.feature';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ConnectionsService } from '../../services/connections.service';
+import { ObsWebSocketService } from '../../services/obs-websocket.service';
 
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
-  imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, AsyncPipe],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, NgOptimizedImage, MatTooltip],
 })
 export class SidenavComponent {
-  readonly #twitchService = inject(TwitchService);
-  readonly #vtsService = inject(VTubeStudioService);
   readonly #matDialog = inject(MatDialog);
   readonly #destroyRef = inject(DestroyRef);
   readonly #router = inject(Router);
   readonly #appSettingsService = inject(AppSettingsService);
+  readonly #connectionsService = inject(ConnectionsService);
+  readonly #obsWebSocketService = inject(ObsWebSocketService);
+
+  readonly pngTtsConnected = this.#obsWebSocketService.pngTtsConnected;
+
+  readonly connections = computed(() => {
+    const connections = this.#connectionsService.connections();
+
+    return connections.filter(c => c.enabled);
+  });
+  readonly connectionsExpanded = this.#connectionsService.connectionsExpanded;
+
+  toggleConnections(): void {
+    this.#appSettingsService.toggleConnectionsExpanded();
+  }
 
   @Input({ required: true }) nav!: MatSidenav;
   @Input() isMobile = false;
   appVersion = '';
 
-  readonly connections$ = this.#appSettingsService.connections$;
-  readonly isTwitchTokenValid$ = this.#twitchService.isTokenValid$;
-  readonly isVTSConnected$ = this.#vtsService.isConnected$;
   newVersion = false;
   updater?: Update;
 
@@ -64,10 +74,6 @@ export class SidenavComponent {
     this.newVersion = true;
 
     this.openUpdateDialog();
-  }
-
-  unavailableConnections(connections: AppSettingsFeatureState['connections']) {
-    return !connections.vtubestudioEnabled && !connections.vmcEnabled && !connections.twitchEnabled;
   }
 
   close() {

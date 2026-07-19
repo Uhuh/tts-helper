@@ -17,6 +17,7 @@ import { EmoteToExpression, VTubeStudioFeature, VTubeStudioState } from '../stat
 import { VTubeStudioActions } from '../state/vtubestudio/vtubestudio.actions';
 import { BehaviorSubject, distinctUntilChanged, first, map } from 'rxjs';
 import { TtsType } from '../state/config/config.feature';
+import { ConnectionStatusSnapshot } from '../state/models/connection-status.model';
 
 interface VTSAPIError {
   apiName: string;
@@ -58,6 +59,17 @@ export class VTubeStudioService {
   readonly isMouthFormEnabled$ = this.store.select(VTubeStudioFeature.selectIsMirrorMouthFormEnabled);
   readonly emoteToExpressions$ = this.store.select(VTubeStudioFeature.selectEmoteToExpressions);
   readonly isConnected$ = new BehaviorSubject<boolean>(false);
+
+  readonly connectionStatus$ = this.isConnected$.pipe(
+    map((isConnected): ConnectionStatusSnapshot => ({
+      status: isConnected
+        ? 'connected'
+        : 'disconnected',
+      tooltip: isConnected
+        ? 'VTubeStudio connected'
+        : 'VTubeStudio not connected',
+    })),
+  );
 
   isMouthOpenEnabled = false;
   isMouthFormEnabled = false;

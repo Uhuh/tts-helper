@@ -1,16 +1,14 @@
-import { DestroyRef, inject, Injectable } from '@angular/core';
+import { computed, DestroyRef, inject, Injectable } from '@angular/core';
 import { PlaybackService } from './playback.service';
 import { LogService } from './logs.service';
-import {
-  VirtualMotionCaptureFeature,
-  VirtualMotionCaptureState,
-} from '../state/virtual-motion-capture/virtual-motion-capture.feature';
-import { invoke } from "@tauri-apps/api/core";
-import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
-import { first } from "rxjs";
-import { ConfigService } from "./config.service";
-import { TtsType } from "../state/config/config.feature";
-import { AppSettingsService } from "./app-settings.service";
+import { VirtualMotionCaptureFeature, VirtualMotionCaptureState } from '../state/virtual-motion-capture/virtual-motion-capture.feature';
+import { invoke } from '@tauri-apps/api/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { first } from 'rxjs';
+import { ConfigService } from './config.service';
+import { TtsType } from '../state/config/config.feature';
+import { AppSettingsService } from './app-settings.service';
+import { ConnectionStatusSnapshot } from '../state/models/connection-status.model';
 
 @Injectable()
 export class VirtualMotionCaptureProtocolService {
@@ -21,6 +19,33 @@ export class VirtualMotionCaptureProtocolService {
   readonly #logService = inject(LogService);
   readonly #destroyRef = inject(DestroyRef);
   readonly #ttsType$ = this.#configService.configTts$;
+
+  readonly connectionStatus$ = toObservable(computed((): ConnectionStatusSnapshot => {
+      const state = this.store.wholeState();
+      const hasHost = !!state.host?.trim();
+      const hasPort = !!state.port;
+      const enabled = this.connections()?.vmc ?? false;
+
+      if (!enabled) {
+        return {
+          status: 'disconnected',
+          tooltip: 'VMC Protocol disabled',
+        };
+      }
+
+      if (!hasHost || !hasPort) {
+        return {
+          status: 'partial',
+          tooltip: 'VMC Protocol configured but missing host or port',
+        };
+      }
+
+      return {
+        status: 'connected',
+        tooltip: `VMC Protocol sending to ${state.host}:${state.port}`,
+      };
+    },
+  ));
 
   readonly connections = toSignal(this.#appSettingsService.connections$);
 
@@ -56,7 +81,7 @@ export class VirtualMotionCaptureProtocolService {
   }
 
   clearAudioPlaying() {
-    if (!this.connections()?.vmcEnabled) {
+    if (!this.connections()?.vmc) {
       return;
     }
 
@@ -124,7 +149,7 @@ export class VirtualMotionCaptureProtocolService {
   }
 
   private prepareVTSMouthParams(mouthShapes: [number, number][]) {
-    if (!this.connections()?.vmcEnabled) {
+    if (!this.connections()?.vmc) {
       return;
     }
 

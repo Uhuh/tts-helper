@@ -1,19 +1,14 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { listen } from '@tauri-apps/api/event';
-import {
-  TwitchBitState,
-  TwitchCustomMessageSetting,
-  TwitchFeature,
-  TwitchRedeemState,
-  TwitchSettingsState,
-} from '../state/twitch/twitch.feature';
+import { TwitchBitState, TwitchCustomMessageSetting, TwitchFeature, TwitchRedeemState, TwitchSettingsState } from '../state/twitch/twitch.feature';
 import { TwitchStateActions } from '../state/twitch/twitch.actions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LogService } from './logs.service';
 import { TwitchApi } from '../api/twitch/twitch.api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConnectionStatusSnapshot } from '../state/models/connection-status.model';
 
 @Injectable()
 export class TwitchService {
@@ -35,6 +30,18 @@ export class TwitchService {
   public readonly follower$ = this.store.select(TwitchFeature.selectFollower);
   public readonly redeemInfo$ = this.store.select(TwitchFeature.selectRedeemInfo);
   public readonly bitInfo$ = this.store.select(TwitchFeature.selectBitInfo);
+
+  readonly connectionStatus$ = this.state$.pipe(
+    map((state): ConnectionStatusSnapshot => {
+      if (!state.token) {
+        return { status: 'disconnected', tooltip: 'Twitch not signed in' };
+      }
+
+      return state.isTokenValid
+        ? { status: 'connected', tooltip: 'Twitch connected' }
+        : { status: 'partial', tooltip: 'Twitch token invalid or expired' };
+    }),
+  );
 
   constructor() {
     this.token$.pipe(

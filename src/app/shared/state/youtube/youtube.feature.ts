@@ -1,4 +1,6 @@
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { computed } from '@angular/core';
+import { ConnectionStatusSnapshot } from '../models/connection-status.model';
 
 export type SuperChat = {
   enabled: boolean;
@@ -31,5 +33,13 @@ export const YoutubeFeature = signalStore(
     updateState: (partial: Partial<YoutubeFeatureState>) => {
       patchState(state, (state) => ({ ...state, ...partial }));
     },
+  })),
+  withComputed((state) => ({
+    connectionStatus: computed((): ConnectionStatusSnapshot => {
+      return {
+        status: 'unknown',
+        tooltip: 'YouTube status unknown',
+      };
+    }),
   })),
 );

@@ -1,13 +1,13 @@
 import { Component, inject, input, OnChanges } from '@angular/core';
-import { ButtonComponent } from "../../../shared/components/button/button.component";
-import { CdkAccordion, CdkAccordionItem } from "@angular/cdk/accordion";
-import { LabelBlockComponent } from "../../../shared/components/input-block/label-block.component";
-import { OutboundSource } from "../../../shared/state/api/tts-helper-api.feature";
-import { MatIcon } from "@angular/material/icon";
-import { TtsHelperApiService } from "../../../shared/services/tts-helper-api.service";
-import { InputComponent } from "../../../shared/components/input/input.component";
-import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { CdkAccordion, CdkAccordionItem } from '@angular/cdk/accordion';
+import { LabelBlockComponent } from '../../../shared/components/input-block/label-block.component';
+import { OutboundSource } from '../../../shared/state/api/tts-helper-api.feature';
+import { MatIcon } from '@angular/material/icon';
+import { TtsHelperApiService } from '../../../shared/services/tts-helper-api.service';
+import { InputComponent } from '../../../shared/components/input/input.component';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-edit-outbound-source',
@@ -34,7 +34,9 @@ export class EditOutboundSourceComponent implements OnChanges {
   constructor() {
     this.settings.valueChanges
       .pipe(takeUntilDestroyed())
-      .subscribe(partial => this.#apiService.updateSource(this.source().id, partial));
+      .subscribe((partial) =>
+        this.#apiService.updateSource(this.source().id, partial),
+      );
   }
 
   ngOnChanges() {
