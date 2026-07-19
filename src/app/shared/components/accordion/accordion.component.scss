@@ -1,6 +1,6 @@
 :host {
   width: 100%;
-  padding: 20px;
+  padding: 14px;
 
   border-radius: 10px;
   border: 2px solid var(--blue-20);
@@ -12,13 +12,13 @@
   align-items: center;
   cursor: pointer;
   user-select: none;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .accordion-body {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 
   hr {
     margin: 10px 0;
