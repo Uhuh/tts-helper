@@ -10,12 +10,13 @@ import { BorderString, captionsGenerator, PixelString, RGBAString } from './asse
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { saveTextFile } from '../../../shared/util/save-file';
 
 @Component({
     selector: 'app-captions',
     imports: [CommonModule, LabelBlockComponent, InputComponent, ColorChromeModule, ButtonComponent],
     templateUrl: './captions.component.html',
-    styleUrl: './captions.component.scss'
+    styleUrl: './captions.component.scss',
 })
 export class CaptionsComponent {
   private readonly twitchService = inject(TwitchService);
@@ -112,13 +113,17 @@ export class CaptionsComponent {
     return `${this.borderSize} ${this.borderStyle} ${this.borderColor}`;
   }
 
-  downloadCaptions() {
-    const data = 'data:text/html;charset=utf-8,' + encodeURIComponent(this.generate());
+  async downloadCaptions() {
+    const saved = await saveTextFile(
+      `tts-helper-captions.html`,
+      'text/html',
+      this.generate(),
+      { name: 'HTML', extensions: ['html'] },
+    );
 
-    const anchor = document.createElement('a');
-    anchor.download = `tts-helper-captions.html`;
-    anchor.href = data;
-    anchor.click();
+    if (!saved) {
+      return;
+    }
 
     this.snackbar.open('Successfully downloaded captions file.', 'Dismiss', {
       panelClass: 'notification-success',

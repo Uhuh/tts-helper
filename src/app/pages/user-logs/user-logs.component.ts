@@ -5,6 +5,7 @@ import { LogService } from '../../shared/services/logs.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
+import { saveTextFile } from '../../shared/util/save-file';
 
 @Component({
     selector: 'app-user-logs',
@@ -22,13 +23,17 @@ export class UserLogsComponent {
     this.logs$.pipe(
       take(1),
       takeUntilDestroyed(this.#destroyRef),
-    ).subscribe(logs => {
-      const data = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({ logs }, undefined, 2));
+    ).subscribe(async logs => {
+      const saved = await saveTextFile(
+        `tts-helper-detailed-log-` + Date.now() + '.json',
+        'application/json',
+        JSON.stringify({ logs }, null, 2),
+        { name: 'JSON', extensions: ['json'] },
+      );
 
-      const anchor = document.createElement('a');
-      anchor.download = `tts-helper-detailed-log-` + Date.now() + '.json';
-      anchor.href = data;
-      anchor.click();
+      if (!saved) {
+        return;
+      }
 
       this.#snackbar.open('Successfully downloaded log.', 'Dismiss', {
         panelClass: 'notification-success',

@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import { AudioFeature, AudioItem, AudioSource } from '../../../shared/state/audio/audio.feature';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { onScreenChatGenerator, RGBAString } from './assets/on-screen-chat-generator';
+import { saveTextFile } from '../../../shared/util/save-file';
 
 interface ChatMessage extends AudioItem {
   isCurrentlyPlaying: boolean;
@@ -184,13 +185,17 @@ export class OnScreenChatComponent {
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   }
 
-  downloadOnScreenChat() {
-    const data = 'data:text/html;charset=utf-8,' + encodeURIComponent(this.generate());
+  async downloadOnScreenChat() {
+    const saved = await saveTextFile(
+      `tts-helper-on-screen-chat.html`,
+      'text/html',
+      this.generate(),
+      { name: 'HTML', extensions: ['html'] },
+    );
 
-    const anchor = document.createElement('a');
-    anchor.download = `tts-helper-on-screen-chat.html`;
-    anchor.href = data;
-    anchor.click();
+    if (!saved) {
+      return;
+    }
 
     this.snackbar.open('Successfully downloaded on-screen chat file.', 'Dismiss', {
       panelClass: 'notification-success',
