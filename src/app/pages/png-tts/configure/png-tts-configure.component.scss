@@ -11,6 +11,12 @@
   align-items: center;
 }
 
+.main-header {
+  flex-direction: column;
+  gap: 8px;
+  align-items: unset;
+}
+
 .header-actions {
   display: flex;
   gap: 8px;
