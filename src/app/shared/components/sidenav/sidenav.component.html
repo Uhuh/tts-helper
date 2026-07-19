@@ -45,6 +45,24 @@
     <hr/>
 
     <div class="nav-group">
+      <span>Voices</span>
+      <a [routerLink]="['settings']" routerLinkActive="active">
+        <mat-icon class="tts-icon">settings</mat-icon>
+        <span>TTS Settings</span>
+      </a>
+      <a [routerLink]="['tts-mapping']" routerLinkActive="active">
+        <mat-icon class="tts-icon">record_voice_over</mat-icon>
+        <span>User Voices</span>
+      </a>
+      <a [routerLink]="['multi-voices']" routerLinkActive="active">
+        <mat-icon class="tts-icon">speaker_group</mat-icon>
+        <span>Multi Voices</span>
+      </a>
+    </div>
+
+    <hr/>
+
+    <div class="nav-group">
       <span>PNG TTS</span>
       <a [routerLink]="['png-tts', 'configure']" routerLinkActive="active">
         <mat-icon class="tts-icon">tune</mat-icon>
@@ -59,24 +77,6 @@
             matTooltip="A PNG TTS browser source is connected"
           ></div>
         }
-      </a>
-    </div>
-
-    <hr/>
-
-    <div class="nav-group">
-      <span>Voices</span>
-      <a [routerLink]="['settings']" routerLinkActive="active">
-        <mat-icon class="tts-icon">settings</mat-icon>
-        <span>TTS Settings</span>
-      </a>
-      <a [routerLink]="['tts-mapping']" routerLinkActive="active">
-        <mat-icon class="tts-icon">record_voice_over</mat-icon>
-        <span>User Voices</span>
-      </a>
-      <a [routerLink]="['multi-voices']" routerLinkActive="active">
-        <mat-icon class="tts-icon">speaker_group</mat-icon>
-        <span>Multi Voices</span>
       </a>
     </div>
 
