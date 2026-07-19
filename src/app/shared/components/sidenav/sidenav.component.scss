@@ -1,12 +1,12 @@
 :host {
   display: flex;
-  width: 250px;
+  width: 210px;
   height: 100%;
-  min-width: 250px;
-  max-width: 250px;
+  min-width: 210px;
+  max-width: 210px;
 
   color: white;
-  font-size: 18px;
+  font-size: 15px;
 
   .icon {
     display: flex;
@@ -109,7 +109,7 @@
     align-items: center;
     color: var(--header);
     filter: brightness(0.9);
-    font-size: 16px;
+    font-size: 14px;
 
     padding: 2px 10px;
     border-left: 2px solid transparent;

@@ -12,6 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AppSettingsService } from '../../services/app-settings.service';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ConnectionsService } from '../../services/connections.service';
+import { ObsWebSocketService } from '../../services/obs-websocket.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -25,6 +26,9 @@ export class SidenavComponent {
   readonly #router = inject(Router);
   readonly #appSettingsService = inject(AppSettingsService);
   readonly #connectionsService = inject(ConnectionsService);
+  readonly #obsWebSocketService = inject(ObsWebSocketService);
+
+  readonly pngTtsConnected = this.#obsWebSocketService.pngTtsConnected;
 
   readonly connections = computed(() => {
     const connections = this.#connectionsService.connections();

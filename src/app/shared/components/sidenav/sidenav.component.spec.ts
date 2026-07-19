@@ -5,8 +5,9 @@ import { TwitchService } from '../../services/twitch.service';
 import { VTubeStudioService } from '../../services/vtubestudio.service';
 import { VStreamService } from '../../services/vstream.service';
 import { AsyncPipe } from '@angular/common';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { AppSettingsService } from '../../services/app-settings.service';
+import { ObsWebSocketService } from '../../services/obs-websocket.service';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -31,6 +32,7 @@ describe('SidenavComponent', () => {
           { provide: VTubeStudioService, useValue: vtubeStudioServiceStub },
           { provide: VStreamService, useValue: vstreamServiceStub },
           { provide: AppSettingsService, useValue: appSettingsServiceStub },
+          { provide: ObsWebSocketService, useValue: { pngTtsConnected: signal(false) } },
         ],
         schemas: [NO_ERRORS_SCHEMA],
       },
