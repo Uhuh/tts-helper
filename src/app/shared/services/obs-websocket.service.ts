@@ -1,4 +1,4 @@
-﻿import { DestroyRef, inject, Injectable } from '@angular/core';
+﻿import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { PlaybackService } from './playback.service';
 import { AudioService } from './audio.service';
 import { webSocket } from 'rxjs/webSocket';
@@ -6,14 +6,30 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LogService } from './logs.service';
 import { first, retry, tap } from 'rxjs';
 import { AudioItem } from '../state/audio/audio.feature';
+import type { PngTtsConfig } from '../../pages/png-tts/assets/png-tts-generator';
 
 type ObsEvent = {
   id: string;
-  event: 'add-captions' | 'remove-captions' | 'audio-added' | 'audio-started' | 'audio-finished' | 'audio-skipped' | 'audio-queue' | 'chat-message';
+  event:
+    | 'add-captions'
+    | 'remove-captions'
+    | 'audio-added'
+    | 'audio-started'
+    | 'audio-finished'
+    | 'audio-skipped'
+    | 'audio-queue'
+    | 'chat-message'
+    | 'png-tts-select-model'
+    | 'png-tts-hello'
+    | 'png-tts-request-hello';
   text?: string;
   audioId?: number;
   chatMessageId?: string;
   queue?: AudioItem[];
+  modelIndex?: number;
+  modelCount?: number;
+  modelNames?: string[];
+  config?: PngTtsConfig;
   message?: {
     chatMessageId: string;
     username: string;
@@ -32,7 +48,12 @@ export class ObsWebSocketService {
 
   private readonly audioItems$ = this.audioService.audioItems$;
   private readonly connection = 'ws://localhost:37891';
-  private socket$ = webSocket(this.connection);
+  private socket$ = this.createSocket();
+
+  readonly pngTtsConnected = signal(false);
+  readonly pngTtsModelCount = signal<number | null>(null);
+  readonly pngTtsModelNames = signal<string[]>([]);
+  readonly pngTtsSourceConfig = signal<PngTtsConfig | null>(null);
 
   constructor() {
     this.playbackService.audioStarted$
@@ -78,18 +99,66 @@ export class ObsWebSocketService {
     }, 5000);
   }
 
+  private createSocket() {
+    return webSocket<ObsEvent | { data: string }>({
+      url: this.connection,
+      openObserver: {
+        next: () => this.socket$.next({
+          id: 'tts-helper',
+          event: 'png-tts-request-hello',
+        }),
+      },
+    });
+  }
+
   private connect() {
-    this.socket$ = webSocket(this.connection);
+    this.socket$ = this.createSocket();
 
     this.socket$
-      .pipe(retry({
-        delay: 5000,
-      }))
+      .pipe(
+        tap({ error: () => this.resetPngTtsState() }),
+        retry({
+          delay: 5000,
+        }),
+      )
       .subscribe({
+        next: (msg) => this.handleIncoming(msg),
         complete: () => {
+          this.resetPngTtsState();
           setTimeout(() => this.connect(), 3000);
         },
       });
+  }
+
+  private resetPngTtsState() {
+    this.pngTtsConnected.set(false);
+    this.pngTtsModelCount.set(null);
+    this.pngTtsModelNames.set([]);
+    this.pngTtsSourceConfig.set(null);
+  }
+
+  private handleIncoming(event: ObsEvent | { data: string }) {
+    if (!event || typeof event !== 'object' || !('event' in event)) {
+      return;
+    }
+
+    switch (event.event) {
+      case 'png-tts-hello':
+        this.pngTtsConnected.set(true);
+
+        if (typeof event.modelCount === 'number' && event.modelCount >= 0) {
+          this.pngTtsModelCount.set(event.modelCount);
+        }
+
+        if (Array.isArray(event.modelNames)) {
+          this.pngTtsModelNames.set(event.modelNames.filter(name => typeof name === 'string'));
+        }
+
+        if (event.config && typeof event.config === 'object') {
+          this.pngTtsSourceConfig.set(event.config);
+        }
+        break;
+    }
   }
 
   sendCaptions(id: number) {
@@ -158,6 +227,16 @@ export class ObsWebSocketService {
       id: 'on-screen-chat',
       event: 'audio-queue',
       queue,
+    };
+
+    this.socket$.next(event);
+  }
+
+  sendSelectPngModel(modelIndex: number) {
+    const event: ObsEvent = {
+      id: 'png-tts',
+      event: 'png-tts-select-model',
+      modelIndex,
     };
 
     this.socket$.next(event);

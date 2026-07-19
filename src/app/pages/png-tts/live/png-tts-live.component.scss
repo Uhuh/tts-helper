@@ -1,0 +1,28 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.source-banner {
+  app-button {
+    align-self: flex-start;
+  }
+}
+
+.model-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.empty {
+  opacity: 0.7;
+  font-size: 0.9rem;
+
+  a {
+    color: var(--blue);
+  }
+}

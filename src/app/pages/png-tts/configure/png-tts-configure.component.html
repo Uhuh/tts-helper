@@ -1,0 +1,92 @@
+<div class="header">
+  <span>PNG TTS - Configure</span>
+  <div class="header-actions">
+    <app-button (click)="testAudio()">Test audio</app-button>
+    <app-button (click)="downloadConfig()">Download png-tts-config.js</app-button>
+    <app-button (click)="downloadHtml()">Download tts-helper-png-tts.html</app-button>
+  </div>
+</div>
+
+<div class="warning">
+  <span>
+    <span>Generate an HTML file to use as an OBS Browser Source.</span>
+    <span>
+      Put it in the same folder as your images: <code>no_talk_0.png</code>,
+      <code>talk_0.png</code>, <code>no_talk_1.png</code>, <code>talk_1.png</code>, etc.
+    </span>
+    <span>Extensions can be swapped per model (jpg, gif, webp, ...).</span>
+  </span>
+  <span>
+    Optionally drop <code>png-tts-config.js</code> next to the HTML to tweak settings without
+    re-exporting, it overrides the baked-in values.
+  </span>
+</div>
+
+@if (service.sourceConfig(); as source) {
+  <div class="warning green source-banner">
+    <span>
+      A PNG TTS browser source is connected and reporting {{ source.models.length }} model(s).
+    </span>
+    <span>Import its settings to edit them here, this replaces the models on this page.</span>
+    <span>You will need to redownload the files to replace them.</span>
+    <app-button (click)="service.importFromSource()">Import from connected source</app-button>
+  </div>
+}
+
+<hr/>
+
+<div class="section">
+  @if (previewModel(); as preview) {
+    <div class="preview-block">
+      <div class="header">
+        <span>Preview</span>
+        <app-button (click)="clearPreview()">Clear preview</app-button>
+      </div>
+
+      <div
+        class="animation-preview"
+        [style.--intensity]="preview.intensity"
+        [style.--anim-duration.ms]="preview.duration"
+        [style.opacity]="preview.opacity"
+      >
+        <div
+          class="preview-shape idle"
+          [style.filter]="'brightness(' + (1 - preview.dimness) + ')'"
+        >
+          <span>idle</span>
+        </div>
+        <div
+          class="preview-shape"
+          [class.talking-active]="preview.talkAnimation !== 'none'"
+          [class.anim-jump]="preview.talkAnimation === 'jump'"
+          [class.anim-shake]="preview.talkAnimation === 'shake'"
+          [class.anim-bounce]="preview.talkAnimation === 'bounce'"
+          [class.anim-sway]="preview.talkAnimation === 'sway'"
+        >
+          <span>talking</span>
+        </div>
+      </div>
+
+      <hr/>
+    </div>
+  }
+
+  <div class="header">
+    <span>Models</span>
+    <app-button (click)="service.addModel()">Create model</app-button>
+  </div>
+
+  <div class="model-list">
+    @for (model of service.models(); track $index) {
+      <app-png-tts-model-accordion
+        [index]="$index"
+        [model]="model"
+        (update)="service.updateModel($index, $event)"
+        (remove)="service.removeModel($index)"
+        (preview)="showPreview($event)"
+      />
+    } @empty {
+      <div class="empty">No models yet. Create one to get started.</div>
+    }
+  </div>
+</div>

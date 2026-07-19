@@ -1,0 +1,62 @@
+<app-accordion>
+  <div accordion-header>
+    #{{ index() }} · {{ settings.controls.name.value || 'Model ' + (index() + 1) }}
+  </div>
+
+  <div class="header">
+    <span>Model #{{ index() }}</span>
+    <div class="model-buttons">
+      <app-button (click)="previewModel()">Preview</app-button>
+      <app-button [style]="'danger'"  (click)="remove.emit()">Remove</app-button>
+    </div>
+  </div>
+
+  <app-label-block>
+    <div header>Name</div>
+    <div sub-text>Nickname shown on the live-switch buttons.</div>
+    <app-input placeholder="Nickname" type="text" [control]="settings.controls.name"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>File extension</div>
+    <div sub-text>
+      Maps to <code>no_talk_{{ index() }}.{{ cleanExtension() }}</code> and
+      <code>talk_{{ index() }}.{{ cleanExtension() }}</code>.
+    </div>
+    <app-input placeholder="png" type="text" [control]="settings.controls.extension"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Talk animation</div>
+    <div sub-text>How the model moves while TTS audio is playing.</div>
+    <app-selector
+      placeholder="Pick an animation"
+      [options]="animationOptions"
+      [control]="settings.controls.talkAnimation"
+    />
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Animation intensity (%)</div>
+    <div sub-text>How pronounced the talk animation is. 100 is default, higher values exaggerate.</div>
+    <app-input placeholder="100" type="number" [control]="settings.controls.intensity"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Animation duration (ms)</div>
+    <div sub-text>How long one loop of the animation takes, in milliseconds.</div>
+    <app-input placeholder="400" type="number" [control]="settings.controls.duration"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Opacity (%)</div>
+    <div sub-text>How visible the model is on stream. 0% is invisible, 100% is fully opaque.</div>
+    <app-input placeholder="100" type="number" [control]="settings.controls.opacity"/>
+  </app-label-block>
+
+  <app-label-block>
+    <div header>Dimness while not talking (%)</div>
+    <div sub-text>How darkened the model appears when idle. 0% keeps full brightness, 100% goes to black.</div>
+    <app-input placeholder="0" type="number" [control]="settings.controls.dimness"/>
+  </app-label-block>
+</app-accordion>

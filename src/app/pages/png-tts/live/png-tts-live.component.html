@@ -1,0 +1,45 @@
+<div class="header">
+  <span>PNG TTS - Live</span>
+</div>
+
+<div class="warning">
+  <span>
+    Switch which model a connected PNG TTS browser source shows, live. Buttons appear for every model
+    reported by a connected source, plus every model you have configured.
+  </span>
+</div>
+
+@if (service.sourceConfig(); as source) {
+  <div class="warning green source-banner">
+    <span>
+      A PNG TTS browser source is connected and reporting {{ source.models.length }} model(s).
+    </span>
+    <span>Import its settings into Configure to edit them.</span>
+    <app-button (click)="service.importFromSource()">Sync from connected source</app-button>
+  </div>
+}
+
+<hr/>
+
+<div class="section">
+  <app-label-block>
+    <div header>Switch model</div>
+    <div sub-text>Click a model to tell the connected browser source to swap to it.</div>
+
+    <div class="model-toggles">
+      @for (index of buttonIndices(); track index) {
+        <app-button
+          [style]="service.activeModel() === index ? 'active' : 'outline'"
+          (click)="service.selectModel(index)"
+        >
+          {{ modelLabel(index) }}
+        </app-button>
+      } @empty {
+        <div class="empty">
+          No models yet. Add models on the
+          <a [routerLink]="['/png-tts', 'configure']">Configure</a> page, or connect a browser source.
+        </div>
+      }
+    </div>
+  </app-label-block>
+</div>

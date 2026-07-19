@@ -78,6 +78,19 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/api/api.component'),
   },
   {
+    path: 'png-tts',
+    redirectTo: 'png-tts/configure',
+    pathMatch: 'full',
+  },
+  {
+    path: 'png-tts/configure',
+    loadComponent: () => import('./pages/png-tts/configure/png-tts-configure.component'),
+  },
+  {
+    path: 'png-tts/live',
+    loadComponent: () => import('./pages/png-tts/live/png-tts-live.component'),
+  },
+  {
     path: '',
     redirectTo: '/home',
     pathMatch: 'full',
