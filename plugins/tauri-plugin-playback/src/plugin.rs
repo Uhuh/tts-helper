@@ -132,9 +132,8 @@ fn list_viewing_devices() -> Vec<WithId<DeviceInfo, String>> {
                     }
                 };
 
-                // Read the fallible value once, use it twice.
                 if !seen.insert(name.clone()) {
-                    continue; // duplicate/case-collision guard
+                    continue;
                 }
 
                 devices.push(WithId {
