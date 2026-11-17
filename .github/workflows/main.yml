@@ -58,7 +58,7 @@ jobs:
           workspaces: '. -> target'
 
       - name: install frontend dependencies
-        run: yarn install --immutable
+        run: yarn install --frozen-lockfile --immutable
 
       - uses: tauri-apps/tauri-action@v1
         env:
