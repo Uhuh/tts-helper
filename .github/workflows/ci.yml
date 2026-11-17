@@ -18,5 +18,5 @@ jobs:
             libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf \
             libasound2-dev libxcb1-dev libxrandr-dev libdbus-1-dev \
             libpipewire-0.3-dev libwayland-dev libegl-dev
-      - run: yarn install --immutable && yarn build
+      - run: yarn install --frozen-lockfile && yarn build
       - run: cargo build --workspace
