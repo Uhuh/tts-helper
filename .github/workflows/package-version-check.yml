@@ -6,6 +6,7 @@ on:
 
 jobs:
   check-package-version:
+    if: contains(github.event.pull_request.labels.*.name, 'release')
     runs-on: ubuntu-latest
 
     steps:
