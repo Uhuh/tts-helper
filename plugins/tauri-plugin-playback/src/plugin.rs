@@ -1,6 +1,6 @@
 use std::{io::Cursor, time::Instant};
 use base64::prelude::*;
-
+use std::collections::HashSet;
 use num_complex::Complex64;
 use rodio::{Decoder, DevicesError, Source};
 use rustfft::FftPlanner;
@@ -22,6 +22,7 @@ use image::ImageEncoder;
 
 use fast_image_resize::{CpuExtensions, FilterType, IntoImageView, ResizeAlg, ResizeOptions, Resizer};
 use fast_image_resize::images::Image;
+use tracing::warn;
 
 use crate::{
     models::{
@@ -116,34 +117,71 @@ fn normalized(name: &str) -> String {
 #[tauri::command(async)]
 #[instrument(skip_all)]
 fn list_viewing_devices() -> Vec<WithId<DeviceInfo, String>> {
-    let monitors = Monitor::all().unwrap();
-    let windows = Window::all().unwrap();
+    let mut devices: Vec<WithId<DeviceInfo, String>> = Vec::with_capacity(16);
+    let mut seen: HashSet<String> = HashSet::with_capacity(16);
 
-    let mut monitors: Vec<WithId<DeviceInfo, String>> = monitors
-        .iter()
-        .map(|device| WithId {
-            id: device.name().to_string(),
-            inner: DeviceInfo {
-                is_default: false,
-                name: normalized(device.name()).into()
+    match Monitor::all() {
+        Ok(monitors) => {
+            for monitor in monitors {
+                let name = match monitor.name() {
+                    Ok(name) if !name.is_empty() => name,
+                    Ok(_) => continue, // unnamed (some Wayland compositors)
+                    Err(err) => {
+                        warn!(%err, "skipping monitor: name() failed");
+                        continue;
+                    }
+                };
+
+                // Read the fallible value once, use it twice.
+                if !seen.insert(name.clone()) {
+                    continue; // duplicate/case-collision guard
+                }
+
+                devices.push(WithId {
+                    id: name.clone(),
+                    inner: DeviceInfo {
+                        is_default: monitor.is_primary().unwrap_or(false),
+                        name: normalized(&name).into(),
+                    },
+                });
             }
-        })
-        .collect();
+        }
+        Err(err) => warn!(%err, "Monitor::all() failed"),
+    }
 
-    let windows: Vec<WithId<DeviceInfo, String>> = windows
-        .iter()
-        .map(|device| WithId {
-            id: device.app_name().to_string(),
-            inner: DeviceInfo {
-                is_default: false,
-                name: normalized(device.app_name()).into()
+    match Window::all() {
+        Ok(windows) => {
+            for window in windows {
+                let app_name = match window.app_name() {
+                    Ok(app_name) if !app_name.is_empty() => app_name,
+                    Ok(_) => continue, // e.g. windows with no WM_CLASS
+                    Err(err) => {
+                        warn!(%err, "skipping window: app_name() failed");
+                        continue;
+                    }
+                };
+
+                if !seen.insert(app_name.clone()) {
+                    continue;
+                }
+
+                devices.push(WithId {
+                    id: app_name.clone(),
+                    inner: DeviceInfo {
+                        is_default: false,
+                        name: normalized(&app_name).into(),
+                    },
+                });
             }
-        })
-        .collect();
-    
-    monitors.extend(windows);
+        }
+        Err(err) => warn!(%err, "Window::all() failed"),
+    }
 
-    monitors
+    devices
+}
+
+fn matches(r: xcap::XCapResult<String>, want: &str) -> bool {
+    r.is_ok_and(|s| s == want)
 }
 
 #[tauri::command(async)]
@@ -153,8 +191,8 @@ fn snapshot_monitor(capture_name: String) -> ApiResult<String> {
     let monitors = Monitor::all()?;
     let windows = Window::all()?;
 
-    let monitor = monitors.iter().find(|d| d.name() == capture_name);
-    let window = windows.iter().find(|w| w.app_name() == capture_name);
+    let monitor = monitors.iter().find(|d| matches(d.name(), &capture_name));
+    let window = windows.iter().find(|w| matches(w.app_name(), &capture_name));
 
     let capture_device = match (monitor, window) {
         (Some(monitor), None) => (Some(monitor), None),
