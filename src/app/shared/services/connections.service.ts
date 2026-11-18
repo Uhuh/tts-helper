@@ -8,44 +8,51 @@ import { VTubeStudioService } from './vtubestudio.service';
 import { VirtualMotionCaptureProtocolService } from './virtual-motion-capture-protocol.service';
 import { CONNECTION_REGISTRY, ConnectionKind } from '../state/app-settings/app-settings.feature';
 import { ConnectionStatusSnapshot } from '../state/models/connection-status.model';
+import { VStreamService } from './vstream.service';
 
 const DEFAULT_CONNECTION_STATUS = { status: 'unknown', tooltip: '' } satisfies ConnectionStatusSnapshot;
 
 @Injectable({ providedIn: 'root' })
 export class ConnectionsService {
-  private readonly appSettingsService = inject(AppSettingsService);
-  private readonly twitchService = inject(TwitchService);
-  private readonly youtubeService = inject(YoutubeService);
-  private readonly vtubeStudioService = inject(VTubeStudioService);
-  private readonly vmcService = inject(VirtualMotionCaptureProtocolService);
+  readonly #appSettingsService = inject(AppSettingsService);
+  readonly #twitchService = inject(TwitchService);
+  readonly #youtubeService = inject(YoutubeService);
+  readonly #vtubeStudioService = inject(VTubeStudioService);
+  readonly #vmcService = inject(VirtualMotionCaptureProtocolService);
+  readonly #vstreamService = inject(VStreamService);
 
   private readonly enabled = toSignal(
-    this.appSettingsService.state$.pipe(map((s) => s.connections)),
+    this.#appSettingsService.state$.pipe(map((s) => s.connections)),
     { initialValue: {} as Record<ConnectionKind, boolean> },
   );
 
   private readonly expanded = toSignal(
-    this.appSettingsService.state$.pipe(map((s) => s.connectionsExpanded)),
+    this.#appSettingsService.state$.pipe(map((s) => s.connectionsExpanded)),
     { initialValue: true },
   );
 
   private readonly twitchStatus = toSignal(
-    this.twitchService.connectionStatus$,
+    this.#twitchService.connectionStatus$,
     { initialValue: DEFAULT_CONNECTION_STATUS },
   );
 
   private readonly youtubeStatus = toSignal(
-    this.youtubeService.connectionStatus$,
+    this.#youtubeService.connectionStatus$,
     { initialValue: DEFAULT_CONNECTION_STATUS },
   );
 
   private readonly vtsStatus = toSignal(
-    this.vtubeStudioService.connectionStatus$,
+    this.#vtubeStudioService.connectionStatus$,
     { initialValue: DEFAULT_CONNECTION_STATUS },
   );
 
   private readonly vmcStatus = toSignal(
-    this.vmcService.connectionStatus$,
+    this.#vmcService.connectionStatus$,
+    { initialValue: DEFAULT_CONNECTION_STATUS },
+  );
+
+  private readonly vstreamStatus = toSignal(
+    this.#vstreamService.connectionStatus$,
     { initialValue: DEFAULT_CONNECTION_STATUS },
   );
 
@@ -55,9 +62,7 @@ export class ConnectionsService {
       youtube: this.youtubeStatus(),
       vtubestudio: this.vtsStatus(),
       vmc: this.vmcStatus(),
-      kick: DEFAULT_CONNECTION_STATUS,
-      picarto: DEFAULT_CONNECTION_STATUS,
-      tiktok: DEFAULT_CONNECTION_STATUS,
+      vstream: this.vstreamStatus(),
     };
 
     return Object.values(CONNECTION_REGISTRY).map((config) => ({
