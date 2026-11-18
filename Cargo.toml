@@ -1,6 +1,9 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = ["src-tauri", "plugins/*", "lib-backend/*"]
+
+[workspace.package]
+rust-version = "1.85"
 
 [workspace.dependencies]
 # Tauri
@@ -9,7 +12,7 @@ tauri-build = "2.1.0"
 tauri-plugin = "2.1.0"
 tauri-plugin-cli = "2.2.0"
 tauri-plugin-dialog = "2.2.0"
-tauri-plugin-http = { version = "2.4.2", features = ["rustls-tls"] }
+tauri-plugin-http = { version = "2", features = ["json", "rustls-tls"] }
 
 # Serialization
 serde = "1"
