@@ -5,20 +5,14 @@ import { LogService } from './logs.service';
 import { BehaviorSubject, catchError, combineLatest, first, from, interval, map, of, switchMap, timer } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { VStreamActions } from '../state/vstream/vstream.actions';
-import {
-  VStreamChannelState,
-  VStreamCustomMessageState,
-  VStreamFeature,
-  VStreamSettingsState,
-  VStreamTokenResponse,
-  VStreamWidget,
-} from '../state/vstream/vstream.feature';
+import { VStreamChannelState, VStreamCustomMessageState, VStreamFeature, VStreamSettingsState, VStreamTokenResponse, VStreamWidget } from '../state/vstream/vstream.feature';
 import { VStreamChannelID, VStreamVideoID } from './vstream-pubsub.interface';
 import { ChatCommand, ChatPermissions } from './chat.interface';
 import { jwtDecode } from 'jwt-decode';
 import { TypeID } from 'typeid-js';
 import { Commands, CommandTypes } from './command.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ConnectionStatusSnapshot } from '../state/models/connection-status.model';
 
 @Injectable()
 export class VStreamService {
@@ -49,6 +43,22 @@ export class VStreamService {
     .pipe(switchMap(() => {
       return this.token$.pipe(map(token => token.expireDate > Date.now() && token.accessToken));
     }));
+
+  readonly connectionStatus$ = this.isTokenValid$.pipe(
+    map((enabled): ConnectionStatusSnapshot => {
+      if (!enabled) {
+        return {
+          status: 'disconnected',
+          tooltip: 'VStream token invalidated',
+        };
+      }
+
+      return {
+        status: 'connected',
+        tooltip: `VStream connected`,
+      };
+    }),
+  );
 
   constructor() {
     listen('access-token', (authData) => {

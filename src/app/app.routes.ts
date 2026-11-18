@@ -14,6 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/youtube/youtube.component'),
   },
   {
+    path: 'vstream',
+    loadComponent: () => import('./pages/vstream/vstream.component'),
+  },
+  {
     path: 'virtual-motion-capture',
     loadComponent: () => import('./pages/virtual-motion-capture/virtual-motion-capture.component'),
   },

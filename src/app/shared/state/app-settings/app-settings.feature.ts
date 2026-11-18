@@ -5,9 +5,7 @@ export type ConnectionKind =
   | 'youtube'
   | 'vtubestudio'
   | 'vmc'
-  | 'kick'
-  | 'picarto'
-  | 'tiktok';
+  | 'vstream';
 
 export type ConnectionStatus =
   | 'connected'
@@ -22,7 +20,7 @@ export interface ConnectionConfig {
   icon: string;
 }
 
-export const CONNECTION_REGISTRY: Record<Exclude<ConnectionKind, 'kick' | 'tiktok' | 'picarto'>, ConnectionConfig> = {
+export const CONNECTION_REGISTRY: Record<ConnectionKind, ConnectionConfig> = {
   twitch: {
     kind: 'twitch',
     name: 'Twitch',
@@ -47,6 +45,12 @@ export const CONNECTION_REGISTRY: Record<Exclude<ConnectionKind, 'kick' | 'tikto
     route: 'virtual-motion-capture',
     icon: 'assets/virtual-motion-capture.png',
   },
+  vstream: {
+    kind: 'vstream',
+    name: 'VStream',
+    route: 'vstream',
+    icon: 'assets/vstream.svg',
+  },
 };
 
 export interface AppSettingsFeatureState {
@@ -70,9 +74,7 @@ export const initialState: AppSettingsFeatureState = {
     youtube: true,
     vtubestudio: true,
     vmc: true,
-    kick: false,
-    picarto: false,
-    tiktok: false,
+    vstream: false,
   },
 };
 
